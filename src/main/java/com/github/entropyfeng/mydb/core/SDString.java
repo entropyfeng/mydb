@@ -1,7 +1,6 @@
 package com.github.entropyfeng.mydb.core;
 
 import com.github.entropyfeng.mydb.constant.Storage;
-
 import java.io.Serializable;
 import java.util.Arrays;
 
@@ -11,7 +10,6 @@ import java.util.Arrays;
  * simple dynamic string
  */
 public class SDString implements Serializable {
-
 
     public SDString(SDString source) {
         this.free = source.free;
@@ -81,7 +79,6 @@ public class SDString implements Serializable {
 
     /**
      * 在该SDS后拼接一个SDS
-     *
      * @param source {@link SDString}
      */
     public void sdsCatSds(SDString source) {
