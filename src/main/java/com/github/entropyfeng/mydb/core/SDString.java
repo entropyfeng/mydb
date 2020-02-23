@@ -27,14 +27,14 @@ public class SDString implements Serializable {
      * @param source char 数组
      */
     private void build(char[] source) {
-        if (source.length <= Storage._1M) {
+        if (source.length <= Storage.SIZE_1M) {
             this.buf = Arrays.copyOf(source, source.length * 2);
             this.len = source.length;
             this.free = source.length;
         } else {
-            this.buf = Arrays.copyOf(source, source.length + Storage._1M);
+            this.buf = Arrays.copyOf(source, source.length + Storage.SIZE_1M);
             this.len = source.length;
-            this.free = Storage._1M;
+            this.free = Storage.SIZE_1M;
         }
     }
 
@@ -112,12 +112,12 @@ public class SDString implements Serializable {
 
     private void realloc(char[] source, int len) {
 
-        if (len > Storage._1M) {
+        if (len > Storage.SIZE_1M) {
             //如果需要增加的空间长度大于1M,则为其多分配1M
-            this.buf = Arrays.copyOf(this.buf, len + this.len + Storage._1M);
+            this.buf = Arrays.copyOf(this.buf, len + this.len + Storage.SIZE_1M);
             System.arraycopy(source, 0, this.buf, this.len, len);
             this.len += len;
-            this.free = Storage._1M;
+            this.free = Storage.SIZE_1M;
             //如果需要增加的空间长度小于1M,则为其分配双倍空间
         } else {
             this.buf = Arrays.copyOf(this.buf, len * 2 + this.len);

@@ -1,8 +1,11 @@
 package com.github.entropyfeng.mydb;
 
-import sun.misc.Unsafe;
 
-import java.lang.reflect.Field;
+import com.github.entropyfeng.mydb.util.ConfigUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Properties;
 
 /**
  * @author entropyfeng
@@ -10,7 +13,18 @@ import java.lang.reflect.Field;
  */
 public class Main {
 
+    private static final Logger logger=LoggerFactory.getLogger(Main.class);
+
     public static void main(String[] args) {
+
+        Properties properties = ConfigUtil.readProperties("config.properties");
+        try {
+            ConfigUtil.checkProperties(properties);
+        }catch (IllegalArgumentException e){
+            logger.error(e.getMessage());
+        }
+
+
 
 
     }
