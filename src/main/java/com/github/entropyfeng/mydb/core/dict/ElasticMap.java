@@ -3,6 +3,7 @@ package com.github.entropyfeng.mydb.core.dict;
 /**
  * @author entropyfeng
  * @date 2020/2/20 17:57
+ * 最大容量为2的30次方
  */
 public class ElasticMap<K, V> {
 
@@ -45,6 +46,7 @@ public class ElasticMap<K, V> {
 
 
     public void putVal(K key, V value) {
+        assert getUsed()<=MAXIMUM_CAPACITY;
         if (isRehashing) {
             if(first.isExist(key)){
                 first.deleteKey(key);
@@ -132,6 +134,7 @@ public class ElasticMap<K, V> {
 
     public static void main(String[] args) {
 
+        System.out.println((long)Math.pow(2,30));
         ElasticMap<String,String> elasticMap=new ElasticMap<>();
         int pos=3000;
         for (int i=0;i<pos;i++){
