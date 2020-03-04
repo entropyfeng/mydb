@@ -17,7 +17,7 @@ class MapObject<K, V> {
     /**
      * 返回大于等于capacity的最小2的整数次幂
      */
-    static int tableSizeFor(int cap) {
+    private static int tableSizeFor(int cap) {
         int n = cap - 1;
         n |= n >>> 1;
         n |= n >>> 2;
@@ -62,7 +62,7 @@ class MapObject<K, V> {
 
     }
 
-    Node<K, V>[] table;
+    private Node<K, V>[] table;
     /**
      * 哈希表大小
      */
@@ -72,25 +72,25 @@ class MapObject<K, V> {
      * 哈希表大小掩码,用于计算索引值
      * 总等于size-1
      */
-    transient int sizeMask;
+    private transient int sizeMask;
 
     /**
      * 在resize过程中辅助变量
      */
-    transient int movePos=0;
+    private transient int movePos=0;
     /**
      * 已用结点数量
      */
     int used = 0;
 
-    final float loadFactor;
+    private final float loadFactor;
 
     /**
      * 使用murmur3 hash
      * @param key 任意对象
      * @return hashCode
      */
-    int hashing(K key) {
+    private int hashing(K key) {
 
         if (key instanceof String) {
             return Hashing.murmur3_32().hashString((String) key, Charsets.UTF_8).asInt();
@@ -115,7 +115,7 @@ class MapObject<K, V> {
      * @param key   键
      * @param value 值
      */
-    public void putVal(K key, V value) {
+    void putVal(K key, V value) {
 
         int pos = hashing(key) & sizeMask;
         assert pos >= 0 && pos < size;
@@ -128,10 +128,9 @@ class MapObject<K, V> {
         //如果当前槽为空,则创建新节点
         if (tempNode == null) {
             table[pos] = new Node<K, V>(key, value, null);
-
+            used++;
         } else {
             Node tailNode = null;
-
 
             /*
               在相同hash值链表中找到相应key所对应结点
@@ -144,12 +143,12 @@ class MapObject<K, V> {
 
             if (tempNode == null) {
                 tailNode.next = new Node<K, V>(key, value, null);
+                used++;
             } else {
                 tempNode.value = value;
             }
         }
 
-        used++;
     }
 
     /**
@@ -242,7 +241,7 @@ class MapObject<K, V> {
     }
 
     boolean isCorrespondingEnlargeSize(){
-        return (used*loadFactor>size);
+        return (used>size*loadFactor);
     }
     boolean isCorrespondingNarrowSize(){
         return used<size*0.1;
@@ -268,13 +267,30 @@ class MapObject<K, V> {
             movePos++;
         }
 
-        Node<K,V> tempNode=table[movePos];
-        table[movePos]=null;
-        return tempNode;
+        if (movePos==size){
+            return null;
+        }else {
+            Node<K,V> tempNode=table[movePos];
+            table[movePos]=null;
+            return tempNode;
+        }
+
 
     }
 
     //-----------get and set-----------
 
+    public static void main(String[] args) {
+        MapObject<String,String> mapObject=new MapObject<>();
+        int pos=30000;
+        for (int i=0;i<pos;i++){
+            mapObject.putVal("key"+i,"val"+i);
+        }
+        System.out.println(mapObject.used);
+        for (int i=0;i<pos;i++){
+            mapObject.deleteKey("key"+i);
+        }
+        System.out.println(mapObject.used);
+    }
 
 }

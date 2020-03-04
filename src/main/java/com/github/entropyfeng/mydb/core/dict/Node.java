@@ -5,7 +5,7 @@ package com.github.entropyfeng.mydb.core.dict;
  * @author entropyfeng
  * @date 2020/2/23 14:37
  */
-public class Node<K,V> {
+class Node<K,V> {
 
     K key;
 

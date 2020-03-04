@@ -1,13 +1,5 @@
 package com.github.entropyfeng.mydb.core.dict;
 
-import com.google.common.base.Charsets;
-import com.google.common.hash.Funnel;
-import com.google.common.hash.Hashing;
-import com.google.common.hash.PrimitiveSink;
-
-import java.nio.charset.Charset;
-import java.util.HashMap;
-
 /**
  * @author entropyfeng
  * @date 2020/2/20 17:57
@@ -54,10 +46,13 @@ public class ElasticMap<K, V> {
 
     public void putVal(K key, V value) {
         if (isRehashing) {
-            first.deleteKey(key);
+            if(first.isExist(key)){
+                first.deleteKey(key);
+            }
             second.putVal(key, value);
             moveEntry();
         } else if (first.isCorrespondingEnlargeSize()) {
+            isRehashing=true;
             second = new MapObject<>(first.used);
             second.putVal(key, value);
             moveEntry();
@@ -72,9 +67,14 @@ public class ElasticMap<K, V> {
 
         boolean res=false;
         if(isRehashing){
-            first.deleteKey(key);
+            if(first.deleteKey(key)){
+                res=true;
+            }else {
+               res= second.deleteKey(key);
+            }
             moveEntry();
         }else if (first.isCorrespondingNarrowSize()){
+            isRehashing=true;
             second=new MapObject<>(first.used);
             res= first.deleteKey(key);
             moveEntry();
@@ -102,6 +102,14 @@ public class ElasticMap<K, V> {
         return res;
     }
 
+    public int getUsed(){
+        if (isRehashing){
+            moveEntry();
+            return first.used+second.used;
+        }else {
+            return first.used;
+        }
+    }
 
     private void moveEntry() {
 
@@ -109,6 +117,7 @@ public class ElasticMap<K, V> {
         //如果不为空则没有resize完毕
         if (node != null) {
             while (node != null) {
+                first.used--;
                 second.putVal(node.key, node.value);
                 node = node.next;
             }
@@ -123,8 +132,22 @@ public class ElasticMap<K, V> {
 
     public static void main(String[] args) {
 
+        ElasticMap<String,String> elasticMap=new ElasticMap<>();
+        int pos=3000;
+        for (int i=0;i<pos;i++){
+            elasticMap.putVal("key"+i,"val"+i);
+        }
 
-        System.out.println("hello");
+        for (int i=0;i<pos;i++){
+            elasticMap.getValue("");
+        }
+
+        for (int i=0;i<pos;i++){
+            elasticMap.deleteKey("key"+i);
+        }
+
+        System.out.println(elasticMap.first.size);
+        System.out.println(elasticMap.getUsed());
     }
 
 }
