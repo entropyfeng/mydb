@@ -12,7 +12,7 @@ import java.util.HashMap;
  * @author entropyfeng
  * @date 2020/2/20 17:57
  */
-public class ElasticMap<K, V>  {
+public class ElasticMap<K, V> {
 
     /**
      * 默认初始大小16
@@ -31,34 +31,93 @@ public class ElasticMap<K, V>  {
     static final float DEFAULT_LOAD_FACTOR = 0.75f;
 
 
-    static int hashing(int key){
-        return Hashing.murmur3_32().hashInt(key).asInt();
-    }
-    static int hashing(String key){
-        return Hashing.murmur3_32().hashString(key,Charsets.UTF_8).asInt();
-    }
-    static int hashing(long key){
-        return Hashing.murmur3_32().hashLong(key).asInt();
-    }
-    static int hashing(float key){
-        return Hashing.murmur3_32().newHasher().putFloat(key).hash().asInt();
-    }
-    static int hashing(double key){
-        return Hashing.murmur3_32().newHasher().putDouble(key).hash().asInt();
-    }
-
     MapObject<K, V> first;
 
     MapObject<K, V> second;
 
 
-    int rehashIndex;
+    boolean isRehashing = false;
 
 
+    ElasticMap(int initialCapacity, float loadFactor) {
+        first = new MapObject<>(initialCapacity, loadFactor);
+    }
+
+    ElasticMap(int initialCapacity) {
+        first = new MapObject<>(initialCapacity);
+    }
+
+    ElasticMap() {
+        first = new MapObject<>();
+    }
 
 
+    public void putVal(K key, V value) {
+        if (isRehashing) {
+            first.deleteKey(key);
+            second.putVal(key, value);
+            moveEntry();
+        } else if (first.isCorrespondingEnlargeSize()) {
+            second = new MapObject<>(first.used);
+            second.putVal(key, value);
+            moveEntry();
+        } else {
+            first.putVal(key, value);
+        }
+
+    }
 
 
+    public boolean deleteKey(K key){
+
+        boolean res=false;
+        if(isRehashing){
+            first.deleteKey(key);
+            moveEntry();
+        }else if (first.isCorrespondingNarrowSize()){
+            second=new MapObject<>(first.used);
+            res= first.deleteKey(key);
+            moveEntry();
+        }else {
+            res=first.deleteKey(key);
+        }
+        return res;
+    }
+
+    /**
+     * 根据key获取 value
+     *
+     * @param key 键
+     * @return null ->不存在该key或该key对应的value为空
+     * notNull->value
+     */
+    public V getValue(K key) {
+        V res = first.getValue(key);
+        if (isRehashing) {
+            if (res == null) {
+                res = second.getValue(key);
+            }
+            moveEntry();
+        }
+        return res;
+    }
+
+
+    private void moveEntry() {
+
+        Node<K, V> node = first.getMoveEntry();
+        //如果不为空则没有resize完毕
+        if (node != null) {
+            while (node != null) {
+                second.putVal(node.key, node.value);
+                node = node.next;
+            }
+        } else {
+            isRehashing = false;
+            first = second;
+            second = null;
+        }
+    }
 
 
 

@@ -3,8 +3,6 @@ package com.github.entropyfeng.mydb.core.dict;
 import com.google.common.base.Charsets;
 import com.google.common.hash.Hashing;
 
-import java.nio.charset.Charset;
-
 import static com.github.entropyfeng.mydb.core.dict.ElasticMap.DEFAULT_INITIAL_CAPACITY;
 import static com.github.entropyfeng.mydb.core.dict.ElasticMap.DEFAULT_LOAD_FACTOR;
 import static com.github.entropyfeng.mydb.core.dict.ElasticMap.MAXIMUM_CAPACITY;
@@ -77,12 +75,21 @@ class MapObject<K, V> {
     transient int sizeMask;
 
     /**
+     * 在resize过程中辅助变量
+     */
+    transient int movePos=0;
+    /**
      * 已用结点数量
      */
     int used = 0;
 
-    float loadFactor;
+    final float loadFactor;
 
+    /**
+     * 使用murmur3 hash
+     * @param key 任意对象
+     * @return hashCode
+     */
     int hashing(K key) {
 
         if (key instanceof String) {
@@ -99,6 +106,7 @@ class MapObject<K, V> {
         //you are not except access this region
         throw new Error("UnSupport Hashing Type");
     }
+
 
 
     /**
@@ -141,6 +149,7 @@ class MapObject<K, V> {
             }
         }
 
+        used++;
     }
 
     /**
@@ -202,7 +211,7 @@ class MapObject<K, V> {
      *
      * @param key key
      * @return true->删除成功
-     * false->不存在键
+     * false->不存在键或删除失败
      */
     boolean deleteKey(K key) {
         int pos = hashing(key) & sizeMask;
@@ -220,36 +229,52 @@ class MapObject<K, V> {
                 while (tempNode.next != null && !tempNode.next.key.equals(key)) {
                     tempNode = tempNode.next;
                 }
-                if (tempNode != null) {
-                    if (tempNode.next != null) {
-                        tempNode.next = tempNode.next.next;
-                    }
-                    res = true;
+                if(tempNode.next!=null){
+                    tempNode.next = tempNode.next.next;
+                    res=true;
                 }
             }
-
-
+        }
+        if (res){
+            used--;
         }
         return res;
     }
 
-    public static void main(String[] args) {
-        MapObject<Integer, String> mapObject = new MapObject<>();
+    boolean isCorrespondingEnlargeSize(){
+        return (used*loadFactor>size);
+    }
+    boolean isCorrespondingNarrowSize(){
+        return used<size*0.1;
+    }
 
-        for (int i=0;i<60;i++){
-            mapObject.putVal(i,"int"+String.valueOf(i));
+    private int getLength(Node<K,V> node){
+        int length=0;
+        while (node.next!=null){
+            node=node.next;
+            length++;
+        }
+        return length;
+    }
+
+    /**
+     * 找到并返回下一个不为空的头结点
+     * @return 头结点 {@link Node}
+     */
+    Node<K,V> getMoveEntry(){
+
+
+        while (movePos<size&&table[movePos]==null){
+            movePos++;
         }
 
-
-        mapObject.deleteKey(44);
-        mapObject.deleteKey(55);
-        mapObject.deleteKey(66);
-        mapObject.deleteKey(77);
-        for (int i=0;i<60;i++){
-            System.out.println(mapObject.getValue(i));
-        }
+        Node<K,V> tempNode=table[movePos];
+        table[movePos]=null;
+        return tempNode;
 
     }
+
+    //-----------get and set-----------
 
 
 }
