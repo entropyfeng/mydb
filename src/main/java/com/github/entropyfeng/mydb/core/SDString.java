@@ -1,6 +1,6 @@
 package com.github.entropyfeng.mydb.core;
 
-import com.github.entropyfeng.mydb.constant.Storage;
+import com.github.entropyfeng.mydb.config.Storage;
 import java.io.Serializable;
 import java.util.Arrays;
 

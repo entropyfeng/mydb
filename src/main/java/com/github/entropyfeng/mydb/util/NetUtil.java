@@ -1,6 +1,5 @@
 package com.github.entropyfeng.mydb.util;
 
-import io.netty.util.internal.StringUtil;
 
 /**
  * 网络工具类
@@ -45,17 +44,13 @@ public class NetUtil {
      * @return true->合法 false->不合法
      */
     public static boolean checkHost(String host) {
-        boolean res = false;
-        if (!StringUtil.isNullOrEmpty(host)) {
-            // 定义正则表达式
-            String regex = "^([1-9]|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}$";
-            // 判断ip地址是否与正则表达式匹配
-            if (host.matches(regex)) {
-                res = true;
-            }
-        }
-        return res;
 
+        return io.netty.util.NetUtil.isValidIpV4Address(host)||io.netty.util.NetUtil.isValidIpV6Address(host);
+
+    }
+
+    public static void main(String[] args) {
+        System.out.println(checkHost("0.0.0.0"));
     }
 
 }

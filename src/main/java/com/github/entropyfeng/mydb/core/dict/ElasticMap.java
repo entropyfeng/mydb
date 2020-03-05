@@ -47,6 +47,8 @@ public class ElasticMap<K, V> {
 
     public void putVal(K key, V value) {
         assert getUsed()<=MAXIMUM_CAPACITY;
+        assert key!=null;
+        assert value!=null;
         if (isRehashing) {
             if(first.isExist(key)){
                 first.deleteKey(key);
@@ -67,7 +69,8 @@ public class ElasticMap<K, V> {
 
     public boolean deleteKey(K key){
 
-        boolean res=false;
+        assert key!=null;
+        boolean res;
         if(isRehashing){
             if(first.deleteKey(key)){
                 res=true;
@@ -89,7 +92,7 @@ public class ElasticMap<K, V> {
     /**
      * 根据key获取 value
      *
-     * @param key 键
+     * @param key 键 notNull
      * @return null ->不存在该key或该key对应的value为空
      * notNull->value
      */

@@ -1,4 +1,4 @@
-package com.github.entropyfeng.mydb.constant;
+package com.github.entropyfeng.mydb.config;
 
 /**
  * @author entropyfeng
@@ -9,4 +9,5 @@ public final class Constant {
     public static final String PASSWORD="password";
     public static final String HOST="host";
     public static final String PORT="port";
+    public static final String CONFIG_FILE_NAME="config.properties";
 }

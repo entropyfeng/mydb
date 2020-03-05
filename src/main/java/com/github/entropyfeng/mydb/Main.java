@@ -2,6 +2,7 @@ package com.github.entropyfeng.mydb;
 
 
 import com.github.entropyfeng.mydb.util.ConfigUtil;
+import io.netty.bootstrap.ServerBootstrap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,13 +18,9 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Properties properties = ConfigUtil.readProperties("config.properties");
-        try {
-            ConfigUtil.checkProperties(properties);
-        }catch (IllegalArgumentException e){
-            logger.error(e.getMessage());
-        }
 
+        ServerBootstrap serverBootstrap=new ServerBootstrap();
+        serverBootstrap.localAddress("777.0.0.0",4407);
 
 
 

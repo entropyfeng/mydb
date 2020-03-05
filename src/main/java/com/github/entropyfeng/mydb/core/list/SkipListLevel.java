@@ -8,4 +8,6 @@ class SkipListLevel<T extends Comparable> {
     int span;
     SkipListNode<T> forward;
 
+    SkipListLevel(){
+    }
 }

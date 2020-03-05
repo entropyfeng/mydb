@@ -92,6 +92,7 @@ class MapObject<K, V> {
      */
     private int hashing(K key) {
 
+        assert key!=null;
         if (key instanceof String) {
             return Hashing.murmur3_32().hashString((String) key, Charsets.UTF_8).asInt();
         } else if (key instanceof Integer) {
@@ -112,8 +113,8 @@ class MapObject<K, V> {
     /**
      * 如果表中存在key则用value 替换oldValue
      *
-     * @param key   键
-     * @param value 值
+     * @param key   键 notNull
+     * @param value 值 notNull
      */
     void putVal(K key, V value) {
 
@@ -152,7 +153,7 @@ class MapObject<K, V> {
     }
 
     /**
-     * 根据key获取 value
+     * 根据key获取 value notNull
      *
      * @param key 键
      * @return null ->不存在该key或该key对应的value为空
@@ -177,7 +178,7 @@ class MapObject<K, V> {
     /**
      * 查询指定的键是否存在
      *
-     * @param key key
+     * @param key key notNull
      * @return true->存在
      * false->不存在
      */
@@ -208,7 +209,7 @@ class MapObject<K, V> {
     /**
      * 删除指定的key对应的node
      *
-     * @param key key
+     * @param key key notNull
      * @return true->删除成功
      * false->不存在键或删除失败
      */

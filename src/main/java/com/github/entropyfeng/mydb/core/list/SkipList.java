@@ -3,7 +3,8 @@ package com.github.entropyfeng.mydb.core.list;
 import com.github.entropyfeng.mydb.util.CommonUtil;
 
 import java.math.BigInteger;
-import java.util.LinkedList;
+import java.util.Comparator;
+
 
 /**
  * @author entropyfeng
@@ -24,7 +25,7 @@ public class SkipList<T extends Comparable> {
 
     private int maxLevel;
 
-   public SkipList() {
+    public SkipList() {
         header = new SkipListNode<T>(null, 32);
         tail = header;
         length = 0;
@@ -32,10 +33,12 @@ public class SkipList<T extends Comparable> {
     }
 
     /**
-     * @param value 需要查找的值
+     * @param value 需要查找的值 notNull
      * @return 该value存在的个数
      */
     public int findValue(T value) {
+        assert value != null;
+
         SkipListNode<T> tempNode = findNode(value);
         if (tempNode == null) {
             return 0;
@@ -47,32 +50,58 @@ public class SkipList<T extends Comparable> {
     /**
      * 查询是否存在该value
      *
-     * @param value 需要查找的值
+     * @param value 需要查找的值 notNull
      * @return true->存在
      * false->不存在
      */
     public boolean isExist(T value) {
+        assert value != null;
         return findValue(value) > 0;
     }
 
+    /**
+     * 查找value对应结点
+     *
+     * @param value notNull
+     * @return {@link SkipListNode}
+     */
     private SkipListNode<T> findNode(T value) {
+        assert value != null;
+
+      /*  if (counts == 0) {
+            return null;
+        }*/
         SkipListNode<T> tempNode = header;
 
         for (int i = maxLevel - 1; i >= 0; i--) {
-            while (tempNode.level[i].forward != null && tempNode.value.compareTo(tempNode.level[i].forward.value) < 0) {
+            while (tempNode.level[i].forward != null &&tempNode.compareTo(tempNode.level[i].forward)<0) {
                 tempNode = tempNode.level[i].forward;
             }
 
         }
         tempNode = tempNode.level[0].forward;
-        if (tempNode.value.compareTo(value) == 0) {
+
+        if(tempNode==null){
+            return null;
+        }else if(tempNode.value.compareTo(value)==0) {
             return tempNode;
-        } else {
+        }else {
             return null;
         }
+
+
     }
 
+    private int compare(T first,T second){
+        if(first==null){
+            return -1;
+        }else {
+            return first.compareTo(second);
+        }
+    }
     public void insertNode(T value) {
+
+        assert value != null;
 
         SkipListNode<T> newNode = findNode(value);
         if (newNode != null) {
@@ -80,17 +109,20 @@ public class SkipList<T extends Comparable> {
             this.counts++;
         } else {
             SkipListNode<T> tempNode = header;
-            newNode = new SkipListNode<T>(value, CommonUtil.getLevel());
-            maxLevel = maxLevel > newNode.level.length ? maxLevel : newNode.level.length;
+            final int currentLevel = CommonUtil.getLevel();
+            newNode = new SkipListNode<T>(value, currentLevel);
+            maxLevel = maxLevel > currentLevel ? maxLevel : currentLevel;
             length++;
             counts++;
 
             for (int i = maxLevel - 1; i >= 0; i--) {
-                while (tempNode.level[i].forward != null && tempNode.value.compareTo(tempNode.level[i].forward.value) < 0) {
+                while (tempNode.level[i] != null
+                        && tempNode.level[i].forward != null
+                        && tempNode.compareTo(tempNode.level[i].forward)<0) {
                     tempNode = tempNode.level[i].forward;
                 }
 
-                if (i < newNode.level.length) {
+                if (i < currentLevel) {
                     newNode.level[i].forward = tempNode.level[i].forward;
                     tempNode.level[i].forward = newNode;
                 }
