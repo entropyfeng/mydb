@@ -9,7 +9,6 @@ import io.netty.util.CharsetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.charset.Charset;
 
 /**
  * @author entropyfeng
@@ -25,6 +24,7 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
         ctx.write(in);
 
     }
+
 
 
     @Override

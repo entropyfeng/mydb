@@ -1,8 +1,11 @@
 package com.github.entropyfeng.mydb.core.list;
 
+import com.github.entropyfeng.mydb.core.Pair;
 import com.github.entropyfeng.mydb.util.CommonUtil;
+import com.sun.istack.internal.NotNull;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Comparator;
 
 
@@ -13,7 +16,7 @@ import java.util.Comparator;
 public class SkipList<T extends Comparable> {
 
     private SkipListNode<T> header;
-    private SkipListNode<T> tail;
+  //  private SkipListNode<T> tail;
     /**
      * 链表长度
      */
@@ -23,11 +26,14 @@ public class SkipList<T extends Comparable> {
      */
     private long counts;
 
+    /**
+     * 当前跳表最大高度
+     */
     private int maxLevel;
 
     public SkipList() {
         header = new SkipListNode<T>(null, 32);
-        tail = header;
+       // tail = header;
         length = 0;
         maxLevel = 0;
     }
@@ -74,16 +80,16 @@ public class SkipList<T extends Comparable> {
         SkipListNode<T> tempNode = header;
 
         for (int i = maxLevel - 1; i >= 0; i--) {
-            while (tempNode.level[i].forward != null &&tempNode.compareTo(tempNode.level[i].forward)<0) {
-                tempNode = tempNode.level[i].forward;
+            while (tempNode.level[i]!= null &&compare(tempNode.level[i].value,value)<0) {
+                tempNode = tempNode.level[i];
             }
 
         }
-        tempNode = tempNode.level[0].forward;
+        tempNode = tempNode.level[0];
 
         if(tempNode==null){
             return null;
-        }else if(tempNode.value.compareTo(value)==0) {
+        }else if(compare(tempNode.value,value)==0) {
             return tempNode;
         }else {
             return null;
@@ -92,16 +98,19 @@ public class SkipList<T extends Comparable> {
 
     }
 
+
+    @SuppressWarnings("unchecked")
     private int compare(T first,T second){
         if(first==null){
             return -1;
+        }else if(second==null){
+            return 1;
         }else {
             return first.compareTo(second);
         }
     }
-    public void insertNode(T value) {
 
-        assert value != null;
+    public void insertNode( T value) {
 
         SkipListNode<T> newNode = findNode(value);
         if (newNode != null) {
@@ -115,16 +124,16 @@ public class SkipList<T extends Comparable> {
             length++;
             counts++;
 
+
             for (int i = maxLevel - 1; i >= 0; i--) {
                 while (tempNode.level[i] != null
-                        && tempNode.level[i].forward != null
-                        && tempNode.compareTo(tempNode.level[i].forward)<0) {
-                    tempNode = tempNode.level[i].forward;
+                        && compare(tempNode.level[i].value,value)<0) {
+                    tempNode = tempNode.level[i];
                 }
 
                 if (i < currentLevel) {
-                    newNode.level[i].forward = tempNode.level[i].forward;
-                    tempNode.level[i].forward = newNode;
+                    newNode.level[i] = tempNode.level[i];
+                    tempNode.level[i] = newNode;
                 }
 
             }
@@ -133,12 +142,31 @@ public class SkipList<T extends Comparable> {
 
     }
 
+    public ArrayList<Pair<T,Integer>> allValues(){
+        ArrayList<Pair<T,Integer>> res=new ArrayList<Pair<T,Integer>>();
+
+        SkipListNode<T> tempNode=header.level[0];
+        while (tempNode!=null){
+            res.add(new Pair<>(tempNode.value,tempNode.count));
+            tempNode=tempNode.level[0];
+        }
+        if (res.size()==0){
+            return null;
+        }else {
+            return res;
+        }
+    }
     public static void main(String[] args) {
 
         SkipList<BigInteger> bigIntegerSkipList = new SkipList<>();
-        bigIntegerSkipList.insertNode(new BigInteger("1"));
-        bigIntegerSkipList.findNode(new BigInteger("1"));
-        System.out.println();
+
+        for (int i=0;i<100;i++){
+            bigIntegerSkipList.insertNode(new BigInteger(i%3+""));
+        }
+
+        bigIntegerSkipList.insertNode(null);
+        bigIntegerSkipList.allValues().forEach(System.out::println);
+
     }
 }
 

@@ -18,11 +18,5 @@ public class Main {
 
     public static void main(String[] args) {
 
-
-        ServerBootstrap serverBootstrap=new ServerBootstrap();
-        serverBootstrap.localAddress("777.0.0.0",4407);
-
-
-
     }
 }
