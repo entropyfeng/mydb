@@ -10,4 +10,5 @@ public final class Constant {
     public static final String HOST="host";
     public static final String PORT="port";
     public static final String CONFIG_FILE_NAME="config.properties";
+    public static final String DB_NAME="Turtle";
 }

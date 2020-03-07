@@ -14,6 +14,7 @@ import java.util.concurrent.ForkJoinPool;
  * @author entropyfeng
  * @date 2020/3/5 18:47
  */
+
 public class TurtleServerHandler extends ChannelInboundHandlerAdapter {
 
     private static final Logger logger=LoggerFactory.getLogger(TurtleServerHandler.class);
@@ -23,7 +24,10 @@ public class TurtleServerHandler extends ChannelInboundHandlerAdapter {
 
         Unpooled a;
         Channel channel=ctx.channel();
+
         ByteBuf byteBuf=Unpooled.copiedBuffer("you data",CharsetUtil.UTF_8);
+
+
         ChannelFuture channelFuture=channel.writeAndFlush(byteBuf);
         channelFuture.addListener((ChannelFutureListener) future -> {
             if(future.isSuccess()){
