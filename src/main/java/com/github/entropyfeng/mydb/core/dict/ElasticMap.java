@@ -24,39 +24,37 @@ public class ElasticMap<K, V> {
     static final float DEFAULT_LOAD_FACTOR = 0.75f;
 
 
-    MapObject<K, V> first;
+    private MapObject<K, V> first;
 
-    MapObject<K, V> second;
-
-
-    boolean isRehashing = false;
+    private MapObject<K, V> second;
 
 
-    ElasticMap(int initialCapacity, float loadFactor) {
+    private boolean isRehashing = false;
+
+
+    public ElasticMap(int initialCapacity, float loadFactor) {
         first = new MapObject<>(initialCapacity, loadFactor);
     }
 
-    ElasticMap(int initialCapacity) {
+    public ElasticMap(int initialCapacity) {
         first = new MapObject<>(initialCapacity);
     }
 
-    ElasticMap() {
+    public ElasticMap() {
         first = new MapObject<>();
     }
 
 
     public void putVal(K key, V value) {
-        assert getUsed()<=MAXIMUM_CAPACITY;
-        assert key!=null;
-        assert value!=null;
+        assert getUsed() <= MAXIMUM_CAPACITY;
+        assert key != null;
+        assert value != null;
         if (isRehashing) {
-            if(first.isExist(key)){
-                first.deleteKey(key);
-            }
+            first.deleteKey(key);
             second.putVal(key, value);
             moveEntry();
         } else if (first.isCorrespondingEnlargeSize()) {
-            isRehashing=true;
+            isRehashing = true;
             second = new MapObject<>(first.used);
             second.putVal(key, value);
             moveEntry();
@@ -67,24 +65,24 @@ public class ElasticMap<K, V> {
     }
 
 
-    public boolean deleteKey(K key){
+    public boolean deleteKey(K key) {
 
-        assert key!=null;
+        assert key != null;
         boolean res;
-        if(isRehashing){
-            if(first.deleteKey(key)){
-                res=true;
-            }else {
-               res= second.deleteKey(key);
+        if (isRehashing) {
+            if (first.deleteKey(key)) {
+                res = true;
+            } else {
+                res = second.deleteKey(key);
             }
             moveEntry();
-        }else if (first.isCorrespondingNarrowSize()){
-            isRehashing=true;
-            second=new MapObject<>(first.used);
-            res= first.deleteKey(key);
+        } else if (first.isCorrespondingNarrowSize()) {
+            isRehashing = true;
+            second = new MapObject<>(first.used);
+            res = first.deleteKey(key);
             moveEntry();
-        }else {
-            res=first.deleteKey(key);
+        } else {
+            res = first.deleteKey(key);
         }
         return res;
     }
@@ -107,11 +105,11 @@ public class ElasticMap<K, V> {
         return res;
     }
 
-    public int getUsed(){
-        if (isRehashing){
+    public int getUsed() {
+        if (isRehashing) {
             moveEntry();
-            return first.used+second.used;
-        }else {
+            return first.used + second.used;
+        } else {
             return first.used;
         }
     }
@@ -134,22 +132,21 @@ public class ElasticMap<K, V> {
     }
 
 
-
     public static void main(String[] args) {
 
-        System.out.println((long)Math.pow(2,30));
-        ElasticMap<String,String> elasticMap=new ElasticMap<>();
-        int pos=3000;
-        for (int i=0;i<pos;i++){
-            elasticMap.putVal("key"+i,"val"+i);
+        System.out.println((long) Math.pow(2, 30));
+        ElasticMap<String, String> elasticMap = new ElasticMap<>();
+        int pos = 3000;
+        for (int i = 0; i < pos; i++) {
+            elasticMap.putVal("key" + i, "val" + i);
         }
 
-        for (int i=0;i<pos;i++){
+        for (int i = 0; i < pos; i++) {
             elasticMap.getValue("");
         }
 
-        for (int i=0;i<pos;i++){
-            elasticMap.deleteKey("key"+i);
+        for (int i = 0; i < pos; i++) {
+            elasticMap.deleteKey("key" + i);
         }
 
         System.out.println(elasticMap.first.size);

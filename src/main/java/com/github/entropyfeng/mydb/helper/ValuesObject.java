@@ -24,10 +24,8 @@ public class ValuesObject {
 
     HashMap<String,BigDecimal> bigDecimalMap;
 
+    HashMap<String,Long> expireMap;
 
 
-    void xx(){
-
-    }
 
 }

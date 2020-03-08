@@ -2,6 +2,7 @@ package com.github.entropyfeng.mydb;
 
 import com.github.entropyfeng.mydb.core.dict.ElasticMap;
 import com.google.common.hash.BloomFilter;
+import io.netty.bootstrap.Bootstrap;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 
 import java.math.BigDecimal;
@@ -35,6 +36,12 @@ public class BootStrap {
 
 
 
+
+    }
+
+    public static void main(String[] args) {
+
+        HashMap<String,Long> expireDic=new HashMap<>();
 
     }
 }

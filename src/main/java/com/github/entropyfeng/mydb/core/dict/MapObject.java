@@ -2,6 +2,7 @@ package com.github.entropyfeng.mydb.core.dict;
 
 import com.google.common.base.Charsets;
 import com.google.common.hash.Hashing;
+import com.sun.istack.internal.NotNull;
 
 import static com.github.entropyfeng.mydb.core.dict.ElasticMap.DEFAULT_INITIAL_CAPACITY;
 import static com.github.entropyfeng.mydb.core.dict.ElasticMap.DEFAULT_LOAD_FACTOR;
@@ -77,7 +78,7 @@ class MapObject<K, V> {
     /**
      * 在resize过程中辅助变量
      */
-    private transient int movePos=0;
+    private transient int movePos = 0;
     /**
      * 已用结点数量
      */
@@ -87,12 +88,14 @@ class MapObject<K, V> {
 
     /**
      * 使用murmur3 hash
+     *
      * @param key 任意对象
      * @return hashCode
      */
     private int hashing(K key) {
 
-        assert key!=null;
+        assert key != null;
+
         if (key instanceof String) {
             return Hashing.murmur3_32().hashString((String) key, Charsets.UTF_8).asInt();
         } else if (key instanceof Integer) {
@@ -107,7 +110,6 @@ class MapObject<K, V> {
         //you are not except access this region
         throw new Error("UnSupport Hashing Type");
     }
-
 
 
     /**
@@ -131,19 +133,16 @@ class MapObject<K, V> {
             table[pos] = new Node<K, V>(key, value, null);
             used++;
         } else {
-            Node tailNode = null;
 
-            /*
+             /*
               在相同hash值链表中找到相应key所对应结点
               如果为null 则不存在该key
              */
-            while (tempNode != null && !tempNode.key.equals(key)) {
-                tailNode = tempNode;
+            while (tempNode.next != null && !key.equals(tempNode.next.value)) {
                 tempNode = tempNode.next;
             }
-
-            if (tempNode == null) {
-                tailNode.next = new Node<K, V>(key, value, null);
+            if (tempNode.next == null) {
+                tempNode.next = new Node<K, V>(key, value, null);
                 used++;
             } else {
                 tempNode.value = value;
@@ -159,7 +158,7 @@ class MapObject<K, V> {
      * @return null ->不存在该key或该key对应的value为空
      * notNull->value
      */
-    V getValue(K key) {
+    V getValue(@NotNull K key) {
         int pos = hashing(key) & sizeMask;
 
         //tempNode
@@ -167,6 +166,7 @@ class MapObject<K, V> {
         while (tempNode != null && !tempNode.key.equals(key)) {
             tempNode = tempNode.next;
         }
+
         if (tempNode != null) {
             return tempNode.value;
         } else {
@@ -229,29 +229,32 @@ class MapObject<K, V> {
                 while (tempNode.next != null && !tempNode.next.key.equals(key)) {
                     tempNode = tempNode.next;
                 }
-                if(tempNode.next!=null){
+                if (tempNode.next != null) {
                     tempNode.next = tempNode.next.next;
-                    res=true;
+                    res = true;
                 }
             }
         }
-        if (res){
+        if (res) {
             used--;
         }
         return res;
     }
 
-    boolean isCorrespondingEnlargeSize(){
-        return (used>size*loadFactor);
-    }
-    boolean isCorrespondingNarrowSize(){
-        return used<size*0.1;
+
+
+    boolean isCorrespondingEnlargeSize() {
+        return (used > size * loadFactor);
     }
 
-    private int getLength(Node<K,V> node){
-        int length=0;
-        while (node.next!=null){
-            node=node.next;
+    boolean isCorrespondingNarrowSize() {
+        return used < size * 0.1;
+    }
+
+    private int getLength(Node<K, V> node) {
+        int length = 0;
+        while (node.next != null) {
+            node = node.next;
             length++;
         }
         return length;
@@ -259,20 +262,23 @@ class MapObject<K, V> {
 
     /**
      * 找到并返回下一个不为空的头结点
+     *
      * @return 头结点 {@link Node}
      */
-    Node<K,V> getMoveEntry(){
+    Node<K, V> getMoveEntry() {
 
+        int tempMovePos=movePos;
 
-        while (movePos<size&&table[movePos]==null){
-            movePos++;
+        while (tempMovePos < size && table[tempMovePos] == null) {
+            tempMovePos++;
         }
 
-        if (movePos==size){
+        if (tempMovePos == size) {
             return null;
-        }else {
-            Node<K,V> tempNode=table[movePos];
-            table[movePos]=null;
+        } else {
+            movePos=tempMovePos;
+            Node<K, V> tempNode = table[tempMovePos];
+            table[tempMovePos] = null;
             return tempNode;
         }
 
@@ -282,14 +288,14 @@ class MapObject<K, V> {
     //-----------get and set-----------
 
     public static void main(String[] args) {
-        MapObject<String,String> mapObject=new MapObject<>();
-        int pos=30000;
-        for (int i=0;i<pos;i++){
-            mapObject.putVal("key"+i,"val"+i);
+        MapObject<String, String> mapObject = new MapObject<String, String>();
+        int pos = 30000;
+        for (int i = 0; i < pos; i++) {
+            mapObject.putVal("key" + i, "val" + i);
         }
         System.out.println(mapObject.used);
-        for (int i=0;i<pos;i++){
-            mapObject.deleteKey("key"+i);
+        for (int i = 0; i < pos; i++) {
+            mapObject.deleteKey("key" + i);
         }
         System.out.println(mapObject.used);
     }
