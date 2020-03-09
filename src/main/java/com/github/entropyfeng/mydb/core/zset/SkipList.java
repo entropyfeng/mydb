@@ -3,7 +3,7 @@ package com.github.entropyfeng.mydb.core.zset;
 import com.github.entropyfeng.mydb.core.Pair;
 import com.github.entropyfeng.mydb.util.CommonUtil;
 import com.google.common.hash.Hashing;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.SortedSet;
@@ -15,7 +15,7 @@ import java.util.TreeSet;
  * @author entropyfeng
  * @date 2019/12/27 20:34
  */
-public class SkipList<T extends Comparable> {
+public class SkipList<T extends Comparable<T>> {
 
     private SkipListNode<T> header;
 
@@ -53,6 +53,11 @@ public class SkipList<T extends Comparable> {
         } else {
             return tempNode.count;
         }
+    }
+
+    public int findValue(double score){
+        
+        return 0;
     }
 
     /**
@@ -103,7 +108,7 @@ public class SkipList<T extends Comparable> {
      *         -1-> first less than second
      *         1 -> first greater than second
      */
-    @SuppressWarnings("unchecked")
+
     private int compare(T first, T second) {
         if (first == null) {
             return -1;
@@ -119,13 +124,12 @@ public class SkipList<T extends Comparable> {
         assert value != null;
         SkipListNode<T> newNode = findNode(value);
         if (newNode != null) {
-            newNode.count++;
             this.counts++;
         } else {
             SkipListNode<T> tempNode = header;
             final int currentLevel = CommonUtil.getLevel();
             newNode = new SkipListNode<T>(value, currentLevel);
-            maxLevel = maxLevel > currentLevel ? maxLevel : currentLevel;
+            maxLevel = Math.max(maxLevel, currentLevel);
             length++;
             counts++;
             for (int i = maxLevel - 1; i >= 0; i--) {
@@ -167,7 +171,7 @@ public class SkipList<T extends Comparable> {
       return 0;
     }
 
-    public ArrayList<Pair<T, Integer>> allValues() {
+   /* public ArrayList<Pair<T, Integer>> allValues() {
         ArrayList<Pair<T, Integer>> res = new ArrayList<Pair<T, Integer>>();
 
         SkipListNode<T> tempNode = header.level[0];
@@ -180,7 +184,7 @@ public class SkipList<T extends Comparable> {
         } else {
             return res;
         }
-    }
+    }*/
 
     public static void main(String[] args) {
 

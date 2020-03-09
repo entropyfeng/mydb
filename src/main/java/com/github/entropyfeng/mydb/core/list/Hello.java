@@ -12,6 +12,6 @@ public class Hello {
     public static void main(String[] args) {
 
         LinkedList<Integer> linkedList=new LinkedList<>();
-        linkedList.remove(new Integer(1));
+        linkedList.remove(Integer.valueOf(1));
     }
 }
