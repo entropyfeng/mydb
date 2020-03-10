@@ -5,13 +5,10 @@ import com.github.entropyfeng.mydb.util.CommonUtil;
 import com.google.common.hash.Hashing;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-
-/**https://blog.csdn.net/u013366617/article/details/83618361?depth_1-utm_source=distribute.pc_relevant.none-task&utm_source=distribute.pc_relevant.none-task
- * https://zhuanlan.zhihu.com/p/98803430
+/**
  * @author entropyfeng
  * @date 2019/12/27 20:34
  */
@@ -19,6 +16,7 @@ public class SkipList<T extends Comparable<T>> {
 
     private SkipListNode<T> header;
 
+    private SkipListNode<T> tail;
 
     /**
      * 链表长度
@@ -35,7 +33,7 @@ public class SkipList<T extends Comparable<T>> {
     private int maxLevel;
 
     public SkipList() {
-        header = new SkipListNode<T>(null, 32);
+        header = new SkipListNode<T>(null, Double.NEGATIVE_INFINITY, 32);
         length = 0;
         maxLevel = 0;
     }
@@ -51,17 +49,17 @@ public class SkipList<T extends Comparable<T>> {
         if (tempNode == null) {
             return 0;
         } else {
-            return tempNode.count;
+            return 66666;
         }
     }
 
-    public int findValue(double score){
-        
+    public int findValue(double score) {
         return 0;
     }
 
     /**
      * 查询是否存在该value
+     *
      * @param value 需要查找的值 notNull
      * @return true->存在
      * false->不存在
@@ -77,19 +75,15 @@ public class SkipList<T extends Comparable<T>> {
      * @param value notNull
      * @return {@link SkipListNode}
      */
-    private SkipListNode<T> findNode(@NotNull T value) {
+    private SkipListNode<T> findNode(T value) {
         assert value != null;
-
         SkipListNode<T> tempNode = header;
-
         for (int i = maxLevel - 1; i >= 0; i--) {
             while (tempNode.level[i] != null && compare(tempNode.level[i].value, value) < 0) {
                 tempNode = tempNode.level[i];
             }
-
         }
         tempNode = tempNode.level[0];
-
         if (tempNode == null) {
             return null;
         } else if (compare(tempNode.value, value) == 0) {
@@ -99,27 +93,92 @@ public class SkipList<T extends Comparable<T>> {
         }
     }
 
+    private SkipListNode<T> getNode(T value, double score) {
+        SkipListNode<T> tempNode = header;
+        for (int i = maxLevel - 1; i >= 0; i--) {
+            while (tempNode.level[i] != null && IsFirstLessThanSecond(tempNode.level[i].score, score, tempNode.level[i].value, value)) {
+                tempNode = tempNode.level[i];
+            }
+        }
+        return tempNode.level[0];
+    }
 
     /**
      * 比较大小
-     * @param first {@link Comparable}
+     *
+     * @param first  {@link Comparable}
      * @param second {@link Comparable}
      * @return 0 ->equal
-     *         -1-> first less than second
-     *         1 -> first greater than second
+     * -1-> first less than second
+     * 1 -> first greater than second
      */
-
     private int compare(T first, T second) {
-        if (first == null) {
+        if (first != null && second != null) {
+            return first.compareTo(second);
+        } else if (first == null && second != null) {
             return -1;
-        } else if (second == null) {
+        } else if (first != null) {
             return 1;
         } else {
-            return first.compareTo(second);
+            return 0;
         }
     }
 
-    public void insertNode(@NotNull T value) {
+
+    /**
+     * 如果分值不同，比较分值大小
+     * 如果分值相同，比较对象value
+     *
+     * @param first  {@link SkipListNode}
+     * @param second {@link SkipListNode}
+     * @return true->first less than second strictly
+     * false->first more than second strictly
+     */
+    private boolean IsFirstLessThanSecond(SkipListNode<T> first, SkipListNode<T> second) {
+        if (first.score != second.score) {
+            return first.score < second.score;
+        } else {
+            return compare(first.value, second.value) < 0;
+        }
+    }
+
+    private boolean IsFirstLessThanSecond(double firstScore, double secondScore, T firstValue, T secondValue) {
+        if (firstScore != secondScore) {
+            return firstScore < secondScore;
+        } else {
+            return compare(firstValue, secondValue) < 0;
+        }
+    }
+
+    /**
+     * 将包含给定成员和分值的新节点添加到跳表中
+     * 假设无重复value在跳表中
+     *
+     * @param value 值
+     * @param score 分值
+     */
+    public void zslInsert(T value, double score) {
+
+        assert value != null;
+
+        SkipListNode<T> tempNode = header;
+        final int currentLevel = CommonUtil.getLevel();
+        SkipListNode<T> newNode = new SkipListNode<T>(value, score, currentLevel);
+        maxLevel = Math.max(maxLevel, currentLevel);
+        length++;
+
+        for (int i = maxLevel - 1; i >= 0; i--) {
+            while (tempNode.level[i] != null && IsFirstLessThanSecond(tempNode.level[i].score, score, tempNode.level[i].value, value)) {
+                tempNode = tempNode.level[i];
+            }
+            if (i < currentLevel) {
+                newNode.level[i] = tempNode.level[i];
+                tempNode.level[i] = newNode;
+            }
+        }
+    }
+
+    public void insertNode(T value) {
 
         assert value != null;
         SkipListNode<T> newNode = findNode(value);
@@ -143,32 +202,47 @@ public class SkipList<T extends Comparable<T>> {
                 }
             }
         }
-
     }
-    public int deleteValue(T value){
 
-        assert value!=null;
 
-      SkipListNode<T> node= findNode(value);
+    /**
+     * 前提一定存在该value和其对应的score
+     *
+     * @param value 值
+     * @param score 分值
+     */
+    public void zslDelete(T value, double score) {
+        final int currentLevel = getNode(value, score).level.length;
+        SkipListNode<T> tempNode = header;
+        for (int i = maxLevel - 1; i >= 0; i--) {
+            while (tempNode.level[i] != null && IsFirstLessThanSecond(tempNode.level[i].score, score, tempNode.value, value)) {
+                tempNode = tempNode.level[i];
+            }
+            if (i < currentLevel) {
+                tempNode.level[i] = tempNode.level[i].level[i];
+            }
+        }
+    }
 
-      if (node==null){
-          return 0;
-      }else {
 
-          int currentLevel=node.level.length;
-          SkipListNode<T> tempNode=header;
-          for (int i=maxLevel-1;i>=0;i--){
-              while (tempNode.level[i] != null && compare(tempNode.level[i].value, value) < 0) {
-                  tempNode = tempNode.level[i];
-              }
-              if (i<currentLevel){
-                  tempNode.level[i]=tempNode.level[i].level[i];
-              }
-
-          }
-      }
-
-      return 0;
+    public int deleteValue(T value) {
+        assert value != null;
+        SkipListNode<T> node = findNode(value);
+        if (node == null) {
+            return 0;
+        } else {
+            int currentLevel = node.level.length;
+            SkipListNode<T> tempNode = header;
+            for (int i = maxLevel - 1; i >= 0; i--) {
+                while (tempNode.level[i] != null && compare(tempNode.level[i].value, value) < 0) {
+                    tempNode = tempNode.level[i];
+                }
+                if (i < currentLevel) {
+                    tempNode.level[i] = tempNode.level[i].level[i];
+                }
+            }
+        }
+        return 0;
     }
 
    /* public ArrayList<Pair<T, Integer>> allValues() {
@@ -188,39 +262,15 @@ public class SkipList<T extends Comparable<T>> {
 
     public static void main(String[] args) {
 
+        SkipList<String> stringSkipList = new SkipList<>();
+        System.out.println(stringSkipList.compare(null, null));
 
-        SkipList<Integer>integerSkipList=new SkipList<>();
-
-
-        int max=100000;
-        int pow=100;
-       long beginInsert=  System.currentTimeMillis();
-        for (int i = 0; i < max; i++) {
-            integerSkipList.insertNode(Hashing.murmur3_32().hashInt(i).asInt());
+        int pos = 1000;
+        for (int i = 0; i < pos; i++) {
+            stringSkipList.insertNode(i + "");
         }
-        long endInsert=System.currentTimeMillis();
-        System.out.println(endInsert-beginInsert);
-        for (int i = 0; i < max*pow; i++) {
-            integerSkipList.findNode(Hashing.murmur3_32().hashInt(i).asInt());
-        }
-        long endQuery=System.currentTimeMillis();
-        System.out.println(endQuery-endInsert);
-
-
-        SortedSet<Integer> sortedSet=new TreeSet<>();
-        long beginInsert1=System.currentTimeMillis();
-
-        for (int i = 0; i < max; i++) {
-           sortedSet.add(Hashing.murmur3_32().hashInt(i).asInt());
-        }
-        long endInsert1=System.currentTimeMillis();
-        System.out.println(endInsert1-beginInsert1);
-        for (int i = 0; i < max*pow; i++) {
-            sortedSet.contains(Hashing.murmur3_32().hashInt(i).asInt());
-        }
-        long endQuery1=System.currentTimeMillis();
-        System.out.println(endQuery1-endInsert1);
-        //integerSkipList.allValues().forEach(System.out::println);
+        System.out.println(stringSkipList.length);
+        System.out.println(stringSkipList.counts);
     }
 }
 

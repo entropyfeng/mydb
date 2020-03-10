@@ -2,7 +2,6 @@ package com.github.entropyfeng.mydb.core.dict;
 
 import com.google.common.base.Charsets;
 import com.google.common.hash.Hashing;
-import com.sun.istack.internal.NotNull;
 
 import static com.github.entropyfeng.mydb.core.dict.ElasticMap.DEFAULT_INITIAL_CAPACITY;
 import static com.github.entropyfeng.mydb.core.dict.ElasticMap.DEFAULT_LOAD_FACTOR;
@@ -158,7 +157,7 @@ class MapObject<K, V> {
      * @return null ->不存在该key或该key对应的value为空
      * notNull->value
      */
-    V getValue(@NotNull K key) {
+    V getValue(K key) {
         int pos = hashing(key) & sizeMask;
 
         //tempNode

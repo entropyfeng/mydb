@@ -1,7 +1,5 @@
 package com.github.entropyfeng.mydb.helper;
 
-import com.sun.beans.decoder.ValueObject;
-
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
@@ -31,8 +29,7 @@ public class ValueOperations implements IValueOperations {
     public void newValue(String key, String value, long time, TimeUnit timeUnit) {
 
         valuesObject.stringMap.put(key,value);
-       
-        valuesObject.expireMap.put(key,)
+
     }
 
     @Override
