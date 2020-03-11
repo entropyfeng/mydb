@@ -5,6 +5,8 @@ import com.github.entropyfeng.mydb.util.CommonUtil;
 import com.google.common.hash.Hashing;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -93,6 +95,13 @@ public class SkipList<T extends Comparable<T>> {
         }
     }
 
+    /**
+     * 前提一定存在该节点
+     * 获取value 与 score 所对应的节点
+     * @param value 值
+     * @param score 分值
+     * @return {@link SkipListNode}
+     */
     private SkipListNode<T> getNode(T value, double score) {
         SkipListNode<T> tempNode = header;
         for (int i = maxLevel - 1; i >= 0; i--) {
@@ -176,6 +185,22 @@ public class SkipList<T extends Comparable<T>> {
                 tempNode.level[i] = newNode;
             }
         }
+    }
+
+    public List<T> getValues(double score){
+        SkipListNode<T> tempNode=header;
+        for (int i=maxLevel-1;i>=0;i--){
+            while (tempNode.level[i]!=null&&tempNode.level[i].score<score){
+                tempNode=tempNode.level[i];
+            }
+        }
+        tempNode=tempNode.level[0];
+        List<T> resList=new ArrayList<>();
+        while (tempNode!=null&&tempNode.score==score){
+            resList.add(tempNode.value);
+            tempNode=tempNode.level[0];
+        }
+        return resList;
     }
 
     public void insertNode(T value) {
