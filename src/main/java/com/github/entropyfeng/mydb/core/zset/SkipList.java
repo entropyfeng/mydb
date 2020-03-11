@@ -3,6 +3,8 @@ package com.github.entropyfeng.mydb.core.zset;
 import com.github.entropyfeng.mydb.core.Pair;
 import com.github.entropyfeng.mydb.util.CommonUtil;
 import com.google.common.hash.Hashing;
+import com.google.common.io.ByteSink;
+import com.google.common.io.ByteSource;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -287,7 +289,7 @@ public class SkipList<T extends Comparable<T>> {
 
     public static void main(String[] args) {
 
-        SkipList<String> stringSkipList = new SkipList<>();
+       /* SkipList<String> stringSkipList = new SkipList<>();
         System.out.println(stringSkipList.compare(null, null));
 
         int pos = 1000;
@@ -295,7 +297,9 @@ public class SkipList<T extends Comparable<T>> {
             stringSkipList.insertNode(i + "");
         }
         System.out.println(stringSkipList.length);
-        System.out.println(stringSkipList.counts);
+        System.out.println(stringSkipList.counts);*/
+        Double d=Double.valueOf("100.8");
+
     }
 }
 

@@ -19,7 +19,7 @@ public class NetUtil {
     public static boolean checkPort(String port) {
         int tempPort;
         try {
-            tempPort = Integer.valueOf(port);
+            tempPort = Integer.parseInt(port);
         } catch (NumberFormatException e) {
             return false;
         }

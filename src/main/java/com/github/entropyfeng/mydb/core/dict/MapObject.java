@@ -66,7 +66,7 @@ class MapObject<K, V> {
     /**
      * 哈希表大小
      */
-    int size;
+    private final int size;
 
     /**
      * 哈希表大小掩码,用于计算索引值
@@ -79,7 +79,7 @@ class MapObject<K, V> {
      */
     private transient int movePos = 0;
     /**
-     * 已用结点数量
+     * 实际已用结点数量
      */
     int used = 0;
 
@@ -88,13 +88,11 @@ class MapObject<K, V> {
     /**
      * 使用murmur3 hash
      *
-     * @param key 任意对象
+     * @param key 任意对象 isNotNull
      * @return hashCode
      */
-    private int hashing(K key) {
-
+    private int hashing(final K key) {
         assert key != null;
-
         if (key instanceof String) {
             return Hashing.murmur3_32().hashString((String) key, Charsets.UTF_8).asInt();
         } else if (key instanceof Integer) {
@@ -110,22 +108,18 @@ class MapObject<K, V> {
         throw new Error("UnSupport Hashing Type");
     }
 
-
     /**
-     * 如果表中存在key则用value 替换oldValue
+     * 如果表中不存在该key则将value插入,否则用新value替换旧value
      *
-     * @param key   键 notNull
-     * @param value 值 notNull
+     * @param key   键
+     * @param value 值
      */
-    void putVal(K key, V value) {
-
-        int pos = hashing(key) & sizeMask;
+    void replaceVal(K key, V value) {
+        assert key != null && value != null;
+        final int pos = hashing(key) & sizeMask;
         assert pos >= 0 && pos < size;
-
-
         //tempNode
-        Node tempNode = table[pos];
-
+        Node<K, V> tempNode = table[pos];
 
         //如果当前槽为空,则创建新节点
         if (tempNode == null) {
@@ -151,27 +145,67 @@ class MapObject<K, V> {
     }
 
     /**
+     * 如果表中不存在该key则将value插入,否则不插入
+     *
+     * @param key   键 notNull
+     * @param value 值 notNull
+     */
+    boolean addVal(K key, V value) {
+
+        boolean res = true;
+        assert key != null && value != null;
+        final int pos = hashing(key) & sizeMask;
+        assert pos >= 0 && pos < size;
+        //tempNode
+        Node<K, V> tempNode = table[pos];
+
+        //如果当前槽为空,则创建新节点
+        if (tempNode == null) {
+            table[pos] = new Node<K, V>(key, value, null);
+            used++;
+        } else {
+
+             /*
+              在相同hash值链表中找到相应key所对应结点
+              如果为null 则不存在该key
+             */
+            while (tempNode.next != null && !key.equals(tempNode.next.value)) {
+                tempNode = tempNode.next;
+            }
+            if (tempNode.next == null) {
+                tempNode.next = new Node<K, V>(key, value, null);
+                used++;
+            } else {
+                res = false;
+            }
+        }
+        return res;
+    }
+
+    /**
      * 根据key获取 value notNull
+     * 如果为空则不存在该key 否则返回该value
      *
      * @param key 键
-     * @return null ->不存在该key或该key对应的value为空
+     * @return null ->不存在该key
      * notNull->value
      */
     V getValue(K key) {
-        int pos = hashing(key) & sizeMask;
+        final Node<K, V> tempNode = getNode(key);
 
+        return tempNode != null ? tempNode.value : null;
+    }
+
+    private Node<K, V> getNode(K key) {
+        assert key != null;
+        final int pos = hashing(key) & sizeMask;
         //tempNode
         Node<K, V> tempNode = table[pos];
         while (tempNode != null && !tempNode.key.equals(key)) {
             tempNode = tempNode.next;
         }
 
-        if (tempNode != null) {
-            return tempNode.value;
-        } else {
-            return null;
-        }
-
+        return tempNode;
     }
 
     /**
@@ -182,27 +216,17 @@ class MapObject<K, V> {
      * false->不存在
      */
     boolean isExist(K key) {
-        int pos = hashing(key) & sizeMask;
-
-        //tempNode
-        Node<K, V> tempNode = table[pos];
-        while (tempNode != null && !tempNode.key.equals(key)) {
-            tempNode = tempNode.next;
-        }
-        return tempNode != null;
-    }
-
-    boolean isEmpty() {
-        return used == 0;
+        return getNode(key) != null;
     }
 
     /**
-     * 获取当前存在的结点数量
+     * return the map whether or not null
      *
-     * @return 结点数量
+     * @return true-> the map is null
+     * false-> the map is notNull
      */
-    int getUsed() {
-        return used;
+    boolean isEmpty() {
+        return used == 0;
     }
 
     /**
@@ -213,8 +237,8 @@ class MapObject<K, V> {
      * false->不存在键或删除失败
      */
     boolean deleteKey(K key) {
-        int pos = hashing(key) & sizeMask;
-
+        assert key != null;
+        final int pos = hashing(key) & sizeMask;
         boolean res = false;
         //tempNode
         Node<K, V> tempNode = table[pos];
@@ -224,6 +248,7 @@ class MapObject<K, V> {
             if (tempNode.key.equals(key)) {
                 table[pos] = tempNode.next;
                 res = true;
+                used--;
             } else {
                 while (tempNode.next != null && !tempNode.next.key.equals(key)) {
                     tempNode = tempNode.next;
@@ -231,15 +256,13 @@ class MapObject<K, V> {
                 if (tempNode.next != null) {
                     tempNode.next = tempNode.next.next;
                     res = true;
+                    used--;
                 }
             }
         }
-        if (res) {
-            used--;
-        }
+
         return res;
     }
-
 
 
     boolean isCorrespondingEnlargeSize() {
@@ -250,53 +273,31 @@ class MapObject<K, V> {
         return used < size * 0.1;
     }
 
-    private int getLength(Node<K, V> node) {
-        int length = 0;
-        while (node.next != null) {
-            node = node.next;
-            length++;
-        }
-        return length;
-    }
 
     /**
-     * 找到并返回下一个不为空的头结点
+     * 找到并返回下一个不为空的头结点,若为空则当前节点已经为最后节点
      *
      * @return 头结点 {@link Node}
      */
     Node<K, V> getMoveEntry() {
 
-        int tempMovePos=movePos;
+        int tempMovePos = movePos;
 
         while (tempMovePos < size && table[tempMovePos] == null) {
             tempMovePos++;
         }
 
+        //已经移动结束
         if (tempMovePos == size) {
             return null;
         } else {
-            movePos=tempMovePos;
+            movePos = tempMovePos;
             Node<K, V> tempNode = table[tempMovePos];
             table[tempMovePos] = null;
             return tempNode;
         }
-
-
     }
 
     //-----------get and set-----------
-
-    public static void main(String[] args) {
-        MapObject<String, String> mapObject = new MapObject<String, String>();
-        int pos = 30000;
-        for (int i = 0; i < pos; i++) {
-            mapObject.putVal("key" + i, "val" + i);
-        }
-        System.out.println(mapObject.used);
-        for (int i = 0; i < pos; i++) {
-            mapObject.deleteKey("key" + i);
-        }
-        System.out.println(mapObject.used);
-    }
 
 }

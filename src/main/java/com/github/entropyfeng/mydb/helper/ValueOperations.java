@@ -12,6 +12,7 @@ public class ValueOperations implements IValueOperations {
         this.valuesObject=valuesObject;
     }
 
+
     private ValuesObject valuesObject;
 
     @Override

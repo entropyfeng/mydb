@@ -44,28 +44,76 @@ public class ElasticMap<K, V> {
         first = new MapObject<>();
     }
 
+    /**
+     * 添加给定的键值对，若之前不存在则插入，否则不插入
+     * @param key 键
+     * @param value 值
+     * @return true->add成功
+     *         false->add失败
+     */
+    public boolean dictAdd(K key,V value){
+        assert key!=null&&value!=null;
+        if (first.used==MAXIMUM_CAPACITY){
+            return false;
+        }
 
-    public void putVal(K key, V value) {
-        assert getUsed() <= MAXIMUM_CAPACITY;
-        assert key != null;
-        assert value != null;
+        if (isRehashing){
+            if (first.isExist(key)||second.isExist(key)){
+                return false;
+            }else {
+                second.addVal(key, value);
+                moveEntry();
+                return true;
+            }
+        }else if(first.isCorrespondingEnlargeSize()){
+
+            if(first.isExist(key)){
+                return false;
+            }else {
+                isRehashing = true;
+                second = new MapObject<>(first.used);
+                second.addVal(key, value);
+                moveEntry();
+                return true;
+            }
+
+        }else {
+            return first.addVal(key,value);
+        }
+
+    }
+
+    /**
+     * 插入给定的键值对,若存在则用新值替代已有值
+     * @param key 键
+     * @param value 值
+     */
+    public void dictReplace(K key, V value) {
+        assert key!=null&&value!=null;
+
         if (isRehashing) {
             first.deleteKey(key);
-            second.putVal(key, value);
+            second.replaceVal(key, value);
             moveEntry();
         } else if (first.isCorrespondingEnlargeSize()) {
             isRehashing = true;
             second = new MapObject<>(first.used);
-            second.putVal(key, value);
+            second.replaceVal(key, value);
             moveEntry();
         } else {
-            first.putVal(key, value);
+            first.replaceVal(key, value);
         }
 
     }
 
 
-    public boolean deleteKey(K key) {
+    /**
+     * 从字典中删除所对应的键值对
+     * @param key 键
+     * @return true->删除成功
+     *         false->不存在该键值对
+     */
+    public boolean dictDelete(K key) {
 
         assert key != null;
         boolean res;
@@ -94,7 +142,7 @@ public class ElasticMap<K, V> {
      * @return null ->不存在该key或该key对应的value为空
      * notNull->value
      */
-    public V getValue(K key) {
+    public V dictFetchValue(K key) {
         V res = first.getValue(key);
         if (isRehashing) {
             if (res == null) {
@@ -105,7 +153,11 @@ public class ElasticMap<K, V> {
         return res;
     }
 
-    public int getUsed() {
+    /**
+     * 获取当前节点数量
+     * @return 当前节点数量
+     */
+    public int dictGetUsed() {
         if (isRehashing) {
             moveEntry();
             return first.used + second.used;
@@ -114,6 +166,11 @@ public class ElasticMap<K, V> {
         }
     }
 
+
+
+    /**
+     * 每次移动一个槽中的所有节点
+     */
     private void moveEntry() {
 
         Node<K, V> node = first.getMoveEntry();
@@ -121,7 +178,7 @@ public class ElasticMap<K, V> {
         if (node != null) {
             while (node != null) {
                 first.used--;
-                second.putVal(node.key, node.value);
+                second.addVal(node.key, node.value);
                 node = node.next;
             }
         } else {
@@ -129,28 +186,6 @@ public class ElasticMap<K, V> {
             first = second;
             second = null;
         }
-    }
-
-
-    public static void main(String[] args) {
-
-        System.out.println((long) Math.pow(2, 30));
-        ElasticMap<String, String> elasticMap = new ElasticMap<>();
-        int pos = 3000;
-        for (int i = 0; i < pos; i++) {
-            elasticMap.putVal("key" + i, "val" + i);
-        }
-
-        for (int i = 0; i < pos; i++) {
-            elasticMap.getValue("");
-        }
-
-        for (int i = 0; i < pos; i++) {
-            elasticMap.deleteKey("key" + i);
-        }
-
-        System.out.println(elasticMap.first.size);
-        System.out.println(elasticMap.getUsed());
     }
 
 }
