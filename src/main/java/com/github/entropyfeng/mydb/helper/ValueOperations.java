@@ -44,6 +44,11 @@ public class ValueOperations implements IValueOperations {
     }
 
     @Override
+    public boolean expireAt(String key, double time) {
+        return false;
+    }
+
+    @Override
     public String getValue(String key) {
         return null;
     }

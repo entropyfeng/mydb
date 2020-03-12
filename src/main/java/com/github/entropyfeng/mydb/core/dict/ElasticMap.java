@@ -1,11 +1,19 @@
 package com.github.entropyfeng.mydb.core.dict;
 
+import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.AbstractMap;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
+
 /**
  * @author entropyfeng
  * @date 2020/2/20 17:57
  * 最大容量为2的30次方
  */
-public class ElasticMap<K, V> {
+public class ElasticMap<K, V> extends AbstractMap<K,V> {
 
     /**
      * 默认初始大小16
@@ -42,6 +50,12 @@ public class ElasticMap<K, V> {
 
     public ElasticMap() {
         first = new MapObject<>();
+    }
+
+    @NotNull
+    @Override
+    public Set<Entry<K, V>> entrySet() {
+        return null;
     }
 
     /**
@@ -188,4 +202,24 @@ public class ElasticMap<K, V> {
         }
     }
 
+
+    public static void main(String[] args) {
+        ElasticMap<String,String>  elasticMap=new ElasticMap<>();
+        HashMap<String,String> hashMap=new HashMap<>();
+        final  int pos=20000000;
+        long first=System.currentTimeMillis();
+        for (int i = 0; i <pos ; i++) {
+            hashMap.put(ThreadLocalRandom.current().nextInt()+"",i+"");
+        }
+        hashMap=null;
+        long second=System.currentTimeMillis();
+
+        for (int i = 0; i < pos; i++) {
+
+            elasticMap.dictAdd(ThreadLocalRandom.current().nextInt()+"",i+"");
+        }
+        long third=System.currentTimeMillis();
+        System.out.println(second-first);
+        System.out.println(third-second);
+    }
 }

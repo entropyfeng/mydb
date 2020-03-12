@@ -3,6 +3,7 @@ package com.github.entropyfeng.mydb.net;
 import com.github.entropyfeng.mydb.config.CommonConfig;
 import com.github.entropyfeng.mydb.config.Constant;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoop;
@@ -72,9 +73,15 @@ public class EchoServer {
     }
 
     public static void main(String[] args)throws Exception {
-        String port=CommonConfig.getProperties().getProperty(Constant.PORT);
+
+      long res=  Double.doubleToLongBits(100.9);
+
+
+        System.out.println(res);
+
+     /* String port=CommonConfig.getProperties().getProperty(Constant.PORT);
         String host=CommonConfig.getProperties().getProperty(Constant.HOST);
-        new EchoServer(port,host).start();
+        new EchoServer(port,host).start();*/
     }
 
 }

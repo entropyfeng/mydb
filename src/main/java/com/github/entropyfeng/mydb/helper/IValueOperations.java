@@ -24,6 +24,8 @@ public interface IValueOperations {
 
     public boolean clearExpireTime(String string);
 
+    public boolean expireAt(String key,double time);
+
     public String getValue(String key);
 
     public void setValue(String key,String value);

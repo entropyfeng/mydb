@@ -42,36 +42,6 @@ public class SkipList<T extends Comparable<T>> {
         maxLevel = 0;
     }
 
-    /**
-     * @param value 需要查找的值 notNull
-     * @return 该value存在的个数
-     */
-    public int findValue(T value) {
-        assert value != null;
-
-        SkipListNode<T> tempNode = findNode(value);
-        if (tempNode == null) {
-            return 0;
-        } else {
-            return 66666;
-        }
-    }
-
-    public int findValue(double score) {
-        return 0;
-    }
-
-    /**
-     * 查询是否存在该value
-     *
-     * @param value 需要查找的值 notNull
-     * @return true->存在
-     * false->不存在
-     */
-    public boolean isExist(T value) {
-        assert value != null;
-        return findValue(value) > 0;
-    }
 
     /**
      * 查找value对应结点
@@ -205,36 +175,10 @@ public class SkipList<T extends Comparable<T>> {
         return resList;
     }
 
-    public void insertNode(T value) {
-
-        assert value != null;
-        SkipListNode<T> newNode = findNode(value);
-        if (newNode != null) {
-            this.counts++;
-        } else {
-            SkipListNode<T> tempNode = header;
-            final int currentLevel = CommonUtil.getLevel();
-            newNode = new SkipListNode<T>(value, currentLevel);
-            maxLevel = Math.max(maxLevel, currentLevel);
-            length++;
-            counts++;
-            for (int i = maxLevel - 1; i >= 0; i--) {
-                while (tempNode.level[i] != null && compare(tempNode.level[i].value, value) < 0) {
-                    tempNode = tempNode.level[i];
-                }
-
-                if (i < currentLevel) {
-                    newNode.level[i] = tempNode.level[i];
-                    tempNode.level[i] = newNode;
-                }
-            }
-        }
-    }
 
 
     /**
      * 前提一定存在该value和其对应的score
-     *
      * @param value 值
      * @param score 分值
      */
@@ -272,33 +216,21 @@ public class SkipList<T extends Comparable<T>> {
         return 0;
     }
 
-   /* public ArrayList<Pair<T, Integer>> allValues() {
-        ArrayList<Pair<T, Integer>> res = new ArrayList<Pair<T, Integer>>();
+
+    public ArrayList<Pair<T, Double>> allValues() {
+        ArrayList<Pair<T, Double>> res = new ArrayList<Pair<T, Double>>();
 
         SkipListNode<T> tempNode = header.level[0];
         while (tempNode != null) {
-            res.add(new Pair<>(tempNode.value, tempNode.count));
+            res.add(new Pair<>(tempNode.value, tempNode.score));
             tempNode = tempNode.level[0];
         }
-        if (res.size() == 0) {
-            return null;
-        } else {
-            return res;
-        }
-    }*/
+        return  res;
+    }
 
     public static void main(String[] args) {
 
-       /* SkipList<String> stringSkipList = new SkipList<>();
-        System.out.println(stringSkipList.compare(null, null));
 
-        int pos = 1000;
-        for (int i = 0; i < pos; i++) {
-            stringSkipList.insertNode(i + "");
-        }
-        System.out.println(stringSkipList.length);
-        System.out.println(stringSkipList.counts);*/
-        Double d=Double.valueOf("100.8");
 
     }
 }
