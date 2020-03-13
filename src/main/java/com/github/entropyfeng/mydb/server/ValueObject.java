@@ -10,6 +10,6 @@ public class ValueObject {
     public static void main(String[] args) {
         ValueObject valueObject=new ValueObject();
         valueObject.objectMap=new HashMap<>();
-        valueObject.objectMap.
+
     }
 }
