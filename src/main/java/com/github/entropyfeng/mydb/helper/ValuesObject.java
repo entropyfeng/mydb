@@ -12,7 +12,7 @@ import java.util.HashMap;
  */
 public class ValuesObject {
 
-    HashMap<String,String> stringMap;
+    HashMap<String,StringBuilder> stringMap;
 
     HashMap<String,Integer> integerMap;
 
@@ -20,12 +20,19 @@ public class ValuesObject {
 
     HashMap<String,Float> floatMap;
 
-    HashMap<String,BigInteger> bigIntegerMap;
-
-    HashMap<String,BigDecimal> bigDecimalMap;
+    HashMap<String,Long> longMap;
 
     HashMap<String,Long> expireMap;
 
+
+    void  xxx(){
+        StringBuffer stringBuffer;
+        BigInteger bigInteger= new BigInteger("fsdf");
+    }
+
+    public static void main(String[] args) {
+        new ValuesObject().xxx();
+    }
 
 
 }

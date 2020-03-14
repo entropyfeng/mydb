@@ -1,11 +1,10 @@
 package com.github.entropyfeng.mydb.core.dict;
 
+import com.github.entropyfeng.mydb.core.Pair;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.AbstractMap;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -13,7 +12,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * @date 2020/2/20 17:57
  * 最大容量为2的30次方
  */
-public class ElasticMap<K, V> extends AbstractMap<K,V> {
+public class ElasticMap<K, V> extends AbstractMap<K,V> implements Map<K,V> {
 
     /**
      * 默认初始大小16
@@ -55,7 +54,27 @@ public class ElasticMap<K, V> extends AbstractMap<K,V> {
     @NotNull
     @Override
     public Set<Entry<K, V>> entrySet() {
-        return null;
+        Set<Entry<K,V>> entries=new HashSet<>(size());
+        entries.addAll(first.allEntries());
+        if(isRehashing){
+            entries.addAll(second.allEntries());
+        }
+        return entries;
+    }
+
+    @Override
+    public int size() {
+        if (isRehashing) {
+            moveEntry();
+            return first.used + second.used;
+        } else {
+            return first.used;
+        }
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return this.size()==0;
     }
 
     /**
@@ -121,6 +140,7 @@ public class ElasticMap<K, V> extends AbstractMap<K,V> {
     }
 
 
+
     /**
      * 从字典中删除所对应的键值对
      * @param key 键
@@ -167,18 +187,6 @@ public class ElasticMap<K, V> extends AbstractMap<K,V> {
         return res;
     }
 
-    /**
-     * 获取当前节点数量
-     * @return 当前节点数量
-     */
-    public int dictGetUsed() {
-        if (isRehashing) {
-            moveEntry();
-            return first.used + second.used;
-        } else {
-            return first.used;
-        }
-    }
 
 
 
@@ -201,6 +209,7 @@ public class ElasticMap<K, V> extends AbstractMap<K,V> {
             second = null;
         }
     }
+
 
 
     public static void main(String[] args) {

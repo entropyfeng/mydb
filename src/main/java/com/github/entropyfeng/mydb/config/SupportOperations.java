@@ -1,5 +1,8 @@
 package com.github.entropyfeng.mydb.config;
 
 public enum SupportOperations {
-    GET,SET,APPEND,EXIST
+    GET,//0000
+    SET,//0001
+    EXIST,//0010
+    APPEND//0011
 }

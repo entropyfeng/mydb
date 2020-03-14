@@ -85,4 +85,7 @@ public class ConfigUtil {
         }
 
     }
+    public static long getIntegerProperty(Properties properties,String paraName){
+        return new Long(properties.getProperty(paraName));
+    }
 }

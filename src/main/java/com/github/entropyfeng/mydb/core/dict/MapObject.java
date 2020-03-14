@@ -1,7 +1,13 @@
 package com.github.entropyfeng.mydb.core.dict;
 
+import com.github.entropyfeng.mydb.core.Pair;
 import com.google.common.base.Charsets;
 import com.google.common.hash.Hashing;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.AbstractMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import static com.github.entropyfeng.mydb.core.dict.ElasticMap.DEFAULT_INITIAL_CAPACITY;
 import static com.github.entropyfeng.mydb.core.dict.ElasticMap.DEFAULT_LOAD_FACTOR;
@@ -11,7 +17,7 @@ import static com.github.entropyfeng.mydb.core.dict.ElasticMap.MAXIMUM_CAPACITY;
  * @author entropyfeng
  * @date 2020/2/27 15:27
  */
-class MapObject<K, V> {
+class MapObject<K, V>   {
 
 
     /**
@@ -227,6 +233,20 @@ class MapObject<K, V> {
      */
     boolean isEmpty() {
         return used == 0;
+    }
+
+
+    Set<Pair<K,V>> allEntries(){
+        Set<Pair<K,V>> set=new HashSet<>(used);
+        Node<K,V> tempNode;
+        for (int i = 0; i < size; i++) {
+            tempNode=table[i];
+            while (tempNode!=null){
+                set.add(new Pair<K,V>(tempNode.key,tempNode.value));
+                tempNode=tempNode.next;
+            }
+        }
+        return set;
     }
 
     /**
