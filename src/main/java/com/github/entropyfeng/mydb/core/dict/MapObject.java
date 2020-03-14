@@ -17,7 +17,7 @@ import static com.github.entropyfeng.mydb.core.dict.ElasticMap.MAXIMUM_CAPACITY;
  * @author entropyfeng
  * @date 2020/2/27 15:27
  */
-class MapObject<K, V>   {
+class MapObject<K, V> {
 
 
     /**
@@ -120,13 +120,14 @@ class MapObject<K, V>   {
      * @param key   键
      * @param value 值
      */
-    void replaceVal(K key, V value) {
+    V put(K key, V value) {
         assert key != null && value != null;
         final int pos = hashing(key) & sizeMask;
         assert pos >= 0 && pos < size;
         //tempNode
         Node<K, V> tempNode = table[pos];
 
+        V resValue=null;
         //如果当前槽为空,则创建新节点
         if (tempNode == null) {
             table[pos] = new Node<K, V>(key, value, null);
@@ -144,10 +145,12 @@ class MapObject<K, V>   {
                 tempNode.next = new Node<K, V>(key, value, null);
                 used++;
             } else {
+                resValue=tempNode.value;
                 tempNode.value = value;
             }
         }
 
+        return resValue;
     }
 
     /**
@@ -156,7 +159,7 @@ class MapObject<K, V>   {
      * @param key   键 notNull
      * @param value 值 notNull
      */
-    boolean addVal(K key, V value) {
+    boolean addIfAbsent(K key, V value) {
 
         boolean res = true;
         assert key != null && value != null;
@@ -189,7 +192,7 @@ class MapObject<K, V>   {
     }
 
     /**
-     * 根据key获取 value notNull
+     * 根据key(notNull)获取 value
      * 如果为空则不存在该key 否则返回该value
      *
      * @param key 键
@@ -198,7 +201,6 @@ class MapObject<K, V>   {
      */
     V getValue(K key) {
         final Node<K, V> tempNode = getNode(key);
-
         return tempNode != null ? tempNode.value : null;
     }
 
@@ -236,14 +238,14 @@ class MapObject<K, V>   {
     }
 
 
-    Set<Pair<K,V>> allEntries(){
-        Set<Pair<K,V>> set=new HashSet<>(used);
-        Node<K,V> tempNode;
+    Set<Pair<K, V>> allEntries() {
+        Set<Pair<K, V>> set = new HashSet<>(used);
+        Node<K, V> tempNode;
         for (int i = 0; i < size; i++) {
-            tempNode=table[i];
-            while (tempNode!=null){
-                set.add(new Pair<K,V>(tempNode.key,tempNode.value));
-                tempNode=tempNode.next;
+            tempNode = table[i];
+            while (tempNode != null) {
+                set.add(new Pair<K, V>(tempNode.key, tempNode.value));
+                tempNode = tempNode.next;
             }
         }
         return set;
@@ -253,35 +255,35 @@ class MapObject<K, V>   {
      * 删除指定的key对应的node
      *
      * @param key key notNull
-     * @return true->删除成功
-     * false->不存在键或删除失败
+     * @return null-> no key exists before call this method
      */
-    boolean deleteKey(K key) {
+    V deleteKey(K key) {
         assert key != null;
         final int pos = hashing(key) & sizeMask;
-        boolean res = false;
+        V resValue = null;
+
         //tempNode
         Node<K, V> tempNode = table[pos];
 
         if (tempNode != null) {
             //第一个结点的key匹配
             if (tempNode.key.equals(key)) {
+                resValue = tempNode.value;
                 table[pos] = tempNode.next;
-                res = true;
                 used--;
             } else {
                 while (tempNode.next != null && !tempNode.next.key.equals(key)) {
                     tempNode = tempNode.next;
                 }
                 if (tempNode.next != null) {
+                    resValue = tempNode.next.value;
                     tempNode.next = tempNode.next.next;
-                    res = true;
                     used--;
                 }
             }
         }
 
-        return res;
+        return resValue;
     }
 
 

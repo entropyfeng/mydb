@@ -1,8 +1,8 @@
 package com.github.entropyfeng.mydb.core.dict;
 
-import com.github.entropyfeng.mydb.core.Pair;
-import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
+import com.github.entropyfeng.mydb.expection.OutOfBoundException;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -12,7 +12,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * @date 2020/2/20 17:57
  * 最大容量为2的30次方
  */
-public class ElasticMap<K, V> extends AbstractMap<K,V> implements Map<K,V> {
+public class ElasticMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
 
     /**
      * 默认初始大小16
@@ -54,9 +54,9 @@ public class ElasticMap<K, V> extends AbstractMap<K,V> implements Map<K,V> {
     @NotNull
     @Override
     public Set<Entry<K, V>> entrySet() {
-        Set<Entry<K,V>> entries=new HashSet<>(size());
+        Set<Entry<K, V>> entries = new HashSet<>(size());
         entries.addAll(first.allEntries());
-        if(isRehashing){
+        if (isRehashing) {
             entries.addAll(second.allEntries());
         }
         return entries;
@@ -74,85 +74,93 @@ public class ElasticMap<K, V> extends AbstractMap<K,V> implements Map<K,V> {
 
     @Override
     public boolean isEmpty() {
-        return this.size()==0;
-    }
-
-    /**
-     * 添加给定的键值对，若之前不存在则插入，否则不插入
-     * @param key 键
-     * @param value 值
-     * @return true->add成功
-     *         false->add失败
-     */
-    public boolean dictAdd(K key,V value){
-        assert key!=null&&value!=null;
-        if (first.used==MAXIMUM_CAPACITY){
-            return false;
-        }
-
-        if (isRehashing){
-            if (first.isExist(key)||second.isExist(key)){
-                return false;
-            }else {
-                second.addVal(key, value);
-                moveEntry();
-                return true;
-            }
-        }else if(first.isCorrespondingEnlargeSize()){
-
-            if(first.isExist(key)){
-                return false;
-            }else {
-                isRehashing = true;
-                second = new MapObject<>(first.used);
-                second.addVal(key, value);
-                moveEntry();
-                return true;
-            }
-
-        }else {
-            return first.addVal(key,value);
-        }
-
-    }
-
-    /**
-     * 插入给定的键值对,若存在则用新值替代已有值
-     * @param key 键
-     * @param value 值
-     */
-    public void dictReplace(K key, V value) {
-        assert key!=null&&value!=null;
-
         if (isRehashing) {
-            first.deleteKey(key);
-            second.replaceVal(key, value);
+            moveEntry();
+        }
+        return this.size() == 0;
+    }
+
+
+    @Override
+    public V put(K key, V value) throws OutOfBoundException {
+        assert key != null && value != null;
+        if (size() == MAXIMUM_CAPACITY) {
+            throw new OutOfBoundException();
+        }
+
+
+        V resValue = null;
+        if (isRehashing) {
+            resValue = first.deleteKey(key);
+            V resValue1 = second.put(key, value);
+            if (resValue == null) {
+                resValue = resValue1;
+            }
             moveEntry();
         } else if (first.isCorrespondingEnlargeSize()) {
             isRehashing = true;
             second = new MapObject<>(first.used);
-            second.replaceVal(key, value);
+            //resValue always null
+            second.put(key, value);
             moveEntry();
         } else {
-            first.replaceVal(key, value);
+            resValue = first.put(key, value);
+        }
+        return resValue;
+    }
+
+
+    @Nullable
+    @Override
+    public V putIfAbsent(K key, V value) throws IllegalArgumentException {
+        assert key != null && value != null;
+        if (first.used == MAXIMUM_CAPACITY) {
+            throw new OutOfBoundException();
         }
 
+        V resValue=null;
+        if (isRehashing) {
+            if (first.isExist(key) || second.isExist(key)) {
+                return false;
+            } else {
+                second.addIfAbsent(key, value);
+                return true;
+            }
+        } else if (first.isCorrespondingEnlargeSize()) {
+
+            if (first.isExist(key)) {
+                return false;
+            } else {
+                isRehashing = true;
+                second = new MapObject<>(first.used);
+                second.addIfAbsent(key, value);
+                return true;
+            }
+
+        } else {
+            return first.addIfAbsent(key, value);
+        }
+    }
+
+    public V putIfPresent(K key, V value) {
+        return null;
     }
 
 
 
     /**
      * 从字典中删除所对应的键值对
+     *
      * @param key 键
      * @return true->删除成功
-     *         false->不存在该键值对
+     * false->不存在该键值对
      */
     public boolean dictDelete(K key) {
 
         assert key != null;
         boolean res;
         if (isRehashing) {
-            if (first.deleteKey(key)) {
+            if (first.deleteKey(key) != null) {
                 res = true;
             } else {
                 res = second.deleteKey(key);
@@ -168,6 +176,21 @@ public class ElasticMap<K, V> extends AbstractMap<K,V> implements Map<K,V> {
         }
         return res;
     }
+
+
+    @Override
+    public V get(Object key) {
+
+        V res = first.getValue((K)key);
+        if (isRehashing) {
+            if (res == null) {
+                res = second.getValue(key);
+            }
+            moveEntry();
+        }
+        return res;
+    }
+
 
     /**
      * 根据key获取 value
@@ -188,8 +211,6 @@ public class ElasticMap<K, V> extends AbstractMap<K,V> implements Map<K,V> {
     }
 
 
-
-
     /**
      * 每次移动一个槽中的所有节点
      */
@@ -200,10 +221,10 @@ public class ElasticMap<K, V> extends AbstractMap<K,V> implements Map<K,V> {
         if (node != null) {
             while (node != null) {
                 first.used--;
-                second.addVal(node.key, node.value);
+                second.addIfAbsent(node.key, node.value);
                 node = node.next;
             }
-        } else {
+        } else if (isRehashing) {
             isRehashing = false;
             first = second;
             second = null;
@@ -211,24 +232,63 @@ public class ElasticMap<K, V> extends AbstractMap<K,V> implements Map<K,V> {
     }
 
 
+    /**
+     * forbid call this method
+     *
+     * @param key   key
+     * @param value value
+     * @return always false
+     */
+    @Deprecated
+    @Override
+    public boolean remove(Object key, Object value) throws UnsupportedOperationException {
+        throw new UnsupportedOperationException();
+    }
+
+
+
+    @Override
+    public V remove(Object key) {
+
+        assert key != null;
+        boolean res;
+        if (isRehashing) {
+            if (first.deleteKey(key) != null) {
+                res = true;
+            } else {
+                res = second.deleteKey(key);
+            }
+            moveEntry();
+        } else if (first.isCorrespondingNarrowSize()) {
+            isRehashing = true;
+            second = new MapObject<>(first.used);
+            res = first.deleteKey(key);
+            moveEntry();
+        } else {
+            res = first.deleteKey(key);
+        }
+        return res;
+
+    }
+
 
     public static void main(String[] args) {
-        ElasticMap<String,String>  elasticMap=new ElasticMap<>();
-        HashMap<String,String> hashMap=new HashMap<>();
-        final  int pos=20000000;
-        long first=System.currentTimeMillis();
-        for (int i = 0; i <pos ; i++) {
-            hashMap.put(ThreadLocalRandom.current().nextInt()+"",i+"");
+        ElasticMap<String, String> elasticMap = new ElasticMap<>();
+        HashMap<String, String> hashMap = new HashMap<>();
+        final int pos = 20000000;
+        long first = System.currentTimeMillis();
+        for (int i = 0; i < pos; i++) {
+            hashMap.put(ThreadLocalRandom.current().nextInt() + "", i + "");
         }
-        hashMap=null;
-        long second=System.currentTimeMillis();
+        hashMap = null;
+        long second = System.currentTimeMillis();
 
         for (int i = 0; i < pos; i++) {
 
-            elasticMap.dictAdd(ThreadLocalRandom.current().nextInt()+"",i+"");
+            elasticMap.putIfAbsent(ThreadLocalRandom.current().nextInt() + "", i + "");
         }
-        long third=System.currentTimeMillis();
-        System.out.println(second-first);
-        System.out.println(third-second);
+        long third = System.currentTimeMillis();
+        System.out.println(second - first);
+        System.out.println(third - second);
     }
 }

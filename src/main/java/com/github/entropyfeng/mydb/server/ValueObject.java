@@ -11,7 +11,7 @@ public class ValueObject {
 
     HashMap<String,Long> expireMap=new HashMap<>();
 
-    long preRequestTime;
+   long preRequestTime;
 
     public Object get(String key){
 
@@ -25,8 +25,13 @@ public class ValueObject {
 
     public boolean remove(String key){
         expireMap.remove(key);
-        objectMap.remove(key);
-        return false;
+        return objectMap.remove(key) != null;
+    }
+
+    public boolean expireAt(String key,long time){
+        if(objectMap.get(key)!=null){
+
+        }
     }
 
     public void set(String key,Object value,long time){
