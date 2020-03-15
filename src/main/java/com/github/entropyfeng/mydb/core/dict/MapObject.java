@@ -257,7 +257,7 @@ class MapObject<K, V> {
      * @param key key notNull
      * @return null-> no key exists before call this method
      */
-    V deleteKey(K key) {
+    V deleteKey(Object key) {
         assert key != null;
         final int pos = hashing(key) & sizeMask;
         V resValue = null;

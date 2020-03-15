@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 import java.util.stream.IntStream;
 
-public class StringObject implements Serializable, Comparable<StringObject>,CharSequence {
+public final class StringObject implements Serializable, Comparable<StringObject>,CharSequence {
     public final String  string;
     public long recentAccess;
 
