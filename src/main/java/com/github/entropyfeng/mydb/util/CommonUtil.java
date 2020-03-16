@@ -13,6 +13,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class CommonUtil {
 
 
+
     /**
      * 抛硬币法获取层数
      * @return 1=<int<=32
@@ -27,11 +28,22 @@ public class CommonUtil {
         return res;
     }
 
-    public static int hash(Object o){
+    public static int hashing(Object o){
         assert o!=null;
 
         if (o instanceof String){
             return Hashing.murmur3_32().hashString((String) o, Charsets.UTF_8).asInt();
+        }else if(o instanceof Integer){
+
+            return Hashing.murmur3_32().hashInt((Integer) o).asInt();
+        }else if (o instanceof Double){
+            return Hashing.murmur3_32().newHasher().putDouble((Double)o).hash().asInt();
+        }else if(o instanceof Float){
+            return Hashing.murmur3_32().newHasher().putFloat((Float) o).hash().asInt();
+        }else if(o instanceof Long){
+            return Hashing.murmur3_32().hashLong((Long)o).asInt();
+        }else {
+            return o.hashCode();
         }
     }
 

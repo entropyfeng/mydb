@@ -12,6 +12,7 @@ import java.util.Set;
 import static com.github.entropyfeng.mydb.core.dict.ElasticMap.DEFAULT_INITIAL_CAPACITY;
 import static com.github.entropyfeng.mydb.core.dict.ElasticMap.DEFAULT_LOAD_FACTOR;
 import static com.github.entropyfeng.mydb.core.dict.ElasticMap.MAXIMUM_CAPACITY;
+import static com.github.entropyfeng.mydb.util.CommonUtil.hashing;
 
 /**
  * @author entropyfeng
@@ -91,28 +92,7 @@ class MapObject<K, V> {
 
     private final float loadFactor;
 
-    /**
-     * 使用murmur3 hash
-     *
-     * @param key 任意对象 isNotNull
-     * @return hashCode
-     */
-    private int hashing(final K key) {
-        assert key != null;
-        if (key instanceof String) {
-            return Hashing.murmur3_32().hashString((String) key, Charsets.UTF_8).asInt();
-        } else if (key instanceof Integer) {
-            return Hashing.murmur3_32().hashInt((Integer) key).asInt();
-        } else if (key instanceof Long) {
-            return Hashing.murmur3_32().hashLong((Long) key).asInt();
-        } else if (key instanceof Double) {
-            return Hashing.murmur3_32().newHasher().putDouble((Double) key).hash().asInt();
-        } else if (key instanceof Float) {
-            return Hashing.murmur3_32().newHasher().putFloat((Float) key).hash().asInt();
-        }
-        //you are not except access this region
-        throw new Error("UnSupport Hashing Type");
-    }
+
 
     /**
      * 如果表中不存在该key则将value插入,否则用新value替换旧value
