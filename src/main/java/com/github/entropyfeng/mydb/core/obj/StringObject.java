@@ -16,7 +16,9 @@ public final class StringObject implements Serializable, Comparable<StringObject
     StringObject(String string){
         this.string=string;
     }
-
+    public static StringObject ofString(String string){
+        return new StringObject(string);
+    }
     @Override
     public int length() {
         return string.length();

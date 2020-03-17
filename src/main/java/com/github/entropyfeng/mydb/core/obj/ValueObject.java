@@ -10,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.net.UnknownServiceException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
@@ -168,4 +167,6 @@ public final class ValueObject implements Serializable,Cloneable,Comparable<Valu
     public int compareTo(@NotNull ValueObject o) {
         return 0;
     }
+
+
 }

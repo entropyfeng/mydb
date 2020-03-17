@@ -179,12 +179,12 @@ class MapObject<K, V> {
      * @return null ->不存在该key
      * notNull->value
      */
-    V getValue(K key) {
+    V getValue(Object key) {
         final Node<K, V> tempNode = getNode(key);
         return tempNode != null ? tempNode.value : null;
     }
 
-    private Node<K, V> getNode(K key) {
+    private Node<K, V> getNode(Object key) {
         assert key != null;
         final int pos = hashing(key) & sizeMask;
         //tempNode

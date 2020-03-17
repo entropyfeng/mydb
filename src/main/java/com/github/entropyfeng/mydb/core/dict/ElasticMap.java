@@ -120,38 +120,6 @@ public class ElasticMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
         return null;
     }
 
-
-
-    /**
-     * 从字典中删除所对应的键值对
-     *
-     * @param key 键
-     * @return true->删除成功
-     * false->不存在该键值对
-     */
-    public boolean dictDelete(K key) {
-
-        assert key != null;
-        boolean res;
-        if (isRehashing) {
-            if (first.deleteKey(key) != null) {
-                res = true;
-            } else {
-                res = second.deleteKey(key);
-            }
-            moveEntry();
-        } else if (first.isCorrespondingNarrowSize()) {
-            isRehashing = true;
-            second = new MapObject<>(first.used);
-            res = first.deleteKey(key);
-            moveEntry();
-        } else {
-            res = first.deleteKey(key);
-        }
-        return res;
-    }
-
-
     @Override
     public V get(Object key) {
 
@@ -224,7 +192,7 @@ public class ElasticMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
     @Override
     public V remove(Object key) {
 
-        assert key != null;
+/*        assert key != null;
         boolean res;
         if (isRehashing) {
             if (first.deleteKey(key) != null) {
@@ -241,8 +209,9 @@ public class ElasticMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
         } else {
             res = first.deleteKey(key);
         }
-        return res;
+        return res;*/
 
+return null;
     }
 
 

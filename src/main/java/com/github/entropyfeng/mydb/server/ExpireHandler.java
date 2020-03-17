@@ -10,6 +10,7 @@ public class ExpireHandler {
     private Map<String, Long> expireMap;
     private PriorityQueue<StringLongPair> expireQueue;
 
+    private Map<String,Long> accessTimesMap;
     public ExpireHandler() {
         expireMap = new HashMap<>();
         expireQueue = new PriorityQueue<>();
