@@ -113,33 +113,7 @@ public class ElasticMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
     @Nullable
     @Override
     public V putIfAbsent(K key, V value) throws IllegalArgumentException {
-        assert key != null && value != null;
-        if (first.used == MAXIMUM_CAPACITY) {
-            throw new OutOfBoundException();
-        }
-
-        V resValue=null;
-        if (isRehashing) {
-            if (first.isExist(key) || second.isExist(key)) {
-                return false;
-            } else {
-                second.addIfAbsent(key, value);
-                return true;
-            }
-        } else if (first.isCorrespondingEnlargeSize()) {
-
-            if (first.isExist(key)) {
-                return false;
-            } else {
-                isRehashing = true;
-                second = new MapObject<>(first.used);
-                second.addIfAbsent(key, value);
-                return true;
-            }
-
-        } else {
-            return first.addIfAbsent(key, value);
-        }
+       return null;
     }
 
     public V putIfPresent(K key, V value) {

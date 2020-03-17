@@ -2,59 +2,76 @@ package com.github.entropyfeng.mydb.server;
 
 import com.github.entropyfeng.mydb.util.TimeUtil;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.Time;
 import java.util.HashMap;
+import java.util.Optional;
 
-public class ValueObject {
+public class ValueObject extends ExpireHandler {
 
 
-    HashMap<String,Object> objectMap=new HashMap<>();
-
-    HashMap<String,Long> expireMap=new HashMap<>();
-
-    long preRequestTime;
+    HashMap<String,Object> valueMap =new HashMap<>();
 
     public Object get(String key){
-
-        if(TimeUtil.isExpire(expireMap.get(key))){
-            expireMap.remove(key);
-            objectMap.remove(key);
+        if(isExpire(key)){
+            deleteExpire(key);
+            valueMap.remove(key);
+            return null;
         }
-        preRequestTime=TimeUtil.currentTime();
-        return objectMap.get(key);
+        return valueMap.get(key);
     }
 
     public boolean remove(String key){
-        expireMap.remove(key);
-        return objectMap.remove(key) != null;
+        deleteExpire(key);
+        return valueMap.remove(key) != null;
     }
 
-    public boolean expireAt(String key,long time){
-        if(objectMap.get(key)!=null){
-
-        }
-    }
 
     public void set(String key,Object value,long time){
-        objectMap.put(key,value);
-        if(time!=0){
-            expireMap.put(key,time);
+        valueMap.put(key,value);
+        if(!TimeUtil.isExpire(time)){
+            putExpire(key, time);
         }
-        preRequestTime=TimeUtil.currentTime();
     }
 
     public  void setIfPresent(String key,Object value,long time){
+        if (valueMap.containsKey(key)){
+            set(key, value, time);
+        }
 
     }
 
     public void setIfAbsent(String key,Object value,long time){
-
-
+        if(!valueMap.containsKey(key)){
+            set(key, value, time);
+        }
     }
 
-    public static void main(String[] args) {
-        ValueObject valueObject=new ValueObject();
-        valueObject.objectMap=new HashMap<>();
-
-
+    public void append(String key,String value)throws UnsupportedOperationException{
+       Object object= get(key);
+       if (object instanceof String){
+           valueMap.replace(key,object+value);
+       }
     }
+    public boolean increment(String key,double value)throws UnsupportedOperationException{
+        Object object=get(key);
+        if (object instanceof Double){
+            valueMap.replace(key,value+(Double) object);
+        }else if(object instanceof Float){
+            valueMap.replace(key,value+(Float)object);
+        }else if(object instanceof BigDecimal){
+            valueMap.replace(key, ((BigDecimal) object).add(BigDecimal.valueOf(value)));
+        }
+        return false;
+    }
+    public boolean increment(String key,long value){
+
+        return false;
+    }
+    public boolean increment(String key,String value){
+
+        return false;
+    }
+
 }

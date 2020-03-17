@@ -63,6 +63,7 @@ public final class StringObject implements Serializable, Comparable<StringObject
     }
 
 
+    @SuppressWarnings("all")
     @Override
     public int hashCode() {
         return Hashing.murmur3_32().hashString(string, Charsets.UTF_8).asInt();
