@@ -28,8 +28,9 @@ public class ValuesObject extends ExpireHandler {
     }
 
     public  void setIfPresent(String key,ValueObject value,long time){
-        if (!isExpire(key)){
-
+        if(isExpire(key)){
+            deleteExpire(key);
+            valueMap.remove(key);
         }
         if (valueMap.containsKey(key)){
             set(key, value, time);
@@ -37,6 +38,10 @@ public class ValuesObject extends ExpireHandler {
     }
 
     public void setIfAbsent(String key,ValueObject value,long time){
+        if(isExpire(key)){
+            deleteExpire(key);
+            valueMap.remove(key);
+        }
         if(!valueMap.containsKey(key)){
             set(key, value, time);
         }

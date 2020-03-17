@@ -1,4 +1,4 @@
-package com.github.entropyfeng.mydb.helper;
+package com.github.entropyfeng.mydb.client;
 
 public class ClientCommand {
     private long timeStamp;
