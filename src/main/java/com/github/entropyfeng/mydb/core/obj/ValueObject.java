@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.UnknownServiceException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
@@ -73,15 +74,10 @@ public final class ValueObject implements Serializable,Cloneable,Comparable<Valu
             case DOUBLE:
                 return new ValueObject(ByteBuffer.wrap(values).getDouble()+doubleValue);
             case FLOAT:
-                return new ValueObject(add(ByteBuffer.wrap(this.values).getFloat(),doubleValue));
             case LONG :
-              return new ValueObject(add(ByteBuffer.wrap(this.values).getLong(),doubleValue));
             case INTEGER:
-              return new ValueObject(add(ByteBuffer.wrap(this.values).getInt(),doubleValue));
             case BIG_INTEGER:
-                return new ValueObject(add(new BigInteger(this.values),doubleValue));
-            case BIG_DECIMAL:
-                return new ValueObject(add(new BigDecimal(new String(this.values)),doubleValue));
+            case BIG_DECIMAL:return new ValueObject(toBigDecimal(this).add(BigDecimal.valueOf(doubleValue)));
             default:throw new UnsupportedOperationException();
         }
 
@@ -92,36 +88,59 @@ public final class ValueObject implements Serializable,Cloneable,Comparable<Valu
         switch (type){
             case LONG: return new ValueObject(ByteBuffer.wrap(values).getLong()+longValue);
             case INTEGER:return new ValueObject(ByteBuffer.wrap(values).getInt()+longValue);
-            case BIG_INTEGER:return new ValueObject(new BigInteger(this.values).add(BigInteger.valueOf(longValue)));
-            case DOUBLE:return new ValueObject(add(longValue,ByteBuffer.wrap(this.values).getDouble()));
-            case BIG_DECIMAL:return new ValueObject(add(new BigDecimal(new String(this.values)),longValue));
-            case FLOAT:return new ValueObject(add(longValue,ByteBuffer.wrap(this.values).getFloat()));
+            case BIG_INTEGER:return new ValueObject(toBigInteger(this).add(BigInteger.valueOf(longValue)));
+            case DOUBLE:
+            case BIG_DECIMAL:
+            case FLOAT:return new ValueObject(toBigDecimal(this).add(BigDecimal.valueOf(longValue)));
+            default:throw new UnsupportedOperationException();
+        }
+    }
+    public ValueObject increment(BigInteger bigInteger)throws UnsupportedOperationException{
+
+        switch (type){
+            case LONG:
+            case INTEGER:
+            case BIG_INTEGER:return new ValueObject(bigInteger.add(toBigInteger(this)));
+            case BIG_DECIMAL:
+            case FLOAT:
+            case DOUBLE:return new ValueObject(toBigDecimal(this).add(new BigDecimal(bigInteger)));
+            default:throw new UnsupportedOperationException();
+        }
+    }
+    public ValueObject increment(BigDecimal bigDecimal){
+        return new ValueObject(toBigDecimal(this).add(bigDecimal));
+    }
+    private static BigDecimal toBigDecimal(ValueObject valueObject)throws UnsupportedOperationException{
+        switch (valueObject.type){
+            case DOUBLE:return BigDecimal.valueOf(ByteBuffer.wrap(valueObject.values).getDouble());
+            case FLOAT:return new BigDecimal(String.valueOf(ByteBuffer.wrap(valueObject.values).getFloat()));
+            case BIG_INTEGER:new BigDecimal(new BigInteger(valueObject.values));
+            case INTEGER:return new BigDecimal(ByteBuffer.wrap(valueObject.values).getInt());
+            case LONG:return new BigDecimal(ByteBuffer.wrap(valueObject.values).getLong());
+            case BIG_DECIMAL:return new BigDecimal(new String(valueObject.values));
             default:throw new UnsupportedOperationException();
         }
     }
 
-    public ValueObject increment(BigInteger bigInteger){
-
-        switch ()
+    private static BigInteger toBigInteger(ValueObject valueObject)throws UnsupportedOperationException{
+        switch (valueObject.type){
+            case INTEGER:return BigInteger.valueOf(ByteBuffer.wrap(valueObject.values).getInt());
+            case LONG:return BigInteger.valueOf(ByteBuffer.wrap(valueObject.values).getLong());
+            case BIG_INTEGER:return new BigInteger(valueObject.values);
+            default:throw  new UnsupportedOperationException();
+        }
     }
+    public Object toObject(){
+        switch (type){
+            case DOUBLE:return ByteBuffer.wrap(values).getDouble();
+            case FLOAT:return ByteBuffer.wrap(values).getFloat();
+            case LONG:return ByteBuffer.wrap(values).getLong();
+            case INTEGER:return ByteBuffer.wrap(values).getInt();
+            case BIG_DECIMAL:return new BigDecimal(new String(values));
+            case BIG_INTEGER:return new BigInteger(values);
+            default: return new String(values);
 
-    private static BigDecimal add(float floatValue,double doubleValue){
-       return new BigDecimal(String.valueOf(floatValue)).add(BigDecimal.valueOf(doubleValue));
-    }
-    private static BigDecimal add(long longValue,double doubleValue){
-        return new BigDecimal(longValue).add(BigDecimal.valueOf(doubleValue));
-    }
-
-    private static BigDecimal add(long longValue,float floatValue){
-        return new BigDecimal(longValue).add(new BigDecimal(String.valueOf(floatValue)));
-    }
-
-    private static BigDecimal add(BigInteger bigInteger,double doubleValue){
-        return new BigDecimal(doubleValue).add(new BigDecimal(bigInteger));
-    }
-
-    private static BigDecimal add(BigDecimal bigDecimal,double doubleValue){
-        return    bigDecimal.add(new BigDecimal(doubleValue));
+        }
     }
 
 
@@ -147,6 +166,6 @@ public final class ValueObject implements Serializable,Cloneable,Comparable<Valu
 
     @Override
     public int compareTo(@NotNull ValueObject o) {
-        return this.values;
+        return 0;
     }
 }
