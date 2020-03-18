@@ -6,11 +6,7 @@ import java.util.HashMap;
 public class ValuesObject extends ExpireHandler {
     private HashMap<String,ValueObject> valueMap;
     public ValueObject get(String key){
-        if(isExpire(key)){
-            deleteExpire(key);
-            valueMap.remove(key);
-            return null;
-        }
+        removeExpireKey(key);
         return valueMap.get(key);
     }
 
@@ -19,6 +15,10 @@ public class ValuesObject extends ExpireHandler {
         return valueMap.remove(key) != null;
     }
 
+    public boolean isExist(String key){
+        removeExpireKey(key);
+        return valueMap.containsKey(key);
+    }
 
     public void set(String key,ValueObject value,long time){
         valueMap.put(key,value);
@@ -28,23 +28,36 @@ public class ValuesObject extends ExpireHandler {
     }
 
     public  void setIfPresent(String key,ValueObject value,long time){
-        if(isExpire(key)){
-            deleteExpire(key);
-            valueMap.remove(key);
-        }
+        removeExpireKey(key);
         if (valueMap.containsKey(key)){
             set(key, value, time);
         }
     }
 
     public void setIfAbsent(String key,ValueObject value,long time){
-        if(isExpire(key)){
-            deleteExpire(key);
-            valueMap.remove(key);
-        }
+        removeExpireKey(key);
         if(!valueMap.containsKey(key)){
             set(key, value, time);
         }
+    }
+
+    private boolean removeExpireKey(String key){
+        if(isExpire(key)){
+            deleteExpire(key);
+            valueMap.remove(key);
+
+            return true;
+        }
+        return false;
+    }
+
+    public void append(String key,String value)throws UnsupportedOperationException{
+        removeExpireKey(key);
+        ValueObject valueObject=valueMap.get(key);
+        valueMap.replace(key,valueObject.append(value));
+    }
+    public void increment(String key,long longValue)throws UnsupportedOperationException{
+        removeExpireKey(key);
     }
 
 }

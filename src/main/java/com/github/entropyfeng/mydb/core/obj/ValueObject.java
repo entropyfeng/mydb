@@ -13,6 +13,8 @@ import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
+import static com.github.entropyfeng.mydb.core.SupportValue.LONG;
+
 public final class ValueObject implements Serializable,Cloneable,Comparable<ValueObject> {
     private final byte[] values;
     private final SupportValue type;
@@ -48,7 +50,7 @@ public final class ValueObject implements Serializable,Cloneable,Comparable<Valu
     }
 
     public ValueObject(long value) {
-        this(ByteBuffer.allocate(8).putLong(value).array(), SupportValue.LONG);
+        this(ByteBuffer.allocate(8).putLong(value).array(), LONG);
     }
 
     public ValueObject(BigInteger value) {
@@ -168,5 +170,12 @@ public final class ValueObject implements Serializable,Cloneable,Comparable<Valu
         return 0;
     }
 
+
+    public static void main(String[] args) {
+        ValueObject longObject=new ValueObject(10086L);
+        System.out.println(longObject.type);
+        ValueObject bigDecimal=new ValueObject(new BigDecimal(Long.MAX_VALUE));
+        System.out.println(bigDecimal.type);
+    }
 
 }
