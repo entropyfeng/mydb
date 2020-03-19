@@ -8,7 +8,7 @@ import com.github.entropyfeng.mydb.util.CommonUtil;
 import com.google.common.base.Objects;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.Serializable;
+import java.io.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
@@ -19,7 +19,7 @@ import static com.github.entropyfeng.mydb.core.SupportValue.LONG;
 /**
  * @author entropyfeng
  */
-public  class ValueObject implements Serializable,Cloneable,Comparable<ValueObject> {
+public  class ValueObject implements Serializable,Cloneable, Externalizable,Comparable<ValueObject> {
     private  byte[] values;
     private  SupportValue type;
 
@@ -199,4 +199,19 @@ public  class ValueObject implements Serializable,Cloneable,Comparable<ValueObje
         System.out.println(hah);
     }
 
+    public byte[]toByte(){
+        final int length=values.length+1;
+        return
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+
+
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+    }
 }

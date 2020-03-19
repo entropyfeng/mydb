@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  *
+ * @author entropyfeng
  * @param <V>
  */
 public interface ValueOperations<V> {
@@ -14,7 +15,13 @@ public interface ValueOperations<V> {
         this.set(key, value, 0);
     }
 
-    void set(String String, V value, long time);
+    /**
+     *
+     * @param key 键
+     * @param value 值
+     * @param time 过期时间
+     */
+    void set(String key, V value, long time);
 
     default void set(String key, V value ,long time,TimeUnit timeUnit) {
         if (timeUnit==null){

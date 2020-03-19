@@ -2,8 +2,8 @@ package com.github.entropyfeng.mydb.client;
 
 public class DefaultValueOperations implements ValueOperations {
     @Override
-    public void set(String String, Object value, long time) {
-        
+    public void set(String key, Object value, long time) {
+
     }
 
     @Override

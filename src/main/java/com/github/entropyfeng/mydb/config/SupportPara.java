@@ -24,5 +24,10 @@ public enum SupportPara {
     /**
      * 使用字符串表示的数
      */
-    NUMBER
+    NUMBER,
+    /**
+     * ValueObject
+     */
+    VALUE_OBJECT
+
 }

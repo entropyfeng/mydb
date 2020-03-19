@@ -3,6 +3,9 @@ package com.github.entropyfeng.mydb.client;
 import java.util.Collection;
 import java.util.Set;
 
+/**
+ * 通用操作
+ */
 public interface TurtleOperations {
 
     public boolean haskey(String key);

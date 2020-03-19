@@ -6,11 +6,15 @@ package com.github.entropyfeng.mydb.config;
  */
 public enum SupportModel {
     /**
-     * 普通模式
+     * 通用模式
      */
-    COMMON
+    COMMON,
+    /**
+     * 具体模式
+     */
+    CONCRETE,
     /*
      * 管理模式
      */
-    ,ADMIN
+    ADMIN
 }
