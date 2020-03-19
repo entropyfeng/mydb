@@ -3,9 +3,9 @@ package com.github.entropyfeng.mydb.core.obj;
 import com.github.entropyfeng.mydb.config.Constant;
 import com.github.entropyfeng.mydb.core.SupportValue;
 import com.github.entropyfeng.mydb.expection.OutOfBoundException;
+import com.github.entropyfeng.mydb.util.BytesUtil;
 import com.github.entropyfeng.mydb.util.CommonUtil;
 import com.google.common.base.Objects;
-import com.google.common.io.ByteSource;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -23,59 +23,31 @@ public  class ImValueObject implements Serializable,Cloneable,Comparable<ImValue
     private  byte[] values;
     private  SupportValue type;
 
-
     private ImValueObject(String value) throws OutOfBoundException {
-        if (value.length()*2 >= Constant.MAX_STRING_LENGTH) {
+        if (value.length()* 2 >= Constant.MAX_STRING_LENGTH) {
             throw new OutOfBoundException();
         }
         this.type = SupportValue.STRING;
         this.values = value.getBytes();
     }
 
-    private void handleObject(String value) throws OutOfBoundException {
-        if (value.length()*2 >= Constant.MAX_STRING_LENGTH) {
-            throw new OutOfBoundException();
-        }
-        this.type = SupportValue.STRING;
-        this.values = value.getBytes();
-    }
     private ImValueObject(byte[] values, SupportValue type) {
-        this.type = type;
-        this.values = values;
-    }
-    private void handleObject(byte[]values ,SupportValue type){
         this.type = type;
         this.values = values;
     }
 
 
     public ImValueObject(int value) {
-        this(ByteBuffer.allocate(4).putInt(value).array(), SupportValue.INTEGER);
-    }
-    private void handleObject(int value) {
-        handleObject(ByteBuffer.allocate(4).putInt(value).array(), SupportValue.INTEGER);
-    }
-
-    public ImValueObject(float value) {
-        this(ByteBuffer.allocate(4).putFloat(value).array(), SupportValue.FLOAT);
-    }
-
-    private void handleObject(float value) {
-        handleObject(ByteBuffer.allocate(4).putFloat(value).array(), SupportValue.FLOAT);
+        this(BytesUtil.allocate4(value), SupportValue.INTEGER);
     }
 
     public ImValueObject(double value) {
-        this(ByteBuffer.allocate(8).putDouble(value).array(), SupportValue.DOUBLE);
-    }
-    private void handleObject(double value) {
-        handleObject(ByteBuffer.allocate(8).putDouble(value).array(), SupportValue.DOUBLE);
+        this(BytesUtil.allocate8(value), SupportValue.DOUBLE);
     }
 
+
     public ImValueObject(long value) {
-        this(ByteBuffer.allocate(8).putLong(value).array(), LONG);
-    }
-    private void handleObject(long value) {
-        handleObject(ByteBuffer.allocate(8).putDouble(value).array(), SupportValue.LONG);
+        this(BytesUtil.allocate8(value), LONG);
     }
 
     public ImValueObject(BigInteger value) {
@@ -94,51 +66,68 @@ public  class ImValueObject implements Serializable,Cloneable,Comparable<ImValue
         }
     }
 
-    public ImValueObject increment(double doubleValue)throws UnsupportedOperationException{
+    public void increment(double doubleValue)throws UnsupportedOperationException{
         switch (type) {
-            case DOUBLE:
-                return new ImValueObject(ByteBuffer.wrap(values).getDouble()+doubleValue);
-            case FLOAT:
+            case DOUBLE: BytesUtil.doubleAdd(this.values,doubleValue);break;
             case LONG :
             case INTEGER:
             case BIG_INTEGER:
-            case BIG_DECIMAL:return new ImValueObject(toBigDecimal(this).add(BigDecimal.valueOf(doubleValue)));
+            case BIG_DECIMAL:handleBigDecimal( toBigDecimal(this).add(BigDecimal.valueOf(doubleValue)));break;
             default:throw new UnsupportedOperationException();
         }
     }
 
+    private void handleBigDecimal(BigDecimal bigDecimal){
+        this.values=bigDecimal.toPlainString().getBytes();
+        this.type=SupportValue.BIG_DECIMAL;
+    }
+    private void handleBigInteger(BigInteger bigInteger){
+        this.values=bigInteger.toByteArray();
+        this.type=SupportValue.BIG_INTEGER;
+    }
+    private void handleLong(long longValue){
+        this.values=BytesUtil.allocate8(BytesUtil.bytesToInt(this.values)+longValue);
+        this.type= SupportValue.LONG;
+    }
 
-    public ImValueObject increment(long longValue)throws UnsupportedOperationException {
+    public void increment(long longValue)throws UnsupportedOperationException {
 
         switch (type){
-            case LONG: return new ImValueObject(ByteBuffer.wrap(values).getLong()+longValue);
-            case INTEGER:return new ImValueObject(ByteBuffer.wrap(values).getInt()+longValue);
-            case BIG_INTEGER:return new ImValueObject(toBigInteger(this).add(BigInteger.valueOf(longValue)));
-            case DOUBLE:
-            case BIG_DECIMAL:
-            case FLOAT:return new ImValueObject(toBigDecimal(this).add(BigDecimal.valueOf(longValue)));
+            case LONG: BytesUtil.longAdd(this.values,longValue);break;
+            case INTEGER:handleLong(longValue);break;
+            case BIG_INTEGER:handleBigInteger(toBigInteger(this).add(BigInteger.valueOf(longValue)));break;
+            case BIG_DECIMAL:handleBigDecimal(toBigDecimal(this).add(BigDecimal.valueOf(longValue)));break;
             default:throw new UnsupportedOperationException();
         }
     }
-    public ImValueObject increment(BigInteger bigInteger)throws UnsupportedOperationException{
+
+    public void increment(int intValue)throws UnsupportedOperationException{
+        switch (type){
+            case INTEGER:BytesUtil.intAdd(this.values,intValue);break;
+            case LONG:BytesUtil.longAdd(this.values,intValue);break;
+            case BIG_INTEGER:handleBigInteger(toBigInteger(this).add(BigInteger.valueOf(intValue)));break;
+            case DOUBLE:
+            case BIG_DECIMAL:handleBigDecimal(toBigDecimal(this).add(BigDecimal.valueOf(intValue)));break;
+            default:throw new UnsupportedOperationException();
+        }
+    }
+    public void increment(BigInteger bigInteger)throws UnsupportedOperationException{
 
         switch (type){
             case LONG:
             case INTEGER:
-            case BIG_INTEGER:return new ImValueObject(bigInteger.add(toBigInteger(this)));
+            case BIG_INTEGER:handleBigInteger(bigInteger.add(toBigInteger(this)));break;
             case BIG_DECIMAL:
-            case FLOAT:
-            case DOUBLE:return new ImValueObject(toBigDecimal(this).add(new BigDecimal(bigInteger)));
+            case DOUBLE:handleBigDecimal(toBigDecimal(this).add(new BigDecimal(bigInteger)));break;
             default:throw new UnsupportedOperationException();
         }
     }
-    public ImValueObject increment(BigDecimal bigDecimal){
-        return new ImValueObject(toBigDecimal(this).add(bigDecimal));
+    public void increment(BigDecimal bigDecimal){
+        handleBigDecimal(toBigDecimal(this).add(bigDecimal));
     }
     private static BigDecimal toBigDecimal(ImValueObject valueObject)throws UnsupportedOperationException{
         switch (valueObject.type){
             case DOUBLE:return BigDecimal.valueOf(ByteBuffer.wrap(valueObject.values).getDouble());
-            case FLOAT:return new BigDecimal(String.valueOf(ByteBuffer.wrap(valueObject.values).getFloat()));
             case BIG_INTEGER:new BigDecimal(new BigInteger(valueObject.values));
             case INTEGER:return new BigDecimal(ByteBuffer.wrap(valueObject.values).getInt());
             case LONG:return new BigDecimal(ByteBuffer.wrap(valueObject.values).getLong());
@@ -146,6 +135,8 @@ public  class ImValueObject implements Serializable,Cloneable,Comparable<ImValue
             default:throw new UnsupportedOperationException();
         }
     }
+
+
 
     private static BigInteger toBigInteger(ImValueObject valueObject)throws UnsupportedOperationException{
         switch (valueObject.type){
@@ -158,13 +149,11 @@ public  class ImValueObject implements Serializable,Cloneable,Comparable<ImValue
     public Object toObject(){
         switch (type){
             case DOUBLE:return ByteBuffer.wrap(values).getDouble();
-            case FLOAT:return ByteBuffer.wrap(values).getFloat();
             case LONG:return ByteBuffer.wrap(values).getLong();
             case INTEGER:return ByteBuffer.wrap(values).getInt();
             case BIG_DECIMAL:return new BigDecimal(new String(values));
             case BIG_INTEGER:return new BigInteger(values);
             default: return new String(values);
-
         }
     }
 

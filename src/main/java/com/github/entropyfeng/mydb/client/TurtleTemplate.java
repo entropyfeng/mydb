@@ -4,6 +4,9 @@ import com.github.entropyfeng.mydb.core.obj.ValueObject;
 
 import java.util.Collection;
 
+/**
+ * @author entropyfeng
+ */
 public class TurtleTemplate implements TurtleOperations {
 
     private ValueOperations valueOperations;

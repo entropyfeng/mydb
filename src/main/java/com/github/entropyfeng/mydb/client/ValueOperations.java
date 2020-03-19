@@ -4,6 +4,10 @@ import com.github.entropyfeng.mydb.expection.TurtleNullPointerException;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ *
+ * @param <V>
+ */
 public interface ValueOperations<V> {
 
     default void set(String key, V value) {
@@ -60,7 +64,7 @@ public interface ValueOperations<V> {
     Object increment(String key, long longValue);
 
 
-    Object increment(String var1, double var2);
+    Object increment(String key, double doubleValue);
 
 
 

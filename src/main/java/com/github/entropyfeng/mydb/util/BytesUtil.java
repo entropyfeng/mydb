@@ -103,4 +103,17 @@ public class BytesUtil {
         return bytes;
     }
 
+    public static void doubleAdd(byte[] bytes,double doubleValue){
+        doubleToBytes(bytes,bytesToDouble(bytes)+doubleValue);
+    }
+    public static void floatAdd(byte[] bytes,float floatValue){
+        floatToBytes(bytes,bytesToFloat(bytes)+floatValue);
+    }
+    public static void longAdd(byte[] bytes,long longValue){
+        longToBytes(bytes,bytesToLong(bytes)+longValue);
+    }
+    public static void intAdd(byte[] bytes,int intValue){
+        intToBytes(bytes,bytesToInt(bytes)+intValue);
+    }
+
 }
