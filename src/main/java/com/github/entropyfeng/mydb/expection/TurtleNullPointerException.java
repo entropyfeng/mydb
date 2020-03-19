@@ -1,4 +1,4 @@
-package com.github.entropyfeng.mydb.client.exception;
+package com.github.entropyfeng.mydb.expection;
 
 public class TurtleNullPointerException extends NullPointerException {
 

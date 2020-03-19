@@ -56,8 +56,16 @@ public class ValuesObject extends ExpireHandler {
         ValueObject valueObject=valueMap.get(key);
         valueMap.replace(key,valueObject.append(value));
     }
-    public void increment(String key,long longValue)throws UnsupportedOperationException{
+    public boolean increment(String key,long longValue)throws UnsupportedOperationException{
         removeExpireKey(key);
+        ValueObject valueObject=valueMap.get(key);
+        if(valueObject!=null){
+            valueObject.increment(longValue);
+            return true;
+        }
+        return false;
     }
-
+    public boolean increment(String key,double doubleValue){
+        return false;
+    }
 }
