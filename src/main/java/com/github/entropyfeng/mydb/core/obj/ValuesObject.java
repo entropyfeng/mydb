@@ -4,7 +4,7 @@ import com.github.entropyfeng.mydb.util.TimeUtil;
 import java.util.HashMap;
 
 public class ValuesObject extends ExpireHandler {
-    private HashMap<String,ValueObject> valueMap;
+    private HashMap<String, ValueObject> valueMap;
     public ValueObject get(String key){
         removeExpireKey(key);
         return valueMap.get(key);
@@ -54,7 +54,9 @@ public class ValuesObject extends ExpireHandler {
     public void append(String key,String value)throws UnsupportedOperationException{
         removeExpireKey(key);
         ValueObject valueObject=valueMap.get(key);
-        valueMap.replace(key,valueObject.append(value));
+        if (valueObject!=null){
+            valueObject.append(value);
+        }
     }
     public boolean increment(String key,long longValue)throws UnsupportedOperationException{
         removeExpireKey(key);

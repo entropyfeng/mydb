@@ -3,9 +3,10 @@ package com.github.entropyfeng.mydb.core.obj;
 import com.github.entropyfeng.mydb.config.Constant;
 import com.github.entropyfeng.mydb.core.SupportValue;
 import com.github.entropyfeng.mydb.expection.OutOfBoundException;
+import com.github.entropyfeng.mydb.util.BytesUtil;
+import com.github.entropyfeng.mydb.util.CommonUtil;
 import com.google.common.base.Objects;
 import org.jetbrains.annotations.NotNull;
-
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -15,17 +16,19 @@ import java.util.Arrays;
 
 import static com.github.entropyfeng.mydb.core.SupportValue.LONG;
 
-public final class ValueObject implements Serializable,Cloneable,Comparable<ValueObject> {
-    private final byte[] values;
-    private final SupportValue type;
+/**
+ * @author entropyfeng
+ */
+public  class ValueObject implements Serializable,Cloneable,Comparable<ValueObject> {
+    private  byte[] values;
+    private  SupportValue type;
 
-
-    private ValueObject(byte[] values, SupportValue type, long length) throws OutOfBoundException {
-        if (length >= Constant.MAX_STRING_LENGTH) {
+    private ValueObject(String value) throws OutOfBoundException {
+        if (value.length()* 2 >= Constant.MAX_STRING_LENGTH) {
             throw new OutOfBoundException();
         }
-        this.type = type;
-        this.values = values;
+        this.type = SupportValue.STRING;
+        this.values = value.getBytes();
     }
 
     private ValueObject(byte[] values, SupportValue type) {
@@ -33,24 +36,18 @@ public final class ValueObject implements Serializable,Cloneable,Comparable<Valu
         this.values = values;
     }
 
-    public ValueObject(String value) {
-        this(value.getBytes(), SupportValue.STRING, value.length() * 2);
-    }
 
     public ValueObject(int value) {
-        this(ByteBuffer.allocate(4).putInt(value).array(), SupportValue.INTEGER);
-    }
-
-    public ValueObject(float value) {
-        this(ByteBuffer.allocate(4).putFloat(value).array(), SupportValue.FLOAT);
+        this(BytesUtil.allocate4(value), SupportValue.INTEGER);
     }
 
     public ValueObject(double value) {
-        this(ByteBuffer.allocate(8).putDouble(value).array(), SupportValue.DOUBLE);
+        this(BytesUtil.allocate8(value), SupportValue.DOUBLE);
     }
 
+
     public ValueObject(long value) {
-        this(ByteBuffer.allocate(8).putLong(value).array(), LONG);
+        this(BytesUtil.allocate8(value), LONG);
     }
 
     public ValueObject(BigInteger value) {
@@ -61,60 +58,76 @@ public final class ValueObject implements Serializable,Cloneable,Comparable<Valu
         this(value.toPlainString().getBytes(), SupportValue.BIG_DECIMAL);
     }
 
-    public ValueObject append(String value)throws UnsupportedOperationException{
+    public void append(String value)throws UnsupportedOperationException{
         if(this.type==SupportValue.STRING){
-            return new ValueObject(value+new String(this.values));
+         this.values=CommonUtil.mergeBytes(this.values,value.getBytes());
         }else {
             throw new UnsupportedOperationException();
         }
     }
 
-    public ValueObject increment(double doubleValue)throws UnsupportedOperationException{
-
+    public void increment(double doubleValue)throws UnsupportedOperationException{
         switch (type) {
-            case DOUBLE:
-                return new ValueObject(ByteBuffer.wrap(values).getDouble()+doubleValue);
-            case FLOAT:
+            case DOUBLE: BytesUtil.doubleAdd(this.values,doubleValue);break;
             case LONG :
             case INTEGER:
             case BIG_INTEGER:
-            case BIG_DECIMAL:return new ValueObject(toBigDecimal(this).add(BigDecimal.valueOf(doubleValue)));
+            case BIG_DECIMAL:handleBigDecimal( toBigDecimal(this).add(BigDecimal.valueOf(doubleValue)));break;
             default:throw new UnsupportedOperationException();
         }
-
     }
 
-    public ValueObject increment(long longValue)throws UnsupportedOperationException {
+    private void handleBigDecimal(BigDecimal bigDecimal){
+        this.values=bigDecimal.toPlainString().getBytes();
+        this.type=SupportValue.BIG_DECIMAL;
+    }
+    private void handleBigInteger(BigInteger bigInteger){
+        this.values=bigInteger.toByteArray();
+        this.type=SupportValue.BIG_INTEGER;
+    }
+    private void handleLong(long longValue){
+        this.values=BytesUtil.allocate8(BytesUtil.bytesToInt(this.values)+longValue);
+        this.type= SupportValue.LONG;
+    }
+
+    public void increment(long longValue)throws UnsupportedOperationException {
 
         switch (type){
-            case LONG: return new ValueObject(ByteBuffer.wrap(values).getLong()+longValue);
-            case INTEGER:return new ValueObject(ByteBuffer.wrap(values).getInt()+longValue);
-            case BIG_INTEGER:return new ValueObject(toBigInteger(this).add(BigInteger.valueOf(longValue)));
-            case DOUBLE:
-            case BIG_DECIMAL:
-            case FLOAT:return new ValueObject(toBigDecimal(this).add(BigDecimal.valueOf(longValue)));
+            case LONG: BytesUtil.longAdd(this.values,longValue);break;
+            case INTEGER:handleLong(longValue);break;
+            case BIG_INTEGER:handleBigInteger(toBigInteger(this).add(BigInteger.valueOf(longValue)));break;
+            case BIG_DECIMAL:handleBigDecimal(toBigDecimal(this).add(BigDecimal.valueOf(longValue)));break;
             default:throw new UnsupportedOperationException();
         }
     }
-    public ValueObject increment(BigInteger bigInteger)throws UnsupportedOperationException{
+
+    public void increment(int intValue)throws UnsupportedOperationException{
+        switch (type){
+            case INTEGER:BytesUtil.intAdd(this.values,intValue);break;
+            case LONG:BytesUtil.longAdd(this.values,intValue);break;
+            case BIG_INTEGER:handleBigInteger(toBigInteger(this).add(BigInteger.valueOf(intValue)));break;
+            case DOUBLE:
+            case BIG_DECIMAL:handleBigDecimal(toBigDecimal(this).add(BigDecimal.valueOf(intValue)));break;
+            default:throw new UnsupportedOperationException();
+        }
+    }
+    public void increment(BigInteger bigInteger)throws UnsupportedOperationException{
 
         switch (type){
             case LONG:
             case INTEGER:
-            case BIG_INTEGER:return new ValueObject(bigInteger.add(toBigInteger(this)));
+            case BIG_INTEGER:handleBigInteger(bigInteger.add(toBigInteger(this)));break;
             case BIG_DECIMAL:
-            case FLOAT:
-            case DOUBLE:return new ValueObject(toBigDecimal(this).add(new BigDecimal(bigInteger)));
+            case DOUBLE:handleBigDecimal(toBigDecimal(this).add(new BigDecimal(bigInteger)));break;
             default:throw new UnsupportedOperationException();
         }
     }
-    public ValueObject increment(BigDecimal bigDecimal){
-        return new ValueObject(toBigDecimal(this).add(bigDecimal));
+    public void increment(BigDecimal bigDecimal){
+        handleBigDecimal(toBigDecimal(this).add(bigDecimal));
     }
     private static BigDecimal toBigDecimal(ValueObject valueObject)throws UnsupportedOperationException{
         switch (valueObject.type){
             case DOUBLE:return BigDecimal.valueOf(ByteBuffer.wrap(valueObject.values).getDouble());
-            case FLOAT:return new BigDecimal(String.valueOf(ByteBuffer.wrap(valueObject.values).getFloat()));
             case BIG_INTEGER:new BigDecimal(new BigInteger(valueObject.values));
             case INTEGER:return new BigDecimal(ByteBuffer.wrap(valueObject.values).getInt());
             case LONG:return new BigDecimal(ByteBuffer.wrap(valueObject.values).getLong());
@@ -122,6 +135,8 @@ public final class ValueObject implements Serializable,Cloneable,Comparable<Valu
             default:throw new UnsupportedOperationException();
         }
     }
+
+
 
     private static BigInteger toBigInteger(ValueObject valueObject)throws UnsupportedOperationException{
         switch (valueObject.type){
@@ -134,21 +149,23 @@ public final class ValueObject implements Serializable,Cloneable,Comparable<Valu
     public Object toObject(){
         switch (type){
             case DOUBLE:return ByteBuffer.wrap(values).getDouble();
-            case FLOAT:return ByteBuffer.wrap(values).getFloat();
             case LONG:return ByteBuffer.wrap(values).getLong();
             case INTEGER:return ByteBuffer.wrap(values).getInt();
             case BIG_DECIMAL:return new BigDecimal(new String(values));
             case BIG_INTEGER:return new BigInteger(values);
             default: return new String(values);
-
         }
     }
 
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o){
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()){
+            return false;
+        }
         ValueObject that = (ValueObject) o;
         return Objects.equal(values, that.values) &&
                 type == that.type;
@@ -170,12 +187,16 @@ public final class ValueObject implements Serializable,Cloneable,Comparable<Valu
         return 0;
     }
 
+    private void intAdd(int intValue){
+
+    }
 
     public static void main(String[] args) {
-        ValueObject longObject=new ValueObject(10086L);
-        System.out.println(longObject.type);
-        ValueObject bigDecimal=new ValueObject(new BigDecimal(Long.MAX_VALUE));
-        System.out.println(bigDecimal.type);
+
+       byte[]res= ByteBuffer.allocate(4).array();
+
+       int hah=ByteBuffer.wrap(res).asIntBuffer().put(7).get();
+        System.out.println(hah);
     }
 
 }

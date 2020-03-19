@@ -1,7 +1,5 @@
 package com.github.entropyfeng.mydb.client;
 
-import com.github.entropyfeng.mydb.core.obj.ValueObject;
-
 import java.util.Collection;
 
 /**
