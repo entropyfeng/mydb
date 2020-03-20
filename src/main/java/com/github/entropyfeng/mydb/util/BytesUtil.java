@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import java.nio.ByteBuffer;
+import java.util.BitSet;
 
 /**
  * 默认大端法
@@ -64,6 +65,7 @@ public class BytesUtil {
                         ((long) (bytes[6] & 0xff) << 8) |
                         ((long) bytes[7] & 0xff);
     }
+
 
 
     public static double bytesToDouble(byte[] bytes) {

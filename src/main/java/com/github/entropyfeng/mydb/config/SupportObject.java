@@ -40,7 +40,7 @@ public enum SupportObject {
     public byte toType(){
         return type;
     }
-    public static SupportObject getSupportObjectByType(byte type){
+    public static SupportObject getSupportObjectByType(byte type)throws IllegalArgumentException{
         for (SupportObject o : SupportObject.values()) {
             if (o.type == type) {
                 return o;

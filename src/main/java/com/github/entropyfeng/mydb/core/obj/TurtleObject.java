@@ -3,9 +3,11 @@ package com.github.entropyfeng.mydb.core.obj;
 import com.github.entropyfeng.mydb.config.Constant;
 import com.github.entropyfeng.mydb.core.SupportValue;
 import com.github.entropyfeng.mydb.expection.OutOfBoundException;
+import com.github.entropyfeng.mydb.helper.BloomObject;
 import com.github.entropyfeng.mydb.util.BytesUtil;
 import com.github.entropyfeng.mydb.util.CommonUtil;
 import com.google.common.base.Objects;
+import com.google.common.hash.BloomFilter;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
@@ -190,6 +192,8 @@ public  class TurtleObject implements Serializable,Cloneable, Comparable<TurtleO
 
 
     public static void main(String[] args) {
+
+
 
 
         TurtleObject turtleObject =new TurtleObject("hello world");

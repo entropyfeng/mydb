@@ -1,6 +1,5 @@
 package com.github.entropyfeng.mydb.core.obj;
 
-import com.google.common.annotations.Beta;
 import com.google.common.base.Charsets;
 import com.google.common.base.Objects;
 import com.google.common.hash.Hashing;
@@ -58,8 +57,12 @@ public final class StringObject implements Serializable, Comparable<StringObject
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o){
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()){
+            return false;
+        }
         StringObject that = (StringObject) o;
         return Objects.equal(string, that.string);
     }

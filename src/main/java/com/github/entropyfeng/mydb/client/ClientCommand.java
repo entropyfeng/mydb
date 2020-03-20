@@ -6,6 +6,7 @@ import com.github.entropyfeng.mydb.config.SupportPara;
 import com.github.entropyfeng.mydb.core.obj.TurtleObject;
 
 import java.io.Serializable;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +14,9 @@ import java.util.List;
  * @author entropyfeng
  */
 public class ClientCommand implements Serializable {
-    private long timeStamp;
+    /**
+     *
+     */
 
     /**
      * 1字节
@@ -23,22 +26,25 @@ public class ClientCommand implements Serializable {
      * 1字节
      */
     private SupportObject supportObject;
+
+    /**
+     * 占1字节
+     */
+    private byte operationParaNumber;
+
     /**
      * 2*operationName 字节
      */
     private String operationName;
-    /**
-     * 占4字节
-     */
-    private int operationParaNumber;
+
     /**
      * 占operationParaNumber*1 byte
      */
-    private List<SupportPara> parasTypeList;
+    private List<Byte> parasTypeList;
 
     private List<Object> parasList;
 
-    ClientCommand(SupportModel supportModel, SupportObject supportObject, String operationName) {
+    public ClientCommand(SupportModel supportModel, SupportObject supportObject, String operationName) {
         this.supportModel = supportModel;
         this.supportObject = supportObject;
         this.operationName = operationName;
@@ -46,12 +52,16 @@ public class ClientCommand implements Serializable {
         parasTypeList = new ArrayList<>();
     }
 
-    void addPara(SupportPara supportPara, Object value) {
-        this.parasTypeList.add(supportPara);
+    public void addPara(SupportPara supportPara, Object value) {
+        this.parasTypeList.add(supportPara.toType());
         this.parasList.add(value);
         operationParaNumber++;
     }
 
+    public byte[] toBytes(){
+
+        return null;
+    }
 
     void xx(SupportPara paraType, Object para) {
         long length = 0;
@@ -65,11 +75,12 @@ public class ClientCommand implements Serializable {
                 length += 8;
                 break;
             case STRING:
-            case NUMBER:
-                length += ((String) para).length();
+            case NUMBER_DECIMAL:
+            case NUMBER_INTEGER:
+                length += ((String) para).length()*2;
                 break;
             case VALUE_OBJECT:
-                length += ((TurtleObject) para).toByte().length;
+                length += ((TurtleObject) para).toByte().length*2;
                 break;
             default:
                 throw new IllegalArgumentException("unSupport paraType" + para.toString());
