@@ -7,25 +7,42 @@ public enum  SupportValue {
     /**
      * {@link String}
      */
-    STRING,
+    STRING((byte) 0),
     /**
      * {@link Integer}
      */
-    INTEGER,
+    INTEGER((byte)1),
     /**
      * {@link Double}
      */
-    DOUBLE,
+    DOUBLE((byte)2),
     /**
      * {@link Long}
      */
-    LONG,
+    LONG((byte)3),
     /**
      * {@link java.math.BigInteger}
      */
-    BIG_INTEGER,
+    BIG_INTEGER((byte)4),
     /**
      * {@link java.math.BigDecimal}
      */
-    BIG_DECIMAL,
+    BIG_DECIMAL((byte)5);
+
+    private byte type;
+    private SupportValue(byte type){
+        this.type = type;
+    }
+    public static SupportValue getSupportValueByType(byte type)throws IllegalArgumentException {
+        for (SupportValue c : SupportValue.values()) {
+            if (c.type == type) {
+                return c;
+            }
+        }
+        throw new IllegalArgumentException("not exists type ->"+type);
+    }
+    public byte toType(){
+        return type;
+    }
+
 }

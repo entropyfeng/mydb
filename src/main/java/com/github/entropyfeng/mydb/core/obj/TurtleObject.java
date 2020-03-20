@@ -15,15 +15,16 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import static com.github.entropyfeng.mydb.core.SupportValue.LONG;
+import static com.github.entropyfeng.mydb.util.BytesUtil.*;
 
 /**
  * @author entropyfeng
  */
-public  class ValueObject implements Serializable,Cloneable, Externalizable,Comparable<ValueObject> {
+public  class TurtleObject implements Serializable,Cloneable, Comparable<TurtleObject> {
     private  byte[] values;
     private  SupportValue type;
 
-    private ValueObject(String value) throws OutOfBoundException {
+    private TurtleObject(String value) throws OutOfBoundException {
         if (value.length()* 2 >= Constant.MAX_STRING_LENGTH) {
             throw new OutOfBoundException();
         }
@@ -31,30 +32,30 @@ public  class ValueObject implements Serializable,Cloneable, Externalizable,Comp
         this.values = value.getBytes();
     }
 
-    private ValueObject(byte[] values, SupportValue type) {
+    private TurtleObject(byte[] values, SupportValue type) {
         this.type = type;
         this.values = values;
     }
 
 
-    public ValueObject(int value) {
+    public TurtleObject(int value) {
         this(BytesUtil.allocate4(value), SupportValue.INTEGER);
     }
 
-    public ValueObject(double value) {
+    public TurtleObject(double value) {
         this(BytesUtil.allocate8(value), SupportValue.DOUBLE);
     }
 
 
-    public ValueObject(long value) {
+    public TurtleObject(long value) {
         this(BytesUtil.allocate8(value), LONG);
     }
 
-    public ValueObject(BigInteger value) {
+    public TurtleObject(BigInteger value) {
         this(value.toByteArray(), SupportValue.BIG_INTEGER);
     }
 
-    public ValueObject(BigDecimal value) {
+    public TurtleObject(BigDecimal value) {
         this(value.toPlainString().getBytes(), SupportValue.BIG_DECIMAL);
     }
 
@@ -68,7 +69,7 @@ public  class ValueObject implements Serializable,Cloneable, Externalizable,Comp
 
     public void increment(double doubleValue)throws UnsupportedOperationException{
         switch (type) {
-            case DOUBLE: BytesUtil.doubleAdd(this.values,doubleValue);break;
+            case DOUBLE: doubleAdd(this.values,doubleValue);break;
             case LONG :
             case INTEGER:
             case BIG_INTEGER:
@@ -93,7 +94,7 @@ public  class ValueObject implements Serializable,Cloneable, Externalizable,Comp
     public void increment(long longValue)throws UnsupportedOperationException {
 
         switch (type){
-            case LONG: BytesUtil.longAdd(this.values,longValue);break;
+            case LONG: longAdd(this.values,longValue);break;
             case INTEGER:handleLong(longValue);break;
             case BIG_INTEGER:handleBigInteger(toBigInteger(this).add(BigInteger.valueOf(longValue)));break;
             case BIG_DECIMAL:handleBigDecimal(toBigDecimal(this).add(BigDecimal.valueOf(longValue)));break;
@@ -103,8 +104,8 @@ public  class ValueObject implements Serializable,Cloneable, Externalizable,Comp
 
     public void increment(int intValue)throws UnsupportedOperationException{
         switch (type){
-            case INTEGER:BytesUtil.intAdd(this.values,intValue);break;
-            case LONG:BytesUtil.longAdd(this.values,intValue);break;
+            case INTEGER:intAdd(this.values,intValue);break;
+            case LONG:longAdd(this.values,intValue);break;
             case BIG_INTEGER:handleBigInteger(toBigInteger(this).add(BigInteger.valueOf(intValue)));break;
             case DOUBLE:
             case BIG_DECIMAL:handleBigDecimal(toBigDecimal(this).add(BigDecimal.valueOf(intValue)));break;
@@ -125,24 +126,24 @@ public  class ValueObject implements Serializable,Cloneable, Externalizable,Comp
     public void increment(BigDecimal bigDecimal){
         handleBigDecimal(toBigDecimal(this).add(bigDecimal));
     }
-    private static BigDecimal toBigDecimal(ValueObject valueObject)throws UnsupportedOperationException{
-        switch (valueObject.type){
-            case DOUBLE:return BigDecimal.valueOf(ByteBuffer.wrap(valueObject.values).getDouble());
-            case BIG_INTEGER:new BigDecimal(new BigInteger(valueObject.values));
-            case INTEGER:return new BigDecimal(ByteBuffer.wrap(valueObject.values).getInt());
-            case LONG:return new BigDecimal(ByteBuffer.wrap(valueObject.values).getLong());
-            case BIG_DECIMAL:return new BigDecimal(new String(valueObject.values));
+    private static BigDecimal toBigDecimal(TurtleObject turtleObject)throws UnsupportedOperationException{
+        switch (turtleObject.type){
+            case DOUBLE:return BigDecimal.valueOf(ByteBuffer.wrap(turtleObject.values).getDouble());
+            case BIG_INTEGER:new BigDecimal(new BigInteger(turtleObject.values));
+            case INTEGER:return new BigDecimal(ByteBuffer.wrap(turtleObject.values).getInt());
+            case LONG:return new BigDecimal(ByteBuffer.wrap(turtleObject.values).getLong());
+            case BIG_DECIMAL:return new BigDecimal(new String(turtleObject.values));
             default:throw new UnsupportedOperationException();
         }
     }
 
 
 
-    private static BigInteger toBigInteger(ValueObject valueObject)throws UnsupportedOperationException{
-        switch (valueObject.type){
-            case INTEGER:return BigInteger.valueOf(ByteBuffer.wrap(valueObject.values).getInt());
-            case LONG:return BigInteger.valueOf(ByteBuffer.wrap(valueObject.values).getLong());
-            case BIG_INTEGER:return new BigInteger(valueObject.values);
+    private static BigInteger toBigInteger(TurtleObject turtleObject)throws UnsupportedOperationException{
+        switch (turtleObject.type){
+            case INTEGER:return BigInteger.valueOf(ByteBuffer.wrap(turtleObject.values).getInt());
+            case LONG:return BigInteger.valueOf(ByteBuffer.wrap(turtleObject.values).getLong());
+            case BIG_INTEGER:return new BigInteger(turtleObject.values);
             default:throw  new UnsupportedOperationException();
         }
     }
@@ -166,7 +167,7 @@ public  class ValueObject implements Serializable,Cloneable, Externalizable,Comp
         if (o == null || getClass() != o.getClass()){
             return false;
         }
-        ValueObject that = (ValueObject) o;
+        TurtleObject that = (TurtleObject) o;
         return Objects.equal(values, that.values) &&
                 type == that.type;
     }
@@ -177,41 +178,55 @@ public  class ValueObject implements Serializable,Cloneable, Externalizable,Comp
     }
 
     @Override
-    protected ValueObject clone() throws CloneNotSupportedException {
+    protected TurtleObject clone() throws CloneNotSupportedException {
         super.clone();
-        return new ValueObject(Arrays.copyOf(this.values,this.values.length),SupportValue.valueOf(type.name()));
+        return new TurtleObject(Arrays.copyOf(this.values,this.values.length),SupportValue.valueOf(type.name()));
     }
 
     @Override
-    public int compareTo(@NotNull ValueObject o) {
+    public int compareTo(@NotNull TurtleObject o) {
         return 0;
     }
 
-    private void intAdd(int intValue){
-
-    }
 
     public static void main(String[] args) {
 
-       byte[]res= ByteBuffer.allocate(4).array();
 
-       int hah=ByteBuffer.wrap(res).asIntBuffer().put(7).get();
-        System.out.println(hah);
+        TurtleObject turtleObject =new TurtleObject("hello world");
+       byte[] bytes= turtleObject.toByte();
+       turtleObject = TurtleObject.toValueObject(bytes);
+        System.out.println(turtleObject.type);
     }
 
     public byte[]toByte(){
-        final int length=values.length+1;
-        return
+       return ByteBuffer.allocate(5+values.length).put((byte)(type.ordinal())).putInt(values.length).put(values).array();
     }
 
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
 
-
+    public static TurtleObject toValueObject(byte[] bytes)throws IllegalArgumentException{
+        if(bytes.length>=5){
+            byte typeByte=bytes[0];
+            int valueSize=BytesUtil.bytesToInt(bytes[1],bytes[2],bytes[3],bytes[4]);
+            if(valueSize+5==bytes.length){
+            final byte[] temp=    Arrays.copyOfRange(bytes,5,bytes.length);
+                return new TurtleObject(temp,SupportValue.getSupportValueByType(typeByte));
+            }
+        }
+        throw new IllegalArgumentException("byte array  length is"+bytes.length);
     }
 
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-
+    private static void doubleAdd(byte[] bytes,double doubleValue){
+        doubleToBytes(bytes,bytesToDouble(bytes)+doubleValue);
     }
+    private static void floatAdd(byte[] bytes,float floatValue){
+        floatToBytes(bytes,bytesToFloat(bytes)+floatValue);
+    }
+    private static void longAdd(byte[] bytes,long longValue){
+        longToBytes(bytes,bytesToLong(bytes)+longValue);
+    }
+    private static void intAdd(byte[] bytes,int intValue){
+        intToBytes(bytes,bytesToInt(bytes)+intValue);
+    }
+
+
 }

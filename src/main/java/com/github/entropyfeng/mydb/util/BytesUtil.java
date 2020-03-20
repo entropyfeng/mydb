@@ -22,6 +22,12 @@ public class BytesUtil {
 
     }
 
+    public static int bytesToInt(byte byte0,byte byte1,byte byte2,byte byte3){
+        return (byte0 & 0xff) << 24
+                | (byte1 & 0xff) << 16
+                | (byte2 & 0xff) << 8
+                | (byte3 & 0xff);
+    }
     public static int bytesToInt(byte[] bytes) {
         assert bytes.length==4;
         return (bytes[0] & 0xff) << 24
@@ -103,17 +109,5 @@ public class BytesUtil {
         return bytes;
     }
 
-    public static void doubleAdd(byte[] bytes,double doubleValue){
-        doubleToBytes(bytes,bytesToDouble(bytes)+doubleValue);
-    }
-    public static void floatAdd(byte[] bytes,float floatValue){
-        floatToBytes(bytes,bytesToFloat(bytes)+floatValue);
-    }
-    public static void longAdd(byte[] bytes,long longValue){
-        longToBytes(bytes,bytesToLong(bytes)+longValue);
-    }
-    public static void intAdd(byte[] bytes,int intValue){
-        intToBytes(bytes,bytesToInt(bytes)+intValue);
-    }
 
 }

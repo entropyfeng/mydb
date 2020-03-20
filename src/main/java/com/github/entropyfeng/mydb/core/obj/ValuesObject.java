@@ -6,17 +6,16 @@ import com.github.entropyfeng.mydb.util.TimeUtil;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.Map;
 
-public class ValuesObject extends ExpireHandler {
-    private HashMap<String, ValueObject> valueMap;
+public class ValuesObject extends ExpireHandler  {
+    private HashMap<String, TurtleObject> valueMap;
 
-    public ValuesObject(HashMap<String, ValueObject> valueMap) {
+    public ValuesObject(HashMap<String, TurtleObject> valueMap) {
         super();
         this.valueMap = valueMap;
     }
 
-    public ValueObject get(String key) {
+    public TurtleObject get(String key) {
         removeExpireKey(key);
         return valueMap.get(key);
     }
@@ -31,21 +30,21 @@ public class ValuesObject extends ExpireHandler {
         return valueMap.containsKey(key);
     }
 
-    public void set(String key, ValueObject value, long time) {
+    public void set(String key, TurtleObject value, long time) {
         valueMap.put(key, value);
         if (!TimeUtil.isExpire(time)) {
             putExpire(key, time);
         }
     }
 
-    public void setIfPresent(String key, ValueObject value, long time) {
+    public void setIfPresent(String key, TurtleObject value, long time) {
         removeExpireKey(key);
         if (valueMap.containsKey(key)) {
             set(key, value, time);
         }
     }
 
-    public void setIfAbsent(String key, ValueObject value, long time) {
+    public void setIfAbsent(String key, TurtleObject value, long time) {
         removeExpireKey(key);
         if (!valueMap.containsKey(key)) {
             set(key, value, time);
@@ -64,17 +63,17 @@ public class ValuesObject extends ExpireHandler {
 
     public void append(String key, String value) throws UnsupportedOperationException {
         removeExpireKey(key);
-        ValueObject valueObject = valueMap.get(key);
-        if (valueObject != null) {
-            valueObject.append(value);
+        TurtleObject turtleObject = valueMap.get(key);
+        if (turtleObject != null) {
+            turtleObject.append(value);
         }
     }
 
     public boolean increment(String key, long longValue) throws UnsupportedOperationException {
         removeExpireKey(key);
-        ValueObject valueObject = valueMap.get(key);
-        if (valueObject != null) {
-            valueObject.increment(longValue);
+        TurtleObject turtleObject = valueMap.get(key);
+        if (turtleObject != null) {
+            turtleObject.increment(longValue);
             return true;
         }
         return false;
@@ -85,7 +84,7 @@ public class ValuesObject extends ExpireHandler {
     }
 
     public static void main(String[] args) throws NoSuchMethodException {
-        ValuesObject valuesObject = new ValuesObject();
+        ValuesObject valuesObject = new ValuesObject(new HashMap<>());
         Method method = valuesObject.getClass().getDeclaredMethod("increment", String.class, long.class);
         try {
             System.out.println(method.invoke(valuesObject, "d", 100));
