@@ -14,35 +14,36 @@ import java.util.List;
  * @author entropyfeng
  */
 public class ClientCommand implements Serializable {
-    /**
-     *
-     */
+
 
     /**
      * 1字节
      */
-    private SupportModel supportModel;
+    public final SupportModel supportModel;
     /**
      * 1字节
      */
-    private SupportObject supportObject;
+    public final SupportObject supportObject;
 
     /**
      * 占1字节
      */
-    private byte operationParaNumber;
+    public byte operationParaNumber;
 
+    public long dataLength;
     /**
      * 2*operationName 字节
      */
-    private String operationName;
+    private final String operationName;
 
     /**
      * 占operationParaNumber*1 byte
      */
-    private List<Byte> parasTypeList;
+    private final List<Byte> parasTypeList;
 
-    private List<Object> parasList;
+    private final List<Object> parasList;
+
+
 
     public ClientCommand(SupportModel supportModel, SupportObject supportObject, String operationName) {
         this.supportModel = supportModel;
@@ -79,7 +80,7 @@ public class ClientCommand implements Serializable {
             case NUMBER_INTEGER:
                 length += ((String) para).length()*2;
                 break;
-            case VALUE_OBJECT:
+            case TURTLE_OBJECT:
                 length += ((TurtleObject) para).toByte().length*2;
                 break;
             default:

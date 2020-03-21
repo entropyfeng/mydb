@@ -14,7 +14,7 @@ public class TurtleTemplate implements TurtleOperations {
     }
 
     @Override
-    public boolean haskey(String key) {
+    public boolean hasKey(String key) {
         return false;
     }
 

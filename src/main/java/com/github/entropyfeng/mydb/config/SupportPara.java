@@ -31,9 +31,15 @@ public enum SupportPara {
      */
     NUMBER_DECIMAL((byte)5),
     /**
-     * ValueObject
+     * {@link com.github.entropyfeng.mydb.core.obj.TurtleObject}
      */
-    VALUE_OBJECT((byte)6);
+    TURTLE_OBJECT((byte)6),
+    /**
+     * 集合元素
+     */
+    COLLECTION((byte)7);
+
+
     private byte type;
     private SupportPara(byte type){
         this.type=type;

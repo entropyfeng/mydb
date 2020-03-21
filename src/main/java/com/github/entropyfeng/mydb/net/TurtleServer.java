@@ -1,28 +1,20 @@
 package com.github.entropyfeng.mydb.net;
 
-import com.github.entropyfeng.mydb.config.CommonConfig;
-import com.github.entropyfeng.mydb.config.Constant;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.nio.NioEventLoop;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import org.checkerframework.checker.units.qual.C;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.InetSocketAddress;
-
 /**
  * @author entropyfeng
- * @date 2020/3/5 14:21
  */
-public class EchoServer {
+public class TurtleServer {
 
-    private static final Logger logger=LoggerFactory.getLogger(EchoServer.class);
+
+    private static final Logger logger= LoggerFactory.getLogger(TurtleServer.class);
     private final int port;
 
     private final String host;
@@ -32,7 +24,7 @@ public class EchoServer {
      * @param port 端口
      * @param host 主机地址
      */
-    EchoServer(String port, String host){
+    TurtleServer(String port, String host){
 
         this.port=Integer.parseInt(port);
         this.host=host;
@@ -42,7 +34,7 @@ public class EchoServer {
      * @param port 端口
      * @param host 主机地址
      */
-    EchoServer(int port, String host){
+    TurtleServer(int port, String host){
         this.port=port;
         this.host=host;
     }
@@ -54,12 +46,14 @@ public class EchoServer {
             ServerBootstrap serverBootstrap=new ServerBootstrap();
             serverBootstrap.group(eventLoopGroup)
                     .channel(NioServerSocketChannel.class)
+                    .childOption(ChannelOption.RCVBUF_ALLOCATOR,new AdaptiveRecvByteBufAllocator(2<<10,2<<20,2<<30))
+                    .childOption(ChannelOption.SO_KEEPALIVE,true)
                     .localAddress(host,port)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
-                            
-                            ch.pipeline().addLast(new EchoServerHandler());
+                           ch.pipeline().addLast(new ByteToCommandDecoder());
+                           ch.pipeline().addLast(new ClientCommandHandler());
                         }
                     });
 
@@ -70,18 +64,6 @@ public class EchoServer {
         }finally {
             eventLoopGroup.shutdownGracefully().sync();
         }
-    }
-
-    public static void main(String[] args)throws Exception {
-
-      long res=  Double.doubleToLongBits(100.9);
-
-
-        System.out.println(res);
-
-     /* String port=CommonConfig.getProperties().getProperty(Constant.PORT);
-        String host=CommonConfig.getProperties().getProperty(Constant.HOST);
-        new EchoServer(port,host).start();*/
     }
 
 }

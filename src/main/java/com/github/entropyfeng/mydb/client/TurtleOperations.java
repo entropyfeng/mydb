@@ -8,7 +8,7 @@ import java.util.Set;
  */
 public interface TurtleOperations {
 
-    public boolean haskey(String key);
+    public boolean hasKey(String key);
 
     public boolean delete(String key);
 
