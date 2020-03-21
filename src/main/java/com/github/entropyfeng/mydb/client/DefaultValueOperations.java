@@ -7,18 +7,19 @@ import com.github.entropyfeng.mydb.core.obj.TurtleObject;
  */
 public class DefaultValueOperations implements ValueOperations {
 
+
     @Override
-    public void set(String key, TurtleObject value, long time) {
+    public void set(String key, TurtleObject value, Long time) {
 
     }
 
     @Override
-    public boolean setIfAbsent(String key, TurtleObject value, long time) {
+    public boolean setIfAbsent(String key, TurtleObject value, Long time) {
         return false;
     }
 
     @Override
-    public boolean setIfPresent(String key, TurtleObject value, long time) {
+    public boolean setIfPresent(String key, TurtleObject value, Long time) {
         return false;
     }
 
@@ -28,17 +29,17 @@ public class DefaultValueOperations implements ValueOperations {
     }
 
     @Override
-    public Object increment(String key) {
+    public Object increment(String key) throws UnsupportedOperationException {
         return null;
     }
 
     @Override
-    public Object increment(String key, long longValue) {
+    public Object increment(String key, long longValue) throws UnsupportedOperationException {
         return null;
     }
 
     @Override
-    public Object increment(String key, double doubleValue) {
+    public Object increment(String key, double doubleValue) throws UnsupportedOperationException {
         return null;
     }
 

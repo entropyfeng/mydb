@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 public interface ValueOperations {
 
     default void set(String key, TurtleObject value) {
-        this.set(key, value, 0);
+        this.set(key, value, 0L);
     }
 
     /**
@@ -21,9 +21,9 @@ public interface ValueOperations {
      * @param value 值
      * @param time 过期时间
      */
-    void set(String key, TurtleObject value, long time);
+    void set(String key, TurtleObject value, Long time);
 
-    default void set(String key, TurtleObject value , long time, TimeUnit timeUnit) {
+    default void set(String key, TurtleObject value , Long time, TimeUnit timeUnit) {
         if (timeUnit==null){
             throw new TurtleNullPointerException("timeUnit is null .");
         }
@@ -31,11 +31,11 @@ public interface ValueOperations {
     }
 
    default boolean setIfAbsent(String key, TurtleObject value){
-       return setIfAbsent(key, value,0);
+       return setIfAbsent(key, value,0L);
    }
 
 
-   default boolean setIfAbsent(String key, TurtleObject value, long time, TimeUnit timeUnit){
+   default boolean setIfAbsent(String key, TurtleObject value, Long time, TimeUnit timeUnit){
        if (timeUnit==null){
            throw new TurtleNullPointerException("timeUnit is null .");
        }
@@ -43,15 +43,15 @@ public interface ValueOperations {
    }
 
 
-    boolean setIfAbsent(String key, TurtleObject value, long time);
+    boolean setIfAbsent(String key, TurtleObject value, Long time);
 
 
     default boolean setIfPresent(String key, TurtleObject value){
-        return setIfPresent(key, value,0);
+        return setIfPresent(key, value,0L);
     }
 
 
-    default boolean setIfPresent(String key, TurtleObject value, long time, TimeUnit timeUnit){
+    default boolean setIfPresent(String key, TurtleObject value, Long time, TimeUnit timeUnit){
         if (timeUnit==null){
             throw new TurtleNullPointerException("timeUnit is null .");
         }
@@ -59,19 +59,19 @@ public interface ValueOperations {
     }
 
 
-    boolean setIfPresent(String key, TurtleObject value, long time);
+    boolean setIfPresent(String key, TurtleObject value, Long time);
 
 
     TurtleObject get(String key);
 
 
-    Object increment(String key);
+    Object increment(String key)throws UnsupportedOperationException;
 
 
-    Object increment(String key, long longValue);
+    Object increment(String key, long longValue)throws UnsupportedOperationException;
 
 
-    Object increment(String key, double doubleValue);
+    Object increment(String key, double doubleValue)throws UnsupportedOperationException;
 
 
 

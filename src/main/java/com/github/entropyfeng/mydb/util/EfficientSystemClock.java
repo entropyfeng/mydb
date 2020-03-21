@@ -5,11 +5,12 @@ import com.github.entropyfeng.mydb.config.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 
+/**
+ * @author entropyfeng
+ */
 public class EfficientSystemClock {
 
     private static final Logger logger = LoggerFactory.getLogger(EfficientSystemClock.class);
@@ -20,13 +21,13 @@ public class EfficientSystemClock {
 
     private static class EfficientSystemClockHolder{
 
-        final static long configPrecision=ConfigUtil.getIntegerProperty(CommonConfig.getProperties(),Constant.SYSTEM_CLOCK_REFRESH);
+        final static long CONFIG_PRECISION =ConfigUtil.getIntegerProperty(CommonConfig.getProperties(),Constant.SYSTEM_CLOCK_REFRESH);
 
-        private static final EfficientSystemClock instance=new EfficientSystemClock(configPrecision);
+        private static final EfficientSystemClock INSTANCE =new EfficientSystemClock(CONFIG_PRECISION);
     }
 
     public static long now(){
-        return EfficientSystemClockHolder.instance.now.get();
+        return EfficientSystemClockHolder.INSTANCE.now.get();
     }
 
     private EfficientSystemClock(long precision) {
@@ -36,11 +37,13 @@ public class EfficientSystemClock {
     }
 
     private void schedulerClockUpdate() {
-        ScheduledExecutorService scheduled = Executors.newSingleThreadScheduledExecutor();
-        Thread thread=new Thread(this::update);
-        thread.setDaemon(true);
-        thread.setName("update system clock thread");
-        scheduled.scheduleAtFixedRate(thread, precision, precision, TimeUnit.MILLISECONDS);
+        ScheduledExecutorService scheduled =  new ScheduledThreadPoolExecutor(1, r -> {
+            Thread thread=new Thread(r,"update system clock thread");
+            thread.setDaemon(true);
+            return thread;
+        });
+
+        scheduled.scheduleAtFixedRate(this::update, precision, precision, TimeUnit.MILLISECONDS);
         logger.info("start efficient system clock");
     }
 

@@ -166,7 +166,7 @@ public class TurtleObject implements Serializable, Cloneable, Comparable<TurtleO
             case DOUBLE:
                 return BigDecimal.valueOf(ByteBuffer.wrap(turtleObject.values).getDouble());
             case BIG_INTEGER:
-                new BigDecimal(new BigInteger(turtleObject.values));
+                return new BigDecimal(new BigInteger(turtleObject.values));
             case INTEGER:
                 return new BigDecimal(ByteBuffer.wrap(turtleObject.values).getInt());
             case LONG:
