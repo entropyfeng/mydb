@@ -16,7 +16,6 @@ public class TurtleServer {
 
     private static final Logger logger= LoggerFactory.getLogger(TurtleServer.class);
     private final int port;
-
     private final String host;
 
     /**

@@ -34,7 +34,7 @@ public class ClientCommand implements Serializable {
     /**
      * 2*operationName 字节
      */
-    private final String operationName;
+    public final String operationName;
 
     /**
      * 占operationParaNumber*1 byte

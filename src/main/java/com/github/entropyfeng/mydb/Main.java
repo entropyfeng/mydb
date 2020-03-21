@@ -18,6 +18,7 @@ public class Main {
 
     public static void main(String[] args) {
 
+        System.out.println(Math.log(1073741824)/Math.log(2));
         System.out.println(Integer.MAX_VALUE);
     }
 }
