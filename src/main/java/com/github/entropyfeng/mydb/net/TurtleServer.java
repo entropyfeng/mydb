@@ -23,7 +23,7 @@ public class TurtleServer {
      * @param port 端口
      * @param host 主机地址
      */
-    TurtleServer(String port, String host){
+   public TurtleServer(String host, String port ){
 
         this.port=Integer.parseInt(port);
         this.host=host;
@@ -33,7 +33,7 @@ public class TurtleServer {
      * @param port 端口
      * @param host 主机地址
      */
-    TurtleServer(int port, String host){
+   public TurtleServer(String host, int port ){
         this.port=port;
         this.host=host;
     }
@@ -45,7 +45,7 @@ public class TurtleServer {
             ServerBootstrap serverBootstrap=new ServerBootstrap();
             serverBootstrap.group(eventLoopGroup)
                     .channel(NioServerSocketChannel.class)
-                    .childOption(ChannelOption.RCVBUF_ALLOCATOR,new AdaptiveRecvByteBufAllocator(2<<10,2<<20,2<<30))
+                    .childOption(ChannelOption.RCVBUF_ALLOCATOR,new AdaptiveRecvByteBufAllocator(1<<10,1<<20,1<<30))
                     .childOption(ChannelOption.SO_KEEPALIVE,true)
                     .localAddress(host,port)
                     .childHandler(new ChannelInitializer<SocketChannel>() {

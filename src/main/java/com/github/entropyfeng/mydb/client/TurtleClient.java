@@ -1,5 +1,7 @@
 package com.github.entropyfeng.mydb.client;
 
+import com.github.entropyfeng.mydb.config.SupportModel;
+import com.github.entropyfeng.mydb.config.SupportObject;
 import com.github.entropyfeng.mydb.net.ByteToCommandDecoder;
 import com.github.entropyfeng.mydb.net.ClientCommandHandler;
 import com.github.entropyfeng.mydb.net.TurtleServer;
@@ -10,9 +12,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.sctp.nio.NioSctpChannel;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,54 +21,59 @@ import org.slf4j.LoggerFactory;
  * @author entropyfeng
  */
 public class TurtleClient {
-    private static final Logger logger= LoggerFactory.getLogger(TurtleClient.class);
+    private static final Logger logger = LoggerFactory.getLogger(TurtleClient.class);
     private final int port;
     private final String host;
 
     /**
      * assume the param is correct
+     *
      * @param port 端口
      * @param host 主机地址
      */
-    public TurtleClient(int port, String host) {
+    public TurtleClient(String host, int port) {
         this.port = port;
         this.host = host;
     }
 
     /**
      * assume the param is correct
+     *
      * @param port 端口
      * @param host 主机地址
      */
-    TurtleClient(String port, String host){
-        this.port=Integer.parseInt(port);
-        this.host=host;
+    TurtleClient(String host, String port) {
+        this.port = Integer.parseInt(port);
+        this.host = host;
     }
 
-    public void start()throws Exception{
-        NioEventLoopGroup eventLoopGroup=new NioEventLoopGroup();
+    public void start() throws Exception {
+        NioEventLoopGroup eventLoopGroup = new NioEventLoopGroup();
 
         try {
-            Bootstrap client=new Bootstrap();
+            Bootstrap client = new Bootstrap();
 
             client.group(eventLoopGroup)
-                    .remoteAddress(host,port)
+                    .remoteAddress(host, port)
                     .channel(NioSocketChannel.class)
-                    .option(ChannelOption.RCVBUF_ALLOCATOR,new AdaptiveRecvByteBufAllocator(2<<10,2<<20,2<<30))
-                    .option(ChannelOption.SO_KEEPALIVE,true)
+                    .option(ChannelOption.RCVBUF_ALLOCATOR, new AdaptiveRecvByteBufAllocator(1 << 10, 1 << 20, 1 << 30))
+                    .option(ChannelOption.SO_KEEPALIVE, true)
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
+                            socketChannel.pipeline().addLast(new CommandToByteEncoder());
 
-                            socketChannel.pipeline().addLast(new RequestResultHandler());
+                            //socketChannel.pipeline().addLast(new RequestResultHandler());
                         }
                     });
 
 
-            ChannelFuture channelFuture=client.connect().sync();
-            logger.info("{} start and listen on {}" ,this.getClass().getName(),channelFuture.channel().localAddress());
+            ClientCommand clientCommand = new ClientCommand(SupportModel.COMMON, SupportObject.VALUE, "helloWorld");
+            ChannelFuture channelFuture = client.connect().channel().writeAndFlush(clientCommand).sync();
+            logger.info("{} start and bind on {} and connect to {}", this.getClass().getName(), channelFuture.channel().localAddress(), channelFuture.channel().remoteAddress());
+
             channelFuture.channel().closeFuture().sync();
-        }finally {
+        } finally {
             eventLoopGroup.shutdownGracefully().sync();
         }
     }

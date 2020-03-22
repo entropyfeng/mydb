@@ -1,5 +1,6 @@
 package com.github.entropyfeng.mydb.client;
 
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandler;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -14,13 +15,16 @@ public class RequestResultHandler implements ChannelInboundHandler {
     private static final Logger logger= LoggerFactory.getLogger(RequestResultHandler.class);
 
     @Override
-    public void channelRegistered(ChannelHandlerContext channelHandlerContext) throws Exception {
+    public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
+        logger.info("channelRegistered");
+        ctx.writeAndFlush("hello turtleServer !");
 
     }
 
     @Override
     public void channelUnregistered(ChannelHandlerContext channelHandlerContext) throws Exception {
 
+        logger.info("");
     }
 
     @Override
@@ -64,7 +68,8 @@ public class RequestResultHandler implements ChannelInboundHandler {
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext channelHandlerContext, Throwable throwable) throws Exception {
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable throwable) throws Exception {
 
+        logger.error(throwable.toString());
     }
 }

@@ -1,5 +1,6 @@
 package com.github.entropyfeng.mydb.core.obj;
 
+import com.github.entropyfeng.mydb.common.CommonConstant;
 import com.github.entropyfeng.mydb.config.Constant;
 import com.github.entropyfeng.mydb.core.SupportValue;
 import com.github.entropyfeng.mydb.expection.OutOfBoundException;
@@ -27,7 +28,7 @@ public class TurtleObject implements Serializable, Cloneable, Comparable<TurtleO
     private SupportValue type;
 
     private TurtleObject(String value) throws OutOfBoundException {
-        if (value.length() * 2 >= Constant.MAX_STRING_LENGTH) {
+        if (value.length() * 2 >= CommonConstant.MAX_STRING_LENGTH) {
             throw new OutOfBoundException();
         }
         this.type = SupportValue.STRING;

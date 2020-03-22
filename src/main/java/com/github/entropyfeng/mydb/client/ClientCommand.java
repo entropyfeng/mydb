@@ -15,7 +15,6 @@ import java.util.List;
  */
 public class ClientCommand implements Serializable {
 
-
     /**
      * 1字节
      */

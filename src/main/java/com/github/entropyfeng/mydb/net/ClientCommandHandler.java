@@ -2,29 +2,32 @@ package com.github.entropyfeng.mydb.net;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author entropyfeng
  */
 public class ClientCommandHandler implements ChannelInboundHandler {
+    private static final Logger logger= LoggerFactory.getLogger(ClientCommandHandler.class);
     @Override
     public void channelRegistered(ChannelHandlerContext channelHandlerContext) throws Exception {
-
+        logger.info("channelRegistered");
     }
 
     @Override
     public void channelUnregistered(ChannelHandlerContext channelHandlerContext) throws Exception {
-
+        logger.info("channelUnRegistered");
     }
 
     @Override
     public void channelActive(ChannelHandlerContext channelHandlerContext) throws Exception {
-
+        logger.info("channelActive");
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext channelHandlerContext) throws Exception {
-
+        logger.info("channelInActive");
     }
 
     @Override
@@ -34,6 +37,7 @@ public class ClientCommandHandler implements ChannelInboundHandler {
 
     @Override
     public void channelReadComplete(ChannelHandlerContext channelHandlerContext) throws Exception {
+
 
     }
 
@@ -58,7 +62,9 @@ public class ClientCommandHandler implements ChannelInboundHandler {
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext channelHandlerContext, Throwable throwable) throws Exception {
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable throwable) throws Exception {
+
+        logger.error(ctx.toString());
 
     }
 }

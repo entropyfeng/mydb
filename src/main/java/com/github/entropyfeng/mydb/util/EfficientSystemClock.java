@@ -19,6 +19,9 @@ public class EfficientSystemClock {
 
     private final long precision;
 
+    /**
+     * 内部类延迟初始化
+     */
     private static class EfficientSystemClockHolder{
 
         final static long CONFIG_PRECISION =ConfigUtil.getIntegerProperty(CommonConfig.getProperties(),Constant.SYSTEM_CLOCK_REFRESH);

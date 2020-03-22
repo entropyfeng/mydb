@@ -1,6 +1,7 @@
 package com.github.entropyfeng.mydb;
 
 import com.github.entropyfeng.mydb.core.dict.ElasticMap;
+import com.github.entropyfeng.mydb.net.TurtleServer;
 
 
 import java.math.BigDecimal;
@@ -14,8 +15,10 @@ import java.util.HashMap;
 public class ServerBootStrap {
 
 
-    public static void main(String[] args) {
 
+    public static void main(String[] args)throws Exception {
+
+        new TurtleServer("0.0.0.0",4407).start();
 
 
     }

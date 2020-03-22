@@ -13,5 +13,4 @@ public final class Constant {
     public static final String DB_NAME="Turtle";
     public static final String SYSTEM_CLOCK_REFRESH="systemClockRefresh";
 
-    public static final Integer MAX_STRING_LENGTH=2<<29;
 }
