@@ -6,16 +6,14 @@ import com.github.entropyfeng.mydb.net.ByteToCommandDecoder;
 import com.github.entropyfeng.mydb.net.ClientCommandHandler;
 import com.github.entropyfeng.mydb.net.TurtleServer;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.AdaptiveRecvByteBufAllocator;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.math.BigInteger;
 
 /**
  * @author entropyfeng
@@ -52,20 +50,18 @@ public class TurtleClient {
 
         try {
             Bootstrap client = new Bootstrap();
-
             client.group(eventLoopGroup)
-                    .remoteAddress(host, port)
                     .channel(NioSocketChannel.class)
+                    .remoteAddress(host, port)
                     .option(ChannelOption.RCVBUF_ALLOCATOR, new AdaptiveRecvByteBufAllocator(1 << 10, 1 << 20, 1 << 30))
                     .option(ChannelOption.SO_KEEPALIVE, true)
-                    .handler(new ChannelInitializer<SocketChannel>() {
-                        @Override
-                        protected void initChannel(SocketChannel socketChannel) throws Exception {
-                            socketChannel.pipeline().addLast(new CommandToByteEncoder());
-
-                            //socketChannel.pipeline().addLast(new RequestResultHandler());
-                        }
-                    });
+            .handler(new ChannelInitializer<SocketChannel>() {
+                @Override
+                protected void initChannel(SocketChannel ch) throws Exception {
+                    logger.info("insert channel");
+                    ch.pipeline().addLast(new CommandToByteEncoder());
+                }
+            });
 
 
             ClientCommand clientCommand = new ClientCommand(SupportModel.COMMON, SupportObject.VALUE, "helloWorld");
@@ -77,4 +73,5 @@ public class TurtleClient {
             eventLoopGroup.shutdownGracefully().sync();
         }
     }
+    
 }

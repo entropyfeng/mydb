@@ -8,52 +8,55 @@ public enum SupportPara {
     /**
      * {@link String}
      */
-    STRING((byte)0),
+    STRING((byte) 0),
     /**
      * {@link Integer}
      */
-    INTEGER((byte)1),
+    INTEGER((byte) 1),
     /**
      * {@link Long}
      */
-    LONG((byte)2),
+    LONG((byte) 2),
     /**
      * {@link Double}
      */
-    DOUBLE((byte)3),
+    DOUBLE((byte) 3),
     /**
      * 使用字符串表示的整数
      */
-    NUMBER_INTEGER((byte)4),
+    NUMBER_INTEGER((byte) 4),
 
     /**
      * 使用字符串表示的非整数
      */
-    NUMBER_DECIMAL((byte)5),
+    NUMBER_DECIMAL((byte) 5),
     /**
      * {@link com.github.entropyfeng.mydb.core.obj.TurtleObject}
      */
-    TURTLE_OBJECT((byte)6),
+    TURTLE_OBJECT((byte) 6),
     /**
      * 集合元素
      */
-    COLLECTION((byte)7);
+    COLLECTION((byte) 7);
 
 
     private byte type;
-    private SupportPara(byte type){
-        this.type=type;
+
+    private SupportPara(byte type) {
+        this.type = type;
     }
-    public byte toType(){
+
+    public byte toType() {
         return type;
     }
-    public static SupportPara getSupportParaByType(byte type)throws IllegalArgumentException{
+
+    public static SupportPara getSupportParaByType(byte type) throws IllegalArgumentException {
         for (SupportPara o : SupportPara.values()) {
             if (o.type == type) {
                 return o;
             }
         }
-        throw new IllegalArgumentException("not exists type ->"+type);
+        throw new IllegalArgumentException("not exists type ->" + type);
     }
 
 }
