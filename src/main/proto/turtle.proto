@@ -1,0 +1,76 @@
+syntax="proto3";
+option java_package = "com.github.entropyfeng.mydb.common.protobuf";
+option java_outer_classname = "TurtleProtoBuf";
+enum TurtleModel{ //支持模式
+    COMMON=0;
+    CONCRETE=1;
+    ADMIN=2;
+}
+
+enum TurtleObject{//支持操作的对象
+    VALUE=0;
+
+    HASH=1;
+
+    SET=2;
+
+    ZSET=3;
+
+    LIST=4;
+}
+message TurtleValue{ //数据库基本对象
+    TurtleParaType turtleParaType=1;
+    bytes values=2;
+}
+enum TurtleParaType{//所支持的参数类型
+    STRING=0;
+
+    INTEGER=1;
+
+    LONG=2;
+
+    DOUBLE=3;
+
+    NUMBER_INTEGER=4;
+
+    NUMBER_DECIMAL=5;
+
+    TURTLE_OBJECT=6;
+
+    COLLECTION=7;
+}
+
+
+message TurtleCollectionType{//集合类型
+
+   TurtleParaType collectionType=1;
+   repeated TurtleCommonValue collectionParas=2;
+}
+
+
+message TurtleCommonValue{//基础类型
+    oneof Value{
+        string stringValue=1;
+        int32 intValue=2;
+        int64 longValue=3;
+        double doubleValue=4;
+        TurtleCollectionType collectionValue=5;
+        TurtleValue turtleValue=6;
+    }
+
+}
+message TurtlePara{//基本参数
+    TurtleParaType key=1;
+    TurtleCommonValue value=2;
+}
+message ClientCommand{//客户端命令
+
+     TurtleModel model=1;
+
+     TurtleObject obj=2;
+
+     string operationName=3;
+
+     repeated TurtlePara paras=4;
+
+}

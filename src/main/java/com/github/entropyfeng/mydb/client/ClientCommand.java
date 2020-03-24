@@ -1,9 +1,12 @@
 package com.github.entropyfeng.mydb.client;
 
+import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.config.SupportModel;
 import com.github.entropyfeng.mydb.config.SupportObject;
 import com.github.entropyfeng.mydb.config.SupportPara;
 import com.github.entropyfeng.mydb.core.obj.TurtleObject;
+import com.google.protobuf.CodedOutputStream;
+import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -28,7 +31,6 @@ public class ClientCommand implements Serializable {
      */
     public byte operationParaNumber;
 
-    public long dataLength;
     /**
      * 2*operationName 字节
      */
@@ -59,6 +61,8 @@ public class ClientCommand implements Serializable {
 
     public byte[] toBytes(){
 
+
+
         return null;
     }
 
@@ -87,4 +91,18 @@ public class ClientCommand implements Serializable {
         }
     }
 
+    public static void main(String[] args) {
+       byte[] res= TurtleProtoBuf.ClientCommand.newBuilder()
+                .setModel(TurtleProtoBuf.TurtleModel.COMMON)
+                .setObj(TurtleProtoBuf.TurtleObject.VALUE)
+                .setOperationName("hello").build().toByteArray();
+
+        TurtleProtoBuf.ClientCommand command=null;
+        try {
+          command=  TurtleProtoBuf.ClientCommand.parseFrom(res);
+        } catch (InvalidProtocolBufferException e) {
+            e.printStackTrace();
+        }
+        command.getModel();
+    }
 }

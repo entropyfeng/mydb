@@ -2,9 +2,6 @@ package com.github.entropyfeng.mydb.client;
 
 import com.github.entropyfeng.mydb.config.SupportModel;
 import com.github.entropyfeng.mydb.config.SupportObject;
-import com.github.entropyfeng.mydb.net.ByteToCommandDecoder;
-import com.github.entropyfeng.mydb.net.ClientCommandHandler;
-import com.github.entropyfeng.mydb.net.TurtleServer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -63,7 +60,6 @@ public class TurtleClient {
                 }
             });
 
-
             ClientCommand clientCommand = new ClientCommand(SupportModel.COMMON, SupportObject.VALUE, "helloWorld");
             ChannelFuture channelFuture = client.connect().channel().writeAndFlush(clientCommand).sync();
             logger.info("{} start and bind on {} and connect to {}", this.getClass().getName(), channelFuture.channel().localAddress(), channelFuture.channel().remoteAddress());
@@ -73,5 +69,5 @@ public class TurtleClient {
             eventLoopGroup.shutdownGracefully().sync();
         }
     }
-    
+
 }
