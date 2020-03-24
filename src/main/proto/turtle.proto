@@ -35,7 +35,7 @@ enum TurtleParaType{//所支持的参数类型
 
     NUMBER_DECIMAL=5;
 
-    TURTLE_OBJECT=6;
+    TURTLE_VALUE=6;
 
     COLLECTION=7;
 }

@@ -8,13 +8,12 @@ import java.util.*;
 /**
  * @author entropyfeng
  */
-public class ExpireHandler {
+public class BaseHandler {
 
     private Map<String, Long> expireMap;
     private PriorityQueue<StringLongPair> expireQueue;
 
-    private Map<String,Long> accessTimesMap;
-    public ExpireHandler() {
+    public BaseHandler() {
         expireMap = new HashMap<>();
         expireQueue = new PriorityQueue<>();
     }

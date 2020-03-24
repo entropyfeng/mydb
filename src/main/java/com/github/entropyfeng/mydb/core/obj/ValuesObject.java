@@ -1,13 +1,16 @@
 package com.github.entropyfeng.mydb.core.obj;
 
-import com.github.entropyfeng.mydb.server.ExpireHandler;
+import com.github.entropyfeng.mydb.server.BaseHandler;
 import com.github.entropyfeng.mydb.util.TimeUtil;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
-public class ValuesObject extends ExpireHandler  {
+/**
+ * @author entropyfeng
+ */
+public class ValuesObject extends BaseHandler {
     private HashMap<String, TurtleValue> valueMap;
 
     public ValuesObject(HashMap<String, TurtleValue> valueMap) {
