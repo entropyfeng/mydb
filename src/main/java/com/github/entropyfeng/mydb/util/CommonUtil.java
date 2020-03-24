@@ -75,4 +75,12 @@ public class CommonUtil {
 
     }
 
+    public static String builderLongString(long length){
+        StringBuilder stringBuilder=new StringBuilder();
+        for (int i=0;i<length;i++){
+            stringBuilder.append('一');
+        }
+        return stringBuilder.toString();
+    }
+
 }

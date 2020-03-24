@@ -8,14 +8,14 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 
 public class ValuesObject extends ExpireHandler  {
-    private HashMap<String, TurtleObject> valueMap;
+    private HashMap<String, TurtleValue> valueMap;
 
-    public ValuesObject(HashMap<String, TurtleObject> valueMap) {
+    public ValuesObject(HashMap<String, TurtleValue> valueMap) {
         super();
         this.valueMap = valueMap;
     }
 
-    public TurtleObject get(String key) {
+    public TurtleValue get(String key) {
         removeExpireKey(key);
         return valueMap.get(key);
     }
@@ -30,21 +30,21 @@ public class ValuesObject extends ExpireHandler  {
         return valueMap.containsKey(key);
     }
 
-    public void set(String key, TurtleObject value, long time) {
+    public void set(String key, TurtleValue value, long time) {
         valueMap.put(key, value);
         if (!TimeUtil.isExpire(time)) {
             putExpire(key, time);
         }
     }
 
-    public void setIfPresent(String key, TurtleObject value, long time) {
+    public void setIfPresent(String key, TurtleValue value, long time) {
         removeExpireKey(key);
         if (valueMap.containsKey(key)) {
             set(key, value, time);
         }
     }
 
-    public void setIfAbsent(String key, TurtleObject value, long time) {
+    public void setIfAbsent(String key, TurtleValue value, long time) {
         removeExpireKey(key);
         if (!valueMap.containsKey(key)) {
             set(key, value, time);
@@ -63,17 +63,17 @@ public class ValuesObject extends ExpireHandler  {
 
     public void append(String key, String value) throws UnsupportedOperationException {
         removeExpireKey(key);
-        TurtleObject turtleObject = valueMap.get(key);
-        if (turtleObject != null) {
-            turtleObject.append(value);
+        TurtleValue turtleValue = valueMap.get(key);
+        if (turtleValue != null) {
+            turtleValue.append(value);
         }
     }
 
     public boolean increment(String key, long longValue) throws UnsupportedOperationException {
         removeExpireKey(key);
-        TurtleObject turtleObject = valueMap.get(key);
-        if (turtleObject != null) {
-            turtleObject.increment(longValue);
+        TurtleValue turtleValue = valueMap.get(key);
+        if (turtleValue != null) {
+            turtleValue.increment(longValue);
             return true;
         }
         return false;

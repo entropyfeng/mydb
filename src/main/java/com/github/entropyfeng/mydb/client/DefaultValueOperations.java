@@ -1,6 +1,6 @@
 package com.github.entropyfeng.mydb.client;
 
-import com.github.entropyfeng.mydb.core.obj.TurtleObject;
+import com.github.entropyfeng.mydb.core.obj.TurtleValue;
 
 /**
  * @author entropyfeng
@@ -9,22 +9,22 @@ public class DefaultValueOperations implements ValueOperations {
 
 
     @Override
-    public void set(String key, TurtleObject value, Long time) {
+    public void set(String key, TurtleValue value, Long time) {
 
     }
 
     @Override
-    public boolean setIfAbsent(String key, TurtleObject value, Long time) {
+    public boolean setIfAbsent(String key, TurtleValue value, Long time) {
         return false;
     }
 
     @Override
-    public boolean setIfPresent(String key, TurtleObject value, Long time) {
+    public boolean setIfPresent(String key, TurtleValue value, Long time) {
         return false;
     }
 
     @Override
-    public TurtleObject get(String key) {
+    public TurtleValue get(String key) {
         return null;
     }
 

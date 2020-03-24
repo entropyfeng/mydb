@@ -7,6 +7,9 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.protobuf.ProtobufDecoderNano;
+import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
+import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,6 +60,7 @@ public class TurtleClient {
                 protected void initChannel(SocketChannel ch) throws Exception {
                     logger.info("insert channel");
                     ch.pipeline().addLast(new CommandToByteEncoder());
+                    ch.pipeline().addLast(new ProtobufVarint32LengthFieldPrepender());
                 }
             });
 

@@ -1,5 +1,7 @@
 package com.github.entropyfeng.mydb.config;
 
+import com.github.entropyfeng.mydb.core.obj.TurtleValue;
+
 /**
  * @author entropyfeng
  * 支持参数类型
@@ -31,7 +33,7 @@ public enum SupportPara {
      */
     NUMBER_DECIMAL((byte) 5),
     /**
-     * {@link com.github.entropyfeng.mydb.core.obj.TurtleObject}
+     * {@link TurtleValue}
      */
     TURTLE_OBJECT((byte) 6),
     /**

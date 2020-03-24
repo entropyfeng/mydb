@@ -5,6 +5,9 @@ import com.github.entropyfeng.mydb.util.TimeUtil;
 
 import java.util.*;
 
+/**
+ * @author entropyfeng
+ */
 public class ExpireHandler {
 
     private Map<String, Long> expireMap;

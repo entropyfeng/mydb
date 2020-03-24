@@ -4,11 +4,15 @@ import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.config.SupportModel;
 import com.github.entropyfeng.mydb.config.SupportObject;
 import com.github.entropyfeng.mydb.config.SupportPara;
-import com.github.entropyfeng.mydb.core.obj.TurtleObject;
+import com.github.entropyfeng.mydb.core.obj.TurtleValue;
+import com.github.entropyfeng.mydb.util.CommonUtil;
+import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,7 +87,7 @@ public class ClientCommand implements Serializable {
                 length += ((String) para).length()*2;
                 break;
             case TURTLE_OBJECT:
-                length += ((TurtleObject) para).toByte().length*2;
+                length += ((TurtleValue) para).toByte().length*2;
                 break;
             default:
                 throw new IllegalArgumentException("unSupport paraType" + para.toString());
@@ -92,15 +96,25 @@ public class ClientCommand implements Serializable {
     }
 
     public static void main(String[] args) {
-       byte[] res= TurtleProtoBuf.ClientCommand.newBuilder()
-                .setModel(TurtleProtoBuf.TurtleModel.COMMON)
-                .setObj(TurtleProtoBuf.TurtleObject.VALUE)
-                .setOperationName("hello").build().toByteArray();
+        ByteBuffer byteBuffer=ByteBuffer.allocate(1024*1024*1024);
+        CodedOutputStream codedOutputStream=CodedOutputStream.newInstance(byteBuffer);
+        String longString= CommonUtil.builderLongString(Integer.MAX_VALUE/3-2);
+        try {
+           TurtleProtoBuf.ClientCommand.newBuilder()
+                      .setModel(TurtleProtoBuf.TurtleModel.COMMON)
+                      .setObj(TurtleProtoBuf.TurtleObject.VALUE)
+                      .setOperationName(longString).build().writeTo(codedOutputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        CodedInputStream codedInputStream=CodedInputStream.newInstance(byteBuffer);
         TurtleProtoBuf.ClientCommand command=null;
         try {
-          command=  TurtleProtoBuf.ClientCommand.parseFrom(res);
+          command=  TurtleProtoBuf.ClientCommand.parseFrom(codedInputStream);
         } catch (InvalidProtocolBufferException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
         command.getModel();
