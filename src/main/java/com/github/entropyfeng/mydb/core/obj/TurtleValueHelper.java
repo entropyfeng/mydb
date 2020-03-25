@@ -6,7 +6,7 @@ package com.github.entropyfeng.mydb.core.obj;
 public class TurtleValueHelper {
 
 
-    public static TurtleBaseValue append(TurtleBaseValue turtleValue,String string){
+    public static TurtleValue append(TurtleValue turtleValue, String string){
 
     }
 }

@@ -1,6 +1,5 @@
 package com.github.entropyfeng.mydb.client;
 
-import com.github.entropyfeng.mydb.core.obj.TurtleValue;
 import com.github.entropyfeng.mydb.expection.TurtleNullPointerException;
 
 import java.util.concurrent.TimeUnit;

@@ -4,7 +4,6 @@ import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.config.SupportModel;
 import com.github.entropyfeng.mydb.config.SupportObject;
 import com.github.entropyfeng.mydb.config.SupportPara;
-import com.github.entropyfeng.mydb.core.obj.TurtleValue;
 import com.github.entropyfeng.mydb.util.CommonUtil;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
@@ -61,38 +60,6 @@ public class ClientCommand implements Serializable {
         this.parasTypeList.add(supportPara.toType());
         this.parasList.add(value);
         operationParaNumber++;
-    }
-
-    public byte[] toBytes(){
-
-
-
-        return null;
-    }
-
-    void xx(SupportPara paraType, Object para) {
-        long length = 0;
-
-        switch (paraType) {
-            case INTEGER:
-                length += 4;
-                break;
-            case LONG:
-            case DOUBLE:
-                length += 8;
-                break;
-            case STRING:
-            case NUMBER_DECIMAL:
-            case NUMBER_INTEGER:
-                length += ((String) para).length()*2;
-                break;
-            case TURTLE_OBJECT:
-                length += ((TurtleValue) para).toByte().length*2;
-                break;
-            default:
-                throw new IllegalArgumentException("unSupport paraType" + para.toString());
-
-        }
     }
 
     public static void main(String[] args) {

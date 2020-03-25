@@ -1,7 +1,5 @@
 package com.github.entropyfeng.mydb.config;
 
-import com.github.entropyfeng.mydb.core.obj.TurtleValue;
-
 /**
  * @author entropyfeng
  * 支持参数类型
