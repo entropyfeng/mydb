@@ -2,7 +2,9 @@ package com.github.entropyfeng.mydb.server;
 
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.core.obj.TurtleValue;
+import org.checkerframework.checker.units.qual.C;
 
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -31,76 +33,52 @@ public class ClientCommandHelper {
     }
 
     private void parseForCommon(TurtleProtoBuf.ClientCommand clientCommand) {
+       
         final String operationName = clientCommand.getOperationName();
         final int paraNumbers = clientCommand.getParasList().size();
-        List<Object> paraTypes = new ArrayList<>(paraNumbers);
-        clientCommand.getParasList().forEach(para -> {
-            TurtleProtoBuf.TurtleParaType paraType = para.getKey();
-            TurtleProtoBuf.TurtleCommonValue value = para.getValue();
-            switch (paraType) {
+        final Class<?>[] paraTypes = new Class[paraNumbers];
+        final List<Object> paras = new ArrayList<>(paraNumbers);
+        final List<TurtleProtoBuf.TurtlePara> parasList = clientCommand.getParasList();
+        for (int i = 0; i < paraNumbers; i++) {
+
+            final TurtleProtoBuf.TurtleCommonValue value = parasList.get(i).getValue();
+            switch (parasList.get(i).getKey()) {
                 case STRING:
-                    paraTypes.add(String.class);
+                    paraTypes[i] = String.class;
+                    paras.add(value.getStringValue());
                     break;
                 case DOUBLE:
-                    paraTypes.add(Double.class);
+                    paraTypes[i] = Double.class;
+                    paras.add(value.getDoubleValue());
                     break;
                 case INTEGER:
-                    paraTypes.add(Integer.class);
+                    paraTypes[i] = Integer.class;
+                    paras.add(value.getIntValue());
                     break;
                 case LONG:
-                    paraTypes.add(Long.class);
+                    paraTypes[i] = Long.class;
+                    paras.add(value.getLongValue());
                     break;
                 case NUMBER_INTEGER:
-                    paraTypes.add(BigInteger.class);
+                    paraTypes[i] = BigInteger.class;
+                    paras.add(new BigInteger(value.getStringValue()));
                     break;
                 case NUMBER_DECIMAL:
-                    paraTypes.add(BigDecimal.class);
+                    paraTypes[i] = BigDecimal.class;
+                    paras.add(new BigDecimal(value.getStringValue()));
                     break;
                 case TURTLE_VALUE:
-                    paraTypes.add(TurtleValue.class);
+                    paraTypes[i] = TurtleValue.class;
+                    paras.add(new TurtleValue(value.getTurtleValue()));
                     break;
                 default:
                     throw new UnsupportedOperationException();
             }
-
-
-        });
-    }
-
-    private String handleString(TurtleProtoBuf.TurtleCommonValue value) {
-        return value.getStringValue();
-    }
-
-    private Double handleDouble(TurtleProtoBuf.TurtleCommonValue value) {
-        return value.getDoubleValue();
-    }
-
-    private Integer handleInteger(TurtleProtoBuf.TurtleCommonValue value) {
-        return value.getIntValue();
-    }
-
-    private Long handleLong(TurtleProtoBuf.TurtleCommonValue value) {
-        return value.getLongValue();
-    }
-
-    private BigInteger handleBigInteger(TurtleProtoBuf.TurtleCommonValue value) {
-        return new BigInteger(value.getStringValue());
-    }
-
-    private BigDecimal handleBigDecimal(TurtleProtoBuf.TurtleCommonValue value) {
-        return new BigDecimal(value.getStringValue());
-    }
-
-    private TurtleValue handleTurtleValue(TurtleProtoBuf.TurtleCommonValue value) {
-        final TurtleProtoBuf.TurtleParaType type = value.getTurtleValue().getTurtleParaType();
-        value.getTurtleValue().getValues().toByteArray();
-        TurtleValue res = null;
-        switch (type) {
-            case STRING:
-                res = new TurtleValue()
         }
-        return res;
+
+
     }
+
 
     private void parseForAdmin() {
 
@@ -108,5 +86,11 @@ public class ClientCommandHelper {
 
     private void parseForConcrete() {
 
+    }
+
+    public static void main(String[] args) {
+        ClientCommandHelper clientCommandHelper = new ClientCommandHelper();
+        List<Class<?>> objects = new ArrayList<>();
+        clientCommandHelper.getClass().getDeclaredMethod("haha", );
     }
 }

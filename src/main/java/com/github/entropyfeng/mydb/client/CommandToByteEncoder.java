@@ -1,5 +1,6 @@
 package com.github.entropyfeng.mydb.client;
 
+import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
@@ -9,21 +10,14 @@ import org.slf4j.LoggerFactory;
 /**
  * @author entropyfeng
  */
-public class CommandToByteEncoder extends MessageToByteEncoder<ClientCommand> {
+public class CommandToByteEncoder extends MessageToByteEncoder<TurtleProtoBuf.ClientCommand> {
 
     private static final Logger logger= LoggerFactory.getLogger(CommandToByteEncoder.class);
 
 
-    @Override
-    protected void encode(ChannelHandlerContext ctx, ClientCommand clientCommand, ByteBuf out) throws Exception {
 
-        System.out.println("byte buf->"+out.capacity());
-        logger.info("begin encode..");
-        byte model= clientCommand.supportModel.toType();
-        byte obj=clientCommand.supportObject.toType();
-        byte paraNumber=clientCommand.operationParaNumber;
-        int  paraNameLength=clientCommand.operationName.length();
-        long dataLength=10086L;
-        logger.info("end encode");
+    @Override
+    protected void encode(ChannelHandlerContext ctx, TurtleProtoBuf.ClientCommand msg, ByteBuf out) throws Exception {
+
     }
 }

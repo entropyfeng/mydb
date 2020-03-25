@@ -4,10 +4,7 @@ import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.config.SupportModel;
 import com.github.entropyfeng.mydb.config.SupportObject;
 import com.github.entropyfeng.mydb.config.SupportPara;
-import com.github.entropyfeng.mydb.util.CommonUtil;
-import com.google.protobuf.CodedInputStream;
-import com.google.protobuf.CodedOutputStream;
-import com.google.protobuf.InvalidProtocolBufferException;
+
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -62,28 +59,5 @@ public class ClientCommand implements Serializable {
         operationParaNumber++;
     }
 
-    public static void main(String[] args) {
-        ByteBuffer byteBuffer=ByteBuffer.allocate(1024*1024*1024);
-        CodedOutputStream codedOutputStream=CodedOutputStream.newInstance(byteBuffer);
-        String longString= CommonUtil.builderLongString(Integer.MAX_VALUE/3-2);
-        try {
-           TurtleProtoBuf.ClientCommand.newBuilder()
-                      .setModel(TurtleProtoBuf.TurtleModel.COMMON)
-                      .setObj(TurtleProtoBuf.TurtleObject.VALUE)
-                      .setOperationName(longString).build().writeTo(codedOutputStream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        CodedInputStream codedInputStream=CodedInputStream.newInstance(byteBuffer);
-        TurtleProtoBuf.ClientCommand command=null;
-        try {
-          command=  TurtleProtoBuf.ClientCommand.parseFrom(codedInputStream);
-        } catch (InvalidProtocolBufferException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        command.getModel();
-    }
 }
