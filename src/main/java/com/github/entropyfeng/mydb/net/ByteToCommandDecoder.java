@@ -22,14 +22,7 @@ public class ByteToCommandDecoder extends ByteToMessageDecoder {
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> list) throws Exception {
 
 
-        if(in.readableBytes()< HEAD_LENGTH){
-            return;
-        }
-        byte model= in.readByte();
-        byte obj=in.readByte();
-        byte paraNumber=in.readByte();
-        int  paraNameLength=in.readInt();
-        long dataLength=in.readLong();
+
 
     }
 }

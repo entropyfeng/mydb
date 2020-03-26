@@ -15,9 +15,9 @@ public class CommandToByteEncoder extends MessageToByteEncoder<TurtleProtoBuf.Cl
     private static final Logger logger= LoggerFactory.getLogger(CommandToByteEncoder.class);
 
 
-
     @Override
     protected void encode(ChannelHandlerContext ctx, TurtleProtoBuf.ClientCommand msg, ByteBuf out) throws Exception {
+
 
     }
 }

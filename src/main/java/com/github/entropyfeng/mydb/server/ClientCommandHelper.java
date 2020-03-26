@@ -15,26 +15,8 @@ import java.util.List;
  */
 public class ClientCommandHelper {
 
-    public void xx(TurtleProtoBuf.ClientCommand clientCommand) {
+    public static IClientCommand parseCommand(TurtleProtoBuf.ClientCommand clientCommand) {
 
-        switch (clientCommand.getModel()) {
-            case COMMON:
-                parseForCommon(clientCommand);
-                break;
-            case ADMIN:
-                parseForAdmin();
-                break;
-            case CONCRETE:
-                parseForConcrete();
-                break;
-            default:
-                throw new UnsupportedOperationException();
-        }
-    }
-
-    private void parseForCommon(TurtleProtoBuf.ClientCommand clientCommand) {
-       
-        final String operationName = clientCommand.getOperationName();
         final int paraNumbers = clientCommand.getParasList().size();
         final Class<?>[] paraTypes = new Class[paraNumbers];
         final List<Object> paras = new ArrayList<>(paraNumbers);
@@ -76,21 +58,31 @@ public class ClientCommandHelper {
             }
         }
 
+        switch (clientCommand.getModel()) {
+            case ADMIN:
+              return  parseForAdmin(clientCommand);
+
+            case CONCRETE:
+                return parseForConcrete(clientCommand,paraTypes,paras);
+            default:
+                throw new UnsupportedOperationException();
+        }
+    }
+
+    private static IClientCommand parseForConcrete(TurtleProtoBuf.ClientCommand clientCommand,Class<?>[] paraTypes,List<Object> paras) {
+
+           switch (clientCommand.getObj()){
+               case VALUE:return new ValuesCommand(clientCommand.getOperationName(),paraTypes,paras);
+               default:throw new UnsupportedOperationException();
+           }
 
     }
 
 
-    private void parseForAdmin() {
 
+    private  static IClientCommand parseForAdmin(TurtleProtoBuf.ClientCommand clientCommand) {
+
+        return new AdminCommand(clientCommand.getOperationName());
     }
 
-    private void parseForConcrete() {
-
-    }
-
-    public static void main(String[] args) {
-        ClientCommandHelper clientCommandHelper = new ClientCommandHelper();
-        List<Class<?>> objects = new ArrayList<>();
-        clientCommandHelper.getClass().getDeclaredMethod("haha", );
-    }
 }
