@@ -9,8 +9,7 @@ import java.util.*;
  * @author entropyfeng
  */
 public class BaseHandler {
-
-    private Map<String, Long> expireMap;
+   private Map<String, Long> expireMap;
     private PriorityQueue<StringLongPair> expireQueue;
 
     public BaseHandler() {
