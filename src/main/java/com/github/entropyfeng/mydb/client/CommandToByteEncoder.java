@@ -27,9 +27,5 @@ public class CommandToByteEncoder extends MessageToByteEncoder<TurtleProtoBuf.Cl
         ByteBuffer byteBuffer=ByteBuffer.allocate(1024*1024);
         CodedOutputStream codedOutputStream=CodedOutputStream.newInstance(byteBuffer);
 
-
-
-
-
     }
 }

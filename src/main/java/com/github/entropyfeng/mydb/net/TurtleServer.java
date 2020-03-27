@@ -5,6 +5,8 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.protobuf.ProtobufEncoder;
+import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,8 +53,8 @@ public class TurtleServer {
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
-                           ch.pipeline().addLast(new ByteToCommandDecoder());
-                           ch.pipeline().addLast(new ClientCommandHandler());
+                           ch.pipeline().addLast(new ProtobufEncoder());
+                           ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());
                         }
                     });
 
