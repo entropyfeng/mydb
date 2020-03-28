@@ -3,6 +3,7 @@ package com.github.entropyfeng.mydb.server;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.core.obj.TurtleValue;
 import com.github.entropyfeng.mydb.server.command.AdminCommand;
+import com.github.entropyfeng.mydb.server.command.ConcreteCommand;
 import com.github.entropyfeng.mydb.server.command.IClientCommand;
 import com.github.entropyfeng.mydb.server.command.ValuesCommand;
 
@@ -62,7 +63,6 @@ public class ClientCommandHelper {
         switch (clientCommand.getModel()) {
             case ADMIN:
               return  parseForAdmin(clientCommand);
-
             case CONCRETE:
                 return parseForConcrete(clientCommand,paraTypes,paras);
             default:
@@ -70,7 +70,7 @@ public class ClientCommandHelper {
         }
     }
 
-    private static IClientCommand parseForConcrete(TurtleProtoBuf.ClientCommand clientCommand,Class<?>[] paraTypes,List<Object> paras) {
+    private static ConcreteCommand parseForConcrete(TurtleProtoBuf.ClientCommand clientCommand, Class<?>[] paraTypes, List<Object> paras) {
 
            switch (clientCommand.getObj()){
                case VALUE:return new ValuesCommand(clientCommand.getOperationName(),paraTypes,paras);

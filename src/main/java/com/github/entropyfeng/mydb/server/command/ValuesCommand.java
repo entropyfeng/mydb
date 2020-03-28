@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * @author entropyfeng
  */
-public class ValuesCommand implements IClientCommand {
+public class ValuesCommand implements ConcreteCommand {
 
     private String operationName;
     private Class<?>[] paraTypes;

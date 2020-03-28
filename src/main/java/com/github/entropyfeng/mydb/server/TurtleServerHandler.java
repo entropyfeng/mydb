@@ -1,6 +1,9 @@
 package com.github.entropyfeng.mydb.server;
 
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
+import com.github.entropyfeng.mydb.server.command.AdminCommand;
+import com.github.entropyfeng.mydb.server.command.ConcreteCommand;
+import com.github.entropyfeng.mydb.server.command.IClientCommand;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
@@ -29,6 +32,8 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<TurtleProto
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, TurtleProtoBuf.ClientCommand msg) throws Exception {
-        System.out.println(msg.getOperationName());
+
+      IClientCommand clientCommand= ClientCommandHelper.parseCommand(msg);
+
     }
 }

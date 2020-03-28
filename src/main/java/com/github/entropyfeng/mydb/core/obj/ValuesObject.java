@@ -1,6 +1,5 @@
 package com.github.entropyfeng.mydb.core.obj;
 
-import com.github.entropyfeng.mydb.server.BaseHandler;
 import com.github.entropyfeng.mydb.util.TimeUtil;
 
 import java.lang.reflect.InvocationTargetException;
@@ -10,14 +9,17 @@ import java.util.HashMap;
 /**
  * @author entropyfeng
  */
-public class ValuesObject extends BaseHandler {
+public class ValuesObject extends BaseObject {
     private HashMap<String, TurtleValue> valueMap;
 
     public ValuesObject(HashMap<String, TurtleValue> valueMap) {
         super();
         this.valueMap = valueMap;
     }
-
+    public boolean isExist(String key) {
+        removeExpireKey(key);
+        return valueMap.containsKey(key);
+    }
     public TurtleValue get(String key) {
         removeExpireKey(key);
         return valueMap.get(key);
@@ -28,10 +30,7 @@ public class ValuesObject extends BaseHandler {
         return valueMap.remove(key) != null;
     }
 
-    public boolean isExist(String key) {
-        removeExpireKey(key);
-        return valueMap.containsKey(key);
-    }
+
 
     public void set(String key, TurtleValue value, long time) {
         valueMap.put(key, value);
@@ -86,16 +85,4 @@ public class ValuesObject extends BaseHandler {
         return false;
     }
 
-    public static void main(String[] args) throws NoSuchMethodException {
-        ValuesObject valuesObject = new ValuesObject(new HashMap<>());
-        Method method = valuesObject.getClass().getDeclaredMethod("increment", String.class, long.class);
-        try {
-            System.out.println(method.invoke(valuesObject, "d", 100));
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-
-    }
 }

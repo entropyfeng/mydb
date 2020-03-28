@@ -1,4 +1,4 @@
-package com.github.entropyfeng.mydb.server;
+package com.github.entropyfeng.mydb.core.obj;
 
 import com.github.entropyfeng.mydb.core.StringLongPair;
 import com.github.entropyfeng.mydb.util.TimeUtil;
@@ -8,11 +8,11 @@ import java.util.*;
 /**
  * @author entropyfeng
  */
-public class BaseHandler {
+public class BaseObject {
    private Map<String, Long> expireMap;
     private PriorityQueue<StringLongPair> expireQueue;
 
-    public BaseHandler() {
+    public BaseObject() {
         expireMap = new HashMap<>();
         expireQueue = new PriorityQueue<>();
     }
