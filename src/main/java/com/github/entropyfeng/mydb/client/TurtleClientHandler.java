@@ -22,7 +22,9 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<TurtleProto
         logger.info("channel active");
         TurtleProtoBuf.ClientCommand command=new ClientCommandBuilder(TurtleProtoBuf.TurtleModel.ADMIN, TurtleProtoBuf.TurtleObject.VALUE,CommonConstant.HELLO_SERVER).build();
         ctx.writeAndFlush(command);
+
     }
+
 
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {

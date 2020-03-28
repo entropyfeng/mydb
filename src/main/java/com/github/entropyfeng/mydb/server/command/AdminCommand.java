@@ -1,4 +1,6 @@
-package com.github.entropyfeng.mydb.server;
+package com.github.entropyfeng.mydb.server.command;
+
+import com.github.entropyfeng.mydb.server.command.IClientCommand;
 
 /**
  * @author entropyfeng

@@ -1,12 +1,11 @@
-package com.github.entropyfeng.mydb.server;
+package com.github.entropyfeng.mydb.server.command;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author entropyfeng
  */
-public class ValuesCommand implements IClientCommand{
+public class ValuesCommand implements IClientCommand {
 
     private String operationName;
     private Class<?>[] paraTypes;
