@@ -5,6 +5,9 @@ import io.netty.channel.ChannelInboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @author entropyfeng
+ */
 public class TurtleServerHandler implements ChannelInboundHandler {
     private static final Logger logger= LoggerFactory.getLogger(TurtleServerHandler.class);
     @Override
@@ -52,7 +55,7 @@ public class TurtleServerHandler implements ChannelInboundHandler {
 
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
-
+        logger.info("channelAdded in {} ",ctx.channel().remoteAddress());
     }
 
     @Override

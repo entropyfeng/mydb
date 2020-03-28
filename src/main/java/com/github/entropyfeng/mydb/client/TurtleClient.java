@@ -50,17 +50,18 @@ public class TurtleClient {
                     .remoteAddress(host, port)
                     .option(ChannelOption.RCVBUF_ALLOCATOR, new AdaptiveRecvByteBufAllocator(1 << 10, 1 << 20, 1 << 30))
                     .option(ChannelOption.SO_KEEPALIVE, true)
-            .handler(new ChannelInitializer<SocketChannel>() {
-                @Override
-                protected void initChannel(SocketChannel ch) throws Exception {
-                   ch.pipeline().addLast(new TurtleProtoEncoder());
-
-                }
-            });
-
-            ClientCommandBuilder clientCommandBuilder=new ClientCommandBuilder(TurtleProtoBuf.TurtleModel.ADMIN, TurtleProtoBuf.TurtleObject.VALUE, CommonConstant.HELLO_SERVER);
+                    .handler(new ChannelInitializer<SocketChannel>() {
+                        @Override
+                        protected void initChannel(SocketChannel ch) throws Exception {
+                            ch.pipeline().addLast("encoder",new TurtleProtoEncoder());
+                            ch.pipeline().addLast("handler",new TurtleClientHandler());
+                        }
+                    });
+            client.register();
+           logger.info(client.config().remoteAddress()+""+client.config().localAddress());
             ChannelFuture channelFuture1 = client.connect().sync();
-            logger.info("{} start and bind on {} and connect to {}", this.getClass().getName(),channelFuture1.channel().localAddress() ,channelFuture1.channel().remoteAddress());
+            logger.info("channel is {}",channelFuture1.isSuccess());
+            logger.info("{} start and bind on {} and connect to {}", this.getClass().getName(), channelFuture1.channel().localAddress(), channelFuture1.channel().remoteAddress());
             channelFuture1.channel().closeFuture().sync();
         } finally {
             eventLoopGroup.shutdownGracefully().sync();

@@ -75,3 +75,14 @@ message ClientCommand{//客户端命令
 
 
 }
+
+message ResponseData{
+
+    bool success=1;
+
+    TurtleParaType resType=2;
+
+    repeated TurtleCommonValue resValue=3;
+
+    string exception=4;
+}

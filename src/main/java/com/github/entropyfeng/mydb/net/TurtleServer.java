@@ -46,26 +46,27 @@ public class TurtleServer {
 
         try {
             ServerBootstrap serverBootstrap=new ServerBootstrap();
-            serverBootstrap.group(eventLoopGroup)
+            ChannelFuture channelFuture=  serverBootstrap.group(eventLoopGroup)
                     .channel(NioServerSocketChannel.class)
                     .childOption(ChannelOption.RCVBUF_ALLOCATOR,new AdaptiveRecvByteBufAllocator(1<<10,1<<20,1<<30))
                     .childOption(ChannelOption.SO_KEEPALIVE,true)
-                    .localAddress(host,port)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
-                           /*ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());
-                           ch.pipeline().addLast(new ClientCommandHandler());*/
+                           ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());
+                           ch.pipeline().addLast(new ClientCommandHandler());
                            ch.pipeline().addLast(new TurtleServerHandler());
                         }
-                    });
+                    }).bind(host,port).sync();
 
-            ChannelFuture channelFuture=serverBootstrap.bind().sync();
 
-            logger.info("{} start and listen on {}" ,this.getClass().getName(),channelFuture.channel().localAddress());
+
+            logger.info("server start and listen on {} {}" ,channelFuture.channel().remoteAddress(),channelFuture.channel().localAddress());
             channelFuture.channel().closeFuture().sync();
+            logger.info("server will close");
         }finally {
             eventLoopGroup.shutdownGracefully().sync();
+            logger.info("server close gracefully");
         }
     }
 
