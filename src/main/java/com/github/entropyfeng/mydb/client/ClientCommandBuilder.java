@@ -16,7 +16,8 @@ public class ClientCommandBuilder {
     }
 
     public ClientCommandBuilder addPara(TurtleProtoBuf.TurtleParaType paraType, TurtleProtoBuf.TurtleCommonValue value) {
-        builder.addParas(TurtleProtoBuf.TurtlePara.newBuilder().setKey(paraType).setValue(value).build());
+
+        builder.addKeys(paraType).addValues(value);
         return this;
     }
 

@@ -19,14 +19,16 @@ public class ClientCommandHelper {
 
     public static IClientCommand parseCommand(TurtleProtoBuf.ClientCommand clientCommand) {
 
-        final int paraNumbers = clientCommand.getParasList().size();
+        final int paraNumbers = clientCommand.getKeysCount();
+        assert paraNumbers == clientCommand.getValuesCount();
         final Class<?>[] paraTypes = new Class[paraNumbers];
         final List<Object> paras = new ArrayList<>(paraNumbers);
-        final List<TurtleProtoBuf.TurtlePara> parasList = clientCommand.getParasList();
-        for (int i = 0; i < paraNumbers; i++) {
+        final List<TurtleProtoBuf.TurtleParaType> typesList = clientCommand.getKeysList();
+        final List<TurtleProtoBuf.TurtleCommonValue> valuesList = clientCommand.getValuesList();
 
-            final TurtleProtoBuf.TurtleCommonValue value = parasList.get(i).getValue();
-            switch (parasList.get(i).getKey()) {
+        for (int i = 0; i < paraNumbers; i++) {
+            final TurtleProtoBuf.TurtleCommonValue value = valuesList.get(i);
+            switch (typesList.get(i)) {
                 case STRING:
                     paraTypes[i] = String.class;
                     paras.add(value.getStringValue());
@@ -62,9 +64,9 @@ public class ClientCommandHelper {
 
         switch (clientCommand.getModel()) {
             case ADMIN:
-              return  parseForAdmin(clientCommand);
+                return parseForAdmin(clientCommand);
             case CONCRETE:
-                return parseForConcrete(clientCommand,paraTypes,paras);
+                return parseForConcrete(clientCommand, paraTypes, paras);
             default:
                 throw new UnsupportedOperationException();
         }
@@ -72,16 +74,17 @@ public class ClientCommandHelper {
 
     private static ConcreteCommand parseForConcrete(TurtleProtoBuf.ClientCommand clientCommand, Class<?>[] paraTypes, List<Object> paras) {
 
-           switch (clientCommand.getObj()){
-               case VALUE:return new ValuesCommand(clientCommand.getOperationName(),paraTypes,paras);
-               default:throw new UnsupportedOperationException();
-           }
+        switch (clientCommand.getObj()) {
+            case VALUE:
+                return new ValuesCommand(clientCommand.getOperationName(), paraTypes, paras);
+            default:
+                throw new UnsupportedOperationException();
+        }
 
     }
 
 
-
-    private  static IClientCommand parseForAdmin(TurtleProtoBuf.ClientCommand clientCommand) {
+    private static IClientCommand parseForAdmin(TurtleProtoBuf.ClientCommand clientCommand) {
 
         return new AdminCommand(clientCommand.getOperationName());
     }
