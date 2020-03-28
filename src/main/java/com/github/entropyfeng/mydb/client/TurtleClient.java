@@ -10,6 +10,7 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.channel.socket.oio.OioSocketChannel;
 import io.netty.handler.codec.protobuf.ProtobufDecoderNano;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
@@ -64,18 +65,16 @@ public class TurtleClient {
             .handler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 protected void initChannel(SocketChannel ch) throws Exception {
-                   ch.pipeline().addLast(new ProtobufVarint32LengthFieldPrepender());
+                   ch.pipeline().addLast(new CommandToByteEncoder());
                 }
-            }).register();
-
-
+            });
+            
             ClientCommandBuilder clientCommandBuilder=new ClientCommandBuilder(TurtleProtoBuf.TurtleModel.ADMIN, TurtleProtoBuf.TurtleObject.VALUE, CommonConstant.HELLO_SERVER);
 
 
-            ChannelFuture channelFuture = client.connect().channel().writeAndFlush(clientCommandBuilder.build()).sync();
-
+            ChannelFuture channelFuture1 = client.connect().sync();
             logger.info("{} start and bind on {} and connect to {}", this.getClass().getName(), channelFuture.channel().localAddress(), channelFuture.channel().remoteAddress());
-            channelFuture.channel().closeFuture().sync();
+            channelFuture1.channel().closeFuture().sync();
         } finally {
             eventLoopGroup.shutdownGracefully().sync();
         }

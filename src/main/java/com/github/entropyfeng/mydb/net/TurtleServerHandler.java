@@ -1,53 +1,68 @@
 package com.github.entropyfeng.mydb.net;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.*;
-import io.netty.util.CharsetUtil;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ForkJoinPool;
-
-/**
- * @author entropyfeng
- * @date 2020/3/5 18:47
- */
-public class TurtleServerHandler extends ChannelInboundHandlerAdapter {
-
-    private static final Logger logger=LoggerFactory.getLogger(TurtleServerHandler.class);
-
+public class TurtleServerHandler implements ChannelInboundHandler {
+    private static final Logger logger= LoggerFactory.getLogger(TurtleServerHandler.class);
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-
-        Unpooled a;
-        Channel channel=ctx.channel();
-
-        ByteBuf byteBuf=Unpooled.copiedBuffer("you data",CharsetUtil.UTF_8);
-
-
-        ChannelFuture channelFuture=channel.writeAndFlush(byteBuf);
-        channelFuture.addListener((ChannelFutureListener) future -> {
-            if(future.isSuccess()){
-                System.out.println("success");
-            }else {
-                System.out.println("error");
-                future.cause().printStackTrace();
-            }
-        });
-
+    public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
+        logger.info("channelRegistered in {} ",ctx.channel().remoteAddress());
     }
 
-
     @Override
-    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-        super.channelReadComplete(ctx);
+    public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+        logger.info("channelUnRegistered in {} ",ctx.channel().remoteAddress());
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        super.channelActive(ctx);
+        logger.info("channelActive in {} ",ctx.channel().remoteAddress());
     }
 
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        logger.info("channelInActive in {} ",ctx.channel().remoteAddress());
+
+    }
+
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        logger.info("channelRead in {} ",ctx.channel().remoteAddress());
+
+    }
+
+    @Override
+    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+        logger.info("channelReadComplete in {} ",ctx.channel().remoteAddress());
+
+    }
+
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+
+    }
+
+    @Override
+    public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
+
+    }
+
+    @Override
+    public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
+
+    }
+
+    @Override
+    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+
+        cause.printStackTrace();
+    }
 }

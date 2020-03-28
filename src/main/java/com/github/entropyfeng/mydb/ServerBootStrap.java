@@ -18,7 +18,7 @@ public class ServerBootStrap {
 
     public static void main(String[] args)throws Exception {
 
-        new TurtleServer("0.0.0.0",4407).start();
+        new TurtleServer("127.0.0.1",4407).start();
 
 
     }
