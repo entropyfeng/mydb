@@ -6,40 +6,22 @@ import java.util.List;
 /**
  * @author entropyfeng
  */
-public class ValuesCommand implements ConcreteCommand {
+public class ValuesCommand  {
 
-    private String operationName;
-    private Class<?>[] paraTypes;
-    private List<Object> paras;
-    private Method method;
-    public ValuesCommand(){
 
-    }
+    private final Method method;
+    private final List<Object> values;
 
-    public ValuesCommand(String operationName, Class<?>[] paraTypes, List<Object> paras) {
-        this.operationName = operationName;
-        this.paraTypes = paraTypes;
-        this.paras = paras;
+    public ValuesCommand(Method method, List<Object> values) {
+        this.method = method;
+        this.values = values;
     }
 
     public Method getMethod() {
         return method;
     }
 
-    public void setMethod(Method method) {
-        this.method = method;
-    }
-
-    @Override
-    public String getOperationName() {
-        return operationName;
-    }
-
-    public Class<?>[] getParaTypes() {
-        return paraTypes;
-    }
-
-    public List<Object> getParas() {
-        return paras;
+    public List<Object> getValues() {
+        return values;
     }
 }

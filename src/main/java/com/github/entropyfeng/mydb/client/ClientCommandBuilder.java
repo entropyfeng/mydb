@@ -8,10 +8,9 @@ import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 public class ClientCommandBuilder {
     private TurtleProtoBuf.ClientCommand.Builder builder = TurtleProtoBuf.ClientCommand.newBuilder();
 
-    public ClientCommandBuilder(TurtleProtoBuf.TurtleModel turtleModel, TurtleProtoBuf.TurtleObject turtleObject, String operationName) {
+    public ClientCommandBuilder(TurtleProtoBuf.TurtleModel turtleModel, String operationName) {
 
         builder.setModel(turtleModel);
-        builder.setObj(turtleObject);
         builder.setOperationName(operationName);
     }
 

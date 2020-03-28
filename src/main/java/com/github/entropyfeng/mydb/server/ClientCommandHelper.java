@@ -2,11 +2,10 @@ package com.github.entropyfeng.mydb.server;
 
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.core.obj.TurtleValue;
-import com.github.entropyfeng.mydb.server.command.AdminCommand;
-import com.github.entropyfeng.mydb.server.command.ConcreteCommand;
-import com.github.entropyfeng.mydb.server.command.IClientCommand;
+import com.github.entropyfeng.mydb.core.obj.ValuesObject;
 import com.github.entropyfeng.mydb.server.command.ValuesCommand;
 
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -17,12 +16,11 @@ import java.util.List;
  */
 public class ClientCommandHelper {
 
-    public static IClientCommand parseCommand(TurtleProtoBuf.ClientCommand clientCommand) {
-
+    public static void parseCommand(TurtleProtoBuf.ClientCommand clientCommand) {
         final int paraNumbers = clientCommand.getKeysCount();
         assert paraNumbers == clientCommand.getValuesCount();
-        final Class<?>[] paraTypes = new Class[paraNumbers];
-        final List<Object> paras = new ArrayList<>(paraNumbers);
+        final Class<?>[] types = new Class[paraNumbers];
+        final List<Object> values = new ArrayList<>(paraNumbers);
         final List<TurtleProtoBuf.TurtleParaType> typesList = clientCommand.getKeysList();
         final List<TurtleProtoBuf.TurtleCommonValue> valuesList = clientCommand.getValuesList();
 
@@ -30,32 +28,32 @@ public class ClientCommandHelper {
             final TurtleProtoBuf.TurtleCommonValue value = valuesList.get(i);
             switch (typesList.get(i)) {
                 case STRING:
-                    paraTypes[i] = String.class;
-                    paras.add(value.getStringValue());
+                    types[i] = String.class;
+                    values.add(value.getStringValue());
                     break;
                 case DOUBLE:
-                    paraTypes[i] = Double.class;
-                    paras.add(value.getDoubleValue());
+                    types[i] = Double.class;
+                    values.add(value.getDoubleValue());
                     break;
                 case INTEGER:
-                    paraTypes[i] = Integer.class;
-                    paras.add(value.getIntValue());
+                    types[i] = Integer.class;
+                    values.add(value.getIntValue());
                     break;
                 case LONG:
-                    paraTypes[i] = Long.class;
-                    paras.add(value.getLongValue());
+                    types[i] = Long.class;
+                    values.add(value.getLongValue());
                     break;
                 case NUMBER_INTEGER:
-                    paraTypes[i] = BigInteger.class;
-                    paras.add(new BigInteger(value.getStringValue()));
+                    types[i] = BigInteger.class;
+                    values.add(new BigInteger(value.getStringValue()));
                     break;
                 case NUMBER_DECIMAL:
-                    paraTypes[i] = BigDecimal.class;
-                    paras.add(new BigDecimal(value.getStringValue()));
+                    types[i] = BigDecimal.class;
+                    values.add(new BigDecimal(value.getStringValue()));
                     break;
                 case TURTLE_VALUE:
-                    paraTypes[i] = TurtleValue.class;
-                    paras.add(new TurtleValue(value.getTurtleValue()));
+                    types[i] = TurtleValue.class;
+                    values.add(new TurtleValue(value.getTurtleValue()));
                     break;
                 default:
                     throw new UnsupportedOperationException();
@@ -64,29 +62,28 @@ public class ClientCommandHelper {
 
         switch (clientCommand.getModel()) {
             case ADMIN:
-                return parseForAdmin(clientCommand);
-            case CONCRETE:
-                return parseForConcrete(clientCommand, paraTypes, paras);
+
+            case SET:
+
+            case VALUE: parseForValue(clientCommand.getOperationName(),types,values);return;
+
+            case HASH:
+
             default:
                 throw new UnsupportedOperationException();
         }
     }
 
-    private static ConcreteCommand parseForConcrete(TurtleProtoBuf.ClientCommand clientCommand, Class<?>[] paraTypes, List<Object> paras) {
 
-        switch (clientCommand.getObj()) {
-            case VALUE:
-                return new ValuesCommand(clientCommand.getOperationName(), paraTypes, paras);
-            default:
-                throw new UnsupportedOperationException();
+    private static ValuesCommand parseForValue(String operationName, Class<?>[] types, List<Object> values) {
+        Method method = null;
+        try {
+            method = ValuesObject.class.getDeclaredMethod(operationName, types);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
         }
+        return new ValuesCommand(method, values);
 
-    }
-
-
-    private static IClientCommand parseForAdmin(TurtleProtoBuf.ClientCommand clientCommand) {
-
-        return new AdminCommand(clientCommand.getOperationName());
     }
 
 }

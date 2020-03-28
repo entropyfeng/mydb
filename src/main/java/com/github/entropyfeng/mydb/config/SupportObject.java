@@ -1,6 +1,6 @@
 package com.github.entropyfeng.mydb.config;
 
-import com.github.entropyfeng.mydb.core.SupportValue;
+
 
 /**
  * 占4位

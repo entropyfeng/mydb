@@ -20,7 +20,7 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<TurtleProto
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
         logger.info("channel active");
-        TurtleProtoBuf.ClientCommand command=new ClientCommandBuilder(TurtleProtoBuf.TurtleModel.ADMIN, TurtleProtoBuf.TurtleObject.VALUE,CommonConstant.HELLO_SERVER).build();
+        TurtleProtoBuf.ClientCommand command=new ClientCommandBuilder(TurtleProtoBuf.TurtleModel.ADMIN, CommonConstant.HELLO_SERVER).build();
         ctx.writeAndFlush(command);
 
     }
