@@ -6,17 +6,13 @@ import com.github.entropyfeng.mydb.core.obj.ValuesObject;
 import com.github.entropyfeng.mydb.server.command.ValuesCommand;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.LinkedBlockingDeque;
 
 
 /**
  * @author entropyfeng
  */
-public class ServerDomain {
+public class ServerDomain  extends Thread {
 
     private ValuesObject valuesObject;
 
@@ -24,9 +20,19 @@ public class ServerDomain {
 
     private SetObject setObject;
 
-    private ConcurrentLinkedDeque<ValuesExe> valuesQueue;
+    private ConcurrentLinkedDeque<ValuesCommand> valuesQueue;
 
     private ConcurrentLinkedDeque<Runnable> listQueue;
 
+
+    public void xxx() {
+        ValuesCommand valuesCommand = valuesQueue.pop();
+        Object res = null;
+        try {
+            res = valuesCommand.getMethod().invoke(valuesCommand, valuesCommand.getValues());
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
 
 }
