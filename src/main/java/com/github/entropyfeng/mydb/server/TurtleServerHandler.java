@@ -13,6 +13,10 @@ import org.slf4j.LoggerFactory;
 public class TurtleServerHandler extends SimpleChannelInboundHandler<TurtleProtoBuf.ClientCommand> {
     private static final Logger logger= LoggerFactory.getLogger(TurtleServerHandler.class);
 
+    private final ServerDomain serverDomain;
+    public TurtleServerHandler(ServerDomain serverDomain){
+        this.serverDomain=serverDomain;
+    }
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
         super.channelRegistered(ctx);
@@ -30,11 +34,8 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<TurtleProto
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, TurtleProtoBuf.ClientCommand msg) throws Exception {
-        ClientCommandHelper.parseCommand(msg,ctx.channel());
         System.out.println(msg.getOperationName());
         TurtleProtoBuf.ResponseData responseData= TurtleProtoBuf.ResponseData.newBuilder().setSuccess(true).build();
         ctx.channel().writeAndFlush(responseData);
-
-
     }
 }

@@ -20,6 +20,7 @@ public class TurtleServer {
     private static final Logger logger = LoggerFactory.getLogger(TurtleServer.class);
     private final int port;
     private final String host;
+    private ServerDomain serverDomain;
 
     /**
      * assume the param is correct
@@ -44,7 +45,10 @@ public class TurtleServer {
         this.host = host;
     }
 
+
     public void start() throws Exception {
+
+        serverDomain=new ServerDomain();
         NioEventLoopGroup boss = new NioEventLoopGroup(1);
         NioEventLoopGroup worker = new NioEventLoopGroup(1);
         try {
@@ -60,7 +64,7 @@ public class TurtleServer {
 
                             ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());//入站
                             ch.pipeline().addLast(new ProtobufDecoder(TurtleProtoBuf.ClientCommand.getDefaultInstance()));//入站
-                            ch.pipeline().addLast(new TurtleServerHandler());//入站
+                            ch.pipeline().addLast(new TurtleServerHandler(serverDomain));//入站
                             ch.pipeline().addLast(new TurtleServerProtoEncoder());//出站
                         }
                     });

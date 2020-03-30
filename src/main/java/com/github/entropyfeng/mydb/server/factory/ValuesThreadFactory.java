@@ -1,4 +1,4 @@
-package com.github.entropyfeng.mydb.server;
+package com.github.entropyfeng.mydb.server.factory;
 
 import org.jetbrains.annotations.NotNull;
 

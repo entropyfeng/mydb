@@ -1,6 +1,8 @@
 package com.github.entropyfeng.mydb.client;
 
+import com.github.entropyfeng.mydb.common.CommonConstant;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
+import com.github.entropyfeng.mydb.server.TurtleServer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -41,6 +43,7 @@ public class TurtleClient {
         this.host = host;
     }
 
+
     public void start() throws Exception {
         NioEventLoopGroup eventLoopGroup = new NioEventLoopGroup();
 
@@ -60,8 +63,12 @@ public class TurtleClient {
                             ch.pipeline().addLast("handler", new TurtleClientHandler());//入站
                         }
                     });
+
             ChannelFuture channelFuture = client.connect().sync();
-            logger.info("{} start and bind on {} and connect to {}", this.getClass().getName(), channelFuture.channel().localAddress(), channelFuture.channel().remoteAddress());
+            logger.info("client start and bind on {} and connect to {}", channelFuture.channel().localAddress(), channelFuture.channel().remoteAddress());
+            if(channelFuture.isSuccess()) {
+                TurtleClientChannelFactory.setChannel(channelFuture.channel());
+            }
             channelFuture.channel().closeFuture().sync();
         } finally {
             eventLoopGroup.shutdownGracefully().sync();

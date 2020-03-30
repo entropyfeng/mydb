@@ -6,7 +6,6 @@ import io.netty.channel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.SocketAddress;
 
 /**
  * @author entropyfeng
@@ -15,7 +14,6 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<TurtleProto
 
     private static final Logger logger= LoggerFactory.getLogger(TurtleClientHandler.class);
 
-
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
@@ -23,7 +21,6 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<TurtleProto
         TurtleProtoBuf.ClientCommand command=new ClientCommandBuilder(TurtleProtoBuf.TurtleModel.ADMIN, CommonConstant.HELLO_SERVER).build();
         ctx.writeAndFlush(command);
     }
-
 
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
@@ -38,13 +35,12 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<TurtleProto
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
 
+        cause.printStackTrace();
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, TurtleProtoBuf.ResponseData msg) throws Exception {
-
         System.out.println(msg.getSuccess());
-
     }
 
 }

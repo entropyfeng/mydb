@@ -8,11 +8,11 @@ import java.util.LinkedList;
  */
 public class ListObject extends BaseObject {
 
-    private HashMap<String, LinkedList<TurtleValue>> listMap;
+    private final HashMap<String, LinkedList<TurtleValue>> listMap;
 
-    public ListObject(HashMap<String, LinkedList<TurtleValue>> listMap) {
+    public ListObject() {
         super();
-        this.listMap = listMap;
+        this.listMap = new HashMap<>();
     }
 
     public int size(){

@@ -1,6 +1,7 @@
 package com.github.entropyfeng.mydb.client;
 
 import com.github.entropyfeng.mydb.config.CommonConfig;
+import com.github.entropyfeng.mydb.server.TurtleServer;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -12,9 +13,7 @@ public class ClientBootStrap {
 
 
     public static void main(String[] args) throws Exception{
-
-    new TurtleClient("0.0.0.0",4407).start();
-
-
+        TurtleClient client= new TurtleClient("0.0.0.0",4407);
+        client.start();
     }
 }

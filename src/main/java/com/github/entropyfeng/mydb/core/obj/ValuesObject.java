@@ -12,14 +12,16 @@ import java.util.HashMap;
 public class ValuesObject extends BaseObject {
     private HashMap<String, TurtleValue> valueMap;
 
-    public ValuesObject(HashMap<String, TurtleValue> valueMap) {
+    public ValuesObject() {
         super();
-        this.valueMap = valueMap;
+        valueMap = new HashMap<>();
     }
+
     public boolean isExist(String key) {
         removeExpireKey(key);
         return valueMap.containsKey(key);
     }
+
     public TurtleValue get(String key) {
         removeExpireKey(key);
         return valueMap.get(key);
@@ -29,7 +31,6 @@ public class ValuesObject extends BaseObject {
         deleteExpire(key);
         return valueMap.remove(key) != null;
     }
-
 
 
     public void set(String key, TurtleValue value, long time) {

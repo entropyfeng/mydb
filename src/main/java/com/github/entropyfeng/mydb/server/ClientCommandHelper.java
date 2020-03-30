@@ -10,6 +10,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -27,7 +28,8 @@ public class ClientCommandHelper {
 
         for (int i = 0; i < paraNumbers; i++) {
             final TurtleProtoBuf.TurtleCommonValue value = valuesList.get(i);
-            switch (typesList.get(i)) {
+            final TurtleProtoBuf.TurtleParaType type=typesList.get(i);
+            switch (type) {
                 case STRING:
                     types[i] = String.class;
                     values.add(value.getStringValue());
@@ -56,13 +58,19 @@ public class ClientCommandHelper {
                     types[i] = TurtleValue.class;
                     values.add(new TurtleValue(value.getTurtleValue()));
                     break;
+                case COLLECTION:types[i]= Collection.class;
+                     values.add(handlerCollection(type,value.getCollectionValue().getCollectionParasList()));
+                     break;
                 default:
                     throw new UnsupportedOperationException();
             }
         }
 
+
         switch (clientCommand.getModel()) {
             case ADMIN:
+
+            case LIST:
 
             case SET:
 
@@ -75,6 +83,27 @@ public class ClientCommandHelper {
         }
     }
 
+    private static List<?> handlerCollection(TurtleProtoBuf.TurtleParaType type, List<TurtleProtoBuf.TurtleCommonValue> values){
+
+
+        final   List<Object> res=new ArrayList<>();
+
+        switch (type){
+            case STRING:
+                values.forEach(value -> res.add(value.getStringValue()));break;
+
+            case NUMBER_DECIMAL:
+                values.forEach(value -> res.add(new BigDecimal(value.getStringValue())));break;
+
+            case DOUBLE:values.forEach(value -> res.add(value.getDoubleValue()));break;
+            case LONG:values.forEach(value -> res.add(value.getLongValue()));break;
+            case INTEGER:values.forEach(value -> res.add(value.getIntValue()));break;
+            case NUMBER_INTEGER:values.forEach(value -> res.add(new BigInteger(value.getStringValue())));break;
+            case TURTLE_VALUE:values.forEach(value -> res.add(new TurtleValue(value.getTurtleValue())));break;
+            default:throw new UnsupportedOperationException("unSupport operation "+type.toString());
+        }
+        return res;
+    }
 
     private static ValuesCommand parseForValue(String operationName, Class<?>[] types, List<Object> values,Channel channel) {
         Method method = null;
