@@ -4,6 +4,7 @@ import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.core.obj.TurtleValue;
 import com.github.entropyfeng.mydb.core.obj.ValuesObject;
 import com.github.entropyfeng.mydb.server.command.ValuesCommand;
+import io.netty.channel.Channel;
 
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -16,7 +17,7 @@ import java.util.List;
  */
 public class ClientCommandHelper {
 
-    public static void parseCommand(TurtleProtoBuf.ClientCommand clientCommand) {
+    public static void parseCommand(TurtleProtoBuf.ClientCommand clientCommand, Channel channel) {
         final int paraNumbers = clientCommand.getKeysCount();
         assert paraNumbers == clientCommand.getValuesCount();
         final Class<?>[] types = new Class[paraNumbers];
@@ -65,7 +66,7 @@ public class ClientCommandHelper {
 
             case SET:
 
-            case VALUE: parseForValue(clientCommand.getOperationName(),types,values);return;
+            case VALUE: parseForValue(clientCommand.getOperationName(),types,values,channel);return;
 
             case HASH:
 
@@ -75,14 +76,14 @@ public class ClientCommandHelper {
     }
 
 
-    private static ValuesCommand parseForValue(String operationName, Class<?>[] types, List<Object> values) {
+    private static ValuesCommand parseForValue(String operationName, Class<?>[] types, List<Object> values,Channel channel) {
         Method method = null;
         try {
             method = ValuesObject.class.getDeclaredMethod(operationName, types);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
-        return new ValuesCommand(method, values);
+        return new ValuesCommand(method, values,channel);
 
     }
 

@@ -58,9 +58,10 @@ public class TurtleServer {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
 
-                            ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());
-                            ch.pipeline().addLast(new ProtobufDecoder(TurtleProtoBuf.ClientCommand.getDefaultInstance()));
-                            ch.pipeline().addLast(new TurtleServerHandler());
+                            ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());//入站
+                            ch.pipeline().addLast(new ProtobufDecoder(TurtleProtoBuf.ClientCommand.getDefaultInstance()));//入站
+                            ch.pipeline().addLast(new TurtleServerHandler());//入站
+                            ch.pipeline().addLast(new TurtleServerProtoEncoder());//出站
                         }
                     });
 

@@ -30,6 +30,11 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<TurtleProto
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, TurtleProtoBuf.ClientCommand msg) throws Exception {
-        ClientCommandHelper.parseCommand(msg);
+        ClientCommandHelper.parseCommand(msg,ctx.channel());
+        System.out.println(msg.getOperationName());
+        TurtleProtoBuf.ResponseData responseData= TurtleProtoBuf.ResponseData.newBuilder().setSuccess(true).build();
+        ctx.channel().writeAndFlush(responseData);
+
+
     }
 }

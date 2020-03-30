@@ -10,9 +10,9 @@ import org.slf4j.LoggerFactory;
 /**
  * @author entropyfeng
  */
-public class TurtleProtoEncoder extends MessageToByteEncoder<TurtleProtoBuf.ClientCommand> {
+public class TurtleClientProtoEncoder extends MessageToByteEncoder<TurtleProtoBuf.ClientCommand> {
 
-    private static final Logger logger= LoggerFactory.getLogger(TurtleProtoEncoder.class);
+    private static final Logger logger= LoggerFactory.getLogger(TurtleClientProtoEncoder.class);
 
 
     @Override

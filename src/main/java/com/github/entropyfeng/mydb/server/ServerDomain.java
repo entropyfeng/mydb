@@ -7,6 +7,9 @@ import com.github.entropyfeng.mydb.server.command.ValuesCommand;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -25,14 +28,23 @@ public class ServerDomain  extends Thread {
     private ConcurrentLinkedDeque<Runnable> listQueue;
 
 
-    public void xxx() {
-        ValuesCommand valuesCommand = valuesQueue.pop();
-        Object res = null;
-        try {
-            res = valuesCommand.getMethod().invoke(valuesCommand, valuesCommand.getValues());
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
+    public void xx(){
+      new ValuesThreadFactory().newThread(this::runValues).start();
+
+    }
+
+    private void runValues() {
+        while (true){
+            ValuesCommand valuesCommand = valuesQueue.pop();
+            Object res = null;
+            try {
+                res = valuesCommand.getMethod().invoke(valuesCommand, valuesCommand.getValues());
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
         }
+
+
     }
 
 }
