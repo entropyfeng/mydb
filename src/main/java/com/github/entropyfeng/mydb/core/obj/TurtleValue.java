@@ -14,6 +14,14 @@ import static com.github.entropyfeng.mydb.util.BytesUtil.bytesToInt;
 
 
 /**
+ * 同时支持
+ * {@link String}
+ * {@link BigInteger}
+ * {@link Integer}
+ * {@link Long}
+ * {@link BigDecimal}
+ * {@link Double}
+ * 6种编码
  * @author entropyfeng
  */
 public class TurtleValue {
@@ -95,7 +103,6 @@ public class TurtleValue {
         }
     }
 
-
     public void increment(long longValue) throws UnsupportedOperationException {
 
         switch (type) {
@@ -104,13 +111,13 @@ public class TurtleValue {
                 return;
             case INTEGER:
                 handleLong(longValue+bytesToInt(this.values));
-                break;
+                return;
             case NUMBER_INTEGER:
                 handleBigInteger(toBigInteger(this).add(BigInteger.valueOf(longValue)));
-                break;
+                return;
             case NUMBER_DECIMAL:
                 handleBigDecimal(toBigDecimal(this).add(BigDecimal.valueOf(longValue)));
-                break;
+                return;
             default:
                 throw new UnsupportedOperationException("unSupport append operation on" + type.toString());
         }
@@ -217,14 +224,11 @@ public class TurtleValue {
                 throw new UnsupportedOperationException("unSupport operation " + turtleValue.type.toString());
         }
     }
-
     private static void doubleAdd(byte[] bytes, double doubleValue) {
         doubleToBytes(bytes, bytesToDouble(bytes) + doubleValue);
     }
 
-
     /**
-     *
      * @param bytes long type
      * @param longValue long value
      */
@@ -239,8 +243,4 @@ public class TurtleValue {
     private static void intAdd(byte[] bytes, int intValue) {
         intToBytes(bytes, bytesToInt(bytes) + intValue);
     }
-
-
-
-
 }

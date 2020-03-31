@@ -25,11 +25,10 @@ public class BaseObject {
 
     /**
      * 设置该键值对将在 time 时过期
-     *
      * @param key  {@link String}
      * @param time 毫秒时间
      */
-    protected void putExpire(String key, long time) {
+    protected void putExpireTime(String key, long time) {
         if (!expireMap.containsKey(key)) {
             expireMap.put(key, time);
             expireQueue.add(new StringLongPair(key, time));
@@ -49,7 +48,7 @@ public class BaseObject {
      * 删除key对应的过期时间
      * @param key {@link String}
      */
-    public void deleteExpire(String key) {
+    public void deleteExpireTime(String key) {
         if (expireMap.containsKey(key)) {
             expireMap.remove(key);
             expireQueue.removeIf(stringLongPair -> stringLongPair.getKey().equals(key));
@@ -61,14 +60,14 @@ public class BaseObject {
      * @param key {@link String}
      * @param time 毫秒时间戳
      */
-    public void resetExpire(String key, long time) {
+    public void resetExpireTime(String key, long time) {
         if (expireMap.containsKey(key)) {
             expireMap.remove(key);
             expireQueue.stream().filter(stringLongPair -> stringLongPair.getKey().equals(key)).findFirst().ifPresent(stringLongPair -> stringLongPair.setValue(time));
         }
     }
 
-    protected void clearExpire(Map<String, Object> map) {
+    protected void clearExpireTime(Map<String, Object> map) {
         final long currentTime = TimeUtil.currentTime();
         String peek;
         while (expireQueue.peek() != null && expireQueue.peek().getValue() <= currentTime) {

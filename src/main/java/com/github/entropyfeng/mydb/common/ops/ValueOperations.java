@@ -9,7 +9,6 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
- *
  * @author entropyfeng
  */
 public interface ValueOperations {
@@ -31,6 +30,12 @@ public interface ValueOperations {
      */
     void set(String key, TurtleValue value, long time);
 
+    /**
+     * @param key {@link String}
+     * @param value {@link TurtleValue}
+     * @param time 时间戳(毫秒表示)
+     * @param timeUnit {@link TimeUnit}
+     */
     default void set(String key, TurtleValue value , long time, TimeUnit timeUnit) {
         Objects.requireNonNull(timeUnit);
         this.set(key, value,timeUnit.toMillis(time));

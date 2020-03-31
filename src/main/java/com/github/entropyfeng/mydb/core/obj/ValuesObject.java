@@ -28,7 +28,7 @@ public class ValuesObject extends BaseObject {
     }
 
     public boolean remove(String key) {
-        deleteExpire(key);
+        deleteExpireTime(key);
         return valueMap.remove(key) != null;
     }
 
@@ -36,7 +36,7 @@ public class ValuesObject extends BaseObject {
     public void set(String key, TurtleValue value, long time) {
         valueMap.put(key, value);
         if (!TimeUtil.isExpire(time)) {
-            putExpire(key, time);
+            putExpireTime(key, time);
         }
     }
 
@@ -60,7 +60,7 @@ public class ValuesObject extends BaseObject {
      */
     private void  removeExpireKey(String key) {
         if (isExpire(key)) {
-            deleteExpire(key);
+            deleteExpireTime(key);
             valueMap.remove(key);
         }
     }
