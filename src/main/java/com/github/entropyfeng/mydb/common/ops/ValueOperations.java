@@ -1,10 +1,11 @@
-package com.github.entropyfeng.mydb.client;
+package com.github.entropyfeng.mydb.common.ops;
 
 import com.github.entropyfeng.mydb.core.obj.TurtleValue;
 import com.github.entropyfeng.mydb.expection.TurtleNullPointerException;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -14,26 +15,24 @@ import java.util.concurrent.TimeUnit;
 public interface ValueOperations {
 
     /**
-     *
-     * @param key
-     * @param value
+     * 根据 key 插入 value,无过期时间
+     * @param key {@link String}
+     * @param value {@link TurtleValue}
      */
     default void set(String key, TurtleValue value) {
         this.set(key, value, 0L);
     }
 
     /**
-     *
-     * @param key 键
-     * @param value 值
+     * 根据 key 插入 value 并在time时过期（mill）
+     * @param key {@link String}
+     * @param value 值{@link TurtleValue}
      * @param time 过期时间
      */
     void set(String key, TurtleValue value, long time);
 
     default void set(String key, TurtleValue value , long time, TimeUnit timeUnit) {
-        if (timeUnit==null){
-            throw new TurtleNullPointerException("timeUnit is null .");
-        }
+        Objects.requireNonNull(timeUnit);
         this.set(key, value,timeUnit.toMillis(time));
     }
 
@@ -82,10 +81,6 @@ public interface ValueOperations {
 
     Object increment(String key, BigDecimal bigDecimal)throws UnsupportedOperationException;
 
-
     boolean append(String key, String appendValue)throws UnsupportedOperationException;
-
-
-
 
 }

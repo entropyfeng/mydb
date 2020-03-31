@@ -82,6 +82,10 @@ public class ValuesObject extends BaseObject {
         return false;
     }
 
+    public void sayHello(){
+        System.out.println("sayHello");
+    }
+
     public boolean increment(String key, double doubleValue) {
         return false;
     }

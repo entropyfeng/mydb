@@ -1,6 +1,6 @@
 package com.github.entropyfeng.mydb.client;
 
-import java.util.Collection;
+import com.github.entropyfeng.mydb.common.ops.ValueOperations;
 
 /**
  * @author entropyfeng

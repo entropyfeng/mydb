@@ -9,7 +9,13 @@ import java.util.*;
  * @author entropyfeng
  */
 public class BaseObject {
-   private Map<String, Long> expireMap;
+    /**
+     * 过期字典，用于查看该String 是否设定过期
+     */
+    private Map<String, Long> expireMap;
+    /**
+     * 过期队列，按照过期时间排序
+     */
     private PriorityQueue<StringLongPair> expireQueue;
 
     public BaseObject() {
@@ -17,46 +23,53 @@ public class BaseObject {
         expireQueue = new PriorityQueue<>();
     }
 
-    protected boolean putExpire(String key, long time) {
+    /**
+     * 设置该键值对将在 time 时过期
+     *
+     * @param key  {@link String}
+     * @param time 毫秒时间
+     */
+    protected void putExpire(String key, long time) {
         if (!expireMap.containsKey(key)) {
             expireMap.put(key, time);
             expireQueue.add(new StringLongPair(key, time));
-            return true;
         }
-        return false;
-
     }
 
     public boolean isExpire(String key) {
         return TimeUtil.isExpire(expireMap.get(key));
     }
 
-    public boolean deleteExpire(String key) {
-
+    /**
+     * 删除key对应的过期时间
+     * @param key {@link String}
+     */
+    public void deleteExpire(String key) {
         if (expireMap.containsKey(key)) {
             expireMap.remove(key);
             expireQueue.removeIf(stringLongPair -> stringLongPair.getKey().equals(key));
-            return true;
         }
-        return false;
     }
 
-    public boolean resetExpire(String key, long time) {
+    /**
+     * 若过期字典中存在，则重新设置，否则不予设置
+     * @param key {@link String}
+     * @param time 毫秒时间戳
+     */
+    public void resetExpire(String key, long time) {
         if (expireMap.containsKey(key)) {
             expireMap.remove(key);
             expireQueue.stream().filter(stringLongPair -> stringLongPair.getKey().equals(key)).findFirst().ifPresent(stringLongPair -> stringLongPair.setValue(time));
-            return true;
         }
-       return false;
     }
 
     protected void clearExpire(Map<String, Object> map) {
         final long currentTime = TimeUtil.currentTime();
         String peek;
         while (expireQueue.peek() != null && expireQueue.peek().getValue() <= currentTime) {
+            //弹出队列头结点，若弹出前队列为空，则返回null;但此时stringLongPair一定不为空
             StringLongPair stringLongPair = expireQueue.poll();
-            assert stringLongPair != null;
-            peek = stringLongPair.getKey();
+            peek = Objects.requireNonNull(stringLongPair).getKey();
             expireMap.remove(peek);
             map.remove(peek);
         }

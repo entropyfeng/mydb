@@ -1,8 +1,7 @@
 package com.github.entropyfeng.mydb.client;
 
-import com.github.entropyfeng.mydb.common.CommonConstant;
+import com.github.entropyfeng.mydb.common.CommonCommand;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
-import com.github.entropyfeng.mydb.server.TurtleServer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -69,6 +68,7 @@ public class TurtleClient {
             if(channelFuture.isSuccess()) {
                 TurtleClientChannelFactory.setChannel(channelFuture.channel());
             }
+            channelFuture.channel().writeAndFlush(CommonCommand.sayHelloCommand());
             channelFuture.channel().closeFuture().sync();
         } finally {
             eventLoopGroup.shutdownGracefully().sync();

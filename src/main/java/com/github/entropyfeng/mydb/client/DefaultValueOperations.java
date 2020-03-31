@@ -1,5 +1,6 @@
 package com.github.entropyfeng.mydb.client;
 
+import com.github.entropyfeng.mydb.common.ops.ValueOperations;
 import com.github.entropyfeng.mydb.core.obj.TurtleValue;
 
 import java.math.BigDecimal;

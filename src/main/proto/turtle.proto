@@ -79,3 +79,13 @@ message ResponseData{
 
     string exception=4;
 }
+
+enum Exception{
+    UnsupportedOperationException=0;
+    NullPointerException=1;
+    IllegalAccessException=2;
+    InvocationTargetException=3;
+    NoSuchMethodException=4;
+
+
+}
