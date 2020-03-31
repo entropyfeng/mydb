@@ -54,14 +54,15 @@ public class ValuesObject extends BaseObject {
         }
     }
 
-    private boolean removeExpireKey(String key) {
+    /**
+     *
+     * @param key
+     */
+    private void  removeExpireKey(String key) {
         if (isExpire(key)) {
             deleteExpire(key);
             valueMap.remove(key);
-
-            return true;
         }
-        return false;
     }
 
     public void append(String key, String value) throws UnsupportedOperationException {

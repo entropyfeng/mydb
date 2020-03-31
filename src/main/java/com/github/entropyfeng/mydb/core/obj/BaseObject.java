@@ -36,6 +36,11 @@ public class BaseObject {
         }
     }
 
+    /**
+     * 判断该key 是否过期
+     * @param key {@link String}
+     * @return true->过期 ;false->未过期;
+     */
     public boolean isExpire(String key) {
         return TimeUtil.isExpire(expireMap.get(key));
     }
