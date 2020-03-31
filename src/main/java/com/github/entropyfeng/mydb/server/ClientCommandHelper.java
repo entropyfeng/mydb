@@ -28,7 +28,7 @@ public class ClientCommandHelper {
 
         for (int i = 0; i < paraNumbers; i++) {
             final TurtleProtoBuf.TurtleCommonValue value = valuesList.get(i);
-            final TurtleProtoBuf.TurtleParaType type=typesList.get(i);
+            final TurtleProtoBuf.TurtleParaType type = typesList.get(i);
             switch (type) {
                 case STRING:
                     types[i] = String.class;
@@ -58,9 +58,10 @@ public class ClientCommandHelper {
                     types[i] = TurtleValue.class;
                     values.add(new TurtleValue(value.getTurtleValue()));
                     break;
-                case COLLECTION:types[i]= Collection.class;
-                     values.add(handlerCollection(type,value.getCollectionValue().getCollectionParasList()));
-                     break;
+                case COLLECTION:
+                    types[i] = Collection.class;
+                    values.add(handlerCollection(type, value.getCollectionValue().getCollectionParasList()));
+                    break;
                 default:
                     throw new UnsupportedOperationException();
             }
@@ -68,13 +69,14 @@ public class ClientCommandHelper {
 
 
         switch (clientCommand.getModel()) {
+            case VALUE:
+                parseForValue(clientCommand.getOperationName(), types, values, channel);
+                return;
             case ADMIN:
 
             case LIST:
 
             case SET:
-
-            case VALUE: parseForValue(clientCommand.getOperationName(),types,values,channel);return;
 
             case HASH:
 
@@ -82,37 +84,54 @@ public class ClientCommandHelper {
                 throw new UnsupportedOperationException();
         }
     }
+    private static void handlerAdmin(String operationName, Class<?>[] types, List<Object> values, Channel channel){
 
-    private static List<?> handlerCollection(TurtleProtoBuf.TurtleParaType type, List<TurtleProtoBuf.TurtleCommonValue> values){
+
+    }
+
+    private static List<?> handlerCollection(TurtleProtoBuf.TurtleParaType type, List<TurtleProtoBuf.TurtleCommonValue> values) {
 
 
-        final   List<Object> res=new ArrayList<>();
+        final List<Object> res = new ArrayList<>();
 
-        switch (type){
+        switch (type) {
             case STRING:
-                values.forEach(value -> res.add(value.getStringValue()));break;
+                values.forEach(value -> res.add(value.getStringValue()));
+                break;
 
             case NUMBER_DECIMAL:
-                values.forEach(value -> res.add(new BigDecimal(value.getStringValue())));break;
+                values.forEach(value -> res.add(new BigDecimal(value.getStringValue())));
+                break;
 
-            case DOUBLE:values.forEach(value -> res.add(value.getDoubleValue()));break;
-            case LONG:values.forEach(value -> res.add(value.getLongValue()));break;
-            case INTEGER:values.forEach(value -> res.add(value.getIntValue()));break;
-            case NUMBER_INTEGER:values.forEach(value -> res.add(new BigInteger(value.getStringValue())));break;
-            case TURTLE_VALUE:values.forEach(value -> res.add(new TurtleValue(value.getTurtleValue())));break;
-            default:throw new UnsupportedOperationException("unSupport operation "+type.toString());
+            case DOUBLE:
+                values.forEach(value -> res.add(value.getDoubleValue()));
+                break;
+            case LONG:
+                values.forEach(value -> res.add(value.getLongValue()));
+                break;
+            case INTEGER:
+                values.forEach(value -> res.add(value.getIntValue()));
+                break;
+            case NUMBER_INTEGER:
+                values.forEach(value -> res.add(new BigInteger(value.getStringValue())));
+                break;
+            case TURTLE_VALUE:
+                values.forEach(value -> res.add(new TurtleValue(value.getTurtleValue())));
+                break;
+            default:
+                throw new UnsupportedOperationException("unSupport operation " + type.toString());
         }
         return res;
     }
 
-    private static ValuesCommand parseForValue(String operationName, Class<?>[] types, List<Object> values,Channel channel) {
+    private static ValuesCommand parseForValue(String operationName, Class<?>[] types, List<Object> values, Channel channel) {
         Method method = null;
         try {
             method = ValuesObject.class.getDeclaredMethod(operationName, types);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
-        return new ValuesCommand(method, values,channel);
+        return new ValuesCommand(method, values, channel);
 
     }
 

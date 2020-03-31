@@ -19,7 +19,9 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  */
 public class ServerDomain {
 
-    public ServerDomain() {
+    public ServerDomain(TurtleServer turtleServer) {
+      this.turtleServer=turtleServer;
+
       valuesObject=new ValuesObject();
       valuesQueue=new ConcurrentLinkedDeque<>();
 
@@ -27,6 +29,7 @@ public class ServerDomain {
       listQueue=new ConcurrentLinkedDeque<>();
     }
 
+    private final TurtleServer turtleServer;
     private ValuesObject valuesObject;
 
     private ListObject listObject;

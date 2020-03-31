@@ -48,7 +48,7 @@ public class TurtleServer {
 
     public void start() throws Exception {
 
-        serverDomain=new ServerDomain();
+        serverDomain=new ServerDomain(this);
         NioEventLoopGroup boss = new NioEventLoopGroup(1);
         NioEventLoopGroup worker = new NioEventLoopGroup(1);
         try {
