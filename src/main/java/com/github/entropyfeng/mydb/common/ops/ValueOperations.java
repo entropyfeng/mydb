@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
+ *
  * @author entropyfeng
  */
 public interface ValueOperations {
@@ -41,12 +42,12 @@ public interface ValueOperations {
         this.set(key, value,timeUnit.toMillis(time));
     }
 
-   default boolean setIfAbsent(String key, TurtleValue value){
+   default Boolean setIfAbsent(String key, TurtleValue value){
        return setIfAbsent(key, value,0L);
    }
 
 
-   default boolean setIfAbsent(String key, TurtleValue value, long time, TimeUnit timeUnit){
+   default Boolean setIfAbsent(String key, TurtleValue value, long time, TimeUnit timeUnit){
        if (timeUnit==null){
            throw new TurtleNullPointerException("timeUnit or time is null .");
        }
@@ -54,15 +55,14 @@ public interface ValueOperations {
    }
 
 
-    boolean setIfAbsent(String key, TurtleValue value, long time);
+    Boolean setIfAbsent(String key, TurtleValue value, long time);
 
 
-    default boolean setIfPresent(String key, TurtleValue value){
+    default Boolean setIfPresent(String key, TurtleValue value){
         return setIfPresent(key, value,0L);
     }
 
-
-    default boolean setIfPresent(String key, TurtleValue value, long time, TimeUnit timeUnit){
+    default Boolean setIfPresent(String key, TurtleValue value, long time, TimeUnit timeUnit){
         if (timeUnit==null){
             throw new TurtleNullPointerException("timeUnit is null .");
         }
@@ -70,22 +70,22 @@ public interface ValueOperations {
     }
 
 
-    boolean setIfPresent(String key, TurtleValue value, long time);
+    Boolean setIfPresent(String key, TurtleValue value, long time);
 
 
     TurtleValue get(String key);
 
 
-    Object increment(String key,int intValue)throws UnsupportedOperationException;
+    TurtleValue increment(String key,int intValue)throws UnsupportedOperationException;
 
-    Object increment(String key, long longValue)throws UnsupportedOperationException;
+    TurtleValue increment(String key, long longValue)throws UnsupportedOperationException;
 
-    Object increment(String key, double doubleValue)throws UnsupportedOperationException;
+    TurtleValue increment(String key, double doubleValue)throws UnsupportedOperationException;
 
-    Object increment(String key, BigInteger bigInteger)throws UnsupportedOperationException;
+    TurtleValue increment(String key, BigInteger bigInteger)throws UnsupportedOperationException;
 
-    Object increment(String key, BigDecimal bigDecimal)throws UnsupportedOperationException;
+    TurtleValue increment(String key, BigDecimal bigDecimal)throws UnsupportedOperationException;
 
-    boolean append(String key, String appendValue)throws UnsupportedOperationException;
+    Boolean append(String key, String appendValue)throws UnsupportedOperationException;
 
 }

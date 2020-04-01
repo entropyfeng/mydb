@@ -1,5 +1,6 @@
 package com.github.entropyfeng.mydb.core.obj;
 
+import com.github.entropyfeng.mydb.common.TurtleValueType;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.util.BytesUtil;
 import com.github.entropyfeng.mydb.util.CommonUtil;
@@ -25,78 +26,45 @@ import static com.github.entropyfeng.mydb.util.BytesUtil.bytesToInt;
  * @author entropyfeng
  */
 public class TurtleValue {
-    private TurtleProtoBuf.TurtleParaType type;
+    private TurtleValueType type;
     private byte[] values;
 
-    public TurtleValue(TurtleProtoBuf.TurtleValue value) {
-
-        final TurtleProtoBuf.TurtleParaType paraType = value.getTurtleParaType();
-        final ByteString byteString = value.getValues();
-        switch (paraType) {
-            case STRING: {
-                this.type = TurtleProtoBuf.TurtleParaType.STRING;
-                this.values = byteString.toByteArray();
-                return;
-            }
-            case LONG: {
-                this.type = TurtleProtoBuf.TurtleParaType.LONG;
-                this.values = byteString.toByteArray();
-                return;
-            }
-            case INTEGER: {
-                this.type = TurtleProtoBuf.TurtleParaType.INTEGER;
-                this.values = byteString.toByteArray();
-                return;
-            }
-            case DOUBLE: {
-                this.type = TurtleProtoBuf.TurtleParaType.DOUBLE;
-                this.values = byteString.toByteArray();
-                return;
-            }
-            case NUMBER_INTEGER: {
-                this.type = TurtleProtoBuf.TurtleParaType.NUMBER_INTEGER;
-                this.values = byteString.toByteArray();
-                return;
-            }
-            case NUMBER_DECIMAL: {
-                this.type = TurtleProtoBuf.TurtleParaType.NUMBER_DECIMAL;
-                this.values = byteString.toByteArray();
-                return;
-            }
-            default:
-                throw new UnsupportedOperationException("unSupport paraType" + paraType.toString());
-        }
-
+    public TurtleValueType getType() {
+        return type;
     }
 
-    private TurtleValue(byte[] bytes, TurtleProtoBuf.TurtleParaType type) {
+    public byte[] getValues() {
+        return values;
+    }
+
+    public TurtleValue(byte[] bytes, TurtleValueType type) {
         this.type = type;
         this.values = bytes;
     }
 
     public TurtleValue(int value) {
-        this(BytesUtil.allocate4(value), TurtleProtoBuf.TurtleParaType.INTEGER);
+        this(BytesUtil.allocate4(value), TurtleValueType.INTEGER);
     }
 
     public TurtleValue(double value) {
-        this(BytesUtil.allocate8(value), TurtleProtoBuf.TurtleParaType.DOUBLE);
+        this(BytesUtil.allocate8(value), TurtleValueType.DOUBLE);
     }
 
 
     public TurtleValue(long value) {
-        this(BytesUtil.allocate8(value), TurtleProtoBuf.TurtleParaType.LONG);
+        this(BytesUtil.allocate8(value), TurtleValueType.LONG);
     }
 
     public TurtleValue(BigInteger value) {
-        this(value.toByteArray(), TurtleProtoBuf.TurtleParaType.NUMBER_INTEGER);
+        this(value.toByteArray(), TurtleValueType.NUMBER_INTEGER);
     }
 
     public TurtleValue(BigDecimal value) {
-        this(value.toPlainString().getBytes(), TurtleProtoBuf.TurtleParaType.NUMBER_DECIMAL);
+        this(value.toPlainString().getBytes(), TurtleValueType.NUMBER_DECIMAL);
     }
 
     public void append(String value) throws UnsupportedOperationException {
-        if (this.type == TurtleProtoBuf.TurtleParaType.STRING) {
+        if (this.type == TurtleValueType.STRING) {
             this.values = CommonUtil.mergeBytes(this.values, value.getBytes());
         } else {
             throw new UnsupportedOperationException("unSupport append operation on" + type.toString());
@@ -179,17 +147,17 @@ public class TurtleValue {
 
     private void handleBigDecimal(BigDecimal bigDecimal) {
         this.values = bigDecimal.toPlainString().getBytes();
-        this.type = TurtleProtoBuf.TurtleParaType.NUMBER_DECIMAL;
+        this.type = TurtleValueType.NUMBER_DECIMAL;
     }
 
     private void handleBigInteger(BigInteger bigInteger) {
         this.values = bigInteger.toByteArray();
-        this.type = TurtleProtoBuf.TurtleParaType.NUMBER_INTEGER;
+        this.type = TurtleValueType.NUMBER_INTEGER;
     }
 
     private void handleLong(long longValue) {
         this.values = BytesUtil.allocate8(longValue);
-        this.type = TurtleProtoBuf.TurtleParaType.LONG;
+        this.type = TurtleValueType.LONG;
     }
 
 

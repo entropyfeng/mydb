@@ -1,5 +1,6 @@
 package com.github.entropyfeng.mydb.server;
 
+import com.github.entropyfeng.mydb.common.protobuf.ProtoHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.core.obj.ListObject;
 import com.github.entropyfeng.mydb.core.obj.SetObject;
@@ -11,7 +12,7 @@ import com.github.entropyfeng.mydb.server.factory.ValuesThreadFactory;
 import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.misc.ThreadGroupUtils;
+
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -132,7 +133,7 @@ public class ServerDomain {
                     break;
                 case TURTLE_VALUE:
                     types[i] = TurtleValue.class;
-                    values.add(new TurtleValue(value.getTurtleValue()));
+                    values.add(ProtoHelper.convertToTurtleValue(value.getTurtleValue()));
                     break;
                 case COLLECTION:
                     types[i] = Collection.class;
@@ -193,7 +194,7 @@ public class ServerDomain {
                 values.forEach(value -> res.add(new BigInteger(value.getStringValue())));
                 break;
             case TURTLE_VALUE:
-                values.forEach(value -> res.add(new TurtleValue(value.getTurtleValue())));
+                values.forEach(value -> res.add(ProtoHelper.convertToTurtleValue(value.getTurtleValue())));
                 break;
             default:
                 throw new UnsupportedOperationException("unSupport operation " + type.toString());
