@@ -1,4 +1,4 @@
-package com.github.entropyfeng.mydb.client;
+package com.github.entropyfeng.mydb.client.conn;
 
 
 import io.netty.channel.Channel;

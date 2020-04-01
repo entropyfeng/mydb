@@ -1,12 +1,17 @@
 package com.github.entropyfeng.mydb.client;
 
+import com.github.entropyfeng.mydb.client.conn.TurtleClientChannelFactory;
+import com.github.entropyfeng.mydb.common.TurtleModel;
+import com.github.entropyfeng.mydb.common.TurtleParaType;
+import com.github.entropyfeng.mydb.common.TurtleValueType;
 import com.github.entropyfeng.mydb.common.ops.ValueOperations;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoParaHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.core.obj.TurtleValue;
-import io.netty.channel.Channel;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.List;
 
 /**
  * @author entropyfeng
@@ -14,13 +19,13 @@ import java.math.BigInteger;
 public class DefaultValueOperations implements ValueOperations {
 
 
-
     @Override
     public void set(String key, TurtleValue value, long time) {
 
-       ClientCommandBuilder builder= new ClientCommandBuilder(TurtleProtoBuf.TurtleModel.VALUE,"set");
-       builder.addPara(TurtleProtoBuf.TurtleParaType.STRING, TurtleProtoBuf.TurtleCommonValue.newBuilder().setStringValue(key).build());
-
+        ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "set");
+        builder.addPara(TurtleParaType.STRING, key);
+        builder.addPara(TurtleParaType.TURTLE_VALUE, value);
+        builder.addPara(TurtleParaType.LONG, (Long) time);
 
         TurtleClientChannelFactory.getChannel().writeAndFlush(builder.build());
     }

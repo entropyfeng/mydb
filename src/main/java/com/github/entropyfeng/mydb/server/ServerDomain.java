@@ -1,6 +1,7 @@
 package com.github.entropyfeng.mydb.server;
 
-import com.github.entropyfeng.mydb.common.protobuf.ProtoHelper;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoParaHelper;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.core.obj.ListObject;
 import com.github.entropyfeng.mydb.core.obj.SetObject;
@@ -133,11 +134,11 @@ public class ServerDomain {
                     break;
                 case TURTLE_VALUE:
                     types[i] = TurtleValue.class;
-                    values.add(ProtoHelper.convertToTurtleValue(value.getTurtleValue()));
+                    values.add(ProtoTurtleHelper.convertToTurtleValue(value.getTurtleValue()));
                     break;
                 case COLLECTION:
                     types[i] = Collection.class;
-                    values.add(handlerCollection(type, value.getCollectionValue().getCollectionParasList()));
+                    values.add(ProtoParaHelper.handlerCollection(type, value.getCollectionValue().getCollectionParasList()));
                     break;
                 default:
                     throw new UnsupportedOperationException(type.name());
@@ -167,40 +168,6 @@ public class ServerDomain {
 
     }
 
-    private static List<?> handlerCollection(TurtleProtoBuf.TurtleParaType type, List<TurtleProtoBuf.TurtleCommonValue> values) {
-
-
-        final List<Object> res = new ArrayList<>();
-
-        switch (type) {
-            case STRING:
-                values.forEach(value -> res.add(value.getStringValue()));
-                break;
-
-            case NUMBER_DECIMAL:
-                values.forEach(value -> res.add(new BigDecimal(value.getStringValue())));
-                break;
-
-            case DOUBLE:
-                values.forEach(value -> res.add(value.getDoubleValue()));
-                break;
-            case LONG:
-                values.forEach(value -> res.add(value.getLongValue()));
-                break;
-            case INTEGER:
-                values.forEach(value -> res.add(value.getIntValue()));
-                break;
-            case NUMBER_INTEGER:
-                values.forEach(value -> res.add(new BigInteger(value.getStringValue())));
-                break;
-            case TURTLE_VALUE:
-                values.forEach(value -> res.add(ProtoHelper.convertToTurtleValue(value.getTurtleValue())));
-                break;
-            default:
-                throw new UnsupportedOperationException("unSupport operation " + type.toString());
-        }
-        return res;
-    }
 
     private  void parseForValue(String operationName, Class<?>[] types, List<Object> values, Channel channel) {
         Method method = null;

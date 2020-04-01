@@ -7,7 +7,7 @@ import com.google.protobuf.ByteString;
 /**
  * @author entropyfeng
  */
-public class ProtoHelper {
+public class ProtoTurtleHelper {
 
     public static TurtleValue convertToTurtleValue(TurtleProtoBuf.TurtleValue protoTurtleValue) {
         TurtleValueType type;
@@ -37,7 +37,7 @@ public class ProtoHelper {
         return new TurtleValue(values, type);
     }
 
-    public TurtleProtoBuf.TurtleValue convertToProtoTurtleValue(TurtleValue turtleValue) {
+    public static TurtleProtoBuf.TurtleValue convertToProtoTurtleValue(TurtleValue turtleValue) {
         TurtleProtoBuf.TurtleParaType type;
         switch (turtleValue.getType()) {
             case INTEGER:

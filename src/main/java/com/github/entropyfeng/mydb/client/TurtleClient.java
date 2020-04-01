@@ -1,5 +1,6 @@
 package com.github.entropyfeng.mydb.client;
 
+import com.github.entropyfeng.mydb.client.conn.TurtleClientChannelFactory;
 import com.github.entropyfeng.mydb.common.CommonCommand;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import io.netty.bootstrap.Bootstrap;
