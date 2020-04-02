@@ -333,6 +333,10 @@ public final class TurtleProtoBuf {
      * <code>NoSuchMethodException = 4;</code>
      */
     NoSuchMethodException(4),
+    /**
+     * <code>NoSuchElementException = 5;</code>
+     */
+    NoSuchElementException(5),
     UNRECOGNIZED(-1),
     ;
 
@@ -356,6 +360,10 @@ public final class TurtleProtoBuf {
      * <code>NoSuchMethodException = 4;</code>
      */
     public static final int NoSuchMethodException_VALUE = 4;
+    /**
+     * <code>NoSuchElementException = 5;</code>
+     */
+    public static final int NoSuchElementException_VALUE = 5;
 
 
     public final int getNumber() {
@@ -381,6 +389,7 @@ public final class TurtleProtoBuf {
         case 2: return IllegalAccessException;
         case 3: return InvocationTargetException;
         case 4: return NoSuchMethodException;
+        case 5: return NoSuchElementException;
         default: return null;
       }
     }
@@ -5876,13 +5885,14 @@ public final class TurtleProtoBuf {
       "\004ZSET\020\004\022\010\n\004LIST\020\005*\211\001\n\016TurtleParaType\022\n\n\006" +
       "STRING\020\000\022\013\n\007INTEGER\020\001\022\010\n\004LONG\020\002\022\n\n\006DOUBL" +
       "E\020\003\022\022\n\016NUMBER_INTEGER\020\004\022\022\n\016NUMBER_DECIMA" +
-      "L\020\005\022\020\n\014TURTLE_VALUE\020\006\022\016\n\nCOLLECTION\020\007*\242\001" +
+      "L\020\005\022\020\n\014TURTLE_VALUE\020\006\022\016\n\nCOLLECTION\020\007*\276\001" +
       "\n\rExceptionType\022!\n\035UnsupportedOperationE" +
       "xception\020\000\022\030\n\024NullPointerException\020\001\022\032\n\026" +
       "IllegalAccessException\020\002\022\035\n\031InvocationTa" +
       "rgetException\020\003\022\031\n\025NoSuchMethodException" +
-      "\020\004B=\n+com.github.entropyfeng.mydb.common" +
-      ".protobufB\016TurtleProtoBufb\006proto3"
+      "\020\004\022\032\n\026NoSuchElementException\020\005B=\n+com.gi" +
+      "thub.entropyfeng.mydb.common.protobufB\016T" +
+      "urtleProtoBufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

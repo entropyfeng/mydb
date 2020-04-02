@@ -76,7 +76,9 @@ enum ExceptionType{
     IllegalAccessException=2;
     InvocationTargetException=3;
     NoSuchMethodException=4;
+    NoSuchElementException=5;
 }
+
 message ResponseData{
 
     int64 responseId=1;

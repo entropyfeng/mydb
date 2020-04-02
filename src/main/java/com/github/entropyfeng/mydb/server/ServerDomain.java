@@ -7,6 +7,7 @@ import com.github.entropyfeng.mydb.core.obj.ListObject;
 import com.github.entropyfeng.mydb.core.obj.SetObject;
 import com.github.entropyfeng.mydb.core.obj.TurtleValue;
 import com.github.entropyfeng.mydb.core.obj.ValuesObject;
+import com.github.entropyfeng.mydb.server.command.ICommand;
 import com.github.entropyfeng.mydb.server.command.ValuesCommand;
 import com.github.entropyfeng.mydb.server.factory.ListThreadFactory;
 import com.github.entropyfeng.mydb.server.factory.ValuesThreadFactory;
@@ -22,6 +23,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 
@@ -30,16 +32,16 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  */
 public class ServerDomain {
 
-    private static final Logger logger= LoggerFactory.getLogger(ServerDomain.class);
+    private static final Logger logger = LoggerFactory.getLogger(ServerDomain.class);
 
     public ServerDomain(TurtleServer turtleServer) {
-      this.turtleServer=turtleServer;
+        this.turtleServer = turtleServer;
 
-      valuesObject=new ValuesObject();
-      valuesQueue=new ConcurrentLinkedDeque<>();
+        valuesObject = new ValuesObject();
+        valuesQueue = new ConcurrentLinkedDeque<>();
 
-      listObject=new ListObject();
-      listQueue=new ConcurrentLinkedDeque<>();
+        listObject = new ListObject();
+        listQueue = new ConcurrentLinkedDeque<>();
     }
 
     private final TurtleServer turtleServer;
@@ -67,18 +69,43 @@ public class ServerDomain {
         }
     }
 
+    private void execute(ICommand command) {
+
+        Object res = null;
+        TurtleProtoBuf.ResponseData.Builder builder = TurtleProtoBuf.ResponseData.newBuilder();
+        try {
+            if (command.getValues().size() == 0) {
+                res = command.getMethod().invoke(valuesObject);
+            } else {
+                res = command.getMethod().invoke(valuesObject, command.getValues());
+            }
+        } catch (IllegalAccessException e) {
+            builder.setSuccess(false);
+            builder.setExceptionType(TurtleProtoBuf.ExceptionType.IllegalAccessException);
+        } catch (NoSuchElementException e) {
+            builder.setSuccess(false);
+            builder.setExceptionType(TurtleProtoBuf.ExceptionType.NoSuchElementException);
+        } catch (UnsupportedOperationException e) {
+            builder.setSuccess(false);
+            builder.setExceptionType(TurtleProtoBuf.ExceptionType.UnsupportedOperationException);
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     private void runValues() {
         logger.info("runValues");
         while (true) {
             //poll()：检索并删除由此deque表示的队列的头部（换句话说，该deque的第一个元素），如果此deque为空，则返回 null 。
             ValuesCommand valuesCommand = valuesQueue.poll();
-            if(valuesCommand!=null){
+            if (valuesCommand != null) {
                 Object res = null;
                 try {
-                    if (valuesCommand.getValues().size()==0){
+                    if (valuesCommand.getValues().size() == 0) {
                         res = valuesCommand.getMethod().invoke(valuesObject);
-                    }else {
-                        res = valuesCommand.getMethod().invoke(valuesObject,valuesCommand.getValues());
+                    } else {
+                        res = valuesCommand.getMethod().invoke(valuesObject, valuesCommand.getValues());
                     }
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
@@ -90,11 +117,11 @@ public class ServerDomain {
         }
     }
 
-    public  void acceptClientCommand(TurtleProtoBuf.ClientCommand clientCommand, Channel channel){
-        parseCommand(clientCommand,channel);
+    public void acceptClientCommand(TurtleProtoBuf.ClientCommand clientCommand, Channel channel) {
+        parseCommand(clientCommand, channel);
     }
 
-    public  void parseCommand(TurtleProtoBuf.ClientCommand clientCommand, Channel channel) {
+    public void parseCommand(TurtleProtoBuf.ClientCommand clientCommand, Channel channel) {
         final int paraNumbers = clientCommand.getKeysCount();
         assert paraNumbers == clientCommand.getValuesCount();
         final Class<?>[] types = new Class[paraNumbers];
@@ -146,10 +173,11 @@ public class ServerDomain {
 
         switch (clientCommand.getModel()) {
             case VALUE:
-                parseForValue(clientCommand.getOperationName(), types, values, channel);
+                parseForValue(clientCommand.getOperationName(), types, values, channel, clientCommand.getRequestId());
                 return;
             case ADMIN:
-                System.out.println(clientCommand.getOperationName());return;
+                System.out.println(clientCommand.getOperationName());
+                return;
 
             case LIST:
 
@@ -161,27 +189,28 @@ public class ServerDomain {
                 throw new UnsupportedOperationException();
         }
     }
-    private static void handlerAdmin(String operationName, Class<?>[] types, List<Object> values, Channel channel){
+
+    private static void handlerAdmin(String operationName, Class<?>[] types, List<Object> values, Channel channel) {
 
 
     }
 
 
-    private  void parseForValue(String operationName, Class<?>[] types, List<Object> values, Channel channel) {
+    private void parseForValue(String operationName, Class<?>[] types, List<Object> values, Channel channel, Long requestId) {
         Method method = null;
 
         //找到合适的方法
         try {
-            if (types.length==0){
+            if (types.length == 0) {
                 method = ValuesObject.class.getDeclaredMethod(operationName);
-            }else {
-                method=ValuesObject.class.getDeclaredMethod(operationName, types);
+            } else {
+                method = ValuesObject.class.getDeclaredMethod(operationName, types);
             }
 
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
-        valuesQueue.offer(new ValuesCommand(method, values, channel));
+        valuesQueue.offer(new ValuesCommand(method, values, channel, requestId));
 
     }
 }

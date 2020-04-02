@@ -137,7 +137,7 @@ public class ValuesObject extends BaseObject implements ValueOperations {
     }
 
     @Override
-    public Void append(String key, String appendValue) throws UnsupportedOperationException, NoSuchElementException {
+    public void append(String key, String appendValue) throws UnsupportedOperationException, NoSuchElementException {
         TurtleValue turtleValue = valueMap.get(key);
         if (turtleValue == null) {
             throw new NoSuchElementException();
@@ -146,7 +146,6 @@ public class ValuesObject extends BaseObject implements ValueOperations {
             throw new UnsupportedOperationException("turtleValue require String but finds " + turtleValue.getType());
         }
         turtleValue.append(appendValue);
-        return null;
     }
 
     private void handleExpire(String key) {

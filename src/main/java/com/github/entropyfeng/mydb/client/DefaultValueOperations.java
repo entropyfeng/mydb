@@ -67,8 +67,9 @@ public class DefaultValueOperations implements ValueOperations {
     }
 
     @Override
-    public Void append(String key, String appendValue) throws UnsupportedOperationException, NoSuchElementException {
-        return null;
+    public void append(String key, String appendValue) throws UnsupportedOperationException, NoSuchElementException {
+
+
     }
 
 

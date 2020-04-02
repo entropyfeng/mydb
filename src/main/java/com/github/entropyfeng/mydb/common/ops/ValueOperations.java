@@ -105,6 +105,6 @@ public interface ValueOperations {
 
     TurtleValue increment(String key, BigDecimal bigDecimal)throws UnsupportedOperationException,NoSuchElementException;
 
-    Void append(String key, String appendValue)throws UnsupportedOperationException,NoSuchElementException;
+    void append(String key, String appendValue)throws UnsupportedOperationException,NoSuchElementException;
 
 }
