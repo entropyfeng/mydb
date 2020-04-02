@@ -1,6 +1,6 @@
 package com.github.entropyfeng.mydb.core.dict;
 
-import com.github.entropyfeng.mydb.expection.OutOfBoundException;
+import com.github.entropyfeng.mydb.common.expection.OutOfBoundException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

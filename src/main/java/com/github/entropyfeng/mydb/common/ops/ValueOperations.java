@@ -1,7 +1,6 @@
 package com.github.entropyfeng.mydb.common.ops;
 
 import com.github.entropyfeng.mydb.core.obj.TurtleValue;
-import com.github.entropyfeng.mydb.expection.TurtleNullPointerException;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -49,9 +48,8 @@ public interface ValueOperations {
 
 
    default Boolean setIfAbsent(String key, TurtleValue value, long time, TimeUnit timeUnit){
-       if (timeUnit==null){
-           throw new TurtleNullPointerException("timeUnit or time is null .");
-       }
+
+        Objects.requireNonNull(timeUnit);
        return setIfAbsent(key, value,timeUnit.toMillis(time));
    }
 
@@ -82,9 +80,8 @@ public interface ValueOperations {
      *         false->设置失败
      */
     default Boolean setIfPresent(String key, TurtleValue value, long time, TimeUnit timeUnit){
-        if (timeUnit==null){
-            throw new TurtleNullPointerException("timeUnit is null .");
-        }
+
+        Objects.requireNonNull(timeUnit);
         return setIfPresent(key, value,timeUnit.toMillis(time));
     }
 

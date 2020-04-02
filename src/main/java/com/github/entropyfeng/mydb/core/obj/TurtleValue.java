@@ -1,12 +1,18 @@
 package com.github.entropyfeng.mydb.core.obj;
 
+import com.github.entropyfeng.mydb.common.CommonConstant;
 import com.github.entropyfeng.mydb.common.TurtleValueType;
+import com.github.entropyfeng.mydb.common.expection.TurtleValueOutBoundsException;
 import com.github.entropyfeng.mydb.util.BytesUtil;
 import com.github.entropyfeng.mydb.util.CommonUtil;
+import com.google.common.hash.Hashing;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
+import java.util.Objects;
+
 
 import static com.github.entropyfeng.mydb.util.BytesUtil.*;
 import static com.github.entropyfeng.mydb.util.BytesUtil.bytesToInt;
@@ -40,6 +46,14 @@ public class TurtleValue {
         this.values = bytes;
     }
 
+    public TurtleValue(String value){
+        Objects.requireNonNull(value);
+        if(value.length()> CommonConstant.MAX_STRING_LENGTH){
+            throw new TurtleValueOutBoundsException();
+        }
+        this.type=TurtleValueType.STRING;
+        this.values=value.getBytes();
+    }
     public TurtleValue(int value) {
         this(BytesUtil.allocate4(value), TurtleValueType.INTEGER);
     }
@@ -154,6 +168,17 @@ public class TurtleValue {
         }
     }
 
+    public Object toObject(){
+        switch (type){
+            case NUMBER_INTEGER:return new BigInteger(values);
+            case LONG:return BytesUtil.bytesToLong(values);
+            case INTEGER:return BytesUtil.bytesToInt(values);
+            case DOUBLE:return BytesUtil.bytesToDouble(values);
+            case NUMBER_DECIMAL:return new BigDecimal(new String(values));
+            case STRING:return new String(values);
+            default:throw new UnsupportedOperationException();
+        }
+    }
     private void handleBigDecimal(BigDecimal bigDecimal) {
         this.values = bigDecimal.toPlainString().getBytes();
         this.type = TurtleValueType.NUMBER_DECIMAL;
@@ -219,5 +244,25 @@ public class TurtleValue {
      */
     private static void intAdd(byte[] bytes, int intValue) {
         intToBytes(bytes, bytesToInt(bytes) + intValue);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (this == o){
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TurtleValue that = (TurtleValue) o;
+        return type == that.type &&
+                Arrays.equals(values, that.values);
+    }
+
+    @Override
+    @SuppressWarnings("all")
+    public int hashCode() {
+      return   Hashing.murmur3_32().hashBytes(values).asInt();
     }
 }

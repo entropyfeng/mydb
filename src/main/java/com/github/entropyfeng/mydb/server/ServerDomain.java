@@ -69,15 +69,15 @@ public class ServerDomain {
         }
     }
 
-    private void execute(ICommand command) {
+    public void execute(ICommand command,Object target) {
 
         Object res = null;
         TurtleProtoBuf.ResponseData.Builder builder = TurtleProtoBuf.ResponseData.newBuilder();
         try {
             if (command.getValues().size() == 0) {
-                res = command.getMethod().invoke(valuesObject);
+                res = command.getMethod().invoke(target);
             } else {
-                res = command.getMethod().invoke(valuesObject, command.getValues());
+                res = command.getMethod().invoke(target, command.getValues());
             }
         } catch (IllegalAccessException e) {
             builder.setSuccess(false);
