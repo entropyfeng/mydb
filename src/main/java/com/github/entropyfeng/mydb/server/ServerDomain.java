@@ -91,9 +91,7 @@ public class ServerDomain {
     }
 
     public  void acceptClientCommand(TurtleProtoBuf.ClientCommand clientCommand, Channel channel){
-
         parseCommand(clientCommand,channel);
-
     }
 
     public  void parseCommand(TurtleProtoBuf.ClientCommand clientCommand, Channel channel) {
@@ -171,6 +169,8 @@ public class ServerDomain {
 
     private  void parseForValue(String operationName, Class<?>[] types, List<Object> values, Channel channel) {
         Method method = null;
+
+        //找到合适的方法
         try {
             if (types.length==0){
                 method = ValuesObject.class.getDeclaredMethod(operationName);

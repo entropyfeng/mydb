@@ -5,6 +5,7 @@ import com.github.entropyfeng.mydb.expection.TurtleNullPointerException;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -58,10 +59,28 @@ public interface ValueOperations {
     Boolean setIfAbsent(String key, TurtleValue value, long time);
 
 
+    /**
+     * 如果存在key所对应的值啧用新值替换旧值
+     * @param key {@link String}
+     * @param value {@link TurtleValue}
+     * @return null->调用失败,并抛出异常
+     *         true->设置成功
+     *         false->设置失败
+     */
     default Boolean setIfPresent(String key, TurtleValue value){
         return setIfPresent(key, value,0L);
     }
 
+    /**
+     * 如果存在key所对应的值，则用新值替换旧值,并设置过期时间
+     * @param key {@link String}
+     * @param value {@link TurtleValue}
+     * @param time 时间戳 毫秒单位
+     * @param timeUnit {@link TimeUnit}
+     * @return null->调用失败,并抛出异常
+     *         true->设置成功
+     *         false->设置失败
+     */
     default Boolean setIfPresent(String key, TurtleValue value, long time, TimeUnit timeUnit){
         if (timeUnit==null){
             throw new TurtleNullPointerException("timeUnit is null .");
@@ -76,16 +95,16 @@ public interface ValueOperations {
     TurtleValue get(String key);
 
 
-    TurtleValue increment(String key,int intValue)throws UnsupportedOperationException;
+    TurtleValue increment(String key,int intValue)throws UnsupportedOperationException, NoSuchElementException;
 
-    TurtleValue increment(String key, long longValue)throws UnsupportedOperationException;
+    TurtleValue increment(String key, long longValue)throws UnsupportedOperationException,NoSuchElementException;
 
-    TurtleValue increment(String key, double doubleValue)throws UnsupportedOperationException;
+    TurtleValue increment(String key, double doubleValue)throws UnsupportedOperationException,NoSuchElementException;
 
-    TurtleValue increment(String key, BigInteger bigInteger)throws UnsupportedOperationException;
+    TurtleValue increment(String key, BigInteger bigInteger)throws UnsupportedOperationException,NoSuchElementException;
 
-    TurtleValue increment(String key, BigDecimal bigDecimal)throws UnsupportedOperationException;
+    TurtleValue increment(String key, BigDecimal bigDecimal)throws UnsupportedOperationException,NoSuchElementException;
 
-    Boolean append(String key, String appendValue)throws UnsupportedOperationException;
+    Void append(String key, String appendValue)throws UnsupportedOperationException,NoSuchElementException;
 
 }

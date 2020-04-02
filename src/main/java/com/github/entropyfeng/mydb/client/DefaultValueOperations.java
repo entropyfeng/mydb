@@ -3,15 +3,12 @@ package com.github.entropyfeng.mydb.client;
 import com.github.entropyfeng.mydb.client.conn.TurtleClientChannelFactory;
 import com.github.entropyfeng.mydb.common.TurtleModel;
 import com.github.entropyfeng.mydb.common.TurtleParaType;
-import com.github.entropyfeng.mydb.common.TurtleValueType;
 import com.github.entropyfeng.mydb.common.ops.ValueOperations;
-import com.github.entropyfeng.mydb.common.protobuf.ProtoParaHelper;
-import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.core.obj.TurtleValue;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * @author entropyfeng
@@ -26,8 +23,7 @@ public class DefaultValueOperations implements ValueOperations {
         builder.addPara(TurtleParaType.STRING, key);
         builder.addPara(TurtleParaType.TURTLE_VALUE, value);
         builder.addPara(TurtleParaType.LONG, (Long) time);
-
-        TurtleClientChannelFactory.getChannel().writeAndFlush(builder.build());
+        TurtleClientChannelFactory.execute(builder.build());
     }
 
     @Override
@@ -46,32 +42,34 @@ public class DefaultValueOperations implements ValueOperations {
     }
 
     @Override
-    public TurtleValue increment(String key, int intValue) throws UnsupportedOperationException {
+    public TurtleValue increment(String key, int intValue) throws UnsupportedOperationException, NoSuchElementException {
         return null;
     }
 
     @Override
-    public TurtleValue increment(String key, long longValue) throws UnsupportedOperationException {
+    public TurtleValue increment(String key, long longValue) throws UnsupportedOperationException, NoSuchElementException {
         return null;
     }
 
     @Override
-    public TurtleValue increment(String key, double doubleValue) throws UnsupportedOperationException {
+    public TurtleValue increment(String key, double doubleValue) throws UnsupportedOperationException, NoSuchElementException {
         return null;
     }
 
     @Override
-    public TurtleValue increment(String key, BigInteger bigInteger) throws UnsupportedOperationException {
+    public TurtleValue increment(String key, BigInteger bigInteger) throws UnsupportedOperationException, NoSuchElementException {
         return null;
     }
 
     @Override
-    public TurtleValue increment(String key, BigDecimal bigDecimal) throws UnsupportedOperationException {
+    public TurtleValue increment(String key, BigDecimal bigDecimal) throws UnsupportedOperationException, NoSuchElementException {
         return null;
     }
 
     @Override
-    public Boolean append(String key, String appendValue) throws UnsupportedOperationException {
+    public Void append(String key, String appendValue) throws UnsupportedOperationException, NoSuchElementException {
         return null;
     }
+
+
 }

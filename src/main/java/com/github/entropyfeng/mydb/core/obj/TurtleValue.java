@@ -1,10 +1,8 @@
 package com.github.entropyfeng.mydb.core.obj;
 
 import com.github.entropyfeng.mydb.common.TurtleValueType;
-import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.util.BytesUtil;
 import com.github.entropyfeng.mydb.util.CommonUtil;
-import com.google.protobuf.ByteString;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -95,17 +93,17 @@ public class TurtleValue {
         switch (type) {
             case INTEGER:
                 intAdd(this.values, intValue);
-                break;
+               return;
             case LONG:
                 longAdd(this.values, intValue);
-                break;
+                return;
             case NUMBER_INTEGER:
                 handleBigInteger(toBigInteger(this).add(BigInteger.valueOf(intValue)));
-                break;
+               return;
             case DOUBLE:
             case NUMBER_DECIMAL:
                 handleBigDecimal(toBigDecimal(this).add(BigDecimal.valueOf(intValue)));
-                break;
+               return;
             default:
                 throw new UnsupportedOperationException("unSupport append operation on" + type.toString());
         }
@@ -118,11 +116,11 @@ public class TurtleValue {
             case INTEGER:
             case NUMBER_INTEGER:
                 handleBigInteger(bigInteger.add(toBigInteger(this)));
-                break;
+               return;
             case NUMBER_DECIMAL:
             case DOUBLE:
                 handleBigDecimal(toBigDecimal(this).add(new BigDecimal(bigInteger)));
-                break;
+               return;
             default:
                 throw new UnsupportedOperationException("unSupport append operation on" + type.toString());
         }
@@ -133,15 +131,26 @@ public class TurtleValue {
         switch (type) {
             case DOUBLE:
                 doubleAdd(this.values, doubleValue);
-                break;
+               return;
             case LONG:
             case INTEGER:
             case NUMBER_INTEGER:
             case NUMBER_DECIMAL:
                 handleBigDecimal(toBigDecimal(this).add(BigDecimal.valueOf(doubleValue)));
-                break;
+               return;
             default:
                 throw new UnsupportedOperationException("unSupport append operation on" + type.toString());
+        }
+    }
+
+    public void increment(BigDecimal bigDecimal){
+        switch (type){
+            case DOUBLE:
+            case INTEGER:
+            case LONG:
+            case NUMBER_DECIMAL:
+            case NUMBER_INTEGER:handleBigDecimal(toBigDecimal(this).add(bigDecimal));return;
+            default:throw  new UnsupportedOperationException("unSupport append operation on" + type.toString());
         }
     }
 
