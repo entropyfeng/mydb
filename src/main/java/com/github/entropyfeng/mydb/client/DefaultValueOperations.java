@@ -28,11 +28,22 @@ public class DefaultValueOperations implements ValueOperations {
 
     @Override
     public Boolean setIfAbsent(String key, TurtleValue value, long time) {
+        ClientCommandBuilder builder=new ClientCommandBuilder(TurtleModel.VALUE,"setIfAbsent");
+        builder.addPara(TurtleParaType.STRING, key);
+        builder.addPara(TurtleParaType.TURTLE_VALUE, value);
+        builder.addPara(TurtleParaType.LONG, (Long) time);
+        TurtleClientChannelFactory.execute(builder.build());
+
         return null;
     }
 
     @Override
     public Boolean setIfPresent(String key, TurtleValue value, long time) {
+        ClientCommandBuilder builder=new ClientCommandBuilder(TurtleModel.VALUE,"setIfPresent");
+        builder.addPara(TurtleParaType.STRING, key);
+        builder.addPara(TurtleParaType.TURTLE_VALUE, value);
+        builder.addPara(TurtleParaType.LONG, (Long) time);
+        TurtleClientChannelFactory.execute(builder.build());
         return null;
     }
 

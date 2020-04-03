@@ -5,9 +5,7 @@ import com.google.common.base.Charsets;
 import com.google.common.hash.Hashing;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.AbstractMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static com.github.entropyfeng.mydb.core.dict.ElasticMap.DEFAULT_INITIAL_CAPACITY;
 import static com.github.entropyfeng.mydb.core.dict.ElasticMap.DEFAULT_LOAD_FACTOR;
@@ -18,7 +16,7 @@ import static com.github.entropyfeng.mydb.util.CommonUtil.hashing;
  * @author entropyfeng
  * @date 2020/2/27 15:27
  */
-class MapObject<K, V> {
+class MapObject<K, V>  {
 
 
     /**
@@ -101,7 +99,8 @@ class MapObject<K, V> {
      * @param value 值
      */
     V put(K key, V value) {
-        assert key != null && value != null;
+        Objects.requireNonNull(key);
+        Objects.requireNonNull(value);
         final int pos = hashing(key) & sizeMask;
         assert pos >= 0 && pos < size;
         //tempNode

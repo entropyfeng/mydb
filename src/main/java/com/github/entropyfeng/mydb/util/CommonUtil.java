@@ -5,6 +5,8 @@ import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -30,12 +32,11 @@ public class CommonUtil {
     }
 
     public static int hashing(Object o){
-        assert o!=null;
 
+        Objects.requireNonNull(o);
         if (o instanceof String){
             return Hashing.murmur3_32().hashString((String) o, Charsets.UTF_8).asInt();
         }else if(o instanceof Integer){
-
             return Hashing.murmur3_32().hashInt((Integer) o).asInt();
         }else if (o instanceof Double){
             return Hashing.murmur3_32().newHasher().putDouble((Double)o).hash().asInt();
