@@ -11,7 +11,7 @@ public class ProtoTurtleHelper {
 
     public static TurtleValue convertToTurtleValue(TurtleProtoBuf.TurtleValue protoTurtleValue) {
         TurtleValueType type;
-        byte[] values = protoTurtleValue.toByteArray();
+        byte[] values = protoTurtleValue.getValues().toByteArray();
         switch (protoTurtleValue.getTurtleParaType()) {
             case LONG:
                 type = TurtleValueType.LONG;

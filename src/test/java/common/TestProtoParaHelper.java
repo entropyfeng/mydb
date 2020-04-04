@@ -77,16 +77,27 @@ public class TestProtoParaHelper {
     /**
      * @// TODO: 2020/4/4 编码异常未解决
      */
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Test
     public void testCollection1() {
 
         List<TurtleValue> values = new ArrayList<>();
-        values.add(new TurtleValue(new BigInteger("7")));
-        values.add(new TurtleValue(new BigInteger("-7")));
+        for (int i = 0; i < 100; i++) {
+            values.add(new TurtleValue(BigInteger.valueOf(i)));
+        }
+
         TurtleProtoBuf.TurtleCommonValue commonValue = ProtoParaHelper.constructCollection(values, TurtleParaType.TURTLE_VALUE);
 
+      
+        @SuppressWarnings("unchecked")
         Collection<TurtleValue> res = (Collection<TurtleValue>) ProtoParaHelper.handlerCollection(TurtleProtoBuf.TurtleParaType.TURTLE_VALUE, commonValue.getCollectionValue().getCollectionParasList());
-        res.forEach(turtleValue -> System.out.println(turtleValue.toObject()));
+        TurtleValue turtleValue = res.stream().reduce(this::add).get();
+        Assert.assertEquals(BigInteger.valueOf(4950),turtleValue.toObject());
+    }
+
+    private TurtleValue add(TurtleValue first, TurtleValue second) {
+        first.increment(new BigInteger(second.getValues()));
+        return first;
     }
 
     static class Student {

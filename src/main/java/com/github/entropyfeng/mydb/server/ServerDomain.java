@@ -94,7 +94,7 @@ public class ServerDomain {
 
     }
 
-    private void runValues() {
+    public void runValues() {
         logger.info("runValues");
         while (true) {
             //poll()：检索并删除由此deque表示的队列的头部（换句话说，该deque的第一个元素），如果此deque为空，则返回 null 。
@@ -111,6 +111,7 @@ public class ServerDomain {
                     e.printStackTrace();
                 }
                 if (res != null) {
+
                     System.out.println(res);
                 }
             }
@@ -123,7 +124,6 @@ public class ServerDomain {
 
     public void parseCommand(TurtleProtoBuf.ClientCommand clientCommand, Channel channel) {
         final int paraNumbers = clientCommand.getKeysCount();
-        assert paraNumbers == clientCommand.getValuesCount();
         final Class<?>[] types = new Class[paraNumbers];
         final List<Object> values = new ArrayList<>(paraNumbers);
         final List<TurtleProtoBuf.TurtleParaType> typesList = clientCommand.getKeysList();
@@ -181,10 +181,6 @@ public class ServerDomain {
 
             case LIST:
 
-            case SET:
-
-            case HASH:
-
             default:
                 throw new UnsupportedOperationException();
         }
@@ -212,5 +208,9 @@ public class ServerDomain {
         }
         valuesQueue.offer(new ValuesCommand(method, values, channel, requestId));
 
+    }
+
+    public ValuesObject getValuesObject() {
+        return valuesObject;
     }
 }
