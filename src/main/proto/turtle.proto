@@ -79,19 +79,29 @@ enum ExceptionType{
     NoSuchElementException=5;
 }
 
+enum ResponseParaType{
+    STRING=0;
+    BOOL=1;
+    INTEGER=2;
+    VOID=3;
+    TURTLE_VALUE=4;
+    COLLECTION=5;
+}
 message ResponseData{
 
     int64 responseId=1;
 
     bool success=2;
 
-    TurtleParaType resType=3;
+    bool void=3;
 
-    repeated TurtleCommonValue resValue=4;
+    ResponseParaType resType=4;
 
-    string exception=5;
+    TurtleCollectionType value=5;
 
     ExceptionType exceptionType=6;
+
+    string exception=7;
 
 }
 

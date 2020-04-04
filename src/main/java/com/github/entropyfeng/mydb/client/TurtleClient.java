@@ -68,9 +68,10 @@ public class TurtleClient {
             logger.info("client start and bind on {} and connect to {}", channelFuture.channel().localAddress(), channelFuture.channel().remoteAddress());
             if(channelFuture.isSuccess()) {
                 TurtleClientChannelFactory.setChannel(channelFuture.channel());
+                TurtleClientChannelFactory.setAlive(true);
+                channelFuture.channel().writeAndFlush(CommonCommand.sayHelloCommand());
+                channelFuture.channel().closeFuture().sync();
             }
-            channelFuture.channel().writeAndFlush(CommonCommand.sayHelloCommand());
-            channelFuture.channel().closeFuture().sync();
         } finally {
             eventLoopGroup.shutdownGracefully().sync();
         }
