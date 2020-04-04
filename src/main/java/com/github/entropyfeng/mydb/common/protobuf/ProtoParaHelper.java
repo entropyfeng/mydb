@@ -2,6 +2,7 @@ package com.github.entropyfeng.mydb.common.protobuf;
 
 import com.github.entropyfeng.mydb.common.TurtleParaType;
 import com.github.entropyfeng.mydb.core.obj.TurtleValue;
+import com.google.protobuf.ByteString;
 import io.netty.util.internal.IntegerHolder;
 import org.omg.CORBA.UNSUPPORTED_POLICY;
 
@@ -13,11 +14,17 @@ import java.util.List;
 import java.util.Objects;
 
 /**
+ * @date 2020/04/04
  * @author entropyfeng
  */
 public class ProtoParaHelper {
 
+    /**
+     * @param turtleParaType {@link com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType}
+     * @return {@link TurtleParaType}
+     */
     public static TurtleParaType convertToTurtleParaType(TurtleProtoBuf.TurtleParaType turtleParaType) {
+        Objects.requireNonNull(turtleParaType);
         switch (turtleParaType) {
             case NUMBER_DECIMAL:
                 return TurtleParaType.NUMBER_DECIMAL;
@@ -41,6 +48,7 @@ public class ProtoParaHelper {
     }
 
     public static TurtleProtoBuf.TurtleParaType convertToProtoParaType(TurtleParaType paraType) {
+        Objects.requireNonNull(paraType);
         switch (paraType) {
             case TURTLE_VALUE:
                 return TurtleProtoBuf.TurtleParaType.TURTLE_VALUE;
@@ -89,7 +97,7 @@ public class ProtoParaHelper {
 
     }
 
-    private static TurtleProtoBuf.TurtleCommonValue constructCollection(Collection<?> collection, TurtleParaType turtleParaType) {
+    public static TurtleProtoBuf.TurtleCommonValue constructCollection(Collection<?> collection, TurtleParaType turtleParaType) {
         Objects.requireNonNull(collection);
         if (turtleParaType == TurtleParaType.COLLECTION) {
             throw new UnsupportedOperationException("collection's item can't be collection !");
@@ -97,11 +105,7 @@ public class ProtoParaHelper {
 
         TurtleProtoBuf.TurtleCollectionType.Builder builder = TurtleProtoBuf.TurtleCollectionType.newBuilder();
         builder.setCollectionType(convertToProtoParaType(turtleParaType));
-
-        Object[] array = collection.toArray();
-        for (int i = 0; i < collection.size(); i++) {
-            builder.setCollectionParas(i, convertToCommonValue(turtleParaType, array[i]));
-        }
+        collection.forEach(o -> builder.addCollectionParas(convertToCommonValue(turtleParaType,o)));
 
         return TurtleProtoBuf.TurtleCommonValue.newBuilder().setCollectionValue(builder.build()).build();
     }

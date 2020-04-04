@@ -11,6 +11,7 @@ public class ProtoTurtleHelper {
 
     public static TurtleValue convertToTurtleValue(TurtleProtoBuf.TurtleValue protoTurtleValue) {
         TurtleValueType type;
+        byte[] values = protoTurtleValue.toByteArray();
         switch (protoTurtleValue.getTurtleParaType()) {
             case LONG:
                 type = TurtleValueType.LONG;
@@ -33,7 +34,7 @@ public class ProtoTurtleHelper {
             default:
                 throw new UnsupportedOperationException("unSupportCast" + protoTurtleValue.getTurtleParaType());
         }
-        byte[] values = protoTurtleValue.toByteArray();
+
         return new TurtleValue(values, type);
     }
 
@@ -56,12 +57,13 @@ public class ProtoTurtleHelper {
                 type = TurtleProtoBuf.TurtleParaType.NUMBER_INTEGER;
                 break;
             case NUMBER_DECIMAL:
-                type= TurtleProtoBuf.TurtleParaType.NUMBER_DECIMAL;
+                type = TurtleProtoBuf.TurtleParaType.NUMBER_DECIMAL;
                 break;
-            default:throw new UnsupportedOperationException("unSupport"+turtleValue.getType());
+            default:
+                throw new UnsupportedOperationException("unSupport" + turtleValue.getType());
 
         }
 
-      return   TurtleProtoBuf.TurtleValue.newBuilder().setTurtleParaType(type).setValues(ByteString.copyFrom(turtleValue.getValues())).build();
+        return TurtleProtoBuf.TurtleValue.newBuilder().setTurtleParaType(type).setValues(ByteString.copyFrom(turtleValue.getValues())).build();
     }
 }
