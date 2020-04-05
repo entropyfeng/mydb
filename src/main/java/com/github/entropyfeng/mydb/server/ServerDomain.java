@@ -15,7 +15,6 @@ import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -69,10 +68,11 @@ public class ServerDomain {
         }
     }
 
-    public void execute(ICommand command,Object target) {
+    public void execute(ICommand command, Object target) {
 
         Object res = null;
         TurtleProtoBuf.ResponseData.Builder builder = TurtleProtoBuf.ResponseData.newBuilder();
+        builder.setResponseId(command.getRequestId());
         try {
             if (command.getValues().size() == 0) {
                 res = command.getMethod().invoke(target);
@@ -91,7 +91,9 @@ public class ServerDomain {
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
+        if (res == null) {
 
+        }
     }
 
     public void runValues() {
@@ -99,6 +101,7 @@ public class ServerDomain {
         while (true) {
             //poll()：检索并删除由此deque表示的队列的头部（换句话说，该deque的第一个元素），如果此deque为空，则返回 null 。
             ValuesCommand valuesCommand = valuesQueue.poll();
+
             if (valuesCommand != null) {
                 Object res = null;
                 try {
@@ -123,6 +126,7 @@ public class ServerDomain {
     }
 
     public void parseCommand(TurtleProtoBuf.ClientCommand clientCommand, Channel channel) {
+
         final int paraNumbers = clientCommand.getKeysCount();
         final Class<?>[] types = new Class[paraNumbers];
         final List<Object> values = new ArrayList<>(paraNumbers);
@@ -186,15 +190,12 @@ public class ServerDomain {
         }
     }
 
-    private static void handlerAdmin(String operationName, Class<?>[] types, List<Object> values, Channel channel) {
-
-
-    }
 
 
     private void parseForValue(String operationName, Class<?>[] types, List<Object> values, Channel channel, Long requestId) {
         Method method = null;
 
+        TurtleProtoBuf.ResponseData responseData = null;
         //找到合适的方法
         try {
             if (types.length == 0) {
@@ -202,11 +203,14 @@ public class ServerDomain {
             } else {
                 method = ValuesObject.class.getDeclaredMethod(operationName, types);
             }
-
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            responseData = TurtleProtoBuf.ResponseData.newBuilder().setSuccess(false).setExceptionType(TurtleProtoBuf.ExceptionType.NoSuchMethodException).build();
         }
-        valuesQueue.offer(new ValuesCommand(method, values, channel, requestId));
+        if (method == null) {
+            channel.writeAndFlush(responseData);
+        } else {
+            valuesQueue.offer(new ValuesCommand(method, values, channel, requestId));
+        }
 
     }
 

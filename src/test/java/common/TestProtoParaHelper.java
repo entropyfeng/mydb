@@ -88,7 +88,7 @@ public class TestProtoParaHelper {
 
         TurtleProtoBuf.TurtleCommonValue commonValue = ProtoParaHelper.constructCollection(values, TurtleParaType.TURTLE_VALUE);
 
-      
+
         @SuppressWarnings("unchecked")
         Collection<TurtleValue> res = (Collection<TurtleValue>) ProtoParaHelper.handlerCollection(TurtleProtoBuf.TurtleParaType.TURTLE_VALUE, commonValue.getCollectionValue().getCollectionParasList());
         TurtleValue turtleValue = res.stream().reduce(this::add).get();

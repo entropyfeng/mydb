@@ -51,5 +51,8 @@ public interface ListOperations {
 
     public void clearAll();
 
+    public Boolean exist(String key);
+
+    public Boolean exist(String key,TurtleValue value);
 
 }
