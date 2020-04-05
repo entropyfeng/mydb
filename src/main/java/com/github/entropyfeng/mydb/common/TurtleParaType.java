@@ -17,6 +17,8 @@ public enum TurtleParaType {
 
     DOUBLE,
 
+    BOOL,
+
     NUMBER_INTEGER,
 
     NUMBER_DECIMAL,

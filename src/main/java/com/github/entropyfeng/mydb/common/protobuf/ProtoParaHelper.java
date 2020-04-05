@@ -2,9 +2,6 @@ package com.github.entropyfeng.mydb.common.protobuf;
 
 import com.github.entropyfeng.mydb.common.TurtleParaType;
 import com.github.entropyfeng.mydb.core.obj.TurtleValue;
-import com.google.protobuf.ByteString;
-import io.netty.util.internal.IntegerHolder;
-import org.omg.CORBA.UNSUPPORTED_POLICY;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -14,8 +11,8 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * @date 2020/04/04
  * @author entropyfeng
+ * @date 2020/04/04
  */
 public class ProtoParaHelper {
 
@@ -38,6 +35,8 @@ public class ProtoParaHelper {
                 return TurtleParaType.DOUBLE;
             case INTEGER:
                 return TurtleParaType.INTEGER;
+            case BOOL:
+                return TurtleParaType.BOOL;
             case COLLECTION:
                 return TurtleParaType.COLLECTION;
             case TURTLE_VALUE:
@@ -60,6 +59,9 @@ public class ProtoParaHelper {
                 return TurtleProtoBuf.TurtleParaType.DOUBLE;
             case STRING:
                 return TurtleProtoBuf.TurtleParaType.STRING;
+
+            case BOOL:
+                return TurtleProtoBuf.TurtleParaType.BOOL;
             case NUMBER_INTEGER:
                 return TurtleProtoBuf.TurtleParaType.NUMBER_INTEGER;
             case NUMBER_DECIMAL:
@@ -87,10 +89,13 @@ public class ProtoParaHelper {
                 return TurtleProtoBuf.TurtleCommonValue.newBuilder().setIntValue((Integer) object).build();
             case DOUBLE:
                 return TurtleProtoBuf.TurtleCommonValue.newBuilder().setDoubleValue((Integer) object).build();
+            case BOOL:
+                return TurtleProtoBuf.TurtleCommonValue.newBuilder().setBoolValue((Boolean) object).build();
+
             case TURTLE_VALUE:
                 return TurtleProtoBuf.TurtleCommonValue.newBuilder().setTurtleValue(ProtoTurtleHelper.convertToProtoTurtleValue((TurtleValue) object)).build();
             case COLLECTION:
-                return constructCollection(((Collection<?>)object), paraType);
+                return constructCollection(((Collection<?>) object), paraType);
             default:
                 throw new UnsupportedOperationException("unSupport" + paraType);
         }
@@ -105,7 +110,7 @@ public class ProtoParaHelper {
 
         TurtleProtoBuf.TurtleCollectionType.Builder builder = TurtleProtoBuf.TurtleCollectionType.newBuilder();
         builder.setCollectionType(convertToProtoParaType(turtleParaType));
-        collection.forEach(o -> builder.addCollectionParas(convertToCommonValue(turtleParaType,o)));
+        collection.forEach(o -> builder.addCollectionParas(convertToCommonValue(turtleParaType, o)));
 
         return TurtleProtoBuf.TurtleCommonValue.newBuilder().setCollectionValue(builder.build()).build();
     }
@@ -137,6 +142,9 @@ public class ProtoParaHelper {
                 break;
             case TURTLE_VALUE:
                 values.forEach(value -> res.add(ProtoTurtleHelper.convertToTurtleValue(value.getTurtleValue())));
+                break;
+            case BOOL:
+                values.forEach(value->res.add(value.getBoolValue()));
                 break;
             default:
                 throw new UnsupportedOperationException("unSupport operation " + type.toString());
