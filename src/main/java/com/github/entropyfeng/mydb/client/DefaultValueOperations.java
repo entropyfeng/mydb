@@ -8,6 +8,7 @@ import com.github.entropyfeng.mydb.core.obj.TurtleValue;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Collection;
 import java.util.NoSuchElementException;
 
 /**
@@ -81,6 +82,11 @@ public class DefaultValueOperations implements ValueOperations {
     public void append(String key, String appendValue) throws UnsupportedOperationException, NoSuchElementException {
 
 
+    }
+
+    @Override
+    public Collection<TurtleValue> allValues() {
+        return null;
     }
 
 

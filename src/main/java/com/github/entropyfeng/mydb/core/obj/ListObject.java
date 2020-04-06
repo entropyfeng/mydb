@@ -166,7 +166,6 @@ public class ListObject extends BaseObject implements ListOperations {
         if (!listMap.containsKey(key)) {
             listMap.put(key, new LinkedList<>());
         }
-        ReentrantLock lock=new ReentrantLock();
     }
 
 }

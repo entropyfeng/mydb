@@ -7,6 +7,7 @@ import com.github.entropyfeng.mydb.util.TimeUtil;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -145,6 +146,11 @@ public class ValuesObject extends BaseObject implements ValueOperations {
             throw new UnsupportedOperationException("turtleValue require String but finds " + turtleValue.getType());
         }
         turtleValue.append(appendValue);
+    }
+
+    @Override
+    public Collection<TurtleValue> allValues() {
+        return null;
     }
 
     private void handleExpire(String key) {

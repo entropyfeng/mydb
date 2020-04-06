@@ -12,6 +12,7 @@ import com.github.entropyfeng.mydb.server.command.ValuesCommand;
 import com.github.entropyfeng.mydb.server.factory.ListThreadFactory;
 import com.github.entropyfeng.mydb.server.factory.ValuesThreadFactory;
 import io.netty.channel.Channel;
+import org.checkerframework.checker.formatter.FormatUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,11 +103,49 @@ public class ServerDomain {
             builder.setSuccess(false);
             builder.setExceptionType(TurtleProtoBuf.ExceptionType.InvocationTargetException);
             e.printStackTrace();
+        }catch (Exception e){
+            builder.setSuccess(false);
+            e.printStackTrace();
         }
 
+        if(builder.getSuccess()){
+            if (res!=null){
+                TurtleProtoBuf.TurtleCollectionType.Builder collBuilder= TurtleProtoBuf.TurtleCollectionType.newBuilder();
+                handlerRes(res,collBuilder);
+            }
+        }
 
+        command.getChannel().writeAndFlush(builder.build());
     }
 
+
+    private void handlerRes(Object object, TurtleProtoBuf.TurtleCollectionType.Builder builder){
+        if (object instanceof Collection){
+            ((Collection)object).forEach(o -> handlerSingle(o,builder));
+        }else {
+            handlerSingle(object,builder);
+        }
+    }
+    private void handlerSingle(Object object, TurtleProtoBuf.TurtleCollectionType.Builder builder){
+        if (object instanceof Boolean){
+            builder.addCollectionParas(TurtleProtoBuf.TurtleCommonValue.newBuilder().setBoolValue((Boolean) object).build());
+        }else if (object instanceof Long){
+            builder.addCollectionParas(TurtleProtoBuf.TurtleCommonValue.newBuilder().setLongValue((Long)object).build());
+        }else if (object instanceof Integer){
+            builder.addCollectionParas(TurtleProtoBuf.TurtleCommonValue.newBuilder().setIntValue((Integer)object).build());
+        }else if (object instanceof Double){
+            builder.addCollectionParas(TurtleProtoBuf.TurtleCommonValue.newBuilder().setDoubleValue((Double)object).build());
+
+        }else if(object instanceof String){
+            builder.addCollectionParas(TurtleProtoBuf.TurtleCommonValue.newBuilder().setStringValue((String)object).build());
+
+        }else if (object instanceof TurtleValue){
+            builder.addCollectionParas(TurtleProtoBuf.TurtleCommonValue.newBuilder().setTurtleValue(ProtoTurtleHelper.convertToProtoTurtleValue((TurtleValue)object)).build());
+        }else {
+            throw new UnsupportedOperationException();
+        }
+
+    }
 
     public void acceptClientCommand(TurtleProtoBuf.ClientCommand clientCommand, Channel channel) {
         parseCommand(clientCommand, channel);

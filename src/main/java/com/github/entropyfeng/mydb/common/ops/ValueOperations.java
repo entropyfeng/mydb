@@ -4,6 +4,7 @@ import com.github.entropyfeng.mydb.core.obj.TurtleValue;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -107,4 +108,5 @@ public interface ValueOperations {
 
     void append(String key, String appendValue) throws UnsupportedOperationException, NoSuchElementException;
 
+    Collection<TurtleValue> allValues();
 }
