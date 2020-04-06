@@ -68,11 +68,21 @@ public class ServerDomain {
         }
     }
 
+    private void runValues() {
+       while (true){
+           ValuesCommand valuesCommand=valuesQueue.pollFirst();
+           if (valuesCommand!=null){
+               execute(valuesCommand,valuesObject);
+           }
+       }
+    }
+
     public void execute(ICommand command, Object target) {
 
         Object res = null;
         TurtleProtoBuf.ResponseData.Builder builder = TurtleProtoBuf.ResponseData.newBuilder();
         builder.setResponseId(command.getRequestId());
+        builder.setSuccess(true);
         try {
             if (command.getValues().size() == 0) {
                 res = command.getMethod().invoke(target);
@@ -89,37 +99,14 @@ public class ServerDomain {
             builder.setSuccess(false);
             builder.setExceptionType(TurtleProtoBuf.ExceptionType.UnsupportedOperationException);
         } catch (InvocationTargetException e) {
+            builder.setSuccess(false);
+            builder.setExceptionType(TurtleProtoBuf.ExceptionType.InvocationTargetException);
             e.printStackTrace();
         }
-        if (res == null) {
 
-        }
+
     }
 
-    public void runValues() {
-        logger.info("runValues");
-        while (true) {
-            //poll()：检索并删除由此deque表示的队列的头部（换句话说，该deque的第一个元素），如果此deque为空，则返回 null 。
-            ValuesCommand valuesCommand = valuesQueue.poll();
-
-            if (valuesCommand != null) {
-                Object res = null;
-                try {
-                    if (valuesCommand.getValues().size() == 0) {
-                        res = valuesCommand.getMethod().invoke(valuesObject);
-                    } else {
-                        res = valuesCommand.getMethod().invoke(valuesObject, valuesCommand.getValues());
-                    }
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    e.printStackTrace();
-                }
-                if (res != null) {
-
-                    System.out.println(res);
-                }
-            }
-        }
-    }
 
     public void acceptClientCommand(TurtleProtoBuf.ClientCommand clientCommand, Channel channel) {
         parseCommand(clientCommand, channel);
@@ -165,6 +152,10 @@ public class ServerDomain {
                     types[i] = TurtleValue.class;
                     values.add(ProtoTurtleHelper.convertToTurtleValue(value.getTurtleValue()));
                     break;
+                case BOOL:
+                    types[i] = Boolean.class;
+                    values.add(value.getBoolValue());
+                    break;
                 case COLLECTION:
                     types[i] = Collection.class;
                     values.add(ProtoParaHelper.handlerCollection(type, value.getCollectionValue().getCollectionParasList()));
@@ -177,24 +168,21 @@ public class ServerDomain {
 
         switch (clientCommand.getModel()) {
             case VALUE:
-                parseForValue(clientCommand.getOperationName(), types, values, channel, clientCommand.getRequestId());
+                parseForValue(types, values, channel, clientCommand);
                 return;
             case ADMIN:
                 System.out.println(clientCommand.getOperationName());
                 return;
-
-            case LIST:
-
             default:
                 throw new UnsupportedOperationException();
         }
     }
 
 
-
-    private void parseForValue(String operationName, Class<?>[] types, List<Object> values, Channel channel, Long requestId) {
+    private void parseForValue(Class<?>[] types, List<Object> values, Channel channel, TurtleProtoBuf.ClientCommand command) {
         Method method = null;
-
+        final String operationName = command.getOperationName();
+        final Long requestId = command.getRequestId();
         TurtleProtoBuf.ResponseData responseData = null;
         //找到合适的方法
         try {
