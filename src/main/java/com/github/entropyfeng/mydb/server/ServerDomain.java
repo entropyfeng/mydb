@@ -8,6 +8,7 @@ import com.github.entropyfeng.mydb.core.obj.SetObject;
 import com.github.entropyfeng.mydb.core.obj.TurtleValue;
 import com.github.entropyfeng.mydb.core.obj.ValuesObject;
 import com.github.entropyfeng.mydb.server.command.ICommand;
+import com.github.entropyfeng.mydb.server.command.ListCommand;
 import com.github.entropyfeng.mydb.server.command.ValuesCommand;
 import com.github.entropyfeng.mydb.server.factory.ListThreadFactory;
 import com.github.entropyfeng.mydb.server.factory.ValuesThreadFactory;
@@ -53,7 +54,7 @@ public class ServerDomain {
 
     private ConcurrentLinkedDeque<ValuesCommand> valuesQueue;
 
-    private ConcurrentLinkedDeque<Runnable> listQueue;
+    private ConcurrentLinkedDeque<ListCommand> listQueue;
 
 
     public void start() {
@@ -65,11 +66,15 @@ public class ServerDomain {
     private void runList() {
         logger.info("runList");
         while (true) {
-
+            ListCommand listCommand=listQueue.pollFirst();
+            if (listCommand!=null){
+                execute(listCommand,listObject);
+            }
         }
     }
 
     private void runValues() {
+        logger.info("runValues");
        while (true){
            ValuesCommand valuesCommand=valuesQueue.pollFirst();
            if (valuesCommand!=null){
@@ -88,17 +93,25 @@ public class ServerDomain {
             if (command.getValues().size() == 0) {
                 res = command.getMethod().invoke(target);
             } else {
-                res = command.getMethod().invoke(target, command.getValues());
+
+                System.out.println(command.getValues().size());
+                System.out.println(command.getMethod().getParameterCount());
+                res = command.getMethod().invoke(target, command.getValues().toArray());
             }
         } catch (IllegalAccessException e) {
             builder.setSuccess(false);
             builder.setExceptionType(TurtleProtoBuf.ExceptionType.IllegalAccessException);
+
+            e.printStackTrace();
         } catch (NoSuchElementException e) {
             builder.setSuccess(false);
             builder.setExceptionType(TurtleProtoBuf.ExceptionType.NoSuchElementException);
+
+            e.printStackTrace();
         } catch (UnsupportedOperationException e) {
             builder.setSuccess(false);
             builder.setExceptionType(TurtleProtoBuf.ExceptionType.UnsupportedOperationException);
+            e.printStackTrace();
         } catch (InvocationTargetException e) {
             builder.setSuccess(false);
             builder.setExceptionType(TurtleProtoBuf.ExceptionType.InvocationTargetException);
@@ -114,6 +127,8 @@ public class ServerDomain {
                 handlerRes(res,collBuilder);
             }
         }
+
+
 
         command.getChannel().writeAndFlush(builder.build());
     }
@@ -231,6 +246,7 @@ public class ServerDomain {
                 method = ValuesObject.class.getDeclaredMethod(operationName, types);
             }
         } catch (NoSuchMethodException e) {
+            e.printStackTrace();
             responseData = TurtleProtoBuf.ResponseData.newBuilder().setSuccess(false).setExceptionType(TurtleProtoBuf.ExceptionType.NoSuchMethodException).build();
         }
         if (method == null) {

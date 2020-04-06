@@ -25,7 +25,7 @@ public class ValuesObject extends BaseObject implements ValueOperations {
 
 
     @Override
-    public void set(String key, TurtleValue value, long time) {
+    public void set(String key, TurtleValue value, Long time) {
         Objects.requireNonNull(key);
         Objects.requireNonNull(value);
         //如果过期
@@ -40,7 +40,7 @@ public class ValuesObject extends BaseObject implements ValueOperations {
     }
 
     @Override
-    public Boolean setIfAbsent(String key, TurtleValue value, long time) {
+    public Boolean setIfAbsent(String key, TurtleValue value, Long time) {
         Objects.requireNonNull(key);
         Objects.requireNonNull(value);
         handleExpire(key);
@@ -57,7 +57,7 @@ public class ValuesObject extends BaseObject implements ValueOperations {
     }
 
     @Override
-    public Boolean setIfPresent(String key, TurtleValue value, long time) {
+    public Boolean setIfPresent(String key, TurtleValue value, Long time) {
         Objects.requireNonNull(key);
         Objects.requireNonNull(value);
         if (isExpire(key)) {
@@ -82,7 +82,7 @@ public class ValuesObject extends BaseObject implements ValueOperations {
     }
 
     @Override
-    public TurtleValue increment(String key, int intValue) throws UnsupportedOperationException, NoSuchElementException {
+    public TurtleValue increment(String key, Integer intValue) throws UnsupportedOperationException, NoSuchElementException {
         handleExpire(key);
         TurtleValue turtleValue = valueMap.get(key);
         if (turtleValue == null) {
@@ -93,7 +93,7 @@ public class ValuesObject extends BaseObject implements ValueOperations {
     }
 
     @Override
-    public TurtleValue increment(String key, long longValue) throws UnsupportedOperationException, NoSuchElementException {
+    public TurtleValue increment(String key, Long longValue) throws UnsupportedOperationException, NoSuchElementException {
         handleExpire(key);
         TurtleValue turtleValue = valueMap.get(key);
         if (turtleValue == null) {
@@ -104,7 +104,7 @@ public class ValuesObject extends BaseObject implements ValueOperations {
     }
 
     @Override
-    public TurtleValue increment(String key, double doubleValue) throws UnsupportedOperationException, NoSuchElementException {
+    public TurtleValue increment(String key,Double doubleValue) throws UnsupportedOperationException, NoSuchElementException {
         handleExpire(key);
         TurtleValue turtleValue = valueMap.get(key);
         if (turtleValue == null) {
@@ -153,6 +153,9 @@ public class ValuesObject extends BaseObject implements ValueOperations {
         return null;
     }
 
+    public void sayHello(){
+        System.out.println("hello--------------------------");
+    }
     private void handleExpire(String key) {
         if (isExpire(key)) {
             deleteExpireTime(key);

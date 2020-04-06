@@ -31,7 +31,7 @@ public interface ValueOperations {
      * @param value 值{@link TurtleValue}
      * @param time  过期时间
      */
-    void set(String key, TurtleValue value, long time);
+    void set(String key, TurtleValue value, Long time);
 
     /**
      * @param key      {@link String}
@@ -39,7 +39,7 @@ public interface ValueOperations {
      * @param time     时间戳(毫秒表示)
      * @param timeUnit {@link TimeUnit}
      */
-    default void set(String key, TurtleValue value, long time, TimeUnit timeUnit) {
+    default void set(String key, TurtleValue value, Long time, TimeUnit timeUnit) {
         Objects.requireNonNull(timeUnit);
         this.set(key, value, timeUnit.toMillis(time));
     }
@@ -49,14 +49,14 @@ public interface ValueOperations {
     }
 
 
-    default Boolean setIfAbsent(String key, TurtleValue value, long time, TimeUnit timeUnit) {
+    default Boolean setIfAbsent(String key, TurtleValue value, Long time, TimeUnit timeUnit) {
 
         Objects.requireNonNull(timeUnit);
         return setIfAbsent(key, value, timeUnit.toMillis(time));
     }
 
 
-    Boolean setIfAbsent(String key, TurtleValue value, long time);
+    Boolean setIfAbsent(String key, TurtleValue value, Long time);
 
 
     /**
@@ -83,24 +83,24 @@ public interface ValueOperations {
      * true->设置成功
      * false->设置失败
      */
-    default Boolean setIfPresent(String key, TurtleValue value, long time, TimeUnit timeUnit) {
+    default Boolean setIfPresent(String key, TurtleValue value, Long time, TimeUnit timeUnit) {
 
         Objects.requireNonNull(timeUnit);
         return setIfPresent(key, value, timeUnit.toMillis(time));
     }
 
 
-    Boolean setIfPresent(String key, TurtleValue value, long time);
+    Boolean setIfPresent(String key, TurtleValue value, Long time);
 
 
     TurtleValue get(String key);
 
 
-    TurtleValue increment(String key, int intValue) throws UnsupportedOperationException, NoSuchElementException;
+    TurtleValue increment(String key, Integer intValue) throws UnsupportedOperationException, NoSuchElementException;
 
-    TurtleValue increment(String key, long longValue) throws UnsupportedOperationException, NoSuchElementException;
+    TurtleValue increment(String key, Long longValue) throws UnsupportedOperationException, NoSuchElementException;
 
-    TurtleValue increment(String key, double doubleValue) throws UnsupportedOperationException, NoSuchElementException;
+    TurtleValue increment(String key, Double doubleValue) throws UnsupportedOperationException, NoSuchElementException;
 
     TurtleValue increment(String key, BigInteger bigInteger) throws UnsupportedOperationException, NoSuchElementException;
 

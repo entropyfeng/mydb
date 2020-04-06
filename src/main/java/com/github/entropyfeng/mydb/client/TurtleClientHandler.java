@@ -39,7 +39,7 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<TurtleProto
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, TurtleProtoBuf.ResponseData msg) throws Exception {
-        System.out.println(msg.getSuccess());
+        logger.info(msg.getSuccess()+"");
     }
 
 }

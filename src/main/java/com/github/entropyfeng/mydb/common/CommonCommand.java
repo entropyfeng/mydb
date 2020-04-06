@@ -19,14 +19,16 @@ public final class CommonCommand {
     }
 
     public static TurtleProtoBuf.ClientCommand sayHelloCommand() {
-        return TurtleProtoBuf.ClientCommand.newBuilder().setOperationName("sayHello").setModel(TurtleProtoBuf.TurtleModel.VALUE).build();
+
+        ClientCommandBuilder builder=new ClientCommandBuilder(TurtleModel.VALUE,"sayHello");
+        return builder.build();
     }
     public static TurtleProtoBuf.ClientCommand insertValue(){
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "set");
         builder.addPara(TurtleParaType.STRING, "hello");
         TurtleValue turtleValue=new TurtleValue("10086a");
         builder.addPara(TurtleParaType.TURTLE_VALUE, turtleValue);
-        builder.addPara(TurtleParaType.LONG, 0);
+        builder.addPara(TurtleParaType.LONG, 0L);
         return builder.build();
     }
 

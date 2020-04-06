@@ -18,7 +18,7 @@ public class DefaultValueOperations implements ValueOperations {
 
 
     @Override
-    public void set(String key, TurtleValue value, long time) {
+    public void set(String key, TurtleValue value, Long time) {
 
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "set");
         builder.addPara(TurtleParaType.STRING, key);
@@ -28,7 +28,7 @@ public class DefaultValueOperations implements ValueOperations {
     }
 
     @Override
-    public Boolean setIfAbsent(String key, TurtleValue value, long time) {
+    public Boolean setIfAbsent(String key, TurtleValue value, Long time) {
         ClientCommandBuilder builder=new ClientCommandBuilder(TurtleModel.VALUE,"setIfAbsent");
         builder.addPara(TurtleParaType.STRING, key);
         builder.addPara(TurtleParaType.TURTLE_VALUE, value);
@@ -39,7 +39,7 @@ public class DefaultValueOperations implements ValueOperations {
     }
 
     @Override
-    public Boolean setIfPresent(String key, TurtleValue value, long time) {
+    public Boolean setIfPresent(String key, TurtleValue value, Long time) {
         ClientCommandBuilder builder=new ClientCommandBuilder(TurtleModel.VALUE,"setIfPresent");
         builder.addPara(TurtleParaType.STRING, key);
         builder.addPara(TurtleParaType.TURTLE_VALUE, value);
@@ -54,17 +54,17 @@ public class DefaultValueOperations implements ValueOperations {
     }
 
     @Override
-    public TurtleValue increment(String key, int intValue) throws UnsupportedOperationException, NoSuchElementException {
+    public TurtleValue increment(String key, Integer intValue) throws UnsupportedOperationException, NoSuchElementException {
         return null;
     }
 
     @Override
-    public TurtleValue increment(String key, long longValue) throws UnsupportedOperationException, NoSuchElementException {
+    public TurtleValue increment(String key, Long longValue) throws UnsupportedOperationException, NoSuchElementException {
         return null;
     }
 
     @Override
-    public TurtleValue increment(String key, double doubleValue) throws UnsupportedOperationException, NoSuchElementException {
+    public TurtleValue increment(String key, Double doubleValue) throws UnsupportedOperationException, NoSuchElementException {
         return null;
     }
 

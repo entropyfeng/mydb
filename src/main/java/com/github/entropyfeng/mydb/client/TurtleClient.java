@@ -69,7 +69,7 @@ public class TurtleClient {
             if(channelFuture.isSuccess()) {
                 TurtleClientChannelFactory.setChannel(channelFuture.channel());
                 TurtleClientChannelFactory.setAlive(true);
-                channelFuture.channel().writeAndFlush(CommonCommand.sayHelloCommand());
+                channelFuture.channel().writeAndFlush(CommonCommand.insertValue());
                 channelFuture.channel().closeFuture().sync();
             }
         } finally {
