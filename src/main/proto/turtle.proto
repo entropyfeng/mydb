@@ -62,7 +62,7 @@ message TurtleCommonValue{//基础类型
     }
 
 }
-
+//即使大于4G,也可以将其拆分为多条命令
 message ClientCommand{//客户端命令
 
      TurtleModel model=1;

@@ -94,28 +94,26 @@ public class ServerDomain {
                 res = command.getMethod().invoke(target);
             } else {
 
-                System.out.println(command.getValues().size());
-                System.out.println(command.getMethod().getParameterCount());
                 res = command.getMethod().invoke(target, command.getValues().toArray());
             }
         } catch (IllegalAccessException e) {
             builder.setSuccess(false);
             builder.setExceptionType(TurtleProtoBuf.ExceptionType.IllegalAccessException);
+            e.printStackTrace();
+        } catch (InvocationTargetException ee) {
+            try {
+                 ee.getTargetException();
+            }
+            catch (NoSuchElementException e) {
+                builder.setSuccess(false);
+                builder.setExceptionType(TurtleProtoBuf.ExceptionType.NoSuchElementException);
 
-            e.printStackTrace();
-        } catch (NoSuchElementException e) {
-            builder.setSuccess(false);
-            builder.setExceptionType(TurtleProtoBuf.ExceptionType.NoSuchElementException);
-
-            e.printStackTrace();
-        } catch (UnsupportedOperationException e) {
-            builder.setSuccess(false);
-            builder.setExceptionType(TurtleProtoBuf.ExceptionType.UnsupportedOperationException);
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            builder.setSuccess(false);
-            builder.setExceptionType(TurtleProtoBuf.ExceptionType.InvocationTargetException);
-            e.printStackTrace();
+                e.printStackTrace();
+            } catch (UnsupportedOperationException e) {
+                builder.setSuccess(false);
+                builder.setExceptionType(TurtleProtoBuf.ExceptionType.UnsupportedOperationException);
+                e.printStackTrace();
+            }
         }catch (Exception e){
             builder.setSuccess(false);
             e.printStackTrace();

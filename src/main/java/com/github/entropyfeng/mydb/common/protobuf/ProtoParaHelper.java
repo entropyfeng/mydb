@@ -104,6 +104,7 @@ public class ProtoParaHelper {
 
     public static TurtleProtoBuf.TurtleCommonValue constructCollection(Collection<?> collection, TurtleParaType turtleParaType) {
         Objects.requireNonNull(collection);
+        //forbid nesting
         if (turtleParaType == TurtleParaType.COLLECTION) {
             throw new UnsupportedOperationException("collection's item can't be collection !");
         }

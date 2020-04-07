@@ -1,7 +1,6 @@
 package com.github.entropyfeng.mydb.core.obj;
 
 import com.github.entropyfeng.mydb.common.ops.SetOperations;
-import jdk.nashorn.internal.ir.CallNode;
 
 import java.util.Collection;
 import java.util.HashMap;
