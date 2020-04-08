@@ -14,7 +14,6 @@ import com.github.entropyfeng.mydb.server.command.ValuesCommand;
 import com.github.entropyfeng.mydb.server.factory.ListThreadFactory;
 import com.github.entropyfeng.mydb.server.factory.ValuesThreadFactory;
 import io.netty.channel.Channel;
-import org.checkerframework.checker.formatter.FormatUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +24,6 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 
@@ -67,21 +65,21 @@ public class ServerDomain {
     private void runList() {
         logger.info("runList");
         while (true) {
-            ListCommand listCommand=listQueue.pollFirst();
-            if (listCommand!=null){
-                execute(listCommand,listObject);
+            ListCommand listCommand = listQueue.pollFirst();
+            if (listCommand != null) {
+                execute(listCommand, listObject);
             }
         }
     }
 
     private void runValues() {
         logger.info("runValues");
-       while (true){
-           ValuesCommand valuesCommand=valuesQueue.pollFirst();
-           if (valuesCommand!=null){
-               execute(valuesCommand,valuesObject);
-           }
-       }
+        while (true) {
+            ValuesCommand valuesCommand = valuesQueue.pollFirst();
+            if (valuesCommand != null) {
+                execute(valuesCommand, valuesObject);
+            }
+        }
     }
 
     public void execute(ICommand command, Object target) {
@@ -101,62 +99,69 @@ public class ServerDomain {
             builder.setSuccess(false);
             builder.setExceptionType(TurtleProtoBuf.ExceptionType.IllegalAccessException);
             e.printStackTrace();
-        } catch (InvocationTargetException ee) {
+        } catch (InvocationTargetException e) {
 
-            try {
-                 ee.getTargetException();
-            }
-            catch (NoSuchElementException e) {
-                builder.setSuccess(false);
-                builder.setExceptionType(TurtleProtoBuf.ExceptionType.NoSuchElementException);
-
-                e.printStackTrace();
-            } catch (UnsupportedOperationException e) {
-                builder.setSuccess(false);
-                builder.setExceptionType(TurtleProtoBuf.ExceptionType.UnsupportedOperationException);
-                e.printStackTrace();
-            }
-        }catch (Exception e){
+            Throwable throwable = e.getTargetException();
             builder.setSuccess(false);
-            e.printStackTrace();
+            builder.setException(e.getMessage());
+            //Returns a short description of this throwable.
+            switch (throwable.toString()) {
+                case CommonException.NO_SUCH_ELEMENT: {
+                    builder.setExceptionType(TurtleProtoBuf.ExceptionType.NoSuchElementException);
+                    break;
+                }
+                case CommonException.NULL_POINTER: {
+                    builder.setExceptionType(TurtleProtoBuf.ExceptionType.NullPointerException);
+                    break;
+                }
+                case CommonException.UNSUPPORTED_OPERATION: {
+                    builder.setExceptionType(TurtleProtoBuf.ExceptionType.UnsupportedOperationException);
+                    break;
+                }
+                default: {
+                    builder.setExceptionType(TurtleProtoBuf.ExceptionType.RuntimeException);
+                    break;
+                }
+            }
+
         }
 
-        if(builder.getSuccess()){
-            if (res!=null){
-                TurtleProtoBuf.TurtleCollectionType.Builder collBuilder= TurtleProtoBuf.TurtleCollectionType.newBuilder();
-                handlerRes(res,collBuilder);
+        if (builder.getSuccess()) {
+            if (res != null) {
+                TurtleProtoBuf.TurtleCollectionType.Builder collBuilder = TurtleProtoBuf.TurtleCollectionType.newBuilder();
+                handlerRes(res, collBuilder);
             }
         }
-
 
 
         command.getChannel().writeAndFlush(builder.build());
     }
 
 
-    private void handlerRes(Object object, TurtleProtoBuf.TurtleCollectionType.Builder builder){
-        if (object instanceof Collection){
-            ((Collection)object).forEach(o -> handlerSingle(o,builder));
-        }else {
-            handlerSingle(object,builder);
+    private void handlerRes(Object object, TurtleProtoBuf.TurtleCollectionType.Builder builder) {
+        if (object instanceof Collection) {
+            ((Collection) object).forEach(o -> handlerSingle(o, builder));
+        } else {
+            handlerSingle(object, builder);
         }
     }
-    private void handlerSingle(Object object, TurtleProtoBuf.TurtleCollectionType.Builder builder){
-        if (object instanceof Boolean){
+
+    private void handlerSingle(Object object, TurtleProtoBuf.TurtleCollectionType.Builder builder) {
+        if (object instanceof Boolean) {
             builder.addCollectionParas(TurtleProtoBuf.TurtleCommonValue.newBuilder().setBoolValue((Boolean) object).build());
-        }else if (object instanceof Long){
-            builder.addCollectionParas(TurtleProtoBuf.TurtleCommonValue.newBuilder().setLongValue((Long)object).build());
-        }else if (object instanceof Integer){
-            builder.addCollectionParas(TurtleProtoBuf.TurtleCommonValue.newBuilder().setIntValue((Integer)object).build());
-        }else if (object instanceof Double){
-            builder.addCollectionParas(TurtleProtoBuf.TurtleCommonValue.newBuilder().setDoubleValue((Double)object).build());
+        } else if (object instanceof Long) {
+            builder.addCollectionParas(TurtleProtoBuf.TurtleCommonValue.newBuilder().setLongValue((Long) object).build());
+        } else if (object instanceof Integer) {
+            builder.addCollectionParas(TurtleProtoBuf.TurtleCommonValue.newBuilder().setIntValue((Integer) object).build());
+        } else if (object instanceof Double) {
+            builder.addCollectionParas(TurtleProtoBuf.TurtleCommonValue.newBuilder().setDoubleValue((Double) object).build());
 
-        }else if(object instanceof String){
-            builder.addCollectionParas(TurtleProtoBuf.TurtleCommonValue.newBuilder().setStringValue((String)object).build());
+        } else if (object instanceof String) {
+            builder.addCollectionParas(TurtleProtoBuf.TurtleCommonValue.newBuilder().setStringValue((String) object).build());
 
-        }else if (object instanceof TurtleValue){
-            builder.addCollectionParas(TurtleProtoBuf.TurtleCommonValue.newBuilder().setTurtleValue(ProtoTurtleHelper.convertToProtoTurtleValue((TurtleValue)object)).build());
-        }else {
+        } else if (object instanceof TurtleValue) {
+            builder.addCollectionParas(TurtleProtoBuf.TurtleCommonValue.newBuilder().setTurtleValue(ProtoTurtleHelper.convertToProtoTurtleValue((TurtleValue) object)).build());
+        } else {
             throw new UnsupportedOperationException();
         }
 

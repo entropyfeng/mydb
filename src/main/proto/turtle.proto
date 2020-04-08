@@ -82,6 +82,12 @@ enum ExceptionType{
     InvocationTargetException=3;
     NoSuchMethodException=4;
     NoSuchElementException=5;
+    RuntimeException=6;
+
+    //Error--------------
+    OutOfMemoryError=100;
+    StackOverflowError=101;
+
 }
 
 

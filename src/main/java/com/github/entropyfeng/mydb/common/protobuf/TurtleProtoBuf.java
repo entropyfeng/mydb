@@ -346,6 +346,22 @@ public final class TurtleProtoBuf {
      * <code>NoSuchElementException = 5;</code>
      */
     NoSuchElementException(5),
+    /**
+     * <code>RuntimeException = 6;</code>
+     */
+    RuntimeException(6),
+    /**
+     * <pre>
+     *Error--------------
+     * </pre>
+     *
+     * <code>OutOfMemoryError = 100;</code>
+     */
+    OutOfMemoryError(100),
+    /**
+     * <code>StackOverflowError = 101;</code>
+     */
+    StackOverflowError(101),
     UNRECOGNIZED(-1),
     ;
 
@@ -373,6 +389,22 @@ public final class TurtleProtoBuf {
      * <code>NoSuchElementException = 5;</code>
      */
     public static final int NoSuchElementException_VALUE = 5;
+    /**
+     * <code>RuntimeException = 6;</code>
+     */
+    public static final int RuntimeException_VALUE = 6;
+    /**
+     * <pre>
+     *Error--------------
+     * </pre>
+     *
+     * <code>OutOfMemoryError = 100;</code>
+     */
+    public static final int OutOfMemoryError_VALUE = 100;
+    /**
+     * <code>StackOverflowError = 101;</code>
+     */
+    public static final int StackOverflowError_VALUE = 101;
 
 
     public final int getNumber() {
@@ -399,6 +431,9 @@ public final class TurtleProtoBuf {
         case 3: return InvocationTargetException;
         case 4: return NoSuchMethodException;
         case 5: return NoSuchElementException;
+        case 6: return RuntimeException;
+        case 100: return OutOfMemoryError;
+        case 101: return StackOverflowError;
         default: return null;
       }
     }
@@ -3407,7 +3442,7 @@ public final class TurtleProtoBuf {
   }
   /**
    * <pre>
-   *客户端命令
+   *即使大于4G,也可以将其拆分为多条命令
    * </pre>
    *
    * Protobuf type {@code ClientCommand}
@@ -3903,7 +3938,7 @@ public final class TurtleProtoBuf {
     }
     /**
      * <pre>
-     *客户端命令
+     *即使大于4G,也可以将其拆分为多条命令
      * </pre>
      *
      * Protobuf type {@code ClientCommand}
@@ -5702,14 +5737,16 @@ public final class TurtleProtoBuf {
       "ST\020\005*\223\001\n\016TurtleParaType\022\n\n\006STRING\020\000\022\013\n\007I" +
       "NTEGER\020\001\022\010\n\004LONG\020\002\022\n\n\006DOUBLE\020\003\022\010\n\004BOOL\020\004" +
       "\022\022\n\016NUMBER_INTEGER\020\005\022\022\n\016NUMBER_DECIMAL\020\006" +
-      "\022\020\n\014TURTLE_VALUE\020\007\022\016\n\nCOLLECTION\020\010*\276\001\n\rE" +
+      "\022\020\n\014TURTLE_VALUE\020\007\022\016\n\nCOLLECTION\020\010*\202\002\n\rE" +
       "xceptionType\022!\n\035UnsupportedOperationExce" +
       "ption\020\000\022\030\n\024NullPointerException\020\001\022\032\n\026Ill" +
       "egalAccessException\020\002\022\035\n\031InvocationTarge" +
       "tException\020\003\022\031\n\025NoSuchMethodException\020\004\022" +
-      "\032\n\026NoSuchElementException\020\005B=\n+com.githu" +
-      "b.entropyfeng.mydb.common.protobufB\016Turt" +
-      "leProtoBufb\006proto3"
+      "\032\n\026NoSuchElementException\020\005\022\024\n\020RuntimeEx" +
+      "ception\020\006\022\024\n\020OutOfMemoryError\020d\022\026\n\022Stack" +
+      "OverflowError\020eB=\n+com.github.entropyfen" +
+      "g.mydb.common.protobufB\016TurtleProtoBufb\006" +
+      "proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
