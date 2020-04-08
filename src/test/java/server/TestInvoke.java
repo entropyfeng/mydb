@@ -24,7 +24,30 @@ public class TestInvoke {
                 e.printStackTrace();
             } catch (InvocationTargetException e) {
 
-               e.getTargetException();
+                System.out.println(e.getTargetException().toString());
+
+
+            }
+        }
+
+    }
+    @Test
+    public void test1(){
+        Student student=new Student();
+        Method method=null;
+        try {
+            method= Student.class.getMethod("sayOperation");
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        if (method!=null){
+            try {
+                method.invoke(student);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+
+                System.out.println(e.getTargetException().toString());
 
 
             }

@@ -6,6 +6,20 @@ message ClientRequest {
     int64 requestId=1;
     int64 requestSequence=2;
 }
+enum Model{ //支持模式
+
+     ADMIN=0;
+
+     VALUE=1;
+
+     HASH=2;
+
+     SET=3;
+
+     ZSET=4;
+
+     LIST=5;
+}
 enum Type {
     STRING=0;
     INTEGER=1;
@@ -26,8 +40,16 @@ message PayLoad{
 
 
 }
+message CommonValue{
+
+}
+message Collection{
+
+}
 message ClientResponse{
     int64 responseId=1;
     int64 responseSequence=2;
+}
+message ResponsePayLoad{
 
 }
