@@ -1,5 +1,6 @@
 package com.github.entropyfeng.mydb.server;
 
+import com.github.entropyfeng.mydb.common.CommonException;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoParaHelper;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
@@ -101,6 +102,7 @@ public class ServerDomain {
             builder.setExceptionType(TurtleProtoBuf.ExceptionType.IllegalAccessException);
             e.printStackTrace();
         } catch (InvocationTargetException ee) {
+
             try {
                  ee.getTargetException();
             }
