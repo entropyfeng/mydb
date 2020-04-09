@@ -10,6 +10,7 @@ import com.github.entropyfeng.mydb.core.obj.TurtleValue;
 import com.github.entropyfeng.mydb.core.obj.ValuesObject;
 import com.github.entropyfeng.mydb.server.command.ICommand;
 import com.github.entropyfeng.mydb.server.command.ListCommand;
+import com.github.entropyfeng.mydb.server.command.SetCommand;
 import com.github.entropyfeng.mydb.server.command.ValuesCommand;
 import com.github.entropyfeng.mydb.server.factory.ListThreadFactory;
 import com.github.entropyfeng.mydb.server.factory.ValuesThreadFactory;
@@ -24,6 +25,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 
@@ -35,6 +37,7 @@ public class ServerDomain {
     private static final Logger logger = LoggerFactory.getLogger(ServerDomain.class);
 
     public ServerDomain(TurtleServer turtleServer) {
+        this.adminObject=new AdminObject(this);
         this.turtleServer = turtleServer;
 
         valuesObject = new ValuesObject();
@@ -45,16 +48,21 @@ public class ServerDomain {
     }
 
     private final TurtleServer turtleServer;
-    private ValuesObject valuesObject;
 
-    private ListObject listObject;
+    protected AdminObject adminObject;
 
-    private SetObject setObject;
+    protected ValuesObject valuesObject;
 
-    private ConcurrentLinkedDeque<ValuesCommand> valuesQueue;
+    protected ListObject listObject;
 
-    private ConcurrentLinkedDeque<ListCommand> listQueue;
+   protected SetObject setObject;
 
+
+    protected ConcurrentLinkedDeque<ValuesCommand> valuesQueue;
+
+    protected ConcurrentLinkedDeque<ListCommand> listQueue;
+
+    protected ConcurrentLinkedDeque<SetCommand> setQueue;
 
     public void start() {
         new ValuesThreadFactory().newThread(this::runValues).start();
@@ -265,4 +273,5 @@ public class ServerDomain {
     public ValuesObject getValuesObject() {
         return valuesObject;
     }
+
 }
