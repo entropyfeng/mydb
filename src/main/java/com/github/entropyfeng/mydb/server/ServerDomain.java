@@ -13,6 +13,7 @@ import com.github.entropyfeng.mydb.server.command.ListCommand;
 import com.github.entropyfeng.mydb.server.command.SetCommand;
 import com.github.entropyfeng.mydb.server.command.ValuesCommand;
 import com.github.entropyfeng.mydb.server.factory.ListThreadFactory;
+import com.github.entropyfeng.mydb.server.factory.SetThreadFactory;
 import com.github.entropyfeng.mydb.server.factory.ValuesThreadFactory;
 import io.netty.channel.Channel;
 import org.slf4j.Logger;
@@ -67,7 +68,7 @@ public class ServerDomain {
     public void start() {
         new ValuesThreadFactory().newThread(this::runValues).start();
         new ListThreadFactory().newThread(this::runList).start();
-
+        new SetThreadFactory().newThread(this::runSet).start();
     }
 
     private void runList() {
@@ -86,6 +87,15 @@ public class ServerDomain {
             ValuesCommand valuesCommand = valuesQueue.pollFirst();
             if (valuesCommand != null) {
                 execute(valuesCommand, valuesObject);
+            }
+        }
+    }
+    private void runSet(){
+        logger.info("runSet");
+        while (true){
+            SetCommand setCommand=setQueue.pollFirst();
+            if (setCommand!=null){
+                execute(setCommand,setObject);
             }
         }
     }
@@ -131,7 +141,6 @@ public class ServerDomain {
                     break;
                 }
             }
-
         }
 
         if (builder.getSuccess()) {
@@ -140,8 +149,6 @@ public class ServerDomain {
                 handlerRes(res, collBuilder);
             }
         }
-
-
         command.getChannel().writeAndFlush(builder.build());
     }
 
