@@ -26,7 +26,6 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 
@@ -38,7 +37,7 @@ public class ServerDomain {
     private static final Logger logger = LoggerFactory.getLogger(ServerDomain.class);
 
     public ServerDomain(TurtleServer turtleServer) {
-        this.adminObject=new AdminObject(this);
+        this.adminObject = new AdminObject(this);
         this.turtleServer = turtleServer;
 
         valuesObject = new ValuesObject();
@@ -56,7 +55,7 @@ public class ServerDomain {
 
     protected ListObject listObject;
 
-   protected SetObject setObject;
+    protected SetObject setObject;
 
 
     protected ConcurrentLinkedDeque<ValuesCommand> valuesQueue;
@@ -90,12 +89,13 @@ public class ServerDomain {
             }
         }
     }
-    private void runSet(){
+
+    private void runSet() {
         logger.info("runSet");
-        while (true){
-            SetCommand setCommand=setQueue.pollFirst();
-            if (setCommand!=null){
-                execute(setCommand,setObject);
+        while (true) {
+            SetCommand setCommand = setQueue.pollFirst();
+            if (setCommand != null) {
+                execute(setCommand, setObject);
             }
         }
     }

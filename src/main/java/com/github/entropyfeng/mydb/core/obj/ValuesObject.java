@@ -150,8 +150,9 @@ public class ValuesObject extends BaseObject implements ValueOperations {
 
     @Override
     public Collection<TurtleValue> allValues() {
-        return null;
+        return  valueMap.values();
     }
+
 
     public void sayHello(){
         System.out.println("hello--------------------------");
@@ -161,5 +162,8 @@ public class ValuesObject extends BaseObject implements ValueOperations {
             deleteExpireTime(key);
             valueMap.remove(key);
         }
+    }
+    private void haha(){
+        valueMap.entrySet();
     }
 }
