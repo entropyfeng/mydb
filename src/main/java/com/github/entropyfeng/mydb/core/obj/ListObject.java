@@ -129,6 +129,7 @@ public class ListObject extends BaseObject implements ListOperations {
         return null;
     }
 
+
     @Override
     public TurtleValue right(String key) {
         if (listMap.containsKey(key)) {
