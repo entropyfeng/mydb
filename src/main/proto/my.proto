@@ -70,7 +70,7 @@ message EntrySet{
 message ClientResponse{
     int64 responseId=1;
     int64 responseSequence=2;
-}
-message ResponsePayLoad{
-
+    oneof ResponseData{
+        CommonValue
+    }
 }
