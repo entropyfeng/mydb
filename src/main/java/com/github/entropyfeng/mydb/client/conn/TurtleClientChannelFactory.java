@@ -19,49 +19,32 @@ public class TurtleClientChannelFactory {
     private static volatile Channel channel;
 
 
-    public static class TurtleClientHolder {
-       static {
-           TurtleClient client=new TurtleClient();
-           try {
-               client.start();
-           }catch (InterruptedException e){
-               e.printStackTrace();
-           }
-       }
-
-    }
-
     public static void setChannel(Channel channel) {
         TurtleClientChannelFactory.channel = channel;
     }
 
 
 
-    public static ConcurrentHashMap<Long, TurtleProtoBuf.ResponseData> resMap = new ConcurrentHashMap<>();
-
+    /**
+     * 双重检查锁单例模式
+     * @return {@link Channel}
+     */
     public static Channel getChannel() {
 
         if (channel==null){
-
+            synchronized (TurtleClientChannelFactory.class){
+                if (channel==null){
+                    TurtleClient client=new TurtleClient();
+                    try {
+                        client.start();
+                    }catch (InterruptedException e){
+                        e.printStackTrace();
+                    }
+                }
+            }
         }
-
         return channel;
     }
 
-    public static TurtleProtoBuf.ResponseData execute(TurtleProtoBuf.ClientCommand command)throws TurtleTimeOutException {
-        if (channel==null){
-        }
-        if (channel!=null&& channel.isWritable()) {
-            TurtleProtoBuf.ResponseData responseData=null;
-            channel.writeAndFlush(command);
-            //blocking....
-            while (!resMap.containsKey(command.getRequestId())) {
-              responseData= resMap.get(command.getRequestId());
-            }
-            resMap.remove(command.getRequestId());
-            return responseData;
-        }else{
-          throw new TurtleTimeOutException();
-        }
-    }
+
 }

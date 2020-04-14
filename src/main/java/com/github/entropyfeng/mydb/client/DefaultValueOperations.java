@@ -1,5 +1,6 @@
 package com.github.entropyfeng.mydb.client;
 
+import com.github.entropyfeng.mydb.client.conn.ClientExecute;
 import com.github.entropyfeng.mydb.client.conn.TurtleClientChannelFactory;
 import com.github.entropyfeng.mydb.common.TurtleModel;
 import com.github.entropyfeng.mydb.common.TurtleParaType;
@@ -24,7 +25,7 @@ public class DefaultValueOperations implements ValueOperations {
         builder.addPara(TurtleParaType.STRING, key);
         builder.addPara(TurtleParaType.TURTLE_VALUE, value);
         builder.addPara(TurtleParaType.LONG, (Long) time);
-        TurtleClientChannelFactory.execute(builder.build());
+        ClientExecute.execute(builder.build());
     }
 
     @Override
@@ -33,7 +34,7 @@ public class DefaultValueOperations implements ValueOperations {
         builder.addPara(TurtleParaType.STRING, key);
         builder.addPara(TurtleParaType.TURTLE_VALUE, value);
         builder.addPara(TurtleParaType.LONG, (Long) time);
-        TurtleClientChannelFactory.execute(builder.build());
+        ClientExecute.execute(builder.build());
 
         return null;
     }
@@ -44,7 +45,7 @@ public class DefaultValueOperations implements ValueOperations {
         builder.addPara(TurtleParaType.STRING, key);
         builder.addPara(TurtleParaType.TURTLE_VALUE, value);
         builder.addPara(TurtleParaType.LONG, (Long) time);
-        TurtleClientChannelFactory.execute(builder.build());
+        ClientExecute.execute(builder.build());
         return null;
     }
 

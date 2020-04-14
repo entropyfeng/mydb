@@ -42,9 +42,7 @@ public class ListObject extends BaseObject implements ListOperations {
 
     @Override
     public void leftPush(String key, TurtleValue value, long time) {
-        if (!TimeUtil.isExpire(time)) {
 
-        }
     }
 
     @Override
