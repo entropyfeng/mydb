@@ -4721,38 +4721,43 @@ public final class TurtleProtoBuf {
     long getResponseId();
 
     /**
-     * <code>bool success = 2;</code>
+     * <code>int64 responseSequence = 2;</code>
+     */
+    long getResponseSequence();
+
+    /**
+     * <code>bool success = 3;</code>
      */
     boolean getSuccess();
 
     /**
-     * <code>.TurtleCollectionType value = 3;</code>
+     * <code>.TurtleCollectionType value = 4;</code>
      */
     boolean hasValue();
     /**
-     * <code>.TurtleCollectionType value = 3;</code>
+     * <code>.TurtleCollectionType value = 4;</code>
      */
     com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleCollectionType getValue();
     /**
-     * <code>.TurtleCollectionType value = 3;</code>
+     * <code>.TurtleCollectionType value = 4;</code>
      */
     com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleCollectionTypeOrBuilder getValueOrBuilder();
 
     /**
-     * <code>.ExceptionType exceptionType = 4;</code>
+     * <code>.ExceptionType exceptionType = 5;</code>
      */
     int getExceptionTypeValue();
     /**
-     * <code>.ExceptionType exceptionType = 4;</code>
+     * <code>.ExceptionType exceptionType = 5;</code>
      */
     com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.ExceptionType getExceptionType();
 
     /**
-     * <code>string exception = 5;</code>
+     * <code>string exception = 6;</code>
      */
     java.lang.String getException();
     /**
-     * <code>string exception = 5;</code>
+     * <code>string exception = 6;</code>
      */
     com.google.protobuf.ByteString
         getExceptionBytes();
@@ -4811,10 +4816,15 @@ public final class TurtleProtoBuf {
             }
             case 16: {
 
+              responseSequence_ = input.readInt64();
+              break;
+            }
+            case 24: {
+
               success_ = input.readBool();
               break;
             }
-            case 26: {
+            case 34: {
               com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleCollectionType.Builder subBuilder = null;
               if (value_ != null) {
                 subBuilder = value_.toBuilder();
@@ -4827,13 +4837,13 @@ public final class TurtleProtoBuf {
 
               break;
             }
-            case 32: {
+            case 40: {
               int rawValue = input.readEnum();
 
               exceptionType_ = rawValue;
               break;
             }
-            case 42: {
+            case 50: {
               java.lang.String s = input.readStringRequireUtf8();
 
               exception_ = s;
@@ -4880,46 +4890,55 @@ public final class TurtleProtoBuf {
       return responseId_;
     }
 
-    public static final int SUCCESS_FIELD_NUMBER = 2;
+    public static final int RESPONSESEQUENCE_FIELD_NUMBER = 2;
+    private long responseSequence_;
+    /**
+     * <code>int64 responseSequence = 2;</code>
+     */
+    public long getResponseSequence() {
+      return responseSequence_;
+    }
+
+    public static final int SUCCESS_FIELD_NUMBER = 3;
     private boolean success_;
     /**
-     * <code>bool success = 2;</code>
+     * <code>bool success = 3;</code>
      */
     public boolean getSuccess() {
       return success_;
     }
 
-    public static final int VALUE_FIELD_NUMBER = 3;
+    public static final int VALUE_FIELD_NUMBER = 4;
     private com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleCollectionType value_;
     /**
-     * <code>.TurtleCollectionType value = 3;</code>
+     * <code>.TurtleCollectionType value = 4;</code>
      */
     public boolean hasValue() {
       return value_ != null;
     }
     /**
-     * <code>.TurtleCollectionType value = 3;</code>
+     * <code>.TurtleCollectionType value = 4;</code>
      */
     public com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleCollectionType getValue() {
       return value_ == null ? com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleCollectionType.getDefaultInstance() : value_;
     }
     /**
-     * <code>.TurtleCollectionType value = 3;</code>
+     * <code>.TurtleCollectionType value = 4;</code>
      */
     public com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleCollectionTypeOrBuilder getValueOrBuilder() {
       return getValue();
     }
 
-    public static final int EXCEPTIONTYPE_FIELD_NUMBER = 4;
+    public static final int EXCEPTIONTYPE_FIELD_NUMBER = 5;
     private int exceptionType_;
     /**
-     * <code>.ExceptionType exceptionType = 4;</code>
+     * <code>.ExceptionType exceptionType = 5;</code>
      */
     public int getExceptionTypeValue() {
       return exceptionType_;
     }
     /**
-     * <code>.ExceptionType exceptionType = 4;</code>
+     * <code>.ExceptionType exceptionType = 5;</code>
      */
     public com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.ExceptionType getExceptionType() {
       @SuppressWarnings("deprecation")
@@ -4927,10 +4946,10 @@ public final class TurtleProtoBuf {
       return result == null ? com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.ExceptionType.UNRECOGNIZED : result;
     }
 
-    public static final int EXCEPTION_FIELD_NUMBER = 5;
+    public static final int EXCEPTION_FIELD_NUMBER = 6;
     private volatile java.lang.Object exception_;
     /**
-     * <code>string exception = 5;</code>
+     * <code>string exception = 6;</code>
      */
     public java.lang.String getException() {
       java.lang.Object ref = exception_;
@@ -4945,7 +4964,7 @@ public final class TurtleProtoBuf {
       }
     }
     /**
-     * <code>string exception = 5;</code>
+     * <code>string exception = 6;</code>
      */
     public com.google.protobuf.ByteString
         getExceptionBytes() {
@@ -4978,17 +4997,20 @@ public final class TurtleProtoBuf {
       if (responseId_ != 0L) {
         output.writeInt64(1, responseId_);
       }
+      if (responseSequence_ != 0L) {
+        output.writeInt64(2, responseSequence_);
+      }
       if (success_ != false) {
-        output.writeBool(2, success_);
+        output.writeBool(3, success_);
       }
       if (value_ != null) {
-        output.writeMessage(3, getValue());
+        output.writeMessage(4, getValue());
       }
       if (exceptionType_ != com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.ExceptionType.UnsupportedOperationException.getNumber()) {
-        output.writeEnum(4, exceptionType_);
+        output.writeEnum(5, exceptionType_);
       }
       if (!getExceptionBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, exception_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 6, exception_);
       }
       unknownFields.writeTo(output);
     }
@@ -5003,20 +5025,24 @@ public final class TurtleProtoBuf {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(1, responseId_);
       }
+      if (responseSequence_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(2, responseSequence_);
+      }
       if (success_ != false) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(2, success_);
+          .computeBoolSize(3, success_);
       }
       if (value_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, getValue());
+          .computeMessageSize(4, getValue());
       }
       if (exceptionType_ != com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.ExceptionType.UnsupportedOperationException.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(4, exceptionType_);
+          .computeEnumSize(5, exceptionType_);
       }
       if (!getExceptionBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, exception_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, exception_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -5035,6 +5061,8 @@ public final class TurtleProtoBuf {
 
       if (getResponseId()
           != other.getResponseId()) return false;
+      if (getResponseSequence()
+          != other.getResponseSequence()) return false;
       if (getSuccess()
           != other.getSuccess()) return false;
       if (hasValue() != other.hasValue()) return false;
@@ -5059,6 +5087,9 @@ public final class TurtleProtoBuf {
       hash = (37 * hash) + RESPONSEID_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getResponseId());
+      hash = (37 * hash) + RESPONSESEQUENCE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getResponseSequence());
       hash = (37 * hash) + SUCCESS_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getSuccess());
@@ -5205,6 +5236,8 @@ public final class TurtleProtoBuf {
         super.clear();
         responseId_ = 0L;
 
+        responseSequence_ = 0L;
+
         success_ = false;
 
         if (valueBuilder_ == null) {
@@ -5244,6 +5277,7 @@ public final class TurtleProtoBuf {
       public com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.ResponseData buildPartial() {
         com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.ResponseData result = new com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.ResponseData(this);
         result.responseId_ = responseId_;
+        result.responseSequence_ = responseSequence_;
         result.success_ = success_;
         if (valueBuilder_ == null) {
           result.value_ = value_;
@@ -5302,6 +5336,9 @@ public final class TurtleProtoBuf {
         if (other == com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.ResponseData.getDefaultInstance()) return this;
         if (other.getResponseId() != 0L) {
           setResponseId(other.getResponseId());
+        }
+        if (other.getResponseSequence() != 0L) {
+          setResponseSequence(other.getResponseSequence());
         }
         if (other.getSuccess() != false) {
           setSuccess(other.getSuccess());
@@ -5371,15 +5408,41 @@ public final class TurtleProtoBuf {
         return this;
       }
 
+      private long responseSequence_ ;
+      /**
+       * <code>int64 responseSequence = 2;</code>
+       */
+      public long getResponseSequence() {
+        return responseSequence_;
+      }
+      /**
+       * <code>int64 responseSequence = 2;</code>
+       */
+      public Builder setResponseSequence(long value) {
+        
+        responseSequence_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int64 responseSequence = 2;</code>
+       */
+      public Builder clearResponseSequence() {
+        
+        responseSequence_ = 0L;
+        onChanged();
+        return this;
+      }
+
       private boolean success_ ;
       /**
-       * <code>bool success = 2;</code>
+       * <code>bool success = 3;</code>
        */
       public boolean getSuccess() {
         return success_;
       }
       /**
-       * <code>bool success = 2;</code>
+       * <code>bool success = 3;</code>
        */
       public Builder setSuccess(boolean value) {
         
@@ -5388,7 +5451,7 @@ public final class TurtleProtoBuf {
         return this;
       }
       /**
-       * <code>bool success = 2;</code>
+       * <code>bool success = 3;</code>
        */
       public Builder clearSuccess() {
         
@@ -5401,13 +5464,13 @@ public final class TurtleProtoBuf {
       private com.google.protobuf.SingleFieldBuilderV3<
           com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleCollectionType, com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleCollectionType.Builder, com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleCollectionTypeOrBuilder> valueBuilder_;
       /**
-       * <code>.TurtleCollectionType value = 3;</code>
+       * <code>.TurtleCollectionType value = 4;</code>
        */
       public boolean hasValue() {
         return valueBuilder_ != null || value_ != null;
       }
       /**
-       * <code>.TurtleCollectionType value = 3;</code>
+       * <code>.TurtleCollectionType value = 4;</code>
        */
       public com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleCollectionType getValue() {
         if (valueBuilder_ == null) {
@@ -5417,7 +5480,7 @@ public final class TurtleProtoBuf {
         }
       }
       /**
-       * <code>.TurtleCollectionType value = 3;</code>
+       * <code>.TurtleCollectionType value = 4;</code>
        */
       public Builder setValue(com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleCollectionType value) {
         if (valueBuilder_ == null) {
@@ -5433,7 +5496,7 @@ public final class TurtleProtoBuf {
         return this;
       }
       /**
-       * <code>.TurtleCollectionType value = 3;</code>
+       * <code>.TurtleCollectionType value = 4;</code>
        */
       public Builder setValue(
           com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleCollectionType.Builder builderForValue) {
@@ -5447,7 +5510,7 @@ public final class TurtleProtoBuf {
         return this;
       }
       /**
-       * <code>.TurtleCollectionType value = 3;</code>
+       * <code>.TurtleCollectionType value = 4;</code>
        */
       public Builder mergeValue(com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleCollectionType value) {
         if (valueBuilder_ == null) {
@@ -5465,7 +5528,7 @@ public final class TurtleProtoBuf {
         return this;
       }
       /**
-       * <code>.TurtleCollectionType value = 3;</code>
+       * <code>.TurtleCollectionType value = 4;</code>
        */
       public Builder clearValue() {
         if (valueBuilder_ == null) {
@@ -5479,7 +5542,7 @@ public final class TurtleProtoBuf {
         return this;
       }
       /**
-       * <code>.TurtleCollectionType value = 3;</code>
+       * <code>.TurtleCollectionType value = 4;</code>
        */
       public com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleCollectionType.Builder getValueBuilder() {
         
@@ -5487,7 +5550,7 @@ public final class TurtleProtoBuf {
         return getValueFieldBuilder().getBuilder();
       }
       /**
-       * <code>.TurtleCollectionType value = 3;</code>
+       * <code>.TurtleCollectionType value = 4;</code>
        */
       public com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleCollectionTypeOrBuilder getValueOrBuilder() {
         if (valueBuilder_ != null) {
@@ -5498,7 +5561,7 @@ public final class TurtleProtoBuf {
         }
       }
       /**
-       * <code>.TurtleCollectionType value = 3;</code>
+       * <code>.TurtleCollectionType value = 4;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleCollectionType, com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleCollectionType.Builder, com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleCollectionTypeOrBuilder> 
@@ -5516,13 +5579,13 @@ public final class TurtleProtoBuf {
 
       private int exceptionType_ = 0;
       /**
-       * <code>.ExceptionType exceptionType = 4;</code>
+       * <code>.ExceptionType exceptionType = 5;</code>
        */
       public int getExceptionTypeValue() {
         return exceptionType_;
       }
       /**
-       * <code>.ExceptionType exceptionType = 4;</code>
+       * <code>.ExceptionType exceptionType = 5;</code>
        */
       public Builder setExceptionTypeValue(int value) {
         exceptionType_ = value;
@@ -5530,7 +5593,7 @@ public final class TurtleProtoBuf {
         return this;
       }
       /**
-       * <code>.ExceptionType exceptionType = 4;</code>
+       * <code>.ExceptionType exceptionType = 5;</code>
        */
       public com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.ExceptionType getExceptionType() {
         @SuppressWarnings("deprecation")
@@ -5538,7 +5601,7 @@ public final class TurtleProtoBuf {
         return result == null ? com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.ExceptionType.UNRECOGNIZED : result;
       }
       /**
-       * <code>.ExceptionType exceptionType = 4;</code>
+       * <code>.ExceptionType exceptionType = 5;</code>
        */
       public Builder setExceptionType(com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.ExceptionType value) {
         if (value == null) {
@@ -5550,7 +5613,7 @@ public final class TurtleProtoBuf {
         return this;
       }
       /**
-       * <code>.ExceptionType exceptionType = 4;</code>
+       * <code>.ExceptionType exceptionType = 5;</code>
        */
       public Builder clearExceptionType() {
         
@@ -5561,7 +5624,7 @@ public final class TurtleProtoBuf {
 
       private java.lang.Object exception_ = "";
       /**
-       * <code>string exception = 5;</code>
+       * <code>string exception = 6;</code>
        */
       public java.lang.String getException() {
         java.lang.Object ref = exception_;
@@ -5576,7 +5639,7 @@ public final class TurtleProtoBuf {
         }
       }
       /**
-       * <code>string exception = 5;</code>
+       * <code>string exception = 6;</code>
        */
       public com.google.protobuf.ByteString
           getExceptionBytes() {
@@ -5592,7 +5655,7 @@ public final class TurtleProtoBuf {
         }
       }
       /**
-       * <code>string exception = 5;</code>
+       * <code>string exception = 6;</code>
        */
       public Builder setException(
           java.lang.String value) {
@@ -5605,7 +5668,7 @@ public final class TurtleProtoBuf {
         return this;
       }
       /**
-       * <code>string exception = 5;</code>
+       * <code>string exception = 6;</code>
        */
       public Builder clearException() {
         
@@ -5614,7 +5677,7 @@ public final class TurtleProtoBuf {
         return this;
       }
       /**
-       * <code>string exception = 5;</code>
+       * <code>string exception = 6;</code>
        */
       public Builder setExceptionBytes(
           com.google.protobuf.ByteString value) {
@@ -5728,25 +5791,25 @@ public final class TurtleProtoBuf {
       "\022\033\n\005model\030\001 \001(\0162\014.TurtleModel\022\025\n\roperati" +
       "onName\030\002 \001(\t\022\035\n\004keys\030\003 \003(\0162\017.TurtleParaT" +
       "ype\022\"\n\006values\030\004 \003(\0132\022.TurtleCommonValue\022" +
-      "\021\n\trequestId\030\005 \001(\003\"\223\001\n\014ResponseData\022\022\n\nr" +
-      "esponseId\030\001 \001(\003\022\017\n\007success\030\002 \001(\010\022$\n\005valu" +
-      "e\030\003 \001(\0132\025.TurtleCollectionType\022%\n\rexcept" +
-      "ionType\030\004 \001(\0162\016.ExceptionType\022\021\n\texcepti" +
-      "on\030\005 \001(\t*J\n\013TurtleModel\022\t\n\005ADMIN\020\000\022\t\n\005VA" +
-      "LUE\020\001\022\010\n\004HASH\020\002\022\007\n\003SET\020\003\022\010\n\004ZSET\020\004\022\010\n\004LI" +
-      "ST\020\005*\223\001\n\016TurtleParaType\022\n\n\006STRING\020\000\022\013\n\007I" +
-      "NTEGER\020\001\022\010\n\004LONG\020\002\022\n\n\006DOUBLE\020\003\022\010\n\004BOOL\020\004" +
-      "\022\022\n\016NUMBER_INTEGER\020\005\022\022\n\016NUMBER_DECIMAL\020\006" +
-      "\022\020\n\014TURTLE_VALUE\020\007\022\016\n\nCOLLECTION\020\010*\202\002\n\rE" +
-      "xceptionType\022!\n\035UnsupportedOperationExce" +
-      "ption\020\000\022\030\n\024NullPointerException\020\001\022\032\n\026Ill" +
-      "egalAccessException\020\002\022\035\n\031InvocationTarge" +
-      "tException\020\003\022\031\n\025NoSuchMethodException\020\004\022" +
-      "\032\n\026NoSuchElementException\020\005\022\024\n\020RuntimeEx" +
-      "ception\020\006\022\024\n\020OutOfMemoryError\020d\022\026\n\022Stack" +
-      "OverflowError\020eB=\n+com.github.entropyfen" +
-      "g.mydb.common.protobufB\016TurtleProtoBufb\006" +
-      "proto3"
+      "\021\n\trequestId\030\005 \001(\003\"\255\001\n\014ResponseData\022\022\n\nr" +
+      "esponseId\030\001 \001(\003\022\030\n\020responseSequence\030\002 \001(" +
+      "\003\022\017\n\007success\030\003 \001(\010\022$\n\005value\030\004 \001(\0132\025.Turt" +
+      "leCollectionType\022%\n\rexceptionType\030\005 \001(\0162" +
+      "\016.ExceptionType\022\021\n\texception\030\006 \001(\t*J\n\013Tu" +
+      "rtleModel\022\t\n\005ADMIN\020\000\022\t\n\005VALUE\020\001\022\010\n\004HASH\020" +
+      "\002\022\007\n\003SET\020\003\022\010\n\004ZSET\020\004\022\010\n\004LIST\020\005*\223\001\n\016Turtl" +
+      "eParaType\022\n\n\006STRING\020\000\022\013\n\007INTEGER\020\001\022\010\n\004LO" +
+      "NG\020\002\022\n\n\006DOUBLE\020\003\022\010\n\004BOOL\020\004\022\022\n\016NUMBER_INT" +
+      "EGER\020\005\022\022\n\016NUMBER_DECIMAL\020\006\022\020\n\014TURTLE_VAL" +
+      "UE\020\007\022\016\n\nCOLLECTION\020\010*\202\002\n\rExceptionType\022!" +
+      "\n\035UnsupportedOperationException\020\000\022\030\n\024Nul" +
+      "lPointerException\020\001\022\032\n\026IllegalAccessExce" +
+      "ption\020\002\022\035\n\031InvocationTargetException\020\003\022\031" +
+      "\n\025NoSuchMethodException\020\004\022\032\n\026NoSuchEleme" +
+      "ntException\020\005\022\024\n\020RuntimeException\020\006\022\024\n\020O" +
+      "utOfMemoryError\020d\022\026\n\022StackOverflowError\020" +
+      "eB=\n+com.github.entropyfeng.mydb.common." +
+      "protobufB\016TurtleProtoBufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -5781,7 +5844,7 @@ public final class TurtleProtoBuf {
     internal_static_ResponseData_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ResponseData_descriptor,
-        new java.lang.String[] { "ResponseId", "Success", "Value", "ExceptionType", "Exception", });
+        new java.lang.String[] { "ResponseId", "ResponseSequence", "Success", "Value", "ExceptionType", "Exception", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)
