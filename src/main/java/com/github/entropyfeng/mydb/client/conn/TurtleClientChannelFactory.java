@@ -20,6 +20,7 @@ public class TurtleClientChannelFactory {
 
     public static class TurtleClientHolder {
 
+
     }
 
     public static void setChannel(Channel channel) {
