@@ -13,12 +13,12 @@ public class TurtleClientChannelInitializer extends ChannelInitializer {
     @Override
     protected void initChannel(Channel ch) throws Exception {
         //出站
-        ch.pipeline().addLast("encoder", new TurtleClientProtoEncoder());
+        ch.pipeline().addLast("TurtleClientProtoEncoder", new TurtleClientProtoEncoder());
         //入站
-        ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());
+        ch.pipeline().addLast("ProtobufVarint32FrameDecoder",new ProtobufVarint32FrameDecoder());
         //入站
-        ch.pipeline().addLast(new ProtobufDecoder(TurtleProtoBuf.ResponseData.getDefaultInstance()));
+        ch.pipeline().addLast("ProtobufDecoder",new ProtobufDecoder(TurtleProtoBuf.ResponseData.getDefaultInstance()));
         //入站
-        ch.pipeline().addLast("handler", new TurtleClientHandler());
+        ch.pipeline().addLast("TurtleClientHandler", new TurtleClientHandler());
     }
 }

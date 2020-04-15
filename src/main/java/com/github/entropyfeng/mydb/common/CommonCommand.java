@@ -18,6 +18,11 @@ public final class CommonCommand {
         return TurtleProtoBuf.ClientCommand.newBuilder().setOperationName(CommonConstant.HELLO_CLIENT).build();
     }
 
+    public static TurtleProtoBuf.ClientCommand emptyCommand(){
+
+        return TurtleProtoBuf.ClientCommand.newBuilder().build();
+    }
+
     public static TurtleProtoBuf.ClientCommand sayHelloCommand() {
 
         ClientCommandBuilder builder=new ClientCommandBuilder(TurtleModel.VALUE,"sayHello");
@@ -30,6 +35,14 @@ public final class CommonCommand {
         builder.addPara(TurtleParaType.TURTLE_VALUE, turtleValue);
         builder.addPara(TurtleParaType.LONG, 0L);
         return builder.build();
+    }
+
+    public static void main(String[] args) {
+
+
+        System.out.println(emptyCommand().getSerializedSize());
+        System.out.println(sayHelloCommand().getSerializedSize());
+        System.out.println(insertValue().getSerializedSize());
     }
 
 }

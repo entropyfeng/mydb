@@ -68,6 +68,7 @@ public class ProtoParaHelper {
                 return TurtleProtoBuf.TurtleParaType.NUMBER_DECIMAL;
             case LONG:
                 return TurtleProtoBuf.TurtleParaType.LONG;
+
             default:
                 throw new UnsupportedOperationException("unSupport" + paraType);
         }
@@ -117,6 +118,13 @@ public class ProtoParaHelper {
     }
 
 
+    /**
+     * 将{@link com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleCommonValue}
+     * 转化为集合对象
+     * @param type ProtoBuf中参数类型
+     * @param values {@link com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleCommonValue}集合
+     * @return {@link Collection<?>}
+     */
     public static Collection<?> handlerCollection(TurtleProtoBuf.TurtleParaType type, List<TurtleProtoBuf.TurtleCommonValue> values) {
 
         final int collectionSize = values.size();
