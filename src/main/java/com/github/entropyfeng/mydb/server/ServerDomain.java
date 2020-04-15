@@ -153,7 +153,6 @@ public class ServerDomain {
 
             }
         }
-        command.getChannel().writeAndFlush(builder.build());
     }
 
 

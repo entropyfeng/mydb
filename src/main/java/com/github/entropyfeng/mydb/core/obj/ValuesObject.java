@@ -25,7 +25,7 @@ public class ValuesObject extends BaseObject implements ValueOperations {
 
 
     @Override
-    public void set(String key, TurtleValue value, Long time) {
+    public Void set(String key, TurtleValue value, Long time) {
         Objects.requireNonNull(key);
         Objects.requireNonNull(value);
         //如果过期
@@ -37,6 +37,7 @@ public class ValuesObject extends BaseObject implements ValueOperations {
         if (!TimeUtil.isExpire(time)) {
             putExpireTime(key, time);
         }
+        return null;
     }
 
     @Override
@@ -137,7 +138,7 @@ public class ValuesObject extends BaseObject implements ValueOperations {
     }
 
     @Override
-    public void append(String key, String appendValue) throws UnsupportedOperationException, NoSuchElementException {
+    public Void append(String key, String appendValue) throws UnsupportedOperationException, NoSuchElementException {
         TurtleValue turtleValue = valueMap.get(key);
         if (turtleValue == null) {
             throw new NoSuchElementException();
@@ -146,6 +147,7 @@ public class ValuesObject extends BaseObject implements ValueOperations {
             throw new UnsupportedOperationException("turtleValue require String but finds " + turtleValue.getType());
         }
         turtleValue.append(appendValue);
+        return null;
     }
 
     @Override
@@ -154,16 +156,20 @@ public class ValuesObject extends BaseObject implements ValueOperations {
     }
 
 
-    public void sayHello(){
+    public Void sayHello(){
         System.out.println("hello--------------------------");
+
+        return null;
     }
-    private void handleExpire(String key) {
+    private Void handleExpire(String key) {
         if (isExpire(key)) {
             deleteExpireTime(key);
             valueMap.remove(key);
         }
+        return null;
     }
-    private void haha(){
+    private Void haha(){
         valueMap.entrySet();
+        return null;
     }
 }
