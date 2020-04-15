@@ -1,7 +1,6 @@
 package com.github.entropyfeng.mydb.client;
 
 import com.github.entropyfeng.mydb.client.conn.ClientExecute;
-import com.github.entropyfeng.mydb.client.conn.TurtleClientChannelFactory;
 import com.github.entropyfeng.mydb.common.TurtleModel;
 import com.github.entropyfeng.mydb.common.TurtleParaType;
 import com.github.entropyfeng.mydb.common.ops.ValueOperations;
@@ -19,13 +18,14 @@ public class DefaultValueOperations implements ValueOperations {
 
 
     @Override
-    public void set(String key, TurtleValue value, Long time) {
+    public Void set(String key, TurtleValue value, Long time) {
 
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "set");
         builder.addPara(TurtleParaType.STRING, key);
         builder.addPara(TurtleParaType.TURTLE_VALUE, value);
         builder.addPara(TurtleParaType.LONG, (Long) time);
         ClientExecute.execute(builder.build());
+        return null;
     }
 
     @Override
@@ -80,9 +80,10 @@ public class DefaultValueOperations implements ValueOperations {
     }
 
     @Override
-    public void append(String key, String appendValue) throws UnsupportedOperationException, NoSuchElementException {
+    public Void append(String key, String appendValue) throws UnsupportedOperationException, NoSuchElementException {
 
 
+        return null;
     }
 
     @Override

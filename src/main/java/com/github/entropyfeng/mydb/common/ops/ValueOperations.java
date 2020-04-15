@@ -20,8 +20,9 @@ public interface ValueOperations {
      * @param key   {@link String}
      * @param value {@link TurtleValue}
      */
-    default void set(String key, TurtleValue value) {
+    default Void set(String key, TurtleValue value) {
         this.set(key, value, 0L);
+        return null;
     }
 
     /**
@@ -31,7 +32,7 @@ public interface ValueOperations {
      * @param value 值{@link TurtleValue}
      * @param time  过期时间
      */
-    void set(String key, TurtleValue value, Long time);
+    Void set(String key, TurtleValue value, Long time);
 
     /**
      * @param key      {@link String}
@@ -39,9 +40,10 @@ public interface ValueOperations {
      * @param time     时间戳(毫秒表示)
      * @param timeUnit {@link TimeUnit}
      */
-    default void set(String key, TurtleValue value, Long time, TimeUnit timeUnit) {
+    default Void set(String key, TurtleValue value, Long time, TimeUnit timeUnit) {
         Objects.requireNonNull(timeUnit);
         this.set(key, value, timeUnit.toMillis(time));
+        return null;
     }
 
     default Boolean setIfAbsent(String key, TurtleValue value) {
@@ -106,7 +108,7 @@ public interface ValueOperations {
 
     TurtleValue increment(String key, BigDecimal bigDecimal) throws UnsupportedOperationException, NoSuchElementException;
 
-    void append(String key, String appendValue) throws UnsupportedOperationException, NoSuchElementException;
+    Void append(String key, String appendValue) throws UnsupportedOperationException, NoSuchElementException;
 
     Collection<TurtleValue> allValues();
 }

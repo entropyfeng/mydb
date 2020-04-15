@@ -15,7 +15,9 @@ import com.github.entropyfeng.mydb.server.command.ValuesCommand;
 import com.github.entropyfeng.mydb.server.factory.ListThreadFactory;
 import com.github.entropyfeng.mydb.server.factory.SetThreadFactory;
 import com.github.entropyfeng.mydb.server.factory.ValuesThreadFactory;
+import com.google.protobuf.ByteString;
 import io.netty.channel.Channel;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -113,7 +115,6 @@ public class ServerDomain {
             if (command.getValues().size() == 0) {
                 res = command.getMethod().invoke(target);
             } else {
-
                 res = command.getMethod().invoke(target, command.getValues().toArray());
             }
         } catch (IllegalAccessException e) {
@@ -122,6 +123,7 @@ public class ServerDomain {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
 
+            //内部调用异常
             Throwable throwable = e.getTargetException();
             builder.setSuccess(false);
             builder.setException(e.getMessage());
@@ -148,42 +150,66 @@ public class ServerDomain {
 
         if (builder.getSuccess()) {
             if (res != null) {
-                TurtleProtoBuf.TurtleCollectionType.Builder collBuilder = TurtleProtoBuf.TurtleCollectionType.newBuilder();
-                handlerRes(res, collBuilder);
+
             }
         }
         command.getChannel().writeAndFlush(builder.build());
     }
 
 
-    private void handlerRes(Object object, TurtleProtoBuf.TurtleCollectionType.Builder builder) {
+    private void handlerRes(Object object, TurtleProtoBuf.ResponseData.Builder builder) {
+
         if (object instanceof Collection) {
+            builder.setCollection(true);
+            builder.setResponseSequence(0L);
+
             ((Collection) object).forEach(o -> handlerSingle(o, builder));
         } else {
+            builder.setCollection(false);
             handlerSingle(object, builder);
+            builder.setResponseSequence(0L);
         }
     }
 
-    private void handlerSingle(Object object, TurtleProtoBuf.TurtleCollectionType.Builder builder) {
-        if (object instanceof Boolean) {
-            builder.addCollectionParas(TurtleProtoBuf.TurtleCommonValue.newBuilder().setBoolValue((Boolean) object).build());
-        } else if (object instanceof Long) {
-            builder.addCollectionParas(TurtleProtoBuf.TurtleCommonValue.newBuilder().setLongValue((Long) object).build());
-        } else if (object instanceof Integer) {
-            builder.addCollectionParas(TurtleProtoBuf.TurtleCommonValue.newBuilder().setIntValue((Integer) object).build());
-        } else if (object instanceof Double) {
-            builder.addCollectionParas(TurtleProtoBuf.TurtleCommonValue.newBuilder().setDoubleValue((Double) object).build());
 
-        } else if (object instanceof String) {
-            builder.addCollectionParas(TurtleProtoBuf.TurtleCommonValue.newBuilder().setStringValue((String) object).build());
-
-        } else if (object instanceof TurtleValue) {
-            builder.addCollectionParas(TurtleProtoBuf.TurtleCommonValue.newBuilder().setTurtleValue(ProtoTurtleHelper.convertToProtoTurtleValue((TurtleValue) object)).build());
-        } else {
-            throw new UnsupportedOperationException();
-        }
+    private void handlerCollection(){
 
     }
+
+    private void handlerSingle(Object object,TurtleProtoBuf.ResponseData.Builder builder){
+
+        if (object instanceof String){
+            builder.setType(TurtleProtoBuf.TurtleParaType.STRING);
+            builder.setStringValue((String)object);
+        }else if (object instanceof Integer){
+            builder.setType(TurtleProtoBuf.TurtleParaType.INTEGER);
+            builder.setIntValue((Integer)object);
+        }else if(object instanceof Long){
+            builder.setType(TurtleProtoBuf.TurtleParaType.LONG);
+            builder.setLongValue((Long)object);
+        }else if(object instanceof Double){
+            builder.setType(TurtleProtoBuf.TurtleParaType.DOUBLE);
+            builder.setDoubleValue((Double)object);
+        }else if(object instanceof BigInteger){
+            builder.setType(TurtleProtoBuf.TurtleParaType.STRING);
+            builder.setStringValue(((BigInteger)object).toString());
+        }else if(object instanceof BigDecimal){
+            builder.setType(TurtleProtoBuf.TurtleParaType.STRING);
+            builder.setStringValue(((BigDecimal)object).toPlainString());
+        }else if(object instanceof TurtleValue){
+            builder.setType(TurtleProtoBuf.TurtleParaType.TURTLE_VALUE);
+            TurtleProtoBuf.TurtleValue res=ProtoTurtleHelper.convertToProtoTurtleValue((TurtleValue)object);
+            builder.setTurtleValue(res);
+        }else if(object instanceof Void){
+            builder.setType(TurtleProtoBuf.TurtleParaType.VOID);
+        }else if(object instanceof Boolean){
+            builder.setType(TurtleProtoBuf.TurtleParaType.BOOL);
+            builder.setBoolValue((Boolean)object);
+        }else {
+            throw new UnsupportedOperationException(object.getClass().getName());
+        }
+    }
+
 
     public void acceptClientCommand(TurtleProtoBuf.ClientCommand clientCommand, Channel channel) {
         parseCommand(clientCommand, channel);
@@ -256,7 +282,8 @@ public class ServerDomain {
     }
 
 
-    private void parseForValue(Class<?>[] types, List<Object> values, Channel channel, TurtleProtoBuf.ClientCommand command) {
+
+    private void parseForValue(@NotNull Class<?>[] types, List<Object> values, Channel channel, @NotNull TurtleProtoBuf.ClientCommand command) {
         Method method = null;
         final String operationName = command.getOperationName();
         final Long requestId = command.getRequestId();

@@ -35,20 +35,23 @@ public class ListObject extends BaseObject implements ListOperations {
     }
 
     @Override
-    public void leftPush(String key, TurtleValue value) {
+    public Void leftPush(String key, TurtleValue value) {
         createIfNotExist(key);
         listMap.get(key).addFirst(value);
+        return null;
     }
 
     @Override
-    public void leftPush(String key, TurtleValue value, long time) {
+    public Void leftPush(String key, TurtleValue value, long time) {
 
+        return null;
     }
 
     @Override
-    public void leftPushAll(String key, Collection<TurtleValue> values) {
+    public Void leftPushAll(String key, Collection<TurtleValue> values) {
         createIfNotExist(key);
         listMap.get(key).addAll(0, values);
+        return null;
     }
 
     @Override
@@ -71,15 +74,17 @@ public class ListObject extends BaseObject implements ListOperations {
     }
 
     @Override
-    public void rightPush(String key, TurtleValue value) {
+    public Void rightPush(String key, TurtleValue value) {
         createIfNotExist(key);
         listMap.get(key).addLast(value);
+        return null;
     }
 
     @Override
-    public void rightPushAll(String key, Collection<TurtleValue> values) {
+    public Void rightPushAll(String key, Collection<TurtleValue> values) {
         createIfNotExist(key);
         listMap.get(key).addAll(values);
+        return null;
     }
 
 
@@ -137,13 +142,15 @@ public class ListObject extends BaseObject implements ListOperations {
     }
 
     @Override
-    public void clear(String key) {
+    public Void clear(String key) {
         listMap.remove(key);
+        return null;
     }
 
     @Override
-    public void clearAll() {
+    public Void clearAll() {
         listMap.clear();
+        return null;
     }
 
     @Override
@@ -161,10 +168,11 @@ public class ListObject extends BaseObject implements ListOperations {
     }
 
 
-    private void createIfNotExist(String key) {
+    private Void createIfNotExist(String key) {
         if (!listMap.containsKey(key)) {
             listMap.put(key, new LinkedList<>());
         }
+        return null;
     }
 
 }

@@ -38,6 +38,7 @@ enum TurtleParaType{//所支持的参数类型
     TURTLE_VALUE=7;
 
     COLLECTION=8;
+
     VOID=9;
 
 }
@@ -109,12 +110,13 @@ message ResponseData{
         int64 longValue=9;
         double doubleValue=10;
         bool boolValue=11;
-        TurtleValue turtleValue=12;
+        bytes bytesValue=12;
+        TurtleValue turtleValue=13;
     }
 
-    ExceptionType exceptionType=13;
+    ExceptionType exceptionType=14;
 
-    string exception=14;
+    string exception=15;
 
 }
 

@@ -16,25 +16,26 @@ public interface ListOperations {
 
     public Integer sizeOf(String key);
 
-    public void leftPush(String key, TurtleValue value);
+    public Void leftPush(String key, TurtleValue value);
 
-    public void leftPush(String key,TurtleValue value,long time);
+    public Void leftPush(String key,TurtleValue value,long time);
 
-    public default void leftPushAll(String key, TurtleValue... values) {
+    public default Void leftPushAll(String key, TurtleValue... values) {
         leftPushAll(key, Arrays.asList(values));
+        return null;
     }
 
-    public void leftPushAll(String key, Collection<TurtleValue> values);
+    public Void leftPushAll(String key, Collection<TurtleValue> values);
 
 
     public Boolean leftPushIfPresent(String key, TurtleValue value);
 
     public Boolean leftPushIfAbsent(String key, TurtleValue value);
 
-    public void rightPush(String key, TurtleValue value);
+    public Void rightPush(String key, TurtleValue value);
 
 
-    public void rightPushAll(String key, Collection<TurtleValue> values);
+    public Void rightPushAll(String key, Collection<TurtleValue> values);
 
     public Boolean rightPushIfPresent(String key, TurtleValue value);
 
@@ -47,9 +48,9 @@ public interface ListOperations {
 
     public TurtleValue right(String key);
 
-    public void clear(String key);
+    public Void clear(String key);
 
-    public void clearAll();
+    public Void clearAll();
 
     public Boolean exist(String key);
 

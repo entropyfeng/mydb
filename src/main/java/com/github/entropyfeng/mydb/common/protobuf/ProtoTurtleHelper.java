@@ -63,7 +63,6 @@ public class ProtoTurtleHelper {
                 throw new UnsupportedOperationException("unSupport" + turtleValue.getType());
 
         }
-
         return TurtleProtoBuf.TurtleValue.newBuilder().setTurtleParaType(type).setValues(ByteString.copyFrom(turtleValue.getValues())).build();
     }
 }
