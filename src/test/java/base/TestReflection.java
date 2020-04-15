@@ -1,21 +1,13 @@
 package base;
 
-import org.checkerframework.checker.units.qual.A;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.lang.invoke.MethodType;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Member;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collector;
 
 public class TestReflection {
 
@@ -53,6 +45,7 @@ public class TestReflection {
         Assert.assertNull(object);
     }
     @Test
+    @SuppressWarnings("rawtypes")
     public void testReturnStrings() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method method= TestReflection.class.getDeclaredMethod("returnZeroStrings");
        Object res= method.invoke(this);
@@ -61,11 +54,14 @@ public class TestReflection {
     }
 
     @Test
+    @SuppressWarnings({"unchecked","rawtypes"})
     public void testReturnNullZeroStrings() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method method= TestReflection.class.getDeclaredMethod("returnNullZeroStrings");
         Object res=method.invoke(this);
-       String string= (String) ((Collection)res).stream().reduce((a,b)-> (String)a+(String) b).get();
-       Assert.assertEquals("0123456789",string);
+        StringBuilder stringBuilder=new StringBuilder();
+
+       ((Collection)res).forEach(object -> stringBuilder.append((String) object));
+       Assert.assertEquals("0123456789",stringBuilder.toString());
     }
 
 }
