@@ -4824,6 +4824,11 @@ public final class TurtleProtoBuf {
     com.google.protobuf.ByteString
         getExceptionBytes();
 
+    /**
+     * <code>int64 collectionSize = 16;</code>
+     */
+    long getCollectionSize();
+
     public com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.ResponseData.ValueCase getValueCase();
   }
   /**
@@ -4955,6 +4960,11 @@ public final class TurtleProtoBuf {
               java.lang.String s = input.readStringRequireUtf8();
 
               exception_ = s;
+              break;
+            }
+            case 128: {
+
+              collectionSize_ = input.readInt64();
               break;
             }
             default: {
@@ -5269,6 +5279,15 @@ public final class TurtleProtoBuf {
       }
     }
 
+    public static final int COLLECTIONSIZE_FIELD_NUMBER = 16;
+    private long collectionSize_;
+    /**
+     * <code>int64 collectionSize = 16;</code>
+     */
+    public long getCollectionSize() {
+      return collectionSize_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -5329,6 +5348,9 @@ public final class TurtleProtoBuf {
       }
       if (!getExceptionBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 15, exception_);
+      }
+      if (collectionSize_ != 0L) {
+        output.writeInt64(16, collectionSize_);
       }
       unknownFields.writeTo(output);
     }
@@ -5398,6 +5420,10 @@ public final class TurtleProtoBuf {
       if (!getExceptionBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(15, exception_);
       }
+      if (collectionSize_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(16, collectionSize_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -5425,6 +5451,8 @@ public final class TurtleProtoBuf {
       if (exceptionType_ != other.exceptionType_) return false;
       if (!getException()
           .equals(other.getException())) return false;
+      if (getCollectionSize()
+          != other.getCollectionSize()) return false;
       if (!getValueCase().equals(other.getValueCase())) return false;
       switch (valueCase_) {
         case 7:
@@ -5488,6 +5516,9 @@ public final class TurtleProtoBuf {
       hash = (53 * hash) + exceptionType_;
       hash = (37 * hash) + EXCEPTION_FIELD_NUMBER;
       hash = (53 * hash) + getException().hashCode();
+      hash = (37 * hash) + COLLECTIONSIZE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getCollectionSize());
       switch (valueCase_) {
         case 7:
           hash = (37 * hash) + STRINGVALUE_FIELD_NUMBER;
@@ -5670,6 +5701,8 @@ public final class TurtleProtoBuf {
 
         exception_ = "";
 
+        collectionSize_ = 0L;
+
         valueCase_ = 0;
         value_ = null;
         return this;
@@ -5730,6 +5763,7 @@ public final class TurtleProtoBuf {
         }
         result.exceptionType_ = exceptionType_;
         result.exception_ = exception_;
+        result.collectionSize_ = collectionSize_;
         result.valueCase_ = valueCase_;
         onBuilt();
         return result;
@@ -5800,6 +5834,9 @@ public final class TurtleProtoBuf {
         if (!other.getException().isEmpty()) {
           exception_ = other.exception_;
           onChanged();
+        }
+        if (other.getCollectionSize() != 0L) {
+          setCollectionSize(other.getCollectionSize());
         }
         switch (other.getValueCase()) {
           case STRINGVALUE: {
@@ -6523,6 +6560,32 @@ public final class TurtleProtoBuf {
         onChanged();
         return this;
       }
+
+      private long collectionSize_ ;
+      /**
+       * <code>int64 collectionSize = 16;</code>
+       */
+      public long getCollectionSize() {
+        return collectionSize_;
+      }
+      /**
+       * <code>int64 collectionSize = 16;</code>
+       */
+      public Builder setCollectionSize(long value) {
+        
+        collectionSize_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int64 collectionSize = 16;</code>
+       */
+      public Builder clearCollectionSize() {
+        
+        collectionSize_ = 0L;
+        onChanged();
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -6624,7 +6687,7 @@ public final class TurtleProtoBuf {
       "\022\033\n\005model\030\001 \001(\0162\014.TurtleModel\022\025\n\roperati" +
       "onName\030\002 \001(\t\022\035\n\004keys\030\003 \003(\0162\017.TurtleParaT" +
       "ype\022\"\n\006values\030\004 \003(\0132\022.TurtleCommonValue\022" +
-      "\021\n\trequestId\030\005 \001(\003\"\352\002\n\014ResponseData\022\022\n\nr" +
+      "\021\n\trequestId\030\005 \001(\003\"\202\003\n\014ResponseData\022\022\n\nr" +
       "esponseId\030\001 \001(\003\022\030\n\020responseSequence\030\002 \001(" +
       "\003\022\017\n\007success\030\003 \001(\010\022\022\n\ncollection\030\005 \001(\010\022\035" +
       "\n\004type\030\006 \001(\0162\017.TurtleParaType\022\025\n\013stringV" +
@@ -6633,21 +6696,22 @@ public final class TurtleProtoBuf {
       "boolValue\030\013 \001(\010H\000\022\024\n\nbytesValue\030\014 \001(\014H\000\022" +
       "#\n\013turtleValue\030\r \001(\0132\014.TurtleValueH\000\022%\n\r" +
       "exceptionType\030\016 \001(\0162\016.ExceptionType\022\021\n\te" +
-      "xception\030\017 \001(\tB\007\n\005Value*J\n\013TurtleModel\022\t" +
-      "\n\005ADMIN\020\000\022\t\n\005VALUE\020\001\022\010\n\004HASH\020\002\022\007\n\003SET\020\003\022" +
-      "\010\n\004ZSET\020\004\022\010\n\004LIST\020\005*\235\001\n\016TurtleParaType\022\n" +
-      "\n\006STRING\020\000\022\013\n\007INTEGER\020\001\022\010\n\004LONG\020\002\022\n\n\006DOU" +
-      "BLE\020\003\022\010\n\004BOOL\020\004\022\022\n\016NUMBER_INTEGER\020\005\022\022\n\016N" +
-      "UMBER_DECIMAL\020\006\022\020\n\014TURTLE_VALUE\020\007\022\016\n\nCOL" +
-      "LECTION\020\010\022\010\n\004VOID\020\t*\202\002\n\rExceptionType\022!\n" +
-      "\035UnsupportedOperationException\020\000\022\030\n\024Null" +
-      "PointerException\020\001\022\032\n\026IllegalAccessExcep" +
-      "tion\020\002\022\035\n\031InvocationTargetException\020\003\022\031\n" +
-      "\025NoSuchMethodException\020\004\022\032\n\026NoSuchElemen" +
-      "tException\020\005\022\024\n\020RuntimeException\020\006\022\024\n\020Ou" +
-      "tOfMemoryError\020d\022\026\n\022StackOverflowError\020e" +
-      "B=\n+com.github.entropyfeng.mydb.common.p" +
-      "rotobufB\016TurtleProtoBufb\006proto3"
+      "xception\030\017 \001(\t\022\026\n\016collectionSize\030\020 \001(\003B\007" +
+      "\n\005Value*J\n\013TurtleModel\022\t\n\005ADMIN\020\000\022\t\n\005VAL" +
+      "UE\020\001\022\010\n\004HASH\020\002\022\007\n\003SET\020\003\022\010\n\004ZSET\020\004\022\010\n\004LIS" +
+      "T\020\005*\235\001\n\016TurtleParaType\022\n\n\006STRING\020\000\022\013\n\007IN" +
+      "TEGER\020\001\022\010\n\004LONG\020\002\022\n\n\006DOUBLE\020\003\022\010\n\004BOOL\020\004\022" +
+      "\022\n\016NUMBER_INTEGER\020\005\022\022\n\016NUMBER_DECIMAL\020\006\022" +
+      "\020\n\014TURTLE_VALUE\020\007\022\016\n\nCOLLECTION\020\010\022\010\n\004VOI" +
+      "D\020\t*\202\002\n\rExceptionType\022!\n\035UnsupportedOper" +
+      "ationException\020\000\022\030\n\024NullPointerException" +
+      "\020\001\022\032\n\026IllegalAccessException\020\002\022\035\n\031Invoca" +
+      "tionTargetException\020\003\022\031\n\025NoSuchMethodExc" +
+      "eption\020\004\022\032\n\026NoSuchElementException\020\005\022\024\n\020" +
+      "RuntimeException\020\006\022\024\n\020OutOfMemoryError\020d" +
+      "\022\026\n\022StackOverflowError\020eB=\n+com.github.e" +
+      "ntropyfeng.mydb.common.protobufB\016TurtleP" +
+      "rotoBufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -6682,7 +6746,7 @@ public final class TurtleProtoBuf {
     internal_static_ResponseData_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ResponseData_descriptor,
-        new java.lang.String[] { "ResponseId", "ResponseSequence", "Success", "Collection", "Type", "StringValue", "IntValue", "LongValue", "DoubleValue", "BoolValue", "BytesValue", "TurtleValue", "ExceptionType", "Exception", "Value", });
+        new java.lang.String[] { "ResponseId", "ResponseSequence", "Success", "Collection", "Type", "StringValue", "IntValue", "LongValue", "DoubleValue", "BoolValue", "BytesValue", "TurtleValue", "ExceptionType", "Exception", "CollectionSize", "Value", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

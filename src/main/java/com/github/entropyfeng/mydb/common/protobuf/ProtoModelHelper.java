@@ -4,6 +4,9 @@ import com.github.entropyfeng.mydb.common.TurtleModel;
 
 import java.util.List;
 
+/**
+ * @author entropyfeng
+ */
 public class ProtoModelHelper {
 
     public static TurtleProtoBuf.TurtleModel convertToProtoTurtleModel(TurtleModel turtleModel){

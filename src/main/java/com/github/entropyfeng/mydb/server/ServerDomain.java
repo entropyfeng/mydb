@@ -15,21 +15,18 @@ import com.github.entropyfeng.mydb.server.command.ValuesCommand;
 import com.github.entropyfeng.mydb.server.factory.ListThreadFactory;
 import com.github.entropyfeng.mydb.server.factory.SetThreadFactory;
 import com.github.entropyfeng.mydb.server.factory.ValuesThreadFactory;
-import com.google.protobuf.ByteString;
 import io.netty.channel.Channel;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
@@ -149,7 +146,14 @@ public class ServerDomain {
         }
 
         if (builder.getSuccess()) {
-            if (res != null) {
+            Method method = command.getMethod();
+            if (method.getReturnType().equals(Collection.class)) {
+
+                handlerCollection((Collection) res, builder, command.getChannel());
+
+            } else if (method.getReturnType().equals(Void.class)) {
+
+            } else {
 
             }
         }
@@ -158,53 +162,70 @@ public class ServerDomain {
 
     private void handlerRes(Object object, TurtleProtoBuf.ResponseData.Builder builder) {
 
-        if (object instanceof Collection) {
-            builder.setCollection(true);
-            builder.setResponseSequence(0L);
 
-            ((Collection) object).forEach(o -> handlerSingle(o, builder));
-        } else {
-            builder.setCollection(false);
-            handlerSingle(object, builder);
-            builder.setResponseSequence(0L);
+    }
+
+
+    private void handlerCollection(Collection<Object> objects, TurtleProtoBuf.ResponseData.Builder builder, Channel channel) {
+        builder.setCollectionSize(objects.size());
+        builder.setResponseSequence(0L);
+        
+
+        if (!objects.isEmpty()) {
+            TurtleProtoBuf.TurtleParaType type =ProtoParaHelper.checkObjectType(objects.iterator().next());
+            TurtleProtoBuf.ResponseData.Builder resBuilder= TurtleProtoBuf.ResponseData.newBuilder();
+            switch (type){
+
+                case TURTLE_VALUE:objects.forEach(object -> {
+                    resBuilder.setTurtleValue(ProtoTurtleHelper.convertToProtoTurtleValue((TurtleValue)object));
+                    channel.write(resBuilder.build());
+                });break;
+
+                case INTEGER:
+            }
         }
+
+
+
+        channel.writeAndFlush(builder.build());
+
+
+        TurtleProtoBuf.ResponseData.Builder payloadBuilder = TurtleProtoBuf.ResponseData.newBuilder();
+
+        objects.forEach(object -> {
+
+        });
+
     }
 
+    private void handlerSingle(Object object, TurtleProtoBuf.ResponseData.Builder builder) {
 
-    private void handlerCollection(){
-
-    }
-
-    private void handlerSingle(Object object,TurtleProtoBuf.ResponseData.Builder builder){
-
-        if (object instanceof String){
+        if (object instanceof String) {
             builder.setType(TurtleProtoBuf.TurtleParaType.STRING);
-            builder.setStringValue((String)object);
-        }else if (object instanceof Integer){
+            builder.setStringValue((String) object);
+        } else if (object instanceof Integer) {
             builder.setType(TurtleProtoBuf.TurtleParaType.INTEGER);
-            builder.setIntValue((Integer)object);
-        }else if(object instanceof Long){
+            builder.setIntValue((Integer) object);
+        } else if (object instanceof Long) {
             builder.setType(TurtleProtoBuf.TurtleParaType.LONG);
-            builder.setLongValue((Long)object);
-        }else if(object instanceof Double){
+            builder.setLongValue((Long) object);
+        } else if (object instanceof Double) {
             builder.setType(TurtleProtoBuf.TurtleParaType.DOUBLE);
-            builder.setDoubleValue((Double)object);
-        }else if(object instanceof BigInteger){
+            builder.setDoubleValue((Double) object);
+        } else if (object instanceof BigInteger) {
             builder.setType(TurtleProtoBuf.TurtleParaType.STRING);
-            builder.setStringValue(((BigInteger)object).toString());
-        }else if(object instanceof BigDecimal){
+            builder.setStringValue(((BigInteger) object).toString());
+        } else if (object instanceof BigDecimal) {
             builder.setType(TurtleProtoBuf.TurtleParaType.STRING);
-            builder.setStringValue(((BigDecimal)object).toPlainString());
-        }else if(object instanceof TurtleValue){
+            builder.setStringValue(((BigDecimal) object).toPlainString());
+        } else if (object instanceof TurtleValue) {
             builder.setType(TurtleProtoBuf.TurtleParaType.TURTLE_VALUE);
-            TurtleProtoBuf.TurtleValue res=ProtoTurtleHelper.convertToProtoTurtleValue((TurtleValue)object);
+            TurtleProtoBuf.TurtleValue res = ProtoTurtleHelper.convertToProtoTurtleValue((TurtleValue) object);
             builder.setTurtleValue(res);
-        }else if(object instanceof Void){
-            builder.setType(TurtleProtoBuf.TurtleParaType.VOID);
-        }else if(object instanceof Boolean){
+        } else if (object instanceof Boolean) {
             builder.setType(TurtleProtoBuf.TurtleParaType.BOOL);
-            builder.setBoolValue((Boolean)object);
-        }else {
+            builder.setBoolValue((Boolean) object);
+        } else {
             throw new UnsupportedOperationException(object.getClass().getName());
         }
     }
@@ -279,7 +300,6 @@ public class ServerDomain {
                 throw new UnsupportedOperationException();
         }
     }
-
 
 
     private void parseForValue(@NotNull Class<?>[] types, List<Object> values, Channel channel, @NotNull TurtleProtoBuf.ClientCommand command) {

@@ -118,5 +118,7 @@ message ResponseData{
 
     string exception=15;
 
+    int64 collectionSize=16;
+
 }
 

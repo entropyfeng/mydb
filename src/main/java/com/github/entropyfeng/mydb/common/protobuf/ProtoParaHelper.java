@@ -17,6 +17,7 @@ import java.util.Objects;
 public class ProtoParaHelper {
 
     /**
+     * 参数类型枚举，相互转化
      * @param turtleParaType {@link com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType}
      * @return {@link TurtleParaType}
      */
@@ -68,7 +69,7 @@ public class ProtoParaHelper {
                 return TurtleProtoBuf.TurtleParaType.NUMBER_DECIMAL;
             case LONG:
                 return TurtleProtoBuf.TurtleParaType.LONG;
-
+                
             default:
                 throw new UnsupportedOperationException("unSupport" + paraType);
         }
@@ -161,4 +162,32 @@ public class ProtoParaHelper {
         return res;
     }
 
+
+    /**
+     * 判断object 是什么类的实例
+     * @param object 不为集合
+     * @return 参数类型
+     */
+    public static TurtleProtoBuf.TurtleParaType checkObjectType(Object object){
+
+        if (object instanceof String) {
+            return TurtleProtoBuf.TurtleParaType.STRING;
+        } else if (object instanceof Integer) {
+            return TurtleProtoBuf.TurtleParaType.INTEGER;
+        } else if (object instanceof Long) {
+            return TurtleProtoBuf.TurtleParaType.LONG;
+        } else if (object instanceof Double) {
+            return TurtleProtoBuf.TurtleParaType.DOUBLE;
+        } else if (object instanceof BigInteger) {
+            return TurtleProtoBuf.TurtleParaType.NUMBER_INTEGER;
+        } else if (object instanceof BigDecimal) {
+            return TurtleProtoBuf.TurtleParaType.NUMBER_DECIMAL;
+        } else if (object instanceof TurtleValue) {
+            return TurtleProtoBuf.TurtleParaType.TURTLE_VALUE;
+        } else if (object instanceof Boolean) {
+            return TurtleProtoBuf.TurtleParaType.BOOL;
+        } else {
+            throw new UnsupportedOperationException(object.getClass().getName());
+        }
+    }
 }

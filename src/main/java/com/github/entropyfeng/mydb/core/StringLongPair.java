@@ -2,6 +2,9 @@ package com.github.entropyfeng.mydb.core;
 
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * @author entropyfeng
+ */
 public class StringLongPair implements Comparable<StringLongPair> {
    private String key;
    private long value;
