@@ -14,6 +14,7 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<TurtleProto
     private static final Logger logger= LoggerFactory.getLogger(TurtleServerHandler.class);
 
     private final ServerDomain serverDomain;
+
     public TurtleServerHandler(ServerDomain serverDomain){
         this.serverDomain=serverDomain;
     }
@@ -34,6 +35,8 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<TurtleProto
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, TurtleProtoBuf.ClientCommand msg) throws Exception {
+
+
         serverDomain.acceptClientCommand(msg,ctx.channel());
     }
 }

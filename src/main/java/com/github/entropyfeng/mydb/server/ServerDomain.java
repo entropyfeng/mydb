@@ -26,7 +26,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
@@ -169,22 +168,69 @@ public class ServerDomain {
     private void handlerCollection(Collection<Object> objects, TurtleProtoBuf.ResponseData.Builder builder, Channel channel) {
         builder.setCollectionSize(objects.size());
         builder.setResponseSequence(0L);
-        
+
+
 
         if (!objects.isEmpty()) {
-            TurtleProtoBuf.TurtleParaType type =ProtoParaHelper.checkObjectType(objects.iterator().next());
-            TurtleProtoBuf.ResponseData.Builder resBuilder= TurtleProtoBuf.ResponseData.newBuilder();
-            switch (type){
+            TurtleProtoBuf.TurtleParaType type = ProtoParaHelper.checkObjectType(objects.iterator().next());
+            TurtleProtoBuf.ResponseData.Builder resBuilder = TurtleProtoBuf.ResponseData.newBuilder();
+            //netty可以保证发送的顺序
+            switch (type) {
 
-                case TURTLE_VALUE:objects.forEach(object -> {
-                    resBuilder.setTurtleValue(ProtoTurtleHelper.convertToProtoTurtleValue((TurtleValue)object));
-                    channel.write(resBuilder.build());
-                });break;
+                case TURTLE_VALUE:
+                    objects.forEach(turtle -> {
+                        resBuilder.setTurtleValue(ProtoTurtleHelper.convertToProtoTurtleValue((TurtleValue) turtle));
+                        channel.write(resBuilder.build());
+                    });
+                    break;
 
                 case INTEGER:
+                    objects.forEach(integer -> {
+                        resBuilder.setIntValue((Integer) integer);
+                        channel.write(resBuilder.build());
+                    });
+                    break;
+
+                case LONG:
+                    objects.forEach(object -> {
+                        resBuilder.setLongValue((Long) object);
+                        channel.write(resBuilder.build());
+                    });
+                    break;
+                case BOOL:
+                    objects.forEach(object -> {
+                        resBuilder.setBoolValue((Boolean) object);
+                        channel.write(resBuilder.build());
+                    });
+                    break;
+                case NUMBER_DECIMAL:
+                    objects.forEach(object -> {
+                        resBuilder.setStringValue(((BigDecimal) object).toPlainString());
+                        channel.write(resBuilder.build());
+                    });
+                    break;
+                case DOUBLE:
+                    objects.forEach(object -> {
+                        resBuilder.setDoubleValue((Double) object);
+                        channel.write(resBuilder.build());
+                    });
+                    break;
+                case STRING:
+                    objects.forEach(object -> {
+                        resBuilder.setStringValue((String) object);
+                        channel.write(resBuilder.build());
+                    });
+                    break;
+                case NUMBER_INTEGER:
+                    objects.forEach(object -> {
+                        resBuilder.setStringValue(((BigInteger) object).toString());
+                        channel.write(resBuilder.build());
+                    });
+                    break;
+                default:
+                    throw new UnsupportedOperationException(type.name());
             }
         }
-
 
 
         channel.writeAndFlush(builder.build());

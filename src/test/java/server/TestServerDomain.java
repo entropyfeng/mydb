@@ -12,12 +12,6 @@ public class TestServerDomain {
 
     @Test
     public void x() {
-        TurtleServer turtleServer = new TurtleServer("127.0.0.1", 4407);
-        ServerDomain serverDomain = new ServerDomain(turtleServer);
-        TurtleProtoBuf.ClientCommand clientCommand = CommonCommand.insertValue();
-
-
-
 
 
     }

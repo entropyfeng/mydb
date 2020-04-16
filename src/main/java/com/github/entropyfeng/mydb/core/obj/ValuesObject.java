@@ -2,6 +2,7 @@ package com.github.entropyfeng.mydb.core.obj;
 
 import com.github.entropyfeng.mydb.common.TurtleValueType;
 import com.github.entropyfeng.mydb.common.ops.ValueOperations;
+import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.util.TimeUtil;
 
 
@@ -168,8 +169,5 @@ public class ValuesObject extends BaseObject implements ValueOperations {
         }
         return null;
     }
-    private Void haha(){
-        valueMap.entrySet();
-        return null;
-    }
+
 }

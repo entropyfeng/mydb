@@ -24,7 +24,6 @@ public class TurtleServer {
 
     /**
      * assume the param is correct
-     *
      * @param port 端口
      * @param host 主机地址
      */
@@ -36,7 +35,6 @@ public class TurtleServer {
 
     /**
      * assume the param is correct
-     *
      * @param port 端口
      * @param host 主机地址
      */
@@ -51,7 +49,8 @@ public class TurtleServer {
         serverDomain=new ServerDomain(this);
         serverDomain.start();
         NioEventLoopGroup boss = new NioEventLoopGroup(1);
-        NioEventLoopGroup worker = new NioEventLoopGroup(1);
+        //IO密集型 2n+1
+        NioEventLoopGroup worker = new NioEventLoopGroup(2*Runtime.getRuntime().availableProcessors()+1);
         try {
             ServerBootstrap serverBootstrap = new ServerBootstrap();
             serverBootstrap.group(boss, worker)
@@ -76,7 +75,7 @@ public class TurtleServer {
             channelFuture.channel().closeFuture().sync();
             logger.info("server will close");
         } finally {
-            boss.shutdownGracefully();
+            boss.shutdownGracefully().sync();
             worker.shutdownGracefully().sync();
             logger.info("server close gracefully");
         }
