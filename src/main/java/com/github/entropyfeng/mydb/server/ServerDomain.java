@@ -151,29 +151,27 @@ public class ServerDomain {
                 handlerCollection((Collection) res, builder, command.getChannel());
 
             } else if (method.getReturnType().equals(Void.class)) {
-
+                builder.setType(TurtleProtoBuf.TurtleParaType.VOID);
+                command.getChannel().writeAndFlush(builder.build());
             } else {
-
+                handlerSingle(res,builder,command.getChannel());
             }
+        }else {
+            command.getChannel().writeAndFlush(builder.build());
         }
     }
 
-
-    private void handlerRes(Object object, TurtleProtoBuf.ResponseData.Builder builder) {
-
-
-    }
-
-
     private void handlerCollection(Collection<Object> objects, TurtleProtoBuf.ResponseData.Builder builder, Channel channel) {
         builder.setCollectionSize(objects.size());
+        builder.setCollection(true);
         builder.setResponseSequence(0L);
-
-
-
-        if (!objects.isEmpty()) {
+        if (objects.isEmpty()) {
+           channel.writeAndFlush(builder.build());
+        }else {
             TurtleProtoBuf.TurtleParaType type = ProtoParaHelper.checkObjectType(objects.iterator().next());
             TurtleProtoBuf.ResponseData.Builder resBuilder = TurtleProtoBuf.ResponseData.newBuilder();
+            builder.setType(type);
+            channel.writeAndFlush(builder.build());
             //netty可以保证发送的顺序
             switch (type) {
 
@@ -194,6 +192,7 @@ public class ServerDomain {
                 case LONG:
                     objects.forEach(object -> {
                         resBuilder.setLongValue((Long) object);
+
                         channel.write(resBuilder.build());
                     });
                     break;
@@ -231,20 +230,10 @@ public class ServerDomain {
                     throw new UnsupportedOperationException(type.name());
             }
         }
-
-
-        channel.writeAndFlush(builder.build());
-
-
-        TurtleProtoBuf.ResponseData.Builder payloadBuilder = TurtleProtoBuf.ResponseData.newBuilder();
-
-        objects.forEach(object -> {
-
-        });
-
+       channel.flush();
     }
 
-    private void handlerSingle(Object object, TurtleProtoBuf.ResponseData.Builder builder) {
+    private void handlerSingle(Object object, TurtleProtoBuf.ResponseData.Builder builder,Channel channel) {
 
         if (object instanceof String) {
             builder.setType(TurtleProtoBuf.TurtleParaType.STRING);
@@ -372,8 +361,5 @@ public class ServerDomain {
 
     }
 
-    public ValuesObject getValuesObject() {
-        return valuesObject;
-    }
 
 }

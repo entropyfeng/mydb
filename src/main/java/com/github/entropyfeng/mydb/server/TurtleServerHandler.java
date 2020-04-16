@@ -36,7 +36,13 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<TurtleProto
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, TurtleProtoBuf.ClientCommand msg) throws Exception {
 
-
         serverDomain.acceptClientCommand(msg,ctx.channel());
+    }
+
+
+    @Override
+    public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
+        super.channelWritabilityChanged(ctx);
+        ctx.flush();
     }
 }
