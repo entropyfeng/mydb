@@ -196,8 +196,8 @@ class MapObject<K, V> {
      * @param key key notNull
      * @return null-> no key exists before call this method
      */
-    V deleteKey(Object key) {
-        assert key != null;
+    V deleteKey(@NotNull Object key) {
+
         final int pos = hashing(key) & sizeMask;
         V resValue = null;
 
@@ -211,7 +211,7 @@ class MapObject<K, V> {
                 table[pos] = tempNode.next;
                 used--;
             } else {
-                while (tempNode.next != null && !tempNode.next.key.equals(key)) {
+                while (tempNode.next != null && !Objects.equals(tempNode.next.key,key)) {
                     tempNode = tempNode.next;
                 }
                 if (tempNode.next != null) {

@@ -1,8 +1,7 @@
 package com.github.entropyfeng.mydb.core.dict;
 
-import com.github.entropyfeng.mydb.common.expection.OutOfBoundException;
+import com.github.entropyfeng.mydb.common.exception.OutOfBoundException;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.AbstractMap;
 import java.util.HashSet;
@@ -53,10 +52,6 @@ public class ElasticMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
         first = new MapObject<>();
     }
 
-    /**
-     * @return
-     * @// TODO: 2020/4/16  未处理
-     */
     @NotNull
     @Override
     public Set<Entry<K, V>> entrySet() {
@@ -87,6 +82,12 @@ public class ElasticMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
     }
 
 
+    /**
+     * @param key   key
+     * @param value value
+     * @return null->之前不存在当前key对应的值
+     * @throws OutOfBoundException 当当前hashMap元素个数超过{@value MAXIMUM_CAPACITY}时抛出
+     */
     @Override
     public V put(@NotNull K key, @NotNull V value) throws OutOfBoundException {
 
@@ -96,12 +97,12 @@ public class ElasticMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
 
         V resValue = null;
         if (isRehashing) {
+            moveEntry();
             resValue = first.deleteKey(key);
             V resValue1 = second.put(key, value);
             if (resValue == null) {
                 resValue = resValue1;
             }
-            moveEntry();
         } else if (first.isCorrespondingEnlargeSize()) {
             isRehashing = true;
             second = new MapObject<>(first.used);
@@ -115,36 +116,18 @@ public class ElasticMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
     }
 
 
-    @Nullable
-    @Override
-    public V putIfAbsent(K key, V value) throws IllegalArgumentException {
-        return null;
-    }
-
-    @Override
-    public V get(Object key) {
-
-        V res = first.getValue((K) key);
-        if (isRehashing) {
-            if (res == null) {
-                res = second.getValue(key);
-            }
-            moveEntry();
-        }
-        return res;
-    }
-
-
     /**
      * 根据key获取 value
-     *
      * @param key 键 notNull
      * @return null ->不存在该key或该key对应的value为空
      * notNull->value
      */
-    public V dictFetchValue(K key) {
+    @Override
+    public V get(Object key) {
+
         V res = first.getValue(key);
         if (isRehashing) {
+
             if (res == null) {
                 res = second.getValue(key);
             }
@@ -179,24 +162,19 @@ public class ElasticMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
         }
     }
 
-
-    /**
-     * forbid call this method
-     * @param key   key
-     * @param value value
-     * @return always false
-     */
-    @Deprecated
-    @Override
-    public boolean remove(Object key, Object value) throws UnsupportedOperationException {
-        throw new UnsupportedOperationException();
-    }
-
-
     @Override
     public V remove(Object key) {
 
-        return null;
+        V resValue=null;
+        if (isRehashing){
+           resValue= first.deleteKey(key);
+           if (resValue==null){
+               resValue=second.deleteKey(key);
+           }
+        }else {
+            first.deleteKey(key);
+        }
+        return resValue;
     }
 
 }

@@ -2,7 +2,7 @@ package com.github.entropyfeng.mydb.core.obj;
 
 import com.github.entropyfeng.mydb.common.CommonConstant;
 import com.github.entropyfeng.mydb.common.TurtleValueType;
-import com.github.entropyfeng.mydb.common.expection.TurtleValueOutBoundsException;
+import com.github.entropyfeng.mydb.common.exception.TurtleValueOutBoundsException;
 import com.github.entropyfeng.mydb.util.BytesUtil;
 import com.github.entropyfeng.mydb.util.CommonUtil;
 import com.google.common.hash.Hashing;

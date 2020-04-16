@@ -2,14 +2,7 @@ package com.github.entropyfeng.mydb.client.conn;
 
 
 import com.github.entropyfeng.mydb.client.TurtleClient;
-import com.github.entropyfeng.mydb.common.expection.TurtleTimeOutException;
-import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import io.netty.channel.Channel;
-
-
-import java.util.HashMap;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeoutException;
 
 /**
  * @author entropyfeng
