@@ -32,8 +32,6 @@ public class CommonUtil {
     }
 
     public static int hashing(Object o){
-
-        Objects.requireNonNull(o);
         if (o instanceof String){
             return Hashing.murmur3_32().hashString((String) o, Charsets.UTF_8).asInt();
         }else if(o instanceof Integer){

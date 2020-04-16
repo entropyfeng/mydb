@@ -1,26 +1,25 @@
 package com.github.entropyfeng.mydb.core.dict;
 
 import com.github.entropyfeng.mydb.core.Pair;
-import com.google.common.base.Charsets;
-import com.google.common.hash.Hashing;
+import com.github.entropyfeng.mydb.util.CommonUtil;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
-import static com.github.entropyfeng.mydb.core.dict.ElasticMap.DEFAULT_INITIAL_CAPACITY;
-import static com.github.entropyfeng.mydb.core.dict.ElasticMap.DEFAULT_LOAD_FACTOR;
-import static com.github.entropyfeng.mydb.core.dict.ElasticMap.MAXIMUM_CAPACITY;
-import static com.github.entropyfeng.mydb.util.CommonUtil.hashing;
+import static com.github.entropyfeng.mydb.core.dict.ElasticMap.*;
 
 /**
  * @author entropyfeng
  * @date 2020/2/27 15:27
  */
-class MapObject<K, V>  {
+class MapObject<K, V> {
 
 
     /**
      * 返回大于等于capacity的最小2的整数次幂
+     * 仅在{@link MapObject}初始化中使用
      */
     private static int tableSizeFor(int cap) {
         int n = cap - 1;
@@ -47,6 +46,7 @@ class MapObject<K, V>  {
      * @param initialCapacity 初始容量
      * @param loadFactor      负载因子
      */
+    @SuppressWarnings("unchecked")
     MapObject(int initialCapacity, float loadFactor) {
 
         if (initialCapacity < 0) {
@@ -59,12 +59,11 @@ class MapObject<K, V>  {
         if (loadFactor <= 0 || Float.isNaN(loadFactor)) {
             throw new IllegalArgumentException("Illegal load factor: " + loadFactor);
         }
-        int tempThreshold = tableSizeFor(initialCapacity);
+        final int tempThreshold = tableSizeFor(initialCapacity);
         this.loadFactor = loadFactor;
         table = new Node[tempThreshold];
         size = tempThreshold;
         sizeMask = size - 1;
-
     }
 
     private Node<K, V>[] table;
@@ -77,7 +76,7 @@ class MapObject<K, V>  {
      * 哈希表大小掩码,用于计算索引值
      * 总等于size-1
      */
-    private transient int sizeMask;
+    private transient final int sizeMask;
 
     /**
      * 在resize过程中辅助变量
@@ -91,22 +90,20 @@ class MapObject<K, V>  {
     private final float loadFactor;
 
 
-
     /**
      * 如果表中不存在该key则将value插入,否则用新value替换旧value
      *
      * @param key   键
      * @param value 值
      */
-    V put(K key, V value) {
-        Objects.requireNonNull(key);
-        Objects.requireNonNull(value);
+    V put(@NotNull K key, @NotNull V value) {
+
         final int pos = hashing(key) & sizeMask;
         assert pos >= 0 && pos < size;
         //tempNode
         Node<K, V> tempNode = table[pos];
 
-        V resValue=null;
+        V resValue = null;
         //如果当前槽为空,则创建新节点
         if (tempNode == null) {
             table[pos] = new Node<K, V>(key, value, null);
@@ -117,14 +114,15 @@ class MapObject<K, V>  {
               在相同hash值链表中找到相应key所对应结点
               如果为null 则不存在该key
              */
-            while (tempNode.next != null && !key.equals(tempNode.next.value)) {
+            while (tempNode.next != null && !Objects.equals(key, tempNode.next.value)) {
                 tempNode = tempNode.next;
             }
+            //即尾结点
             if (tempNode.next == null) {
                 tempNode.next = new Node<K, V>(key, value, null);
                 used++;
             } else {
-                resValue=tempNode.value;
+                resValue = tempNode.value;
                 tempNode.value = value;
             }
         }
@@ -132,43 +130,6 @@ class MapObject<K, V>  {
         return resValue;
     }
 
-    /**
-     * 如果表中不存在该key则将value插入,否则不插入
-     *
-     * @param key   键 notNull
-     * @param value 值 notNull
-     */
-    boolean addIfAbsent(K key, V value) {
-
-        boolean res = true;
-        assert key != null && value != null;
-        final int pos = hashing(key) & sizeMask;
-        assert pos >= 0 && pos < size;
-        //tempNode
-        Node<K, V> tempNode = table[pos];
-
-        //如果当前槽为空,则创建新节点
-        if (tempNode == null) {
-            table[pos] = new Node<K, V>(key, value, null);
-            used++;
-        } else {
-
-             /*
-              在相同hash值链表中找到相应key所对应结点
-              如果为null 则不存在该key
-             */
-            while (tempNode.next != null && !key.equals(tempNode.next.value)) {
-                tempNode = tempNode.next;
-            }
-            if (tempNode.next == null) {
-                tempNode.next = new Node<K, V>(key, value, null);
-                used++;
-            } else {
-                res = false;
-            }
-        }
-        return res;
-    }
 
     /**
      * 根据key(notNull)获取 value
@@ -191,7 +152,6 @@ class MapObject<K, V>  {
         while (tempNode != null && !tempNode.key.equals(key)) {
             tempNode = tempNode.next;
         }
-
         return tempNode;
     }
 
@@ -284,6 +244,7 @@ class MapObject<K, V>  {
 
         int tempMovePos = movePos;
 
+        //找到第一个不为null的节点
         while (tempMovePos < size && table[tempMovePos] == null) {
             tempMovePos++;
         }
@@ -294,11 +255,15 @@ class MapObject<K, V>  {
         } else {
             movePos = tempMovePos;
             Node<K, V> tempNode = table[tempMovePos];
+            //清空槽
             table[tempMovePos] = null;
             return tempNode;
         }
     }
 
+    private int hashing(Object o) {
+        return CommonUtil.hashing(o);
+    }
     //-----------get and set-----------
 
 }

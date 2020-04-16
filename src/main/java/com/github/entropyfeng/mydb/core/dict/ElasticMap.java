@@ -4,8 +4,10 @@ import com.github.entropyfeng.mydb.common.expection.OutOfBoundException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.AbstractMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author entropyfeng
@@ -15,12 +17,12 @@ import java.util.concurrent.ThreadLocalRandom;
 public class ElasticMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
 
     /**
-     * 默认初始大小16
+     * {@link ElasticMap}默认初始大小16
      */
     static final int DEFAULT_INITIAL_CAPACITY = 1 << 4;
 
     /**
-     * 最大容量2的30次方
+     * {@link ElasticMap}最大容量2的30次方
      */
     static final int MAXIMUM_CAPACITY = 1 << 30;
 
@@ -51,6 +53,10 @@ public class ElasticMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
         first = new MapObject<>();
     }
 
+    /**
+     * @return
+     * @// TODO: 2020/4/16  未处理
+     */
     @NotNull
     @Override
     public Set<Entry<K, V>> entrySet() {
@@ -82,12 +88,11 @@ public class ElasticMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
 
 
     @Override
-    public V put(K key, V value) throws OutOfBoundException {
-        assert key != null && value != null;
+    public V put(@NotNull K key, @NotNull V value) throws OutOfBoundException {
+
         if (size() == MAXIMUM_CAPACITY) {
             throw new OutOfBoundException();
         }
-
 
         V resValue = null;
         if (isRehashing) {
@@ -113,17 +118,13 @@ public class ElasticMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
     @Nullable
     @Override
     public V putIfAbsent(K key, V value) throws IllegalArgumentException {
-       return null;
-    }
-
-    public V putIfPresent(K key, V value) {
         return null;
     }
 
     @Override
     public V get(Object key) {
 
-        V res = first.getValue((K)key);
+        V res = first.getValue((K) key);
         if (isRehashing) {
             if (res == null) {
                 res = second.getValue(key);
@@ -154,6 +155,7 @@ public class ElasticMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
 
 
     /**
+     * 只有在isRehashing情况下才可移动
      * 每次移动一个槽中的所有节点
      */
     private void moveEntry() {
@@ -163,9 +165,13 @@ public class ElasticMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
         if (node != null) {
             while (node != null) {
                 first.used--;
-                second.addIfAbsent(node.key, node.value);
+                second.put(node.key, node.value);
                 node = node.next;
             }
+            /*
+               如果 改成else{xxx}那么 可能会多次调用该函数
+               会导致first=null second=null
+             */
         } else if (isRehashing) {
             isRehashing = false;
             first = second;
@@ -176,7 +182,6 @@ public class ElasticMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
 
     /**
      * forbid call this method
-     *
      * @param key   key
      * @param value value
      * @return always false
@@ -188,50 +193,10 @@ public class ElasticMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
     }
 
 
-
     @Override
     public V remove(Object key) {
 
-/*        assert key != null;
-        boolean res;
-        if (isRehashing) {
-            if (first.deleteKey(key) != null) {
-                res = true;
-            } else {
-                res = second.deleteKey(key);
-            }
-            moveEntry();
-        } else if (first.isCorrespondingNarrowSize()) {
-            isRehashing = true;
-            second = new MapObject<>(first.used);
-            res = first.deleteKey(key);
-            moveEntry();
-        } else {
-            res = first.deleteKey(key);
-        }
-        return res;*/
-
-return null;
+        return null;
     }
 
-
-    public static void main(String[] args) {
-        ElasticMap<String, String> elasticMap = new ElasticMap<>();
-        HashMap<String, String> hashMap = new HashMap<>();
-        final int pos = 20000000;
-        long first = System.currentTimeMillis();
-        for (int i = 0; i < pos; i++) {
-            hashMap.put(ThreadLocalRandom.current().nextInt() + "", i + "");
-        }
-        hashMap = null;
-        long second = System.currentTimeMillis();
-
-        for (int i = 0; i < pos; i++) {
-
-            elasticMap.putIfAbsent(ThreadLocalRandom.current().nextInt() + "", i + "");
-        }
-        long third = System.currentTimeMillis();
-        System.out.println(second - first);
-        System.out.println(third - second);
-    }
 }
