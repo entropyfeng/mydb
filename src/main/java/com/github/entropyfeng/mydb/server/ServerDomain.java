@@ -8,10 +8,7 @@ import com.github.entropyfeng.mydb.core.obj.ListObject;
 import com.github.entropyfeng.mydb.core.obj.SetObject;
 import com.github.entropyfeng.mydb.core.obj.TurtleValue;
 import com.github.entropyfeng.mydb.core.obj.ValuesObject;
-import com.github.entropyfeng.mydb.server.command.ICommand;
-import com.github.entropyfeng.mydb.server.command.ListCommand;
-import com.github.entropyfeng.mydb.server.command.SetCommand;
-import com.github.entropyfeng.mydb.server.command.ValuesCommand;
+import com.github.entropyfeng.mydb.server.command.*;
 import com.github.entropyfeng.mydb.server.factory.ListThreadFactory;
 import com.github.entropyfeng.mydb.server.factory.SetThreadFactory;
 import com.github.entropyfeng.mydb.server.factory.ValuesThreadFactory;
@@ -113,35 +110,43 @@ public class ServerDomain {
                 res = command.getMethod().invoke(target, command.getValues());
             }
         } catch (IllegalAccessException e) {
-            TurtleProtoBuf.ResponseData.Builder builder=null;
-            builder= TurtleProtoBuf.ResponseData.newBuilder().setSuccess(false);
-            if (command.getMethod().getReturnType().equals(Collection.class)){
-                builder.setCollectionAble(true);
-            }
-            builder.setException(e.getMessage());
+            TurtleProtoBuf.ResponseData.Builder builder=TurtleProtoBuf.ResponseData.newBuilder();
+            handlerException(command,builder,e.toString());
             builder.setExceptionType(TurtleProtoBuf.ExceptionType.IllegalAccessException);
             command.getChannel().writeAndFlush(builder.build());
         } catch (InvocationTargetException e) {
-            TurtleProtoBuf.ResponseData.Builder builder=null;
-            builder= TurtleProtoBuf.ResponseData.newBuilder().setSuccess(false);
-            if (command.getMethod().getReturnType().equals(Collection.class)){
-                builder.setCollectionAble(true);
-            }
-            builder.setException(e.getMessage());
+            TurtleProtoBuf.ResponseData.Builder builder=TurtleProtoBuf.ResponseData.newBuilder();
+            handlerException(command,builder,e.toString());
             builder.setExceptionType(TurtleProtoBuf.ExceptionType.InvocationTargetException);
             command.getChannel().writeAndFlush(builder.build());
         }
         Objects.requireNonNull(res);
         if (res instanceof Collection){
+
            ((Collection) res).forEach(object->{
-               command.getChannel().write(object);
+           
+               command.getChannel().write(dealResponseData((TurtleProtoBuf.ResponseData)object,command.getRequestId()));
            });
+
            command.getChannel().flush();
         }else {
-            command.getChannel().writeAndFlush(res);
+            command.getChannel().writeAndFlush(dealResponseData((TurtleProtoBuf.ResponseData)res,command.getRequestId()));
         }
     }
 
+    private TurtleProtoBuf.ResponseData dealResponseData(TurtleProtoBuf.ResponseData responseData, Long requestId){
+       return responseData.toBuilder().setResponseId(requestId).build();
+    }
+    private void handlerException(ICommand command, TurtleProtoBuf.ResponseData.Builder builder, String excMsg){
+
+        builder.setSuccess(false);
+        if (command.getMethod().getReturnType().equals(Collection.class)){
+            builder.setCollectionAble(true);
+        }
+        builder.setResponseId(command.getRequestId());
+        builder.setException(excMsg);
+        builder.setExceptionType(TurtleProtoBuf.ExceptionType.InvocationTargetException);
+    }
     public void execute(ICommand command, Object target) {
 
         Object res = null;

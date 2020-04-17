@@ -56,6 +56,7 @@ public class ValuesDomain extends BaseObject implements IValueOperations {
             res = true;
         }
 
+
         return SingleResponseDataHelper.boolResponse(res);
     }
 
@@ -92,48 +93,47 @@ public class ValuesDomain extends BaseObject implements IValueOperations {
     public TurtleProtoBuf.ResponseData increment(@NotNull String key, @NotNull Integer intValue) throws UnsupportedOperationException, NoSuchElementException {
 
 
-        return modifyHelper(key,TurtleValueType.INTEGER,intValue);
+        return modifyHelper(key, TurtleValueType.INTEGER, intValue);
 
     }
 
     @Override
     public TurtleProtoBuf.ResponseData increment(@NotNull String key, @NotNull Long longValue) throws UnsupportedOperationException, NoSuchElementException {
 
-        return modifyHelper(key,TurtleValueType.LONG,longValue);
+        return modifyHelper(key, TurtleValueType.LONG, longValue);
     }
 
     @Override
     public TurtleProtoBuf.ResponseData increment(@NotNull String key, @NotNull Double doubleValue) throws UnsupportedOperationException, NoSuchElementException {
 
-        return modifyHelper(key,TurtleValueType.DOUBLE,doubleValue);
+        return modifyHelper(key, TurtleValueType.DOUBLE, doubleValue);
     }
 
     @Override
     public TurtleProtoBuf.ResponseData increment(@NotNull String key, @NotNull BigInteger bigInteger) throws UnsupportedOperationException, NoSuchElementException {
-        return modifyHelper(key,TurtleValueType.NUMBER_INTEGER,bigInteger);
+        return modifyHelper(key, TurtleValueType.NUMBER_INTEGER, bigInteger);
     }
 
     @Override
     public TurtleProtoBuf.ResponseData increment(@NotNull String key, @NotNull BigDecimal bigDecimal) throws UnsupportedOperationException, NoSuchElementException {
-        return modifyHelper(key,TurtleValueType.NUMBER_DECIMAL,bigDecimal);
+        return modifyHelper(key, TurtleValueType.NUMBER_DECIMAL, bigDecimal);
     }
 
     @Override
     public TurtleProtoBuf.ResponseData append(@NotNull String key, @NotNull String appendValue) throws UnsupportedOperationException, NoSuchElementException {
-        return modifyHelper(key,TurtleValueType.STRING,appendValue);
+        return modifyHelper(key, TurtleValueType.STRING, appendValue);
     }
 
     /**
-     *
      * @return null
      */
     @Override
     public Collection<TurtleProtoBuf.ResponseData> allValues() {
 
-        final int mapSize=valueMap.size();
-        ArrayList<TurtleProtoBuf.ResponseData> resList=new ArrayList<>(mapSize);
+        final int mapSize = valueMap.size();
+        ArrayList<TurtleProtoBuf.ResponseData> resList = new ArrayList<>(mapSize);
         //第一个responseData
-        TurtleProtoBuf.ResponseData.Builder builder= TurtleProtoBuf.ResponseData.newBuilder();
+        TurtleProtoBuf.ResponseData.Builder builder = TurtleProtoBuf.ResponseData.newBuilder();
         builder.setCollectionSize(mapSize);
         builder.setSuccess(true);
         builder.setCollectionAble(true);
@@ -141,7 +141,7 @@ public class ValuesDomain extends BaseObject implements IValueOperations {
         resList.add(builder.build());
 
 
-        TurtleProtoBuf.StringTurtleValueEntry.Builder entryBuilder= TurtleProtoBuf.StringTurtleValueEntry.newBuilder();
+        TurtleProtoBuf.StringTurtleValueEntry.Builder entryBuilder = TurtleProtoBuf.StringTurtleValueEntry.newBuilder();
 
         valueMap.forEach((key, value) -> {
             builder.clear();
@@ -155,7 +155,8 @@ public class ValuesDomain extends BaseObject implements IValueOperations {
             resList.add(builder.build());
         });
 
-
+        TurtleProtoBuf.ResponseData last = resList.get(resList.size() - 1).toBuilder().setEndAble(true).build();
+        resList.set(resList.size() - 1, last);
         return resList;
     }
 
@@ -171,25 +172,38 @@ public class ValuesDomain extends BaseObject implements IValueOperations {
         }
     }
 
-    private TurtleProtoBuf.ResponseData modifyHelper(String key, TurtleValueType type, Object value){
+    private TurtleProtoBuf.ResponseData modifyHelper(String key, TurtleValueType type, Object value) {
         handleExpire(key);
         TurtleValue turtleValue = valueMap.get(key);
         if (turtleValue == null) {
             return SingleResponseDataHelper.noSuchElementException();
         }
         try {
-           switch (type){
-               case STRING:turtleValue.append((String)value);break;
-               case LONG:turtleValue.increment((Long)value);break;
-               case DOUBLE:turtleValue.increment((Double)value);break;
-               case INTEGER:turtleValue.increment((Integer)value);break;
-               case NUMBER_INTEGER:turtleValue.increment((BigInteger)value);break;
-               case NUMBER_DECIMAL:turtleValue.increment((BigDecimal)value);break;
-               default:throw new TurtleFatalError("unSupport enum type: "+type);
-           }
+            switch (type) {
+                case STRING:
+                    turtleValue.append((String) value);
+                    break;
+                case LONG:
+                    turtleValue.increment((Long) value);
+                    break;
+                case DOUBLE:
+                    turtleValue.increment((Double) value);
+                    break;
+                case INTEGER:
+                    turtleValue.increment((Integer) value);
+                    break;
+                case NUMBER_INTEGER:
+                    turtleValue.increment((BigInteger) value);
+                    break;
+                case NUMBER_DECIMAL:
+                    turtleValue.increment((BigDecimal) value);
+                    break;
+                default:
+                    throw new TurtleFatalError("unSupport enum type: " + type);
+            }
         } catch (UnsupportedOperationException e) {
             return SingleResponseDataHelper.unSupportOperationException();
-        }catch (TurtleFatalError e){
+        } catch (TurtleFatalError e) {
             return SingleResponseDataHelper.fatalException(e.getMessage());
         }
         return SingleResponseDataHelper.turtleValueResponse(turtleValue);
