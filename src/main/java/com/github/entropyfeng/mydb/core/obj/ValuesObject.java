@@ -157,11 +157,6 @@ public class ValuesObject extends BaseObject implements ValueOperations {
     }
 
 
-    public Void sayHello(){
-        System.out.println("hello--------------------------");
-
-        return null;
-    }
     private Void handleExpire(String key) {
         if (isExpire(key)) {
             deleteExpireTime(key);

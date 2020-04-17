@@ -9,9 +9,9 @@ import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 /**
  * @author entropyfeng
  */
-public class TurtleClientChannelInitializer extends ChannelInitializer {
+public class TurtleClientChannelInitializer extends ChannelInitializer<Channel> {
     @Override
-    protected void initChannel(Channel ch) throws Exception {
+    protected void initChannel(Channel ch) {
         //出站
         ch.pipeline().addLast("TurtleClientProtoEncoder", new TurtleClientProtoEncoder());
         //入站

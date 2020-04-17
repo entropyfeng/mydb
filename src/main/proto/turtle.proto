@@ -91,6 +91,7 @@ enum ExceptionType{
     //Error--------------
     OutOfMemoryError=100;
     StackOverflowError=101;
+    TurtleFatalError=102;
 
 }
 
@@ -121,6 +122,9 @@ message ResponseData{
     string exception=15;
 
     int64 collectionSize=16;
+
+    bool nullable=17;
+    bool voidable=18;
 
 }
 message FirstResponsePayload{
