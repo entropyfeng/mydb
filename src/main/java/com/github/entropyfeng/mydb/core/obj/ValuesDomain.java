@@ -3,6 +3,7 @@ package com.github.entropyfeng.mydb.core.obj;
 import com.github.entropyfeng.mydb.common.TurtleValueType;
 import com.github.entropyfeng.mydb.common.exception.TurtleFatalError;
 import com.github.entropyfeng.mydb.common.ops.IValueOperations;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
 import com.github.entropyfeng.mydb.common.protobuf.SingleResponseDataHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.util.TimeUtil;
@@ -10,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
@@ -122,12 +124,39 @@ public class ValuesDomain extends BaseObject implements IValueOperations {
     }
 
     /**
-     * @// TODO: 2020/4/17  暂未处理事件
+     *
      * @return null
      */
     @Override
     public Collection<TurtleProtoBuf.ResponseData> allValues() {
-        return null;
+
+        final int mapSize=valueMap.size();
+        ArrayList<TurtleProtoBuf.ResponseData> resList=new ArrayList<>(mapSize);
+        //第一个responseData
+        TurtleProtoBuf.ResponseData.Builder builder= TurtleProtoBuf.ResponseData.newBuilder();
+        builder.setCollectionSize(mapSize);
+        builder.setSuccess(true);
+        builder.setCollectionAble(true);
+        builder.setEndAble(false);
+        resList.add(builder.build());
+
+
+        TurtleProtoBuf.StringTurtleValueEntry.Builder entryBuilder= TurtleProtoBuf.StringTurtleValueEntry.newBuilder();
+
+        valueMap.forEach((key, value) -> {
+            builder.clear();
+            entryBuilder.clear();
+
+            entryBuilder.setKey(key);
+            entryBuilder.setTurtleValue(ProtoTurtleHelper.convertToProtoTurtleValue(value));
+
+            builder.setStringTurtleValueEntry(entryBuilder.build());
+            builder.setEndAble(false);
+            resList.add(builder.build());
+        });
+
+
+        return resList;
     }
 
     /**

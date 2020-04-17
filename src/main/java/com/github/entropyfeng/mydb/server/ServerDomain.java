@@ -27,6 +27,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 
@@ -101,6 +102,46 @@ public class ServerDomain {
         }
     }
 
+
+    public void exe(ICommand command, Object target) {
+        Object res = null;
+
+        try {
+            if (command.getValues().size() == 0) {
+                res = command.getMethod().invoke(target);
+            } else {
+                res = command.getMethod().invoke(target, command.getValues());
+            }
+        } catch (IllegalAccessException e) {
+            TurtleProtoBuf.ResponseData.Builder builder=null;
+            builder= TurtleProtoBuf.ResponseData.newBuilder().setSuccess(false);
+            if (command.getMethod().getReturnType().equals(Collection.class)){
+                builder.setCollectionAble(true);
+            }
+            builder.setException(e.getMessage());
+            builder.setExceptionType(TurtleProtoBuf.ExceptionType.IllegalAccessException);
+            command.getChannel().writeAndFlush(builder.build());
+        } catch (InvocationTargetException e) {
+            TurtleProtoBuf.ResponseData.Builder builder=null;
+            builder= TurtleProtoBuf.ResponseData.newBuilder().setSuccess(false);
+            if (command.getMethod().getReturnType().equals(Collection.class)){
+                builder.setCollectionAble(true);
+            }
+            builder.setException(e.getMessage());
+            builder.setExceptionType(TurtleProtoBuf.ExceptionType.InvocationTargetException);
+            command.getChannel().writeAndFlush(builder.build());
+        }
+        Objects.requireNonNull(res);
+        if (res instanceof Collection){
+           ((Collection) res).forEach(object->{
+               command.getChannel().write(object);
+           });
+           command.getChannel().flush();
+        }else {
+            command.getChannel().writeAndFlush(res);
+        }
+    }
+
     public void execute(ICommand command, Object target) {
 
         Object res = null;
@@ -154,9 +195,9 @@ public class ServerDomain {
                 builder.setType(TurtleProtoBuf.TurtleParaType.VOID);
                 command.getChannel().writeAndFlush(builder.build());
             } else {
-                handlerSingle(res,builder,command.getChannel());
+                handlerSingle(res, builder, command.getChannel());
             }
-        }else {
+        } else {
             command.getChannel().writeAndFlush(builder.build());
         }
     }
@@ -166,8 +207,8 @@ public class ServerDomain {
         builder.setCollectionAble(true);
         builder.setResponseSequence(0L);
         if (objects.isEmpty()) {
-           channel.writeAndFlush(builder.build());
-        }else {
+            channel.writeAndFlush(builder.build());
+        } else {
             TurtleProtoBuf.TurtleParaType type = ProtoParaHelper.checkObjectType(objects.iterator().next());
             TurtleProtoBuf.ResponseData.Builder resBuilder = TurtleProtoBuf.ResponseData.newBuilder();
             builder.setType(type);
@@ -230,10 +271,10 @@ public class ServerDomain {
                     throw new UnsupportedOperationException(type.name());
             }
         }
-       channel.flush();
+        channel.flush();
     }
 
-    private void handlerSingle(Object object, TurtleProtoBuf.ResponseData.Builder builder,Channel channel) {
+    private void handlerSingle(Object object, TurtleProtoBuf.ResponseData.Builder builder, Channel channel) {
 
         if (object instanceof String) {
             builder.setType(TurtleProtoBuf.TurtleParaType.STRING);

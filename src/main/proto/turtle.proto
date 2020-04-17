@@ -95,7 +95,10 @@ enum ExceptionType{
 
 }
 
-
+message StringTurtleValueEntry{
+    string key=1;
+    TurtleValue turtleValue=2;
+}
 message ResponseData{
 
     int64 responseId=1;
@@ -115,17 +118,18 @@ message ResponseData{
         bool boolValue=11;
         bytes bytesValue=12;
         TurtleValue turtleValue=13;
+        StringTurtleValueEntry stringTurtleValueEntry=14;
     }
 
-    ExceptionType exceptionType=14;
+    ExceptionType exceptionType=20;
 
-    string exception=15;
+    string exception=21;
 
-    int64 collectionSize=16;
+    int64 collectionSize=22;
 
-    bool nullable=17;
-    bool voidable=18;
-    bool endAble=19;
+    bool nullable=23;
+    bool voidable=24;
+    bool endAble=25;
 
 }
 message FirstResponsePayload{

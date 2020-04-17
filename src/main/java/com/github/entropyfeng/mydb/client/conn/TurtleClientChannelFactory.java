@@ -17,7 +17,6 @@ public class TurtleClientChannelFactory {
     }
 
 
-
     /**
      * 双重检查锁单例模式
      * @return {@link Channel}

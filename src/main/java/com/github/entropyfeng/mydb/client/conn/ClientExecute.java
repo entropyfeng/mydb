@@ -32,7 +32,7 @@ public class ClientExecute {
         }
     }
 
-    public static Object collectionExecute(TurtleProtoBuf.ClientCommand command)throws TurtleTimeOutException {
+    public static Collection<TurtleProtoBuf.ResponseData> collectionExecute(TurtleProtoBuf.ClientCommand command)throws TurtleTimeOutException {
 
         return null;
     }

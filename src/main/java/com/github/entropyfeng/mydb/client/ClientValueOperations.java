@@ -111,6 +111,7 @@ public class ClientValueOperations implements IValueOperations {
 
     @Override
     public Collection<TurtleProtoBuf.ResponseData> allValues() {
-        return null;
+        ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "allValues");
+        return ClientExecute.collectionExecute(builder.build());
     }
 }

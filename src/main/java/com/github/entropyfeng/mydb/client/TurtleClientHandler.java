@@ -2,6 +2,7 @@ package com.github.entropyfeng.mydb.client;
 
 
 import com.github.entropyfeng.mydb.client.conn.ClientExecute;
+import com.github.entropyfeng.mydb.client.conn.TurtleClientChannelFactory;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -43,7 +44,8 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<TurtleProto
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-
+        TurtleClientChannelFactory.setChannel(null);
+        TurtleClientChannelFactory.getChannel();
         cause.printStackTrace();
     }
 
