@@ -24,7 +24,7 @@ public class DefaultValueOperations implements ValueOperations {
         builder.addPara(TurtleParaType.STRING, key);
         builder.addPara(TurtleParaType.TURTLE_VALUE, value);
         builder.addPara(TurtleParaType.LONG, (Long) time);
-        ClientExecute.execute(builder.build());
+        ClientExecute.singleExecute(builder.build());
         return null;
     }
 
@@ -34,7 +34,7 @@ public class DefaultValueOperations implements ValueOperations {
         builder.addPara(TurtleParaType.STRING, key);
         builder.addPara(TurtleParaType.TURTLE_VALUE, value);
         builder.addPara(TurtleParaType.LONG, (Long) time);
-        ClientExecute.execute(builder.build());
+        ClientExecute.singleExecute(builder.build());
 
         return null;
     }
@@ -45,7 +45,7 @@ public class DefaultValueOperations implements ValueOperations {
         builder.addPara(TurtleParaType.STRING, key);
         builder.addPara(TurtleParaType.TURTLE_VALUE, value);
         builder.addPara(TurtleParaType.LONG, (Long) time);
-        ClientExecute.execute(builder.build());
+        ClientExecute.singleExecute(builder.build());
         return null;
     }
 

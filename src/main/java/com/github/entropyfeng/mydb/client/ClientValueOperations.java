@@ -24,9 +24,9 @@ public class ClientValueOperations implements IValueOperations {
         builder.addPara(TurtleParaType.STRING, key);
         builder.addPara(TurtleParaType.TURTLE_VALUE, value);
         builder.addPara(TurtleParaType.LONG, (Long) time);
-        ClientExecute.execute(builder.build());
 
-        return null;
+
+        return   ClientExecute.singleExecute(builder.build());
     }
 
     @Override

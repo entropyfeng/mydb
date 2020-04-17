@@ -6,8 +6,7 @@ import io.netty.channel.Channel;
 
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.FutureTask;
+
 
 /**
  * @author entropyfeng
@@ -17,14 +16,9 @@ public class ClientExecute {
 
     public static ConcurrentHashMap<Long, Collection<TurtleProtoBuf.ResponseData>> collectionResMap=new ConcurrentHashMap<>();
 
-    public static TurtleProtoBuf.ResponseData execute(){
-
-        return null;
-    }
-
-    public static Object execute(TurtleProtoBuf.ClientCommand command)throws TurtleTimeOutException {
+    public static TurtleProtoBuf.ResponseData singleExecute(TurtleProtoBuf.ClientCommand command){
         Channel channel=TurtleClientChannelFactory.getChannel();
-        if (channel!=null&& channel.isWritable()) {
+        if (channel!=null) {
             TurtleProtoBuf.ResponseData responseData=null;
             channel.writeAndFlush(command);
             //blocking....
@@ -36,5 +30,10 @@ public class ClientExecute {
         }else{
             throw new TurtleTimeOutException();
         }
+    }
+
+    public static Object collectionExecute(TurtleProtoBuf.ClientCommand command)throws TurtleTimeOutException {
+
+        return null;
     }
 }
