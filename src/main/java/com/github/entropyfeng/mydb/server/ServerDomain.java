@@ -163,7 +163,7 @@ public class ServerDomain {
 
     private void handlerCollection(Collection<Object> objects, TurtleProtoBuf.ResponseData.Builder builder, Channel channel) {
         builder.setCollectionSize(objects.size());
-        builder.setCollection(true);
+        builder.setCollectionAble(true);
         builder.setResponseSequence(0L);
         if (objects.isEmpty()) {
            channel.writeAndFlush(builder.build());

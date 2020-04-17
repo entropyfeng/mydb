@@ -104,7 +104,7 @@ message ResponseData{
 
     bool success=3;
 
-    bool collection=5;//返回值是否为集合
+    bool collectionAble=5;//返回值是否为集合
 
     TurtleParaType type=6;
     oneof Value{
@@ -125,6 +125,7 @@ message ResponseData{
 
     bool nullable=17;
     bool voidable=18;
+    bool endAble=19;
 
 }
 message FirstResponsePayload{

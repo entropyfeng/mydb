@@ -1,6 +1,7 @@
 package com.github.entropyfeng.mydb.client;
 
 
+import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import io.netty.channel.*;
 import org.slf4j.Logger;
@@ -8,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Collection;
 import java.util.HashMap;
 
 
@@ -18,7 +20,7 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<TurtleProto
 
     private static final Logger logger= LoggerFactory.getLogger(TurtleClientHandler.class);
 
-    private static  HashMap<Long, TurtleResponse> res=new HashMap<>();
+    private static  HashMap<Long, Collection<TurtleProtoBuf.ResponseData>> res=new HashMap<>();
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
@@ -49,23 +51,24 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<TurtleProto
         //意味着这是一个集合
         if (res.containsKey(msg.getResponseId())){
 
-          TurtleResponse response= res.get(msg.getResponseId());
 
+        }else if(msg.getCollectionAble()) {
 
+            res.get(msg.getResponseId()).add(msg);
+            if (msg.getEndAble()){
 
-        }else {
-            if (msg.getSuccess()){
-
-
-                if (msg.getCollection()){
-
-                }
             }
+        }else {
+
         }
     }
 
+    private void dispatchResCollection(Long responseId){
+        res.remove(responseId);
+
+    }
     /**
-     * @// TODO: 2020/4/14 未处理 bigInteger
+     *
      * @param responseData
      * @return
      */
@@ -81,10 +84,11 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<TurtleProto
             case INTEGER:return responseData.getIntValue();
             case NUMBER_DECIMAL:return new BigDecimal(responseData.getStringValue());
             case NUMBER_INTEGER:return new BigInteger(responseData.getStringValue());
-            case TURTLE_VALUE:
+            case TURTLE_VALUE:return ProtoTurtleHelper.convertToTurtleValue(responseData.getTurtleValue());
             default:throw new UnsupportedOperationException();
         }
     }
+
 
     private void handlerFirst(TurtleProtoBuf.ResponseData responseData){
         //为第一个包

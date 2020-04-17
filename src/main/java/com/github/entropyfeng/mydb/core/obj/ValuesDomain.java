@@ -3,7 +3,7 @@ package com.github.entropyfeng.mydb.core.obj;
 import com.github.entropyfeng.mydb.common.TurtleValueType;
 import com.github.entropyfeng.mydb.common.exception.TurtleFatalError;
 import com.github.entropyfeng.mydb.common.ops.IValueOperations;
-import com.github.entropyfeng.mydb.common.protobuf.ResponseDataHelper;
+import com.github.entropyfeng.mydb.common.protobuf.SingleResponseDataHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.util.TimeUtil;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +39,7 @@ public class ValuesDomain extends BaseObject implements IValueOperations {
         if (!TimeUtil.isExpire(time)) {
             putExpireTime(key, time);
         }
-        return ResponseDataHelper.voidResponse();
+        return SingleResponseDataHelper.voidResponse();
     }
 
     @Override
@@ -54,7 +54,7 @@ public class ValuesDomain extends BaseObject implements IValueOperations {
             res = true;
         }
 
-        return ResponseDataHelper.boolResponse(res);
+        return SingleResponseDataHelper.boolResponse(res);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class ValuesDomain extends BaseObject implements IValueOperations {
             }
             res = true;
         }
-        return ResponseDataHelper.boolResponse(res);
+        return SingleResponseDataHelper.boolResponse(res);
     }
 
     @Override
@@ -80,74 +80,51 @@ public class ValuesDomain extends BaseObject implements IValueOperations {
 
         TurtleValue turtleValue = valueMap.get(key);
         if (turtleValue == null) {
-            return ResponseDataHelper.nullResponse();
+            return SingleResponseDataHelper.nullResponse();
         } else {
-            return ResponseDataHelper.turtleValueResponse(turtleValue);
+            return SingleResponseDataHelper.turtleValueResponse(turtleValue);
         }
     }
 
     @Override
     public TurtleProtoBuf.ResponseData increment(@NotNull String key, @NotNull Integer intValue) throws UnsupportedOperationException, NoSuchElementException {
-        handleExpire(key);
-        TurtleValue turtleValue = valueMap.get(key);
-        if (turtleValue == null) {
-            return ResponseDataHelper.noSuchElementException();
-        }
-        try {
-            turtleValue.increment(intValue);
-        } catch (UnsupportedOperationException e) {
-            return ResponseDataHelper.unSupportOperationException();
-        }
-        return ResponseDataHelper.turtleValueResponse(turtleValue);
 
+
+        return modifyHelper(key,TurtleValueType.INTEGER,intValue);
 
     }
 
     @Override
     public TurtleProtoBuf.ResponseData increment(@NotNull String key, @NotNull Long longValue) throws UnsupportedOperationException, NoSuchElementException {
-        handleExpire(key);
-        TurtleValue turtleValue = valueMap.get(key);
-        if (turtleValue == null) {
-            return ResponseDataHelper.noSuchElementException();
-        }
-        try {
-            turtleValue.increment(longValue);
-        } catch (UnsupportedOperationException e) {
-            return ResponseDataHelper.unSupportOperationException();
-        }
-        return ResponseDataHelper.turtleValueResponse(turtleValue);
+
+        return modifyHelper(key,TurtleValueType.LONG,longValue);
     }
 
     @Override
     public TurtleProtoBuf.ResponseData increment(@NotNull String key, @NotNull Double doubleValue) throws UnsupportedOperationException, NoSuchElementException {
-        handleExpire(key);
-        TurtleValue turtleValue = valueMap.get(key);
-        if (turtleValue == null) {
-            return ResponseDataHelper.noSuchElementException();
-        }
-        try {
-            turtleValue.increment(doubleValue);
-        } catch (UnsupportedOperationException e) {
-            return ResponseDataHelper.unSupportOperationException();
-        }
-        return ResponseDataHelper.turtleValueResponse(turtleValue);
+
+        return modifyHelper(key,TurtleValueType.DOUBLE,doubleValue);
     }
 
     @Override
     public TurtleProtoBuf.ResponseData increment(@NotNull String key, @NotNull BigInteger bigInteger) throws UnsupportedOperationException, NoSuchElementException {
-        return null;
+        return modifyHelper(key,TurtleValueType.NUMBER_INTEGER,bigInteger);
     }
 
     @Override
     public TurtleProtoBuf.ResponseData increment(@NotNull String key, @NotNull BigDecimal bigDecimal) throws UnsupportedOperationException, NoSuchElementException {
-        return null;
+        return modifyHelper(key,TurtleValueType.NUMBER_DECIMAL,bigDecimal);
     }
 
     @Override
     public TurtleProtoBuf.ResponseData append(@NotNull String key, @NotNull String appendValue) throws UnsupportedOperationException, NoSuchElementException {
-        return null;
+        return modifyHelper(key,TurtleValueType.STRING,appendValue);
     }
 
+    /**
+     * @// TODO: 2020/4/17  暂未处理事件
+     * @return null
+     */
     @Override
     public Collection<TurtleProtoBuf.ResponseData> allValues() {
         return null;
@@ -165,11 +142,11 @@ public class ValuesDomain extends BaseObject implements IValueOperations {
         }
     }
 
-    private TurtleProtoBuf.ResponseData incrementHelper(String key, TurtleValueType type, Object value){
+    private TurtleProtoBuf.ResponseData modifyHelper(String key, TurtleValueType type, Object value){
         handleExpire(key);
         TurtleValue turtleValue = valueMap.get(key);
         if (turtleValue == null) {
-            return ResponseDataHelper.noSuchElementException();
+            return SingleResponseDataHelper.noSuchElementException();
         }
         try {
            switch (type){
@@ -182,11 +159,11 @@ public class ValuesDomain extends BaseObject implements IValueOperations {
                default:throw new TurtleFatalError("unSupport enum type: "+type);
            }
         } catch (UnsupportedOperationException e) {
-            return ResponseDataHelper.unSupportOperationException();
+            return SingleResponseDataHelper.unSupportOperationException();
         }catch (TurtleFatalError e){
-            return ResponseDataHelper.fatalException(e.getMessage());
+            return SingleResponseDataHelper.fatalException(e.getMessage());
         }
-        return ResponseDataHelper.turtleValueResponse(turtleValue);
+        return SingleResponseDataHelper.turtleValueResponse(turtleValue);
     }
 
 }
