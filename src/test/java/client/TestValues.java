@@ -11,6 +11,7 @@ public class TestValues {
     @Test
     public void test(){
         TurtleTemplate turtleTemplate=new TurtleTemplate();
+
         TurtleProtoBuf.ResponseData responseData= turtleTemplate.opsForValues().set("1008611",new TurtleValue(187));
 
         Assert.assertNotNull(responseData);
