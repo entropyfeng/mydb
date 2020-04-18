@@ -21,7 +21,7 @@
 *.idea
 *.iml
 # log
-*.log
+demo.log.*
 # target
 /target
 
