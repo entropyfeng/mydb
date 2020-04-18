@@ -11,17 +11,17 @@ public interface SetOperations {
 
     public void add(String key,TurtleValue value);
 
-    public Collection<TurtleValue> union(String key,String otherKey);
+    public Collection<TurtleValue> union (String key,String otherKey);
 
-    public Collection<TurtleValue> union(String key,Collection<TurtleValue> turtleValues);
+    public Collection<TurtleValue> union (String key,Collection<TurtleValue> turtleValues);
 
-    public Collection<TurtleValue> intersect(String key,String otherKey);
+    public Collection<TurtleValue> intersect (String key,String otherKey);
 
-    public Collection<TurtleValue> intersect(String key,Collection<TurtleValue> turtleValues);
+    public Collection<TurtleValue> intersect (String key,Collection<TurtleValue> turtleValues);
 
-    public Collection<TurtleValue> difference(String key,String otherKey);
+    public Collection<TurtleValue> difference (String key,String otherKey);
 
-    public Collection<TurtleValue> difference(String key,Collection<TurtleValue> turtleValues);
+    public Collection<TurtleValue> difference (String key,Collection<TurtleValue> turtleValues);
 
 
     public Collection<TurtleValue> entries(String key);

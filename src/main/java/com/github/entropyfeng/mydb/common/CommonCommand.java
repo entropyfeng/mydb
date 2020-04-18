@@ -37,12 +37,4 @@ public final class CommonCommand {
         return builder.build();
     }
 
-    public static void main(String[] args) {
-
-
-        System.out.println(emptyCommand().getSerializedSize());
-        System.out.println(sayHelloCommand().getSerializedSize());
-        System.out.println(insertValue().getSerializedSize());
-    }
-
 }

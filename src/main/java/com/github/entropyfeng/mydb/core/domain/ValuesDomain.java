@@ -1,11 +1,14 @@
-package com.github.entropyfeng.mydb.core.obj;
+package com.github.entropyfeng.mydb.core.domain;
 
 import com.github.entropyfeng.mydb.common.TurtleValueType;
 import com.github.entropyfeng.mydb.common.exception.TurtleFatalError;
 import com.github.entropyfeng.mydb.common.ops.IValueOperations;
+import com.github.entropyfeng.mydb.common.protobuf.CollectionResponseDataHelper;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
 import com.github.entropyfeng.mydb.common.protobuf.SingleResponseDataHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
+import com.github.entropyfeng.mydb.core.obj.BaseObject;
+import com.github.entropyfeng.mydb.core.obj.TurtleValue;
 import com.github.entropyfeng.mydb.util.TimeUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -130,34 +133,7 @@ public class ValuesDomain extends BaseObject implements IValueOperations {
     @Override
     public Collection<TurtleProtoBuf.ResponseData> allValues() {
 
-        final int mapSize = valueMap.size();
-        ArrayList<TurtleProtoBuf.ResponseData> resList = new ArrayList<>(mapSize);
-        //第一个responseData
-        TurtleProtoBuf.ResponseData.Builder builder = TurtleProtoBuf.ResponseData.newBuilder();
-        builder.setCollectionSize(mapSize);
-        builder.setSuccess(true);
-        builder.setCollectionAble(true);
-        builder.setEndAble(false);
-        resList.add(builder.build());
-
-
-        TurtleProtoBuf.StringTurtleValueEntry.Builder entryBuilder = TurtleProtoBuf.StringTurtleValueEntry.newBuilder();
-
-        valueMap.forEach((key, value) -> {
-            builder.clear();
-            entryBuilder.clear();
-
-            entryBuilder.setKey(key);
-            entryBuilder.setTurtleValue(ProtoTurtleHelper.convertToProtoTurtleValue(value));
-
-            builder.setStringTurtleValueEntry(entryBuilder.build());
-            builder.setEndAble(false);
-            resList.add(builder.build());
-        });
-
-        TurtleProtoBuf.ResponseData last = resList.get(resList.size() - 1).toBuilder().setEndAble(true).build();
-        resList.set(resList.size() - 1, last);
-        return resList;
+        return CollectionResponseDataHelper.stringTurtleResponse(valueMap.entrySet());
     }
 
     /**
