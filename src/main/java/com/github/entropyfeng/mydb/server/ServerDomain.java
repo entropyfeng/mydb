@@ -4,10 +4,10 @@ package com.github.entropyfeng.mydb.server;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoParaHelper;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
-import com.github.entropyfeng.mydb.core.obj.ListObject;
-import com.github.entropyfeng.mydb.core.obj.SetObject;
+import com.github.entropyfeng.mydb.core.domain.ListDomain;
+import com.github.entropyfeng.mydb.core.domain.SetDomain;
+import com.github.entropyfeng.mydb.core.domain.ValuesDomain;
 import com.github.entropyfeng.mydb.core.obj.TurtleValue;
-import com.github.entropyfeng.mydb.core.obj.ValuesObject;
 import com.github.entropyfeng.mydb.server.command.*;
 import com.github.entropyfeng.mydb.server.factory.ListThreadFactory;
 import com.github.entropyfeng.mydb.server.factory.SetThreadFactory;
@@ -39,22 +39,27 @@ public class ServerDomain {
         this.adminObject = new AdminObject(this);
         this.turtleServer = turtleServer;
 
-        valuesObject = new ValuesObject();
+        valuesDomain = new ValuesDomain();
         valuesQueue = new ConcurrentLinkedDeque<>();
 
-        listObject = new ListObject();
+        listDomain = new ListDomain();
         listQueue = new ConcurrentLinkedDeque<>();
+
+        setDomain=new SetDomain();
+        setQueue=new ConcurrentLinkedDeque<>();
+
+        start();
     }
 
     private final TurtleServer turtleServer;
 
     protected AdminObject adminObject;
 
-    protected ValuesObject valuesObject;
+    protected ValuesDomain valuesDomain;
 
-    protected ListObject listObject;
+    protected ListDomain listDomain;
 
-    protected SetObject setObject;
+    protected SetDomain setDomain;
 
 
     protected ConcurrentLinkedDeque<ValuesCommand> valuesQueue;
@@ -74,7 +79,7 @@ public class ServerDomain {
         while (true) {
             ListCommand listCommand = listQueue.pollFirst();
             if (listCommand != null) {
-                execute(listCommand, listObject);
+                execute(listCommand, listDomain);
             }
         }
     }
@@ -84,7 +89,8 @@ public class ServerDomain {
         while (true) {
             ValuesCommand valuesCommand = valuesQueue.pollFirst();
             if (valuesCommand != null) {
-                execute(valuesCommand, valuesObject);
+
+                execute(valuesCommand, valuesDomain);
             }
         }
     }
@@ -94,7 +100,7 @@ public class ServerDomain {
         while (true) {
             SetCommand setCommand = setQueue.pollFirst();
             if (setCommand != null) {
-                execute(setCommand, setObject);
+                execute(setCommand, setDomain);
             }
         }
     }
@@ -107,7 +113,9 @@ public class ServerDomain {
             if (command.getValues().size() == 0) {
                 res = command.getMethod().invoke(target);
             } else {
-                res = command.getMethod().invoke(target, command.getValues());
+                System.out.println(command.getMethod().getParameterCount());
+                System.out.println(command.getValues().size());
+                res = command.getMethod().invoke(target, command.getValues().toArray());
             }
         } catch (IllegalAccessException e) {
             TurtleProtoBuf.ResponseData.Builder builder=TurtleProtoBuf.ResponseData.newBuilder();
@@ -339,9 +347,9 @@ public class ServerDomain {
         //找到合适的方法
         try {
             if (types.length == 0) {
-                method = ValuesObject.class.getDeclaredMethod(operationName);
+                method = ValuesDomain.class.getDeclaredMethod(operationName);
             } else {
-                method = ValuesObject.class.getDeclaredMethod(operationName, types);
+                method = ValuesDomain.class.getDeclaredMethod(operationName, types);
             }
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
@@ -350,6 +358,7 @@ public class ServerDomain {
         if (method == null) {
             channel.writeAndFlush(responseData);
         } else {
+            System.out.println(method.getName());
             valuesQueue.offer(new ValuesCommand(method, values, channel, requestId));
         }
 

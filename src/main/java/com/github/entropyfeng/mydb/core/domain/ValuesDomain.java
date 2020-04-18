@@ -27,9 +27,9 @@ public class ValuesDomain extends BaseObject implements IValueOperations {
     private final HashMap<String, TurtleValue> valueMap;
 
 
-    public ValuesDomain(HashMap<String, TurtleValue> valueMap) {
+    public ValuesDomain() {
         super();
-        this.valueMap = valueMap;
+        this.valueMap = new HashMap<>();
     }
 
 

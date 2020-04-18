@@ -17,8 +17,8 @@ import java.util.HashSet;
 public class SetDomain implements ISetOperations {
     private HashMap<String, HashSet<TurtleValue>> setHashMap;
 
-    public SetDomain(HashMap<String, HashSet<TurtleValue>> setHashMap) {
-        this.setHashMap = setHashMap;
+    public SetDomain() {
+        this.setHashMap = new HashMap<>();
     }
 
 

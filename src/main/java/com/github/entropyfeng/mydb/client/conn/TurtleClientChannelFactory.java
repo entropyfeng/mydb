@@ -10,10 +10,14 @@ import io.netty.channel.Channel;
 public class TurtleClientChannelFactory {
 
     private static volatile Channel channel;
-
+    private static volatile boolean ready=false;
 
     public static void setChannel(Channel channel) {
         TurtleClientChannelFactory.channel = channel;
+    }
+
+    public static void setReady(boolean ready) {
+        TurtleClientChannelFactory.ready = ready;
     }
 
 
@@ -29,6 +33,9 @@ public class TurtleClientChannelFactory {
                     TurtleClient client=new TurtleClient();
                     try {
                         client.start();
+                        while (!ready){
+                            //blocking
+                        }
                     }catch (InterruptedException e){
                         e.printStackTrace();
                     }
