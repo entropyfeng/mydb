@@ -28,8 +28,9 @@ public class ClientExecute {
 
             //blocking....
             while (!resMap.containsKey(command.getRequestId())) {
-                responseData= resMap.get(command.getRequestId());
+
             }
+            responseData= resMap.get(command.getRequestId());
             resMap.remove(command.getRequestId());
             System.out.println("single execute end");
             return responseData;
