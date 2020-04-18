@@ -1,6 +1,6 @@
 package com.github.entropyfeng.mydb.server;
 
-import com.github.entropyfeng.mydb.common.CommonException;
+
 import com.github.entropyfeng.mydb.common.protobuf.ProtoParaHelper;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
@@ -100,7 +100,7 @@ public class ServerDomain {
     }
 
 
-    public void exe(ICommand command, Object target) {
+    public void execute(ICommand command, Object target) {
         Object res = null;
 
         try {
@@ -113,20 +113,19 @@ public class ServerDomain {
             TurtleProtoBuf.ResponseData.Builder builder=TurtleProtoBuf.ResponseData.newBuilder();
             handlerException(command,builder,e.toString());
             builder.setExceptionType(TurtleProtoBuf.ExceptionType.IllegalAccessException);
+            builder.setException("禁止访问！");
             command.getChannel().writeAndFlush(builder.build());
         } catch (InvocationTargetException e) {
             TurtleProtoBuf.ResponseData.Builder builder=TurtleProtoBuf.ResponseData.newBuilder();
             handlerException(command,builder,e.toString());
             builder.setExceptionType(TurtleProtoBuf.ExceptionType.InvocationTargetException);
+            builder.setException("调用函数内部错误!");
             command.getChannel().writeAndFlush(builder.build());
         }
         Objects.requireNonNull(res);
         if (res instanceof Collection){
 
-           ((Collection) res).forEach(object->{
-           
-               command.getChannel().write(dealResponseData((TurtleProtoBuf.ResponseData)object,command.getRequestId()));
-           });
+           ((Collection) res).forEach(object-> command.getChannel().write(dealResponseData((TurtleProtoBuf.ResponseData)object,command.getRequestId())));
 
            command.getChannel().flush();
         }else {
@@ -134,9 +133,17 @@ public class ServerDomain {
         }
     }
 
+
+    /**
+     * 为返回值套上ResponseId
+     * @param responseData {@link com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.ResponseData}
+     * @param requestId long
+     * @return 加上 requestId 后的返回值
+     */
     private TurtleProtoBuf.ResponseData dealResponseData(TurtleProtoBuf.ResponseData responseData, Long requestId){
        return responseData.toBuilder().setResponseId(requestId).build();
     }
+
     private void handlerException(ICommand command, TurtleProtoBuf.ResponseData.Builder builder, String excMsg){
 
         builder.setSuccess(false);
@@ -146,65 +153,6 @@ public class ServerDomain {
         builder.setResponseId(command.getRequestId());
         builder.setException(excMsg);
         builder.setExceptionType(TurtleProtoBuf.ExceptionType.InvocationTargetException);
-    }
-    public void execute(ICommand command, Object target) {
-
-        Object res = null;
-        TurtleProtoBuf.ResponseData.Builder builder = TurtleProtoBuf.ResponseData.newBuilder();
-        builder.setResponseId(command.getRequestId());
-        builder.setSuccess(true);
-        try {
-            if (command.getValues().size() == 0) {
-                res = command.getMethod().invoke(target);
-            } else {
-                res = command.getMethod().invoke(target, command.getValues().toArray());
-            }
-        } catch (IllegalAccessException e) {
-            builder.setSuccess(false);
-            builder.setExceptionType(TurtleProtoBuf.ExceptionType.IllegalAccessException);
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-
-            //内部调用异常
-            Throwable throwable = e.getTargetException();
-            builder.setSuccess(false);
-            builder.setException(e.getMessage());
-            //Returns a short description of this throwable.
-            switch (throwable.toString()) {
-                case CommonException.NO_SUCH_ELEMENT: {
-                    builder.setExceptionType(TurtleProtoBuf.ExceptionType.NoSuchElementException);
-                    break;
-                }
-                case CommonException.NULL_POINTER: {
-                    builder.setExceptionType(TurtleProtoBuf.ExceptionType.NullPointerException);
-                    break;
-                }
-                case CommonException.UNSUPPORTED_OPERATION: {
-                    builder.setExceptionType(TurtleProtoBuf.ExceptionType.UnsupportedOperationException);
-                    break;
-                }
-                default: {
-                    builder.setExceptionType(TurtleProtoBuf.ExceptionType.RuntimeException);
-                    break;
-                }
-            }
-        }
-
-        if (builder.getSuccess()) {
-            Method method = command.getMethod();
-            if (method.getReturnType().equals(Collection.class)) {
-
-                handlerCollection((Collection) res, builder, command.getChannel());
-
-            } else if (method.getReturnType().equals(Void.class)) {
-                builder.setType(TurtleProtoBuf.TurtleParaType.VOID);
-                command.getChannel().writeAndFlush(builder.build());
-            } else {
-                handlerSingle(res, builder, command.getChannel());
-            }
-        } else {
-            command.getChannel().writeAndFlush(builder.build());
-        }
     }
 
     private void handlerCollection(Collection<Object> objects, TurtleProtoBuf.ResponseData.Builder builder, Channel channel) {
