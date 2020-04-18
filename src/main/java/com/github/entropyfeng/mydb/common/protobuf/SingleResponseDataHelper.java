@@ -26,6 +26,15 @@ public class SingleResponseDataHelper {
         return builder.build();
     }
 
+    public static TurtleProtoBuf.ResponseData integerResponse(Integer integer) {
+
+        TurtleProtoBuf.ResponseData.Builder builder = TurtleProtoBuf.ResponseData.newBuilder();
+        builder.setCollectionAble(false);
+        builder.setSuccess(true);
+        builder.setIntValue(integer);
+        return builder.build();
+    }
+
     public static TurtleProtoBuf.ResponseData turtleValueResponse(@NotNull TurtleValue turtleValue) {
         TurtleProtoBuf.ResponseData.Builder builder = TurtleProtoBuf.ResponseData.newBuilder();
         builder.setCollectionAble(false);

@@ -17,18 +17,17 @@ public interface ISetOperations {
 
     public @NotNull TurtleProtoBuf.ResponseData add(String key, TurtleValue value);
 
-    public @NotNull Collection<TurtleProtoBuf.ResponseData> union(String key, String otherKey);
+    public @NotNull TurtleProtoBuf.ResponseData union(String key, String otherKey);
 
-    public @NotNull Collection<TurtleProtoBuf.ResponseData> union(String key, Collection<TurtleValue> turtleValues);
+    public @NotNull TurtleProtoBuf.ResponseData union(String key, Collection<TurtleValue> turtleValues);
 
-    public @NotNull Collection<TurtleProtoBuf.ResponseData> intersect(String key, String otherKey);
+    public @NotNull TurtleProtoBuf.ResponseData intersect(String key, String otherKey);
 
-    public @NotNull Collection<TurtleProtoBuf.ResponseData> intersect(String key, Collection<TurtleValue> turtleValues);
+    public @NotNull TurtleProtoBuf.ResponseData intersect(String key, Collection<TurtleValue> turtleValues);
 
-    public @NotNull Collection<TurtleProtoBuf.ResponseData> difference(String key, String otherKey);
+    public @NotNull TurtleProtoBuf.ResponseData difference(String key, String otherKey);
 
-    public @NotNull Collection<TurtleProtoBuf.ResponseData> difference(String key, Collection<TurtleValue> turtleValues);
-
+    public @NotNull TurtleProtoBuf.ResponseData difference(String key, Collection<TurtleValue> turtleValues);
 
     public @NotNull Collection<TurtleProtoBuf.ResponseData> entries(String key);
 }

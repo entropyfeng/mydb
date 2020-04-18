@@ -9,6 +9,18 @@ import java.util.*;
  */
 public class CollectionResponseDataHelper {
 
+
+    public static Collection<TurtleProtoBuf.ResponseData> nullResponse(){
+
+        TurtleProtoBuf.ResponseData.Builder builder = TurtleProtoBuf.ResponseData.newBuilder();
+        builder.setCollectionAble(true);
+        builder.setSuccess(true);
+        builder.setNullable(true);
+        ArrayList<TurtleProtoBuf.ResponseData> arrayList=new ArrayList<>(1);
+        arrayList.add(builder.build());
+        return arrayList;
+    }
+
     public static Collection<TurtleProtoBuf.ResponseData> stringTurtleResponse(Set<Map.Entry<String, TurtleValue>> entrySet){
         final int entrySize = entrySet.size();
         ArrayList<TurtleProtoBuf.ResponseData> resList = new ArrayList<>(entrySize+1);
