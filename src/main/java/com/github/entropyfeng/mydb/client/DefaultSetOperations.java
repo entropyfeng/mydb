@@ -7,6 +7,7 @@ import com.github.entropyfeng.mydb.common.ops.ISetOperations;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.core.obj.TurtleValue;
 import org.jetbrains.annotations.NotNull;
+import sun.security.pkcs.PKCS8Key;
 
 import java.util.Collection;
 
@@ -19,24 +20,23 @@ public class DefaultSetOperations implements ISetOperations {
     @Override
     public @NotNull TurtleProtoBuf.ResponseData exist(String key) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "exist");
-        builder.addPara(TurtleParaType.STRING, key);
+        builder.addStringPara(key);
         return ClientExecute.singleExecute(builder.build());
     }
 
     @Override
     public @NotNull TurtleProtoBuf.ResponseData exist(String key, TurtleValue value) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "exist");
-        builder.addPara(TurtleParaType.STRING, key);
-        builder.addPara(TurtleParaType.TURTLE_VALUE,value);
-
+        builder.addStringPara(key);
+        builder.addTurtlePara(value);
         return ClientExecute.singleExecute(builder.build());
     }
 
     @Override
     public @NotNull TurtleProtoBuf.ResponseData add(String key, TurtleValue value) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "add");
-        builder.addPara(TurtleParaType.STRING, key);
-        builder.addPara(TurtleParaType.TURTLE_VALUE,value);
+        builder.addStringPara(key);
+        builder.addTurtlePara(value);
         builder.setModifyAble(true);
         return ClientExecute.singleExecute(builder.build());
     }
@@ -44,8 +44,8 @@ public class DefaultSetOperations implements ISetOperations {
     @Override
     public @NotNull TurtleProtoBuf.ResponseData union(String key, String otherKey) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "union");
-        builder.addPara(TurtleParaType.STRING, key);
-        builder.addPara(TurtleParaType.STRING,otherKey);
+        builder.addStringPara(key);
+        builder.addStringPara(otherKey);
         builder.setModifyAble(true);
         return ClientExecute.singleExecute(builder.build());
     }
@@ -53,8 +53,8 @@ public class DefaultSetOperations implements ISetOperations {
     @Override
     public @NotNull TurtleProtoBuf.ResponseData union(String key, Collection<TurtleValue> turtleValues) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "union");
-        builder.addPara(TurtleParaType.STRING, key);
-        builder.addPara(TurtleParaType.COLLECTION,turtleValues);
+        builder.addStringPara(key);
+        builder.addTurtleCollectionPara(turtleValues);
         builder.setModifyAble(true);
         return ClientExecute.singleExecute(builder.build());
     }
@@ -63,8 +63,8 @@ public class DefaultSetOperations implements ISetOperations {
     public @NotNull TurtleProtoBuf.ResponseData intersect(String key, String otherKey) {
 
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "intersect");
-        builder.addPara(TurtleParaType.STRING, key);
-        builder.addPara(TurtleParaType.STRING,otherKey);
+        builder.addStringPara(key);
+        builder.addStringPara(otherKey);
         builder.setModifyAble(true);
         return ClientExecute.singleExecute(builder.build());
     }
@@ -72,24 +72,34 @@ public class DefaultSetOperations implements ISetOperations {
     @Override
     public @NotNull TurtleProtoBuf.ResponseData intersect(String key, Collection<TurtleValue> turtleValues) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "intersect");
-        builder.addPara(TurtleParaType.STRING, key);
-        builder.addPara(TurtleParaType.COLLECTION,turtleValues);
+        builder.addStringPara(key);
+        builder.addTurtleCollectionPara(turtleValues);
         builder.setModifyAble(true);
         return ClientExecute.singleExecute(builder.build());
     }
 
     @Override
     public @NotNull TurtleProtoBuf.ResponseData difference(String key, String otherKey) {
-        return null;
+        ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "difference");
+        builder.addStringPara(key);
+        builder.addStringPara(otherKey);
+        builder.setModifyAble(true);
+        return ClientExecute.singleExecute(builder.build());
     }
 
     @Override
     public @NotNull TurtleProtoBuf.ResponseData difference(String key, Collection<TurtleValue> turtleValues) {
-        return null;
+        ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "difference");
+        builder.addStringPara(key);
+        builder.addTurtleCollectionPara(turtleValues);
+        builder.setModifyAble(true);
+        return ClientExecute.singleExecute(builder.build());
     }
 
     @Override
     public @NotNull Collection<TurtleProtoBuf.ResponseData> entries(String key) {
-        return null;
+        ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "entries");
+        builder.addStringPara(key);
+        return ClientExecute.collectionExecute(builder.build());
     }
 }

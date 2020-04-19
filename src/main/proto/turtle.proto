@@ -78,6 +78,8 @@ message ClientCommand{//客户端命令
      int64 requestId=5;
 
      bool modify=6;//修改标识
+
+     int64 requestSequence=7;
 }
 enum ExceptionType{
     UnsupportedOperationException=0;

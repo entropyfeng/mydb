@@ -13,6 +13,7 @@ public class ResponseDataTemplate {
     public ResponseDataTemplate() {
         this.valueOperations = new DefaultValueOperations();
         this.listOperations=new DefaultListOperations();
+        this.setOperations=new DefaultSetOperations();
 
     }
 
