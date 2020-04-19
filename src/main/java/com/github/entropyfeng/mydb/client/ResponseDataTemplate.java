@@ -7,10 +7,10 @@ import com.github.entropyfeng.mydb.common.ops.ValueOperations;
 /**
  * @author entropyfeng
  */
-public class TurtleTemplate  {
+public class ResponseDataTemplate {
 
 
-    public TurtleTemplate() {
+    public ResponseDataTemplate() {
         this.valueOperations = new DefaultValueOperations();
         this.listOperations=new DefaultListOperations();
     }
