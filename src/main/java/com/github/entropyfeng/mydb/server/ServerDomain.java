@@ -139,18 +139,19 @@ public class ServerDomain {
             builder.setExceptionType(TurtleProtoBuf.ExceptionType.IllegalAccessException);
             builder.setException("禁止访问！");
             command.getChannel().writeAndFlush(builder.build());
+            return;
         } catch (InvocationTargetException e) {
+            //调用函数的内部有未捕获的异常
             TurtleProtoBuf.ResponseData.Builder builder=TurtleProtoBuf.ResponseData.newBuilder();
             handlerException(command,builder,e.toString());
             builder.setExceptionType(TurtleProtoBuf.ExceptionType.InvocationTargetException);
             builder.setException("调用函数内部错误!");
             command.getChannel().writeAndFlush(builder.build());
+            return;
         }
         Objects.requireNonNull(res);
         if (res instanceof Collection){
-
            ((Collection) res).forEach(object-> command.getChannel().write(dealResponseData((TurtleProtoBuf.ResponseData)object,command.getRequestId())));
-
            command.getChannel().flush();
         }else {
             command.getChannel().writeAndFlush(dealResponseData((TurtleProtoBuf.ResponseData)res,command.getRequestId()));
@@ -165,12 +166,15 @@ public class ServerDomain {
      * @return 加上 requestId 后的返回值
      */
     private TurtleProtoBuf.ResponseData dealResponseData(TurtleProtoBuf.ResponseData responseData, Long requestId){
-       return responseData.toBuilder().setResponseId(requestId).build();
+
+        //再次创建了对象，会影响性能
+        return responseData.toBuilder().setResponseId(requestId).build();
     }
 
     private void handlerException(ICommand command, TurtleProtoBuf.ResponseData.Builder builder, String excMsg){
 
         builder.setSuccess(false);
+        //设置是否为集合
         if (command.getMethod().getReturnType().equals(Collection.class)){
             builder.setCollectionAble(true);
         }

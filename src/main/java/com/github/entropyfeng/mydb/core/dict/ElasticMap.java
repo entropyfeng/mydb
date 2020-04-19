@@ -66,8 +66,9 @@ public class ElasticMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
     @Override
     public int size() {
         if (isRehashing) {
+            int res=first.used+second.used;
             moveEntry();
-            return first.used + second.used;
+            return res;
         } else {
             return first.used;
         }
@@ -75,9 +76,6 @@ public class ElasticMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
 
     @Override
     public boolean isEmpty() {
-        if (isRehashing) {
-            moveEntry();
-        }
         return this.size() == 0;
     }
 
@@ -97,18 +95,17 @@ public class ElasticMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
 
         V resValue = null;
         if (isRehashing) {
-            moveEntry();
             resValue = first.deleteKey(key);
             V resValue1 = second.put(key, value);
             if (resValue == null) {
                 resValue = resValue1;
             }
+            moveEntry();
         } else if (first.isCorrespondingEnlargeSize()) {
             isRehashing = true;
             second = new MapObject<>(first.used);
             //resValue always null
             second.put(key, value);
-            moveEntry();
         } else {
             resValue = first.put(key, value);
         }
@@ -171,6 +168,7 @@ public class ElasticMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
            if (resValue==null){
                resValue=second.deleteKey(key);
            }
+           moveEntry();
         }else {
             first.deleteKey(key);
         }

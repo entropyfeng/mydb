@@ -27,6 +27,7 @@ public interface ValueOperations {
     }
 
     /**
+     *
      * 根据 key 插入 value 并在time时过期（mill）
      * @param key   {@link String}
      * @param value 值{@link TurtleValue}
@@ -48,19 +49,19 @@ public interface ValueOperations {
         this.set(key, value, timeUnit.toMillis(time));
     }
 
-    default Boolean setIfAbsent(String key, TurtleValue value) {
+    default Boolean setIfAbsent(String key, TurtleValue value)throws ElementOutOfBoundException {
         return setIfAbsent(key, value, 0L);
     }
 
 
-    default Boolean setIfAbsent(String key, TurtleValue value, Long time, TimeUnit timeUnit) {
+    default Boolean setIfAbsent(String key, TurtleValue value, Long time, TimeUnit timeUnit)throws ElementOutOfBoundException {
 
         Objects.requireNonNull(timeUnit);
         return setIfAbsent(key, value, timeUnit.toMillis(time));
     }
 
 
-    Boolean setIfAbsent(String key, TurtleValue value, Long time);
+    Boolean setIfAbsent(String key, TurtleValue value, Long time)throws ElementOutOfBoundException;
 
 
     /**
@@ -110,7 +111,7 @@ public interface ValueOperations {
 
     TurtleValue increment(String key, BigDecimal bigDecimal) throws UnsupportedOperationException, NoSuchElementException;
 
-    Void append(String key, String appendValue) throws UnsupportedOperationException, NoSuchElementException;
+    void append(String key, String appendValue) throws UnsupportedOperationException, NoSuchElementException;
 
     Collection<TurtleValue> allValues();
 }

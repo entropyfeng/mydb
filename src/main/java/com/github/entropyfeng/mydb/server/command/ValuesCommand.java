@@ -41,6 +41,11 @@ public class ValuesCommand implements ICommand {
     }
 
     @Override
+    public Long getRequestSequence() {
+        return null;
+    }
+
+    @Override
     public Long getRequestId() {
         return requestId;
     }

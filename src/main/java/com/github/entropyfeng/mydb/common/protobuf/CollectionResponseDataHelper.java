@@ -16,6 +16,7 @@ public class CollectionResponseDataHelper {
         builder.setCollectionAble(true);
         builder.setSuccess(true);
         builder.setNullable(true);
+        builder.setEndAble(true);
         ArrayList<TurtleProtoBuf.ResponseData> arrayList=new ArrayList<>(1);
         arrayList.add(builder.build());
         return arrayList;
@@ -47,8 +48,9 @@ public class CollectionResponseDataHelper {
             resList.add(builder.build());
         });
 
-        TurtleProtoBuf.ResponseData last = resList.get(resList.size() - 1).toBuilder().setEndAble(true).build();
-        resList.set(resList.size() - 1, last);
+        //即使返回为空置也可将第一个res设置为end
+        TurtleProtoBuf.ResponseData last = resList.get(entrySize).toBuilder().setEndAble(true).build();
+        resList.set(entrySize, last);
         return resList;
 
     }

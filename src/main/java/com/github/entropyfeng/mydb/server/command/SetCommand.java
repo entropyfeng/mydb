@@ -28,4 +28,9 @@ public class SetCommand implements ICommand {
     public List<Object> getValues() {
         return null;
     }
+
+    @Override
+    public Long getRequestSequence() {
+        return null;
+    }
 }

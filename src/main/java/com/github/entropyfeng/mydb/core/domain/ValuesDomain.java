@@ -129,9 +129,7 @@ public class ValuesDomain extends BaseObject implements IValueOperations {
         return modifyHelper(key, TurtleValueType.STRING, appendValue);
     }
 
-    /**
-     * @return null
-     */
+
     @Override
     @NotNull
     public Collection<TurtleProtoBuf.ResponseData> allValues() {
