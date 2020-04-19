@@ -3,15 +3,12 @@ package com.github.entropyfeng.mydb.client;
 
 import com.github.entropyfeng.mydb.client.conn.ClientExecute;
 import com.github.entropyfeng.mydb.client.conn.TurtleClientChannelFactory;
-import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -45,7 +42,6 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<TurtleProto
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         TurtleClientChannelFactory.setChannel(null);
-        TurtleClientChannelFactory.getChannel();
         cause.printStackTrace();
     }
 
@@ -86,48 +82,5 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<TurtleProto
 
     }
 
-    /**
-     * @param responseData
-     * @return
-     */
-    private Object parse(TurtleProtoBuf.ResponseData responseData) {
-
-        switch (responseData.getType()) {
-
-            case VOID:
-                return Void.TYPE;
-            case STRING:
-                return responseData.getStringValue();
-            case BOOL:
-                return responseData.getBoolValue();
-            case DOUBLE:
-                return responseData.getDoubleValue();
-            case LONG:
-                return responseData.getLongValue();
-            case INTEGER:
-                return responseData.getIntValue();
-            case NUMBER_DECIMAL:
-                return new BigDecimal(responseData.getStringValue());
-            case NUMBER_INTEGER:
-                return new BigInteger(responseData.getStringValue());
-            case TURTLE_VALUE:
-                return ProtoTurtleHelper.convertToTurtleValue(responseData.getTurtleValue());
-            default:
-                throw new UnsupportedOperationException();
-        }
-    }
-
-
-    private void handlerFirst(TurtleProtoBuf.ResponseData responseData) {
-        //为第一个包
-        if (responseData.getResponseSequence() == 0L) {
-            if (responseData.getSuccess()) {
-            } else {
-                responseData.getException();
-                responseData.getExceptionType();
-            }
-        }
-
-    }
 
 }
