@@ -1,6 +1,6 @@
 package client;
 
-import com.github.entropyfeng.mydb.client.TurtleTemplate;
+import com.github.entropyfeng.mydb.client.ResponseDataTemplate;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.core.obj.TurtleValue;
@@ -12,9 +12,9 @@ import java.util.Collection;
 public class TestValues {
     @Test
     public void testSingle(){
-        TurtleTemplate turtleTemplate=new TurtleTemplate();
+        ResponseDataTemplate responseDataTemplate =new ResponseDataTemplate();
 
-        TurtleProtoBuf.ResponseData responseData= turtleTemplate.opsForValues().set("1008611",new TurtleValue(187));
+        TurtleProtoBuf.ResponseData responseData= responseDataTemplate.opsForValues().set("1008611",new TurtleValue(187));
 
         Assert.assertNotNull(responseData);
 
@@ -22,7 +22,7 @@ public class TestValues {
 
         Assert.assertTrue(responseData.getVoidable());
 
-        TurtleProtoBuf.ResponseData res= turtleTemplate.opsForValues().get("1008611");
+        TurtleProtoBuf.ResponseData res= responseDataTemplate.opsForValues().get("1008611");
 
         Assert.assertEquals(ProtoTurtleHelper.convertToTurtleValue(res.getTurtleValue()).toObject(), 187);
 
@@ -30,18 +30,18 @@ public class TestValues {
     @Test
     public void testMulti(){
 
-        TurtleTemplate turtleTemplate=new TurtleTemplate();
+        ResponseDataTemplate responseDataTemplate =new ResponseDataTemplate();
         for (int i = 0; i < 10; i++) {
-            turtleTemplate.opsForValues().set(i+"",new TurtleValue(i));
+            responseDataTemplate.opsForValues().set(i+"",new TurtleValue(i));
         }
-       Collection<TurtleProtoBuf.ResponseData> resList= turtleTemplate.opsForValues().allValues();
+       Collection<TurtleProtoBuf.ResponseData> resList= responseDataTemplate.opsForValues().allValues();
 
         System.out.println(resList.size());
     }
     @Test
     public void testGetCollection(){
-        TurtleTemplate turtleTemplate=new TurtleTemplate();
-        Collection<TurtleProtoBuf.ResponseData> resList= turtleTemplate.opsForValues().allValues();
+        ResponseDataTemplate responseDataTemplate =new ResponseDataTemplate();
+        Collection<TurtleProtoBuf.ResponseData> resList= responseDataTemplate.opsForValues().allValues();
 
     }
 }
