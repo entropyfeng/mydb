@@ -64,9 +64,9 @@ public class TurtleClient {
                 this.channel=future.channel();
                 TurtleClientChannelFactory.setReady(true);
                 TurtleClientChannelFactory.setChannel(channel);
-                System.out.println("连接成功");
+                System.out.println("success connect...");
             }else {
-                System.out.println("重连。。。");
+                System.out.println("reConnect...");
                 TurtleClientChannelFactory.setReady(false);
                 TurtleClientChannelFactory.setChannel(null);
                 future.channel().eventLoop().schedule(this::doConnect, 3, TimeUnit.SECONDS);

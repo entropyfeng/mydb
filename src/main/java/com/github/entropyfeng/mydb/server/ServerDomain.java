@@ -80,6 +80,12 @@ public class ServerDomain {
             ListCommand listCommand = listQueue.pollFirst();
             if (listCommand != null) {
                 execute(listCommand, listDomain);
+            }else {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -91,6 +97,12 @@ public class ServerDomain {
             if (valuesCommand != null) {
 
                 execute(valuesCommand, valuesDomain);
+            }else {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -101,6 +113,12 @@ public class ServerDomain {
             SetCommand setCommand = setQueue.pollFirst();
             if (setCommand != null) {
                 execute(setCommand, setDomain);
+            }else {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -113,8 +131,6 @@ public class ServerDomain {
             if (command.getValues().size() == 0) {
                 res = command.getMethod().invoke(target);
             } else {
-                System.out.println(command.getMethod().getParameterCount());
-                System.out.println(command.getValues().size());
                 res = command.getMethod().invoke(target, command.getValues().toArray());
             }
         } catch (IllegalAccessException e) {

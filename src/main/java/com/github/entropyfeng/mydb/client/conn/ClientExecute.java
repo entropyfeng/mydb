@@ -12,26 +12,28 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author entropyfeng
  */
 public class ClientExecute {
+
     public static ConcurrentHashMap<Long, TurtleProtoBuf.ResponseData> resMap = new ConcurrentHashMap<>();
 
     public static ConcurrentHashMap<Long, Collection<TurtleProtoBuf.ResponseData>> collectionResMap = new ConcurrentHashMap<>();
 
     public static TurtleProtoBuf.ResponseData singleExecute(TurtleProtoBuf.ClientCommand command) {
-        System.out.println("single execute");
+
         Channel channel = TurtleClientChannelFactory.getChannel();
         if (channel != null) {
             TurtleProtoBuf.ResponseData responseData = null;
-            System.out.println("write message");
             channel.writeAndFlush(command);
-            System.out.println("after write");
-
             //blocking....
             while (!resMap.containsKey(command.getRequestId())) {
+                try {
+                    Thread.sleep(999);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
             }
             responseData = resMap.get(command.getRequestId());
             resMap.remove(command.getRequestId());
-            System.out.println("single execute end");
             return responseData;
         } else {
             throw new TurtleTimeOutException();
@@ -41,14 +43,15 @@ public class ClientExecute {
     public static Collection<TurtleProtoBuf.ResponseData> collectionExecute(TurtleProtoBuf.ClientCommand command) throws TurtleTimeOutException {
         Channel channel = TurtleClientChannelFactory.getChannel();
         if (channel != null) {
-            Collection<TurtleProtoBuf.ResponseData> responseData = null;
-            System.out.println("write message");
             channel.writeAndFlush(command);
-            System.out.println("after write");
-
+            Collection<TurtleProtoBuf.ResponseData> responseData = null;
             //blocking....
             while (!collectionResMap.containsKey(command.getRequestId())) {
-
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
             responseData = collectionResMap.get(command.getRequestId());
             collectionResMap.remove(command.getRequestId());
@@ -56,6 +59,5 @@ public class ClientExecute {
         } else {
             throw new TurtleTimeOutException();
         }
-
     }
 }
