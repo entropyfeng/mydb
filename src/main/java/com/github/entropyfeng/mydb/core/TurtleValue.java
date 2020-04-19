@@ -1,4 +1,4 @@
-package com.github.entropyfeng.mydb.core.obj;
+package com.github.entropyfeng.mydb.core;
 
 import com.github.entropyfeng.mydb.common.CommonConstant;
 import com.github.entropyfeng.mydb.common.TurtleValueType;

@@ -2,7 +2,6 @@ package com.github.entropyfeng.mydb.common;
 
 import com.github.entropyfeng.mydb.client.ClientCommandBuilder;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
-import com.github.entropyfeng.mydb.core.obj.TurtleValue;
 
 /**
  * @author entropyfeng

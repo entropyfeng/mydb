@@ -16,7 +16,7 @@ public class TurtleClientProtoEncoder extends MessageToByteEncoder<TurtleProtoBu
 
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, TurtleProtoBuf.ClientCommand msg, ByteBuf out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, TurtleProtoBuf.ClientCommand msg, ByteBuf out)  {
         int bodyLen = msg.getSerializedSize();
         int headerLen = computeRawVarint32Size(bodyLen);
         out.ensureWritable(headerLen + bodyLen);
@@ -49,6 +49,7 @@ public class TurtleClientProtoEncoder extends MessageToByteEncoder<TurtleProtoBu
      * @param value which is to be encoded.
      * @return size of value encoded as protobuf varint32.
      */
+    @SuppressWarnings("all")
     static int computeRawVarint32Size(final int value) {
         if ((value & (0xffffffff <<  7)) == 0) {
             return 1;

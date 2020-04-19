@@ -4,7 +4,7 @@ import com.github.entropyfeng.mydb.common.TurtleModel;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoCommonValueHelper;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoModelHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
-import com.github.entropyfeng.mydb.core.obj.TurtleValue;
+import com.github.entropyfeng.mydb.core.TurtleValue;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

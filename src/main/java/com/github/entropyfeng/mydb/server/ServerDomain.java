@@ -7,7 +7,7 @@ import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.core.domain.ListDomain;
 import com.github.entropyfeng.mydb.core.domain.SetDomain;
 import com.github.entropyfeng.mydb.core.domain.ValuesDomain;
-import com.github.entropyfeng.mydb.core.obj.TurtleValue;
+import com.github.entropyfeng.mydb.core.TurtleValue;
 import com.github.entropyfeng.mydb.server.command.*;
 import com.github.entropyfeng.mydb.server.factory.ListThreadFactory;
 import com.github.entropyfeng.mydb.server.factory.SetThreadFactory;
@@ -178,111 +178,6 @@ public class ServerDomain {
         builder.setException(excMsg);
         builder.setExceptionType(TurtleProtoBuf.ExceptionType.InvocationTargetException);
     }
-
-    private void handlerCollection(Collection<Object> objects, TurtleProtoBuf.ResponseData.Builder builder, Channel channel) {
-        builder.setCollectionSize(objects.size());
-        builder.setCollectionAble(true);
-        builder.setResponseSequence(0L);
-        if (objects.isEmpty()) {
-            channel.writeAndFlush(builder.build());
-        } else {
-            TurtleProtoBuf.TurtleParaType type = ProtoParaHelper.checkObjectType(objects.iterator().next());
-            TurtleProtoBuf.ResponseData.Builder resBuilder = TurtleProtoBuf.ResponseData.newBuilder();
-            builder.setType(type);
-            channel.writeAndFlush(builder.build());
-            //netty可以保证发送的顺序
-            switch (type) {
-
-                case TURTLE_VALUE:
-                    objects.forEach(turtle -> {
-                        resBuilder.setTurtleValue(ProtoTurtleHelper.convertToProtoTurtleValue((TurtleValue) turtle));
-                        channel.write(resBuilder.build());
-                    });
-                    break;
-
-                case INTEGER:
-                    objects.forEach(integer -> {
-                        resBuilder.setIntValue((Integer) integer);
-                        channel.write(resBuilder.build());
-                    });
-                    break;
-
-                case LONG:
-                    objects.forEach(object -> {
-                        resBuilder.setLongValue((Long) object);
-
-                        channel.write(resBuilder.build());
-                    });
-                    break;
-                case BOOL:
-                    objects.forEach(object -> {
-                        resBuilder.setBoolValue((Boolean) object);
-                        channel.write(resBuilder.build());
-                    });
-                    break;
-                case NUMBER_DECIMAL:
-                    objects.forEach(object -> {
-                        resBuilder.setStringValue(((BigDecimal) object).toPlainString());
-                        channel.write(resBuilder.build());
-                    });
-                    break;
-                case DOUBLE:
-                    objects.forEach(object -> {
-                        resBuilder.setDoubleValue((Double) object);
-                        channel.write(resBuilder.build());
-                    });
-                    break;
-                case STRING:
-                    objects.forEach(object -> {
-                        resBuilder.setStringValue((String) object);
-                        channel.write(resBuilder.build());
-                    });
-                    break;
-                case NUMBER_INTEGER:
-                    objects.forEach(object -> {
-                        resBuilder.setStringValue(((BigInteger) object).toString());
-                        channel.write(resBuilder.build());
-                    });
-                    break;
-                default:
-                    throw new UnsupportedOperationException(type.name());
-            }
-        }
-        channel.flush();
-    }
-
-    private void handlerSingle(Object object, TurtleProtoBuf.ResponseData.Builder builder, Channel channel) {
-
-        if (object instanceof String) {
-            builder.setType(TurtleProtoBuf.TurtleParaType.STRING);
-            builder.setStringValue((String) object);
-        } else if (object instanceof Integer) {
-            builder.setType(TurtleProtoBuf.TurtleParaType.INTEGER);
-            builder.setIntValue((Integer) object);
-        } else if (object instanceof Long) {
-            builder.setType(TurtleProtoBuf.TurtleParaType.LONG);
-            builder.setLongValue((Long) object);
-        } else if (object instanceof Double) {
-            builder.setType(TurtleProtoBuf.TurtleParaType.DOUBLE);
-            builder.setDoubleValue((Double) object);
-        } else if (object instanceof BigInteger) {
-            builder.setType(TurtleProtoBuf.TurtleParaType.STRING);
-            builder.setStringValue(((BigInteger) object).toString());
-        } else if (object instanceof BigDecimal) {
-            builder.setType(TurtleProtoBuf.TurtleParaType.STRING);
-            builder.setStringValue(((BigDecimal) object).toPlainString());
-        } else if (object instanceof TurtleValue) {
-            builder.setType(TurtleProtoBuf.TurtleParaType.TURTLE_VALUE);
-            TurtleProtoBuf.TurtleValue res = ProtoTurtleHelper.convertToProtoTurtleValue((TurtleValue) object);
-            builder.setTurtleValue(res);
-        } else if (object instanceof Boolean) {
-            builder.setType(TurtleProtoBuf.TurtleParaType.BOOL);
-            builder.setBoolValue((Boolean) object);
-        } else {
-            throw new UnsupportedOperationException(object.getClass().getName());
-        }
-    }
-
 
     public void acceptClientCommand(TurtleProtoBuf.ClientCommand clientCommand, Channel channel) {
         parseCommand(clientCommand, channel);

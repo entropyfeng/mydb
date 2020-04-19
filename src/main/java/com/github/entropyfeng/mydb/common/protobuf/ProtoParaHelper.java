@@ -1,7 +1,7 @@
 package com.github.entropyfeng.mydb.common.protobuf;
 
 import com.github.entropyfeng.mydb.common.TurtleParaType;
-import com.github.entropyfeng.mydb.core.obj.TurtleValue;
+import com.github.entropyfeng.mydb.core.TurtleValue;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

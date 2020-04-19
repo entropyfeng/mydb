@@ -3,7 +3,7 @@ package com.github.entropyfeng.mydb.core.domain;
 import com.github.entropyfeng.mydb.common.ops.IListOperations;
 import com.github.entropyfeng.mydb.common.protobuf.SingleResponseDataHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
-import com.github.entropyfeng.mydb.core.obj.TurtleValue;
+import com.github.entropyfeng.mydb.core.TurtleValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
