@@ -3,7 +3,7 @@ package common;
 import com.github.entropyfeng.mydb.common.TurtleParaType;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoParaHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
-import com.github.entropyfeng.mydb.core.obj.TurtleValue;
+import com.github.entropyfeng.mydb.core.TurtleValue;
 import org.junit.Assert;
 import org.junit.Test;
 

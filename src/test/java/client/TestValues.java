@@ -3,7 +3,7 @@ package client;
 import com.github.entropyfeng.mydb.client.ResponseDataTemplate;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
-import com.github.entropyfeng.mydb.core.obj.TurtleValue;
+import com.github.entropyfeng.mydb.core.TurtleValue;
 import org.junit.Assert;
 import org.junit.Test;
 

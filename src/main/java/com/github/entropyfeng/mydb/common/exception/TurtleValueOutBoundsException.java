@@ -1,7 +1,9 @@
 package com.github.entropyfeng.mydb.common.exception;
 
+import com.github.entropyfeng.mydb.core.TurtleValue;
+
 /**
- * {@link com.github.entropyfeng.mydb.core.obj.TurtleValue}长度超限异常
+ * {@link TurtleValue}长度超限异常
  * @author entropyfeng
  */
 public class TurtleValueOutBoundsException extends OutOfBoundException {

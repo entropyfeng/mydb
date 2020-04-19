@@ -11,15 +11,24 @@ public enum TurtleModel {
      */
     ADMIN,
 
+    /**
+     * opsForValue
+     */
     VALUE,
 
     HASH,
 
+    /**
+     * opsForSet
+     */
     SET,
 
     ZSET,
 
-    LIST;
+    /**
+     * opsForList
+     */
+    LIST
 
 
 }

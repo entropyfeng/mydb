@@ -1,10 +1,9 @@
 package com.github.entropyfeng.mydb.common.ops;
 
-import com.github.entropyfeng.mydb.core.obj.TurtleValue;
+import com.github.entropyfeng.mydb.core.TurtleValue;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 
 /**
  * @author entropyfeng

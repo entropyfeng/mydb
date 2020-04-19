@@ -1,6 +1,6 @@
 package com.github.entropyfeng.mydb.core.dict;
 
-import com.github.entropyfeng.mydb.core.Pair;
+import com.github.entropyfeng.mydb.core.helper.Pair;
 import com.github.entropyfeng.mydb.util.CommonUtil;
 import org.jetbrains.annotations.NotNull;
 

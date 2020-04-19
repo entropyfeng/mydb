@@ -1,10 +1,11 @@
 package com.github.entropyfeng.mydb.common;
 
+import com.github.entropyfeng.mydb.core.TurtleValue;
+
 /**
- * @see com.github.entropyfeng.mydb.core.obj.TurtleValue 仅支持以下类型
+ * @see TurtleValue 仅支持以下6种类型
  * @author entropyfeng
  */
-
 public enum TurtleValueType {
 
     /**
@@ -34,6 +35,6 @@ public enum TurtleValueType {
     /**
      * {@link java.math.BigDecimal}
      */
-    NUMBER_DECIMAL;
+    NUMBER_DECIMAL
 
 }

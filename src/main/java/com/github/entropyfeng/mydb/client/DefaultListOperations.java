@@ -2,10 +2,9 @@ package com.github.entropyfeng.mydb.client;
 
 import com.github.entropyfeng.mydb.client.conn.ClientExecute;
 import com.github.entropyfeng.mydb.common.TurtleModel;
-import com.github.entropyfeng.mydb.common.TurtleParaType;
 import com.github.entropyfeng.mydb.common.ops.IListOperations;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
-import com.github.entropyfeng.mydb.core.obj.TurtleValue;
+import com.github.entropyfeng.mydb.core.TurtleValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;

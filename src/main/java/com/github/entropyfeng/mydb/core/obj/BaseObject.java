@@ -1,6 +1,6 @@
 package com.github.entropyfeng.mydb.core.obj;
 
-import com.github.entropyfeng.mydb.core.StringLongPair;
+import com.github.entropyfeng.mydb.core.helper.StringLongPair;
 import com.github.entropyfeng.mydb.util.TimeUtil;
 
 import java.util.*;

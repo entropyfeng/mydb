@@ -7,7 +7,7 @@ import com.github.entropyfeng.mydb.common.protobuf.CollectionResponseDataHelper;
 import com.github.entropyfeng.mydb.common.protobuf.SingleResponseDataHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.core.obj.BaseObject;
-import com.github.entropyfeng.mydb.core.obj.TurtleValue;
+import com.github.entropyfeng.mydb.core.TurtleValue;
 import com.github.entropyfeng.mydb.util.TimeUtil;
 import org.jetbrains.annotations.NotNull;
 
