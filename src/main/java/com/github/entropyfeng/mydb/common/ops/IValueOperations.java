@@ -16,11 +16,10 @@ import java.util.concurrent.TimeUnit;
 public interface IValueOperations {
     /**
      * 根据 key 插入 value,无过期时间
-     *
      * @param key   {@link String}
      * @param value {@link TurtleValue}
      */
-    default TurtleProtoBuf.ResponseData set(@NotNull String key,@NotNull TurtleValue value) {
+    default @NotNull TurtleProtoBuf.ResponseData set(@NotNull String key,@NotNull TurtleValue value) {
         return set(key, value, 0L);
 
     }
@@ -32,7 +31,7 @@ public interface IValueOperations {
      * @param value 值{@link TurtleValue}
      * @param time  过期时间
      */
-    TurtleProtoBuf.ResponseData set(@NotNull String key, @NotNull TurtleValue value,@NotNull Long time);
+    @NotNull TurtleProtoBuf.ResponseData set(@NotNull String key, @NotNull TurtleValue value,@NotNull Long time);
 
     /**
      * @param key      {@link String}
@@ -40,22 +39,22 @@ public interface IValueOperations {
      * @param time     时间戳(毫秒表示)
      * @param timeUnit {@link TimeUnit}
      */
-    default TurtleProtoBuf.ResponseData set(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time, TimeUnit timeUnit) {
+    default @NotNull TurtleProtoBuf.ResponseData set(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time, TimeUnit timeUnit) {
        return this.set(key, value, timeUnit.toMillis(time));
     }
 
-    default TurtleProtoBuf.ResponseData setIfAbsent(@NotNull String key, @NotNull TurtleValue value) {
+    default @NotNull TurtleProtoBuf.ResponseData setIfAbsent(@NotNull String key, @NotNull TurtleValue value) {
         return this.setIfAbsent(key, value, 0L);
     }
 
 
-    default TurtleProtoBuf.ResponseData setIfAbsent(@NotNull String key, @NotNull TurtleValue value,@NotNull Long time, @NotNull TimeUnit timeUnit) {
+    default @NotNull TurtleProtoBuf.ResponseData setIfAbsent(@NotNull String key, @NotNull TurtleValue value,@NotNull Long time, @NotNull TimeUnit timeUnit) {
 
         return setIfAbsent(key, value, timeUnit.toMillis(time));
     }
 
 
-    TurtleProtoBuf.ResponseData setIfAbsent(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time);
+    @NotNull TurtleProtoBuf.ResponseData setIfAbsent(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time);
 
 
     /**
@@ -67,7 +66,7 @@ public interface IValueOperations {
      * true->设置成功
      * false->设置失败
      */
-    default TurtleProtoBuf.ResponseData setIfPresent(@NotNull String key, @NotNull TurtleValue value) {
+    default @NotNull TurtleProtoBuf.ResponseData setIfPresent(@NotNull String key, @NotNull TurtleValue value) {
         return this.setIfPresent(key, value, 0L);
     }
 
@@ -82,16 +81,16 @@ public interface IValueOperations {
      * true->设置成功
      * false->设置失败
      */
-    default TurtleProtoBuf.ResponseData setIfPresent(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time, @NotNull TimeUnit timeUnit) {
+    default @NotNull TurtleProtoBuf.ResponseData setIfPresent(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time, @NotNull TimeUnit timeUnit) {
 
         return setIfPresent(key, value, timeUnit.toMillis(time));
     }
 
 
-    TurtleProtoBuf.ResponseData setIfPresent(@NotNull String key, @NotNull TurtleValue value,@NotNull Long time);
+    @NotNull TurtleProtoBuf.ResponseData setIfPresent(@NotNull String key, @NotNull TurtleValue value,@NotNull Long time);
 
 
-    TurtleProtoBuf.ResponseData get(@NotNull String key);
+    @NotNull TurtleProtoBuf.ResponseData get(@NotNull String key);
 
 
     /**
@@ -102,17 +101,17 @@ public interface IValueOperations {
      * @throws UnsupportedOperationException 不支持该操作
      * @throws NoSuchElementException        数据库中不含该key
      */
-    TurtleProtoBuf.ResponseData increment(@NotNull String key, @NotNull Integer intValue) throws UnsupportedOperationException, NoSuchElementException;
+    @NotNull TurtleProtoBuf.ResponseData increment(@NotNull String key, @NotNull Integer intValue) throws UnsupportedOperationException, NoSuchElementException;
 
-    TurtleProtoBuf.ResponseData increment(@NotNull String key, @NotNull Long longValue) throws UnsupportedOperationException, NoSuchElementException;
+    @NotNull TurtleProtoBuf.ResponseData increment(@NotNull String key, @NotNull Long longValue) throws UnsupportedOperationException, NoSuchElementException;
 
-    TurtleProtoBuf.ResponseData increment(@NotNull String key,@NotNull Double doubleValue) throws UnsupportedOperationException, NoSuchElementException;
+    @NotNull TurtleProtoBuf.ResponseData increment(@NotNull String key,@NotNull Double doubleValue) throws UnsupportedOperationException, NoSuchElementException;
 
-    TurtleProtoBuf.ResponseData increment(@NotNull String key, @NotNull BigInteger bigInteger) throws UnsupportedOperationException, NoSuchElementException;
+    @NotNull TurtleProtoBuf.ResponseData increment(@NotNull String key, @NotNull BigInteger bigInteger) throws UnsupportedOperationException, NoSuchElementException;
 
-    TurtleProtoBuf.ResponseData increment(@NotNull String key,@NotNull BigDecimal bigDecimal) throws UnsupportedOperationException, NoSuchElementException;
+    @NotNull TurtleProtoBuf.ResponseData increment(@NotNull String key,@NotNull BigDecimal bigDecimal) throws UnsupportedOperationException, NoSuchElementException;
 
-    TurtleProtoBuf.ResponseData append(@NotNull String key,@NotNull String appendValue) throws UnsupportedOperationException, NoSuchElementException;
+    @NotNull TurtleProtoBuf.ResponseData append(@NotNull String key,@NotNull String appendValue) throws UnsupportedOperationException, NoSuchElementException;
 
-    Collection<TurtleProtoBuf.ResponseData> allValues();
+    @NotNull Collection<TurtleProtoBuf.ResponseData> allValues();
 }

@@ -26,6 +26,12 @@ public class ClientCommandBuilder {
         builder.addKeys(type).addValues(ProtoParaHelper.convertToCommonValue(paraType, value));
         return this;
     }
+    public  ClientCommandBuilder setModifyAble(boolean modifyAble){
+
+        builder.setModify(true);
+        return this;
+    }
+
 
     public TurtleProtoBuf.ClientCommand build() {
         return builder.build();

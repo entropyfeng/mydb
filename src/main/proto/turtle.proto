@@ -130,39 +130,7 @@ message ResponseData{
     bool nullable=23;
     bool voidable=24;
     bool endAble=25;
-
 }
-message FirstResponsePayload{
-    bool success=3;
 
-    bool collection=5;//返回值是否为集合
 
-    TurtleParaType type=6;
-    oneof Value{
-        string stringValue=7;
-        int32 intValue=8;
-        int64 longValue=9;
-        double doubleValue=10;
-        bool boolValue=11;
-        bytes bytesValue=12;
-        TurtleValue turtleValue=13;
-    }
-
-    ExceptionType exceptionType=14;
-
-    string exception=15;
-
-    int64 collectionSize=16;
-}
-message SecondResponsePayload{
-    oneof Value{
-        string stringValue=1;
-        int32 intValue=2;
-        int64 longValue=3;
-        double doubleValue=4;
-        bool boolValue=5;
-        bytes bytesValue=6;
-        TurtleValue turtleValue=7;
-    }
-}
 
