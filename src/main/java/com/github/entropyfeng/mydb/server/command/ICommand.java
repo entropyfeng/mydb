@@ -19,4 +19,7 @@ public interface ICommand {
 
 
     public List<Object> getValues();
+
+    public Long getRequestSequence();
+
 }
