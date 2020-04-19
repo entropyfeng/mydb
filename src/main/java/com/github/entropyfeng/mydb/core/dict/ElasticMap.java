@@ -1,6 +1,6 @@
 package com.github.entropyfeng.mydb.core.dict;
 
-import com.github.entropyfeng.mydb.common.exception.OutOfBoundException;
+import com.github.entropyfeng.mydb.common.exception.ElementOutOfBoundException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractMap;
@@ -86,13 +86,13 @@ public class ElasticMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
      * @param key   key
      * @param value value
      * @return null->之前不存在当前key对应的值
-     * @throws OutOfBoundException 当当前hashMap元素个数超过{@value MAXIMUM_CAPACITY}时抛出
+     * @throws ElementOutOfBoundException 当当前hashMap元素个数超过{@value MAXIMUM_CAPACITY}时抛出
      */
     @Override
-    public V put(@NotNull K key, @NotNull V value) throws OutOfBoundException {
+    public V put(@NotNull K key, @NotNull V value) throws ElementOutOfBoundException {
 
         if (size() == MAXIMUM_CAPACITY) {
-            throw new OutOfBoundException();
+            throw new ElementOutOfBoundException();
         }
 
         V resValue = null;

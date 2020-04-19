@@ -2,7 +2,7 @@ package base;
 
 import com.github.entropyfeng.mydb.common.TurtleValueType;
 import com.github.entropyfeng.mydb.core.TurtleValue;
-import com.github.entropyfeng.mydb.common.exception.TurtleValueOutBoundsException;
+import com.github.entropyfeng.mydb.common.exception.TurtleValueElementOutBoundsException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -118,7 +118,7 @@ public class TurtleValueTest {
         TurtleValue turtleValue=null;
         try {
             turtleValue=  new TurtleValue(stringBuilder.toString());
-        }catch (TurtleValueOutBoundsException e){
+        }catch (TurtleValueElementOutBoundsException e){
 
           Assert.assertTrue(true);
         }

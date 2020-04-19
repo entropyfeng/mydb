@@ -89,11 +89,15 @@ enum ExceptionType{
     NoSuchMethodException=4;
     NoSuchElementException=5;
     RuntimeException=6;
+    ElementOutOfBoundException=7;
+    TurtleValueElementOutBoundsException=8;
+    TurtleTimeOutException=9;
 
     //Error--------------
     OutOfMemoryError=100;
     StackOverflowError=101;
     TurtleFatalError=102;
+    TurtleDesignError=103;
 
 }
 

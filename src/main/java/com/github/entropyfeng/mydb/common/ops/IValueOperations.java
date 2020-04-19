@@ -1,5 +1,6 @@
 package com.github.entropyfeng.mydb.common.ops;
 
+import com.github.entropyfeng.mydb.common.exception.ElementOutOfBoundException;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.core.TurtleValue;
 import org.jetbrains.annotations.NotNull;
@@ -108,6 +109,7 @@ public interface IValueOperations {
     @NotNull TurtleProtoBuf.ResponseData increment(@NotNull String key,@NotNull Double doubleValue) throws UnsupportedOperationException, NoSuchElementException;
 
     @NotNull TurtleProtoBuf.ResponseData increment(@NotNull String key, @NotNull BigInteger bigInteger) throws UnsupportedOperationException, NoSuchElementException;
+
 
     @NotNull TurtleProtoBuf.ResponseData increment(@NotNull String key,@NotNull BigDecimal bigDecimal) throws UnsupportedOperationException, NoSuchElementException;
 

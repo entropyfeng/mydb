@@ -1,11 +1,12 @@
 package com.github.entropyfeng.mydb.client;
 
-import com.github.entropyfeng.mydb.client.conn.ClientExecute;
-import com.github.entropyfeng.mydb.common.TurtleModel;
+import com.github.entropyfeng.mydb.client.ops.ResponseValueOperations;
+import com.github.entropyfeng.mydb.common.exception.ElementOutOfBoundException;
 import com.github.entropyfeng.mydb.common.ops.IValueOperations;
+import com.github.entropyfeng.mydb.common.ops.ValueOperations;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoExceptionHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.core.TurtleValue;
-import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -15,113 +16,64 @@ import java.util.NoSuchElementException;
 /**
  * @author entropyfeng
  */
-public class DefaultValueOperations implements IValueOperations {
-    @NotNull
-    @Override
-    public TurtleProtoBuf.ResponseData set(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time) {
+public class DefaultValueOperations implements ValueOperations {
+    private IValueOperations valueOperations=new ResponseValueOperations();
 
-        ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "set");
-        builder.addStringPara(key);
-        builder.addTurtlePara(value);
-        builder.addLongPara(time);
-        builder.setModifyAble(true);
-        return ClientExecute.singleExecute(builder.build());
+    @Override
+    public void set(String key, TurtleValue value, Long time) throws ElementOutOfBoundException {
+        TurtleProtoBuf.ResponseData res=valueOperations.set(key, value, time);
+        if (!res.getSuccess()){
+            ProtoExceptionHelper.handler(res.getExceptionType(),res.getException());
+        }
     }
 
-    @NotNull
     @Override
-    public TurtleProtoBuf.ResponseData setIfAbsent(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time) {
-        ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "setIfAbsent");
-        builder.addStringPara(key);
-        builder.addTurtlePara(value);
-        builder.addLongPara(time);
-        builder.setModifyAble(true);
-        return ClientExecute.singleExecute(builder.build());
+    public Boolean setIfAbsent(String key, TurtleValue value, Long time) {
+        return null;
     }
 
-    @NotNull
     @Override
-    public TurtleProtoBuf.ResponseData setIfPresent(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time) {
-        ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "setIfPresent");
-        builder.addStringPara(key);
-        builder.addTurtlePara(value);
-        builder.addLongPara(time);
-        builder.setModifyAble(true);
-        return ClientExecute.singleExecute(builder.build());
+    public Boolean setIfPresent(String key, TurtleValue value, Long time) {
+        return null;
     }
 
-    @NotNull
     @Override
-    public TurtleProtoBuf.ResponseData get(@NotNull String key) {
-        ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "get");
-        builder.addStringPara(key);
-        return ClientExecute.singleExecute(builder.build());
+    public TurtleValue get(String key) {
+        return null;
     }
 
-    @NotNull
     @Override
-    public TurtleProtoBuf.ResponseData increment(@NotNull String key, @NotNull Integer intValue) throws UnsupportedOperationException, NoSuchElementException {
-        ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "increment");
-        builder.addStringPara(key);
-        builder.addIntegerValue(intValue);
-        builder.setModifyAble(true);
-        return ClientExecute.singleExecute(builder.build());
+    public TurtleValue increment(String key, Integer intValue) throws UnsupportedOperationException, NoSuchElementException {
+        return null;
     }
 
-    @NotNull
     @Override
-    public TurtleProtoBuf.ResponseData increment(@NotNull String key, @NotNull Long longValue) throws UnsupportedOperationException, NoSuchElementException {
-        ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "increment");
-        builder.addStringPara(key);
-        builder.addLongPara(longValue);
-        builder.setModifyAble(true);
-        return ClientExecute.singleExecute(builder.build());
+    public TurtleValue increment(String key, Long longValue) throws UnsupportedOperationException, NoSuchElementException {
+        return null;
     }
 
-    @NotNull
     @Override
-    public TurtleProtoBuf.ResponseData increment(@NotNull String key, @NotNull Double doubleValue) throws UnsupportedOperationException, NoSuchElementException {
-        ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "increment");
-        builder.addStringPara(key);
-        builder.addDoublePara(doubleValue);
-        builder.setModifyAble(true);
-        return ClientExecute.singleExecute(builder.build());
+    public TurtleValue increment(String key, Double doubleValue) throws UnsupportedOperationException, NoSuchElementException {
+        return null;
     }
 
-    @NotNull
     @Override
-    public TurtleProtoBuf.ResponseData increment(@NotNull String key, @NotNull BigInteger bigInteger) throws UnsupportedOperationException, NoSuchElementException {
-        ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "increment");
-        builder.addStringPara(key);
-        builder.addBigIntegerPara(bigInteger);
-        builder.setModifyAble(true);
-        return ClientExecute.singleExecute(builder.build());
+    public TurtleValue increment(String key, BigInteger bigInteger) throws UnsupportedOperationException, NoSuchElementException {
+        return null;
     }
 
-    @NotNull
     @Override
-    public TurtleProtoBuf.ResponseData increment(@NotNull String key, @NotNull BigDecimal bigDecimal) throws UnsupportedOperationException, NoSuchElementException {
-        ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "increment");
-        builder.addStringPara(key);
-        builder.addBigDecimalPara(bigDecimal);
-        builder.setModifyAble(true);
-        return ClientExecute.singleExecute(builder.build());
+    public TurtleValue increment(String key, BigDecimal bigDecimal) throws UnsupportedOperationException, NoSuchElementException {
+        return null;
     }
 
-    @NotNull
     @Override
-    public TurtleProtoBuf.ResponseData append(@NotNull String key, @NotNull String appendValue) throws UnsupportedOperationException, NoSuchElementException {
-        ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "append");
-        builder.addStringPara(key);
-        builder.addStringPara(appendValue);
-        builder.setModifyAble(true);
-        return ClientExecute.singleExecute(builder.build());
+    public Void append(String key, String appendValue) throws UnsupportedOperationException, NoSuchElementException {
+        return null;
     }
 
-    @NotNull
     @Override
-    public Collection<TurtleProtoBuf.ResponseData> allValues() {
-        ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "allValues");
-        return ClientExecute.collectionExecute(builder.build());
+    public Collection<TurtleValue> allValues() {
+        return null;
     }
 }

@@ -1,5 +1,6 @@
-package com.github.entropyfeng.mydb.client;
+package com.github.entropyfeng.mydb.client.ops;
 
+import com.github.entropyfeng.mydb.client.ClientCommandBuilder;
 import com.github.entropyfeng.mydb.client.conn.ClientExecute;
 import com.github.entropyfeng.mydb.common.TurtleModel;
 import com.github.entropyfeng.mydb.common.ops.IListOperations;
@@ -12,7 +13,7 @@ import java.util.Collection;
 /**
  * @author entropyfeng
  */
-public class DefaultListOperations implements IListOperations {
+public class ResponseListOperations implements IListOperations {
 
 
     @Override

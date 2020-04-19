@@ -1,5 +1,8 @@
 package com.github.entropyfeng.mydb.client;
 
+import com.github.entropyfeng.mydb.client.ops.ResponseListOperations;
+import com.github.entropyfeng.mydb.client.ops.ResponseSetOperations;
+import com.github.entropyfeng.mydb.client.ops.ResponseValueOperations;
 import com.github.entropyfeng.mydb.common.ops.IListOperations;
 import com.github.entropyfeng.mydb.common.ops.ISetOperations;
 import com.github.entropyfeng.mydb.common.ops.IValueOperations;
@@ -11,9 +14,9 @@ public class ResponseDataTemplate {
 
 
     public ResponseDataTemplate() {
-        this.valueOperations = new DefaultValueOperations();
-        this.listOperations=new DefaultListOperations();
-        this.setOperations=new DefaultSetOperations();
+        this.valueOperations = new ResponseValueOperations();
+        this.listOperations=new ResponseListOperations();
+        this.setOperations=new ResponseSetOperations();
 
     }
 

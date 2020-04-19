@@ -6,12 +6,12 @@ import com.github.entropyfeng.mydb.core.TurtleValue;
  * {@link TurtleValue}长度超限异常
  * @author entropyfeng
  */
-public class TurtleValueOutBoundsException extends OutOfBoundException {
-    public TurtleValueOutBoundsException() {
+public class TurtleValueElementOutBoundsException extends ElementOutOfBoundException {
+    public TurtleValueElementOutBoundsException() {
 
     }
 
-    public TurtleValueOutBoundsException(String s) {
+    public TurtleValueElementOutBoundsException(String s) {
         super(s);
 
     }

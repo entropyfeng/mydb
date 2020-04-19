@@ -73,4 +73,20 @@ public class SingleResponseDataHelper {
         builder.setException(msg);
         return builder.build();
     }
+    public static TurtleProtoBuf.ResponseData elementOutOfBoundException(@NotNull String msg){
+        TurtleProtoBuf.ResponseData.Builder builder = TurtleProtoBuf.ResponseData.newBuilder();
+        builder.setSuccess(false);
+        builder.setCollectionAble(false);
+        builder.setExceptionType(TurtleProtoBuf.ExceptionType.ElementOutOfBoundException);
+        builder.setException(msg);
+        return builder.build();
+    }
+    public static TurtleProtoBuf.ResponseData turtleDesignException(@NotNull String msg){
+        TurtleProtoBuf.ResponseData.Builder builder = TurtleProtoBuf.ResponseData.newBuilder();
+        builder.setSuccess(false);
+        builder.setCollectionAble(false);
+        builder.setExceptionType(TurtleProtoBuf.ExceptionType.TurtleDesignError);
+        builder.setException(msg);
+        return builder.build();
+    }
 }

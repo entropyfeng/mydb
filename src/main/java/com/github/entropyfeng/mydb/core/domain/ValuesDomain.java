@@ -1,13 +1,14 @@
 package com.github.entropyfeng.mydb.core.domain;
 
 import com.github.entropyfeng.mydb.common.TurtleValueType;
-import com.github.entropyfeng.mydb.common.exception.TurtleFatalError;
+import com.github.entropyfeng.mydb.common.exception.ElementOutOfBoundException;
+import com.github.entropyfeng.mydb.common.exception.TurtleDesignError;
 import com.github.entropyfeng.mydb.common.ops.IValueOperations;
 import com.github.entropyfeng.mydb.common.protobuf.CollectionResponseDataHelper;
 import com.github.entropyfeng.mydb.common.protobuf.SingleResponseDataHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
-import com.github.entropyfeng.mydb.core.obj.BaseObject;
 import com.github.entropyfeng.mydb.core.TurtleValue;
+import com.github.entropyfeng.mydb.core.obj.BaseObject;
 import com.github.entropyfeng.mydb.util.TimeUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,7 +25,6 @@ public class ValuesDomain extends BaseObject implements IValueOperations {
 
     private final HashMap<String, TurtleValue> valueMap;
 
-
     public ValuesDomain() {
         super();
         this.valueMap = new HashMap<>();
@@ -38,6 +38,10 @@ public class ValuesDomain extends BaseObject implements IValueOperations {
             //删除过期字典条目
             deleteExpireTime(key);
         }
+        if (valueMap.size() >= Integer.MAX_VALUE) {
+            return SingleResponseDataHelper.elementOutOfBoundException("size of map out of limit .!");
+        }
+
         valueMap.put(key, value);
         if (!TimeUtil.isExpire(time)) {
             putExpireTime(key, time);
@@ -129,13 +133,15 @@ public class ValuesDomain extends BaseObject implements IValueOperations {
      * @return null
      */
     @Override
-    @NotNull  public Collection<TurtleProtoBuf.ResponseData> allValues() {
+    @NotNull
+    public Collection<TurtleProtoBuf.ResponseData> allValues() {
 
         return CollectionResponseDataHelper.stringTurtleResponse(valueMap.entrySet());
     }
 
     /**
      * 移除过期键
+     *
      * @param key key
      */
     private void handleExpire(String key) {
@@ -172,12 +178,12 @@ public class ValuesDomain extends BaseObject implements IValueOperations {
                     turtleValue.increment((BigDecimal) value);
                     break;
                 default:
-                    throw new TurtleFatalError("unSupport enum type: " + type);
+                    throw new TurtleDesignError("unSupport enum type: " + type);
             }
         } catch (UnsupportedOperationException e) {
             return SingleResponseDataHelper.unSupportOperationException();
-        } catch (TurtleFatalError e) {
-            return SingleResponseDataHelper.fatalException(e.getMessage());
+        } catch (TurtleDesignError e) {
+            return SingleResponseDataHelper.turtleDesignException(e.getMessage());
         }
         return SingleResponseDataHelper.turtleValueResponse(turtleValue);
     }

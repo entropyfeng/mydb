@@ -2,7 +2,7 @@ package com.github.entropyfeng.mydb.core;
 
 import com.github.entropyfeng.mydb.common.CommonConstant;
 import com.github.entropyfeng.mydb.common.TurtleValueType;
-import com.github.entropyfeng.mydb.common.exception.TurtleValueOutBoundsException;
+import com.github.entropyfeng.mydb.common.exception.TurtleValueElementOutBoundsException;
 import com.github.entropyfeng.mydb.util.BytesUtil;
 import com.github.entropyfeng.mydb.util.CommonUtil;
 import com.google.common.hash.Hashing;
@@ -49,7 +49,7 @@ public class TurtleValue {
     public TurtleValue(String value){
         Objects.requireNonNull(value);
         if(value.length()> CommonConstant.MAX_STRING_LENGTH){
-            throw new TurtleValueOutBoundsException();
+            throw new TurtleValueElementOutBoundsException();
         }
         this.type=TurtleValueType.STRING;
         this.values=value.getBytes();

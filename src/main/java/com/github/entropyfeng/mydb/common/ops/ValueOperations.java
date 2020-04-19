@@ -1,5 +1,6 @@
 package com.github.entropyfeng.mydb.common.ops;
 
+import com.github.entropyfeng.mydb.common.exception.ElementOutOfBoundException;
 import com.github.entropyfeng.mydb.core.TurtleValue;
 
 import java.math.BigDecimal;
@@ -19,31 +20,32 @@ public interface ValueOperations {
      *
      * @param key   {@link String}
      * @param value {@link TurtleValue}
+     * @exception ElementOutOfBoundException 元素超限
      */
-    default Void set(String key, TurtleValue value) {
+    default void set(String key, TurtleValue value)throws ElementOutOfBoundException {
         this.set(key, value, 0L);
-        return null;
     }
 
     /**
      * 根据 key 插入 value 并在time时过期（mill）
-     *
      * @param key   {@link String}
      * @param value 值{@link TurtleValue}
      * @param time  过期时间
+     * @exception ElementOutOfBoundException 元素超限
      */
-    Void set(String key, TurtleValue value, Long time);
+    void set(String key, TurtleValue value, Long time)throws ElementOutOfBoundException;
 
     /**
+     * 设置包含过期时间的键值对
      * @param key      {@link String}
      * @param value    {@link TurtleValue}
      * @param time     时间戳(毫秒表示)
      * @param timeUnit {@link TimeUnit}
+     * @exception ElementOutOfBoundException 元素超限
      */
-    default Void set(String key, TurtleValue value, Long time, TimeUnit timeUnit) {
+    default void set(String key, TurtleValue value, Long time, TimeUnit timeUnit)throws ElementOutOfBoundException {
         Objects.requireNonNull(timeUnit);
         this.set(key, value, timeUnit.toMillis(time));
-        return null;
     }
 
     default Boolean setIfAbsent(String key, TurtleValue value) {

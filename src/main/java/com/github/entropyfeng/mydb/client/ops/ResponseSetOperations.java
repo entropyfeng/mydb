@@ -1,5 +1,6 @@
-package com.github.entropyfeng.mydb.client;
+package com.github.entropyfeng.mydb.client.ops;
 
+import com.github.entropyfeng.mydb.client.ClientCommandBuilder;
 import com.github.entropyfeng.mydb.client.conn.ClientExecute;
 import com.github.entropyfeng.mydb.common.TurtleModel;
 import com.github.entropyfeng.mydb.common.ops.ISetOperations;
@@ -12,7 +13,7 @@ import java.util.Collection;
 /**
  * @author entropyfeng
  */
-public class DefaultSetOperations implements ISetOperations {
+public class ResponseSetOperations implements ISetOperations {
 
 
     @Override
