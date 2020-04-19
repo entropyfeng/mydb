@@ -4,6 +4,9 @@ import com.github.entropyfeng.mydb.core.obj.TurtleValue;
 
 import java.util.Collection;
 
+/**
+ * @author entropyfeng
+ */
 public interface SetOperations {
     public Boolean exist(String key);
 
