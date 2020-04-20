@@ -26,7 +26,7 @@ public class ClientExecute {
             //blocking....
             while (!resMap.containsKey(command.getRequestId())) {
                 try {
-                    Thread.sleep(999);
+                    Thread.sleep(1);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -48,7 +48,7 @@ public class ClientExecute {
             //blocking....
             while (!collectionResMap.containsKey(command.getRequestId())) {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(10);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

@@ -8,13 +8,15 @@ import com.github.entropyfeng.mydb.common.ops.ValueOperations;
 public class TurtleTemplate {
 
     public TurtleTemplate() {
-        template=new ResponseDataTemplate();
+
         valueOperations=new DefaultValueOperations();
     }
 
-    private ResponseDataTemplate template;
 
     private ValueOperations valueOperations;
 
+    public ValueOperations opsForValues(){
+        return this.valueOperations;
+    }
 
 }

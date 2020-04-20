@@ -125,4 +125,16 @@ public class ResponseValueOperations implements IValueOperations {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "allValues");
         return ClientExecute.collectionExecute(builder.build());
     }
+
+    @Override
+    public @NotNull Collection<TurtleProtoBuf.ResponseData> allEntries() {
+        ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "allEntries");
+        return ClientExecute.collectionExecute(builder.build());
+    }
+
+    @Override
+    public @NotNull Collection<TurtleProtoBuf.ResponseData> allKeys() {
+        ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "allKeys");
+        return ClientExecute.collectionExecute(builder.build());
+    }
 }

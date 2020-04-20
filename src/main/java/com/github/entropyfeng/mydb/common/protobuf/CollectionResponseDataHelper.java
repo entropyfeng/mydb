@@ -54,9 +54,30 @@ public class CollectionResponseDataHelper {
         return resList;
 
     }
+
+    public static Collection<TurtleProtoBuf.ResponseData> stringResponse(Collection<String> stringCollection){
+        final int stringsSize = stringCollection.size();
+        ArrayList<TurtleProtoBuf.ResponseData> resList = new ArrayList<>(stringsSize+1);
+        //第一个responseData
+        TurtleProtoBuf.ResponseData.Builder builder = TurtleProtoBuf.ResponseData.newBuilder();
+        builder.setCollectionSize(stringsSize);
+        builder.setSuccess(true);
+        builder.setCollectionAble(true);
+        builder.setEndAble(false);
+        resList.add(builder.build());
+
+
+        stringCollection.forEach(stringValue -> {
+            builder.clear();
+            builder.setStringValue(stringValue);
+            builder.setEndAble(false);
+            resList.add(builder.build());
+        });
+
+        return resList;
+    }
+
     public static Collection<TurtleProtoBuf.ResponseData> turtleResponse(Collection<TurtleValue> collection){
-
-
 
         ArrayList<TurtleProtoBuf.ResponseData> resList=new ArrayList<>(collection.size()+1);
         TurtleProtoBuf.ResponseData.Builder builder=TurtleProtoBuf.ResponseData.newBuilder();
@@ -74,8 +95,8 @@ public class CollectionResponseDataHelper {
         });
 
 
-        TurtleProtoBuf.ResponseData last = resList.get(resList.size() - 1).toBuilder().setEndAble(true).build();
-        resList.set(resList.size() - 1, last);
+        TurtleProtoBuf.ResponseData last = resList.get(collection.size()).toBuilder().setEndAble(true).build();
+        resList.set(collection.size(), last);
         return resList;
     }
 

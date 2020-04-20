@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 /**
@@ -78,6 +77,7 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<TurtleProto
     private void dispatchResCollection(Long responseId) {
         //按照sequenceId排序
         //List<TurtleProtoBuf.ResponseData> temp = res.remove(responseId).parallelStream().sorted(Comparator.comparingLong(TurtleProtoBuf.ResponseData::getResponseSequence)).collect(Collectors.toList());
+
         ClientExecute.collectionResMap.put(responseId, res.remove(responseId));
 
     }

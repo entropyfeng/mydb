@@ -1,6 +1,7 @@
 package client;
 
 import com.github.entropyfeng.mydb.client.ResponseDataTemplate;
+import com.github.entropyfeng.mydb.client.TurtleTemplate;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.core.TurtleValue;
@@ -45,5 +46,20 @@ public class TestValues {
         ResponseDataTemplate responseDataTemplate = new ResponseDataTemplate();
         Collection<TurtleProtoBuf.ResponseData> resList = responseDataTemplate.opsForValues().allValues();
 
+    }
+
+    @Test
+    public void testHa(){
+        int pos=10;
+        TurtleTemplate turtleTemplate=new TurtleTemplate();
+        TurtleValue[] turtleValue =new TurtleValue[pos];
+        for (int i = 0; i <pos ; i++) {
+            turtleValue[i]=new TurtleValue(i);
+            turtleTemplate.opsForValues().set(i+"",new TurtleValue(i));
+        }
+
+      Collection<TurtleValue> res=  turtleTemplate.opsForValues().allValues();
+        System.out.println(res.size());
+        Assert.assertArrayEquals(turtleValue,turtleTemplate.opsForValues().allValues().toArray());
     }
 }

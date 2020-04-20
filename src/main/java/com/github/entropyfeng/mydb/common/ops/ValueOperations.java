@@ -2,10 +2,12 @@ package com.github.entropyfeng.mydb.common.ops;
 
 import com.github.entropyfeng.mydb.common.exception.ElementOutOfBoundException;
 import com.github.entropyfeng.mydb.core.TurtleValue;
+import com.github.entropyfeng.mydb.core.helper.Pair;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -114,4 +116,8 @@ public interface ValueOperations {
     void append(String key, String appendValue) throws UnsupportedOperationException, NoSuchElementException;
 
     Collection<TurtleValue> allValues();
+
+    Collection<String> allKeys();
+
+    Collection<Pair<String,TurtleValue>> allEntries();
 }

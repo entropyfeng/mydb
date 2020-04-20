@@ -115,5 +115,13 @@ public interface IValueOperations {
 
     @NotNull TurtleProtoBuf.ResponseData append(@NotNull String key,@NotNull String appendValue) throws UnsupportedOperationException, NoSuchElementException;
 
+    /**
+     * 返回所有的values(不包含key)
+     * @return res collection
+     */
     @NotNull Collection<TurtleProtoBuf.ResponseData> allValues();
+
+    @NotNull Collection<TurtleProtoBuf.ResponseData> allEntries();
+
+    @NotNull Collection<TurtleProtoBuf.ResponseData> allKeys();
 }

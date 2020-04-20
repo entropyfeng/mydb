@@ -133,8 +133,17 @@ public class ValuesDomain extends BaseObject implements IValueOperations {
     @Override
     @NotNull
     public Collection<TurtleProtoBuf.ResponseData> allValues() {
+        return CollectionResponseDataHelper.turtleResponse(valueMap.values());
+    }
 
+    @Override
+    public @NotNull Collection<TurtleProtoBuf.ResponseData> allEntries() {
         return CollectionResponseDataHelper.stringTurtleResponse(valueMap.entrySet());
+    }
+
+    @Override
+    public @NotNull Collection<TurtleProtoBuf.ResponseData> allKeys() {
+        return CollectionResponseDataHelper.stringResponse(valueMap.keySet());
     }
 
     /**
