@@ -103,7 +103,11 @@ enum ExceptionType{
 
 message StringTurtleValueEntry{
     string key=1;
-    TurtleValue turtleValue=2;
+    TurtleValue value=2;
+}
+message  TurtleTurtleValueEntry{
+    TurtleValue key=1;
+    TurtleValue value=2;
 }
 message ResponseData{
 
@@ -125,6 +129,7 @@ message ResponseData{
         bytes bytesValue=12;
         TurtleValue turtleValue=13;
         StringTurtleValueEntry stringTurtleValueEntry=14;
+        TurtleTurtleValueEntry turtleTurtleValueEntry=15;
     }
 
     ExceptionType exceptionType=20;

@@ -1,7 +1,7 @@
 package com.github.entropyfeng.mydb.core.domain;
 
 import com.github.entropyfeng.mydb.common.ops.IListOperations;
-import com.github.entropyfeng.mydb.common.protobuf.SingleResponseDataHelper;
+import com.github.entropyfeng.mydb.common.protobuf.SingleResHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.core.TurtleValue;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +26,7 @@ public class ListDomain implements IListOperations {
 
     @Override
     public @NotNull TurtleProtoBuf.ResponseData size() {
-        return SingleResponseDataHelper.integerResponse(listMap.size());
+        return SingleResHelper.integerResponse(listMap.size());
     }
 
     @Override
@@ -34,7 +34,7 @@ public class ListDomain implements IListOperations {
 
         LinkedList<TurtleValue> list=listMap.get(key);
         int res=list==null?0:listMap.size();
-        return SingleResponseDataHelper.integerResponse(res);
+        return SingleResHelper.integerResponse(res);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class ListDomain implements IListOperations {
         createIfNotExist(key);
         listMap.get(key).addFirst(value);
 
-        return SingleResponseDataHelper.voidResponse();
+        return SingleResHelper.voidResponse();
     }
 
 
@@ -50,7 +50,7 @@ public class ListDomain implements IListOperations {
     public @NotNull TurtleProtoBuf.ResponseData leftPushAll(String key, Collection<TurtleValue> values) {
        createIfNotExist(key);
        listMap.get(key).addAll(0,values);
-        return SingleResponseDataHelper.voidResponse();
+        return SingleResHelper.voidResponse();
     }
 
     @Override
@@ -61,7 +61,7 @@ public class ListDomain implements IListOperations {
             listMap.get(key).addFirst(value);
             res=true;
         }
-        return SingleResponseDataHelper.boolResponse(res);
+        return SingleResHelper.boolResponse(res);
     }
 
     @Override
@@ -72,21 +72,21 @@ public class ListDomain implements IListOperations {
             listMap.get(key).addFirst(value);
             res=true;
         }
-        return SingleResponseDataHelper.boolResponse(res);
+        return SingleResHelper.boolResponse(res);
     }
 
     @Override
     public @NotNull TurtleProtoBuf.ResponseData rightPush(String key, TurtleValue value) {
         createIfNotExist(key);
         listMap.get(key).addLast(value);
-        return SingleResponseDataHelper.voidResponse();
+        return SingleResHelper.voidResponse();
     }
 
     @Override
     public @NotNull TurtleProtoBuf.ResponseData rightPushAll(String key, Collection<TurtleValue> values) {
         createIfNotExist(key);
         listMap.get(key).addAll(values);
-        return SingleResponseDataHelper.voidResponse();
+        return SingleResHelper.voidResponse();
     }
 
     @Override
@@ -97,7 +97,7 @@ public class ListDomain implements IListOperations {
             listMap.get(key).addLast(value);
             res=true;
         }
-        return SingleResponseDataHelper.boolResponse(res);
+        return SingleResHelper.boolResponse(res);
 
     }
 
@@ -109,7 +109,7 @@ public class ListDomain implements IListOperations {
             listMap.get(key).addLast(value);
             res=true;
         }
-        return SingleResponseDataHelper.boolResponse(res);
+        return SingleResHelper.boolResponse(res);
     }
 
     @Override
@@ -120,9 +120,9 @@ public class ListDomain implements IListOperations {
            res=listMap.get(key).pollFirst();
         }
         if (res==null){
-            return SingleResponseDataHelper.nullResponse();
+            return SingleResHelper.nullResponse();
         }else {
-            return SingleResponseDataHelper.turtleValueResponse(res);
+            return SingleResHelper.turtleValueResponse(res);
         }
 
     }
@@ -134,9 +134,9 @@ public class ListDomain implements IListOperations {
             res=listMap.get(key).peekFirst();
         }
         if (res==null){
-            return SingleResponseDataHelper.nullResponse();
+            return SingleResHelper.nullResponse();
         }else {
-            return SingleResponseDataHelper.turtleValueResponse(res);
+            return SingleResHelper.turtleValueResponse(res);
         }
     }
 
@@ -147,9 +147,9 @@ public class ListDomain implements IListOperations {
             res=listMap.get(key).pollLast();
         }
         if (res==null){
-            return SingleResponseDataHelper.nullResponse();
+            return SingleResHelper.nullResponse();
         }else {
-            return SingleResponseDataHelper.turtleValueResponse(res);
+            return SingleResHelper.turtleValueResponse(res);
         }
 
     }
@@ -161,34 +161,34 @@ public class ListDomain implements IListOperations {
             res=listMap.get(key).peekLast();
         }
         if (res==null){
-            return SingleResponseDataHelper.nullResponse();
+            return SingleResHelper.nullResponse();
         }else {
-            return SingleResponseDataHelper.turtleValueResponse(res);
+            return SingleResHelper.turtleValueResponse(res);
         }
     }
 
     @Override
     public @NotNull TurtleProtoBuf.ResponseData clear(String key) {
         listMap.remove(key);
-        return SingleResponseDataHelper.voidResponse();
+        return SingleResHelper.voidResponse();
     }
 
     @Override
     public @NotNull TurtleProtoBuf.ResponseData clearAll() {
         listMap.clear();
-        return SingleResponseDataHelper.voidResponse();
+        return SingleResHelper.voidResponse();
     }
 
     @Override
     public @NotNull TurtleProtoBuf.ResponseData exist(String key) {
-        return SingleResponseDataHelper.boolResponse(listMap.get(key)!=null);
+        return SingleResHelper.boolResponse(listMap.get(key)!=null);
     }
 
     @Override
     public @NotNull TurtleProtoBuf.ResponseData exist(String key, TurtleValue value) {
         LinkedList<TurtleValue> list= listMap.get(key);
         boolean res= list != null && list.contains(value);
-        return SingleResponseDataHelper.boolResponse(res);
+        return SingleResHelper.boolResponse(res);
     }
 
     private void createIfNotExist(String key) {

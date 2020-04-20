@@ -180,7 +180,7 @@ public class DefaultValueOperations implements ValueOperations {
                 for (int i = 1; i <resCollection.size() ; i++) {
 
                   TurtleProtoBuf.StringTurtleValueEntry entry= resCollection.get(i).getStringTurtleValueEntry();
-                  entries.add(new Pair<>(entry.getKey(),ProtoTurtleHelper.convertToTurtleValue(entry.getTurtleValue())));
+                  entries.add(new Pair<>(entry.getKey(),ProtoTurtleHelper.convertToTurtleValue(entry.getValue())));
                 }
                 return entries;
             }

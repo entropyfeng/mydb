@@ -7,7 +7,7 @@ import java.util.*;
 /**
  * @author entropyfeng
  */
-public class CollectionResponseDataHelper {
+public class CollectionResHelper {
 
 
     public static Collection<TurtleProtoBuf.ResponseData> nullResponse(){
@@ -23,15 +23,13 @@ public class CollectionResponseDataHelper {
     }
 
     public static Collection<TurtleProtoBuf.ResponseData> stringTurtleResponse(Set<Map.Entry<String, TurtleValue>> entrySet){
-        final int entrySize = entrySet.size();
+
+        final int entrySize=entrySet.size();
         ArrayList<TurtleProtoBuf.ResponseData> resList = new ArrayList<>(entrySize+1);
         //第一个responseData
         TurtleProtoBuf.ResponseData.Builder builder = TurtleProtoBuf.ResponseData.newBuilder();
-        builder.setCollectionSize(entrySize);
-        builder.setSuccess(true);
-        builder.setCollectionAble(true);
-        builder.setEndAble(false);
-        resList.add(builder.build());
+
+        resList.add(buildFirst(builder, entrySize).build());
 
 
         TurtleProtoBuf.StringTurtleValueEntry.Builder entryBuilder = TurtleProtoBuf.StringTurtleValueEntry.newBuilder();
@@ -41,7 +39,7 @@ public class CollectionResponseDataHelper {
             entryBuilder.clear();
 
             entryBuilder.setKey(stringTurtleValueEntry.getKey());
-            entryBuilder.setTurtleValue(ProtoTurtleHelper.convertToProtoTurtleValue(stringTurtleValueEntry.getValue()));
+            entryBuilder.setValue(ProtoTurtleHelper.convertToProtoTurtleValue(stringTurtleValueEntry.getValue()));
 
             builder.setStringTurtleValueEntry(entryBuilder.build());
             builder.setEndAble(false);
@@ -55,18 +53,20 @@ public class CollectionResponseDataHelper {
 
     }
 
+    public static Collection<TurtleProtoBuf.ResponseData> turtleTurtleResponse(Set<Map.Entry<TurtleValue, TurtleValue>> entries){
+        return null;
+    }
+
     public static Collection<TurtleProtoBuf.ResponseData> stringResponse(Collection<String> stringCollection){
         final int stringsSize = stringCollection.size();
         ArrayList<TurtleProtoBuf.ResponseData> resList = new ArrayList<>(stringsSize+1);
         //第一个responseData
         TurtleProtoBuf.ResponseData.Builder builder = TurtleProtoBuf.ResponseData.newBuilder();
-        builder.setCollectionSize(stringsSize);
-        builder.setSuccess(true);
-        builder.setCollectionAble(true);
-        builder.setEndAble(false);
-        resList.add(builder.build());
+
+        resList.add(buildFirst(builder,stringCollection.size()).build());
 
 
+        //其他的res
         stringCollection.forEach(stringValue -> {
             builder.clear();
             builder.setStringValue(stringValue);
@@ -74,9 +74,20 @@ public class CollectionResponseDataHelper {
             resList.add(builder.build());
         });
 
+        //即使返回为空置也可将第一个res设置为end
+        TurtleProtoBuf.ResponseData last = resList.get(stringsSize).toBuilder().setEndAble(true).build();
+        resList.set(stringsSize, last);
+
         return resList;
     }
 
+    private static TurtleProtoBuf.ResponseData.Builder buildFirst(TurtleProtoBuf.ResponseData.Builder builder,long size){
+        builder.setCollectionSize(size);
+        builder.setSuccess(true);
+        builder.setCollectionAble(true);
+        builder.setEndAble(false);
+        return builder;
+    }
     public static Collection<TurtleProtoBuf.ResponseData> turtleResponse(Collection<TurtleValue> collection){
 
         ArrayList<TurtleProtoBuf.ResponseData> resList=new ArrayList<>(collection.size()+1);

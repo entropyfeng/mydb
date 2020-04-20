@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author entropyfeng
  */
-public class SingleResponseDataHelper {
+public class SingleResHelper {
 
     public static TurtleProtoBuf.ResponseData voidResponse() {
 

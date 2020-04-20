@@ -1,8 +1,8 @@
 package com.github.entropyfeng.mydb.core.domain;
 
 import com.github.entropyfeng.mydb.common.ops.ISetOperations;
-import com.github.entropyfeng.mydb.common.protobuf.CollectionResponseDataHelper;
-import com.github.entropyfeng.mydb.common.protobuf.SingleResponseDataHelper;
+import com.github.entropyfeng.mydb.common.protobuf.CollectionResHelper;
+import com.github.entropyfeng.mydb.common.protobuf.SingleResHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.core.TurtleValue;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +25,7 @@ public class SetDomain implements ISetOperations {
     @Override
     public @NotNull TurtleProtoBuf.ResponseData exist(String key) {
 
-        return SingleResponseDataHelper.boolResponse(setHashMap.containsKey(key));
+        return SingleResHelper.boolResponse(setHashMap.containsKey(key));
     }
 
     @Override
@@ -35,62 +35,62 @@ public class SetDomain implements ISetOperations {
         if (set != null && set.contains(value)) {
             res = true;
         }
-        return SingleResponseDataHelper.boolResponse(res);
+        return SingleResHelper.boolResponse(res);
     }
 
     @Override
     public @NotNull TurtleProtoBuf.ResponseData add(String key, TurtleValue value) {
         createIfNotExists(key);
         setHashMap.get(key).add(value);
-        return SingleResponseDataHelper.voidResponse();
+        return SingleResHelper.voidResponse();
     }
 
     @Override
     public @NotNull TurtleProtoBuf.ResponseData union(String key, String otherKey) {
 
         setUnion(key, otherKey);
-        return SingleResponseDataHelper.voidResponse();
+        return SingleResHelper.voidResponse();
     }
 
     @Override
     public @NotNull TurtleProtoBuf.ResponseData union(String key, Collection<TurtleValue> turtleValues) {
         setUnion(key, turtleValues);
-        return SingleResponseDataHelper.voidResponse();
+        return SingleResHelper.voidResponse();
     }
 
     @Override
     public @NotNull TurtleProtoBuf.ResponseData intersect(String key, String otherKey) {
 
         setIntersect(key, otherKey);
-        return SingleResponseDataHelper.voidResponse();
+        return SingleResHelper.voidResponse();
     }
 
     @Override
     public @NotNull TurtleProtoBuf.ResponseData intersect(String key, Collection<TurtleValue> turtleValues) {
         setIntersect(key,turtleValues);
-        return SingleResponseDataHelper.voidResponse();
+        return SingleResHelper.voidResponse();
     }
 
     @Override
     public @NotNull TurtleProtoBuf.ResponseData difference(String key, String otherKey) {
 
         setDifference(key, otherKey);
-        return SingleResponseDataHelper.voidResponse();
+        return SingleResHelper.voidResponse();
     }
 
     @Override
     public @NotNull TurtleProtoBuf.ResponseData difference(String key, Collection<TurtleValue> turtleValues) {
         setDifference(key, turtleValues);
-        return SingleResponseDataHelper.voidResponse();
+        return SingleResHelper.voidResponse();
     }
 
     @Override
     public @NotNull Collection<TurtleProtoBuf.ResponseData> entries(String key) {
        HashSet<TurtleValue> res= setHashMap.get(key);
        if (res==null){
-           return CollectionResponseDataHelper.nullResponse();
+           return CollectionResHelper.nullResponse();
        }else {
-           return CollectionResponseDataHelper.turtleResponse(res);
+           return CollectionResHelper.turtleResponse(res);
        }
     }
 

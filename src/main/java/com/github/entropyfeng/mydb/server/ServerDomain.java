@@ -151,10 +151,10 @@ public class ServerDomain {
         }
         Objects.requireNonNull(res);
         if (res instanceof Collection){
-           ((Collection) res).forEach(object-> command.getChannel().write(dealResponseData((TurtleProtoBuf.ResponseData)object,command.getRequestId())));
+           ((Collection) res).forEach(object-> command.getChannel().write(addResponseId((TurtleProtoBuf.ResponseData)object,command.getRequestId())));
            command.getChannel().flush();
         }else {
-            command.getChannel().writeAndFlush(dealResponseData((TurtleProtoBuf.ResponseData)res,command.getRequestId()));
+            command.getChannel().writeAndFlush(addResponseId((TurtleProtoBuf.ResponseData)res,command.getRequestId()));
         }
     }
 
@@ -165,7 +165,7 @@ public class ServerDomain {
      * @param requestId long
      * @return 加上 requestId 后的返回值
      */
-    private TurtleProtoBuf.ResponseData dealResponseData(TurtleProtoBuf.ResponseData responseData, Long requestId){
+    private TurtleProtoBuf.ResponseData addResponseId(TurtleProtoBuf.ResponseData responseData, Long requestId){
 
         //再次创建了对象，会影响性能
         return responseData.toBuilder().setResponseId(requestId).build();

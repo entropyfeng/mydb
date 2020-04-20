@@ -1,11 +1,10 @@
 package com.github.entropyfeng.mydb.core.domain;
 
 import com.github.entropyfeng.mydb.common.TurtleValueType;
-import com.github.entropyfeng.mydb.common.exception.ElementOutOfBoundException;
 import com.github.entropyfeng.mydb.common.exception.TurtleDesignError;
 import com.github.entropyfeng.mydb.common.ops.IValueOperations;
-import com.github.entropyfeng.mydb.common.protobuf.CollectionResponseDataHelper;
-import com.github.entropyfeng.mydb.common.protobuf.SingleResponseDataHelper;
+import com.github.entropyfeng.mydb.common.protobuf.CollectionResHelper;
+import com.github.entropyfeng.mydb.common.protobuf.SingleResHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.core.TurtleValue;
 import com.github.entropyfeng.mydb.core.obj.BaseObject;
@@ -39,14 +38,14 @@ public class ValuesDomain extends BaseObject implements IValueOperations {
             deleteExpireTime(key);
         }
         if (valueMap.size() >= Integer.MAX_VALUE) {
-            return SingleResponseDataHelper.elementOutOfBoundException("size of map out of limit .!");
+            return SingleResHelper.elementOutOfBoundException("size of map out of limit .!");
         }
 
         valueMap.put(key, value);
         if (!TimeUtil.isExpire(time)) {
             putExpireTime(key, time);
         }
-        return SingleResponseDataHelper.voidResponse();
+        return SingleResHelper.voidResponse();
     }
 
     @Override
@@ -62,7 +61,7 @@ public class ValuesDomain extends BaseObject implements IValueOperations {
         }
 
 
-        return SingleResponseDataHelper.boolResponse(res);
+        return SingleResHelper.boolResponse(res);
     }
 
     @Override
@@ -79,7 +78,7 @@ public class ValuesDomain extends BaseObject implements IValueOperations {
             }
             res = true;
         }
-        return SingleResponseDataHelper.boolResponse(res);
+        return SingleResHelper.boolResponse(res);
     }
 
     @Override
@@ -88,9 +87,9 @@ public class ValuesDomain extends BaseObject implements IValueOperations {
 
         TurtleValue turtleValue = valueMap.get(key);
         if (turtleValue == null) {
-            return SingleResponseDataHelper.nullResponse();
+            return SingleResHelper.nullResponse();
         } else {
-            return SingleResponseDataHelper.turtleValueResponse(turtleValue);
+            return SingleResHelper.turtleValueResponse(turtleValue);
         }
     }
 
@@ -133,17 +132,17 @@ public class ValuesDomain extends BaseObject implements IValueOperations {
     @Override
     @NotNull
     public Collection<TurtleProtoBuf.ResponseData> allValues() {
-        return CollectionResponseDataHelper.turtleResponse(valueMap.values());
+        return CollectionResHelper.turtleResponse(valueMap.values());
     }
 
     @Override
     public @NotNull Collection<TurtleProtoBuf.ResponseData> allEntries() {
-        return CollectionResponseDataHelper.stringTurtleResponse(valueMap.entrySet());
+        return CollectionResHelper.stringTurtleResponse(valueMap.entrySet());
     }
 
     @Override
     public @NotNull Collection<TurtleProtoBuf.ResponseData> allKeys() {
-        return CollectionResponseDataHelper.stringResponse(valueMap.keySet());
+        return CollectionResHelper.stringResponse(valueMap.keySet());
     }
 
     /**
@@ -162,7 +161,7 @@ public class ValuesDomain extends BaseObject implements IValueOperations {
         handleExpire(key);
         TurtleValue turtleValue = valueMap.get(key);
         if (turtleValue == null) {
-            return SingleResponseDataHelper.noSuchElementException();
+            return SingleResHelper.noSuchElementException();
         }
         try {
             switch (type) {
@@ -188,11 +187,11 @@ public class ValuesDomain extends BaseObject implements IValueOperations {
                     throw new TurtleDesignError("unSupport enum type: " + type);
             }
         } catch (UnsupportedOperationException e) {
-            return SingleResponseDataHelper.unSupportOperationException();
+            return SingleResHelper.unSupportOperationException();
         } catch (TurtleDesignError e) {
-            return SingleResponseDataHelper.turtleDesignException(e.getMessage());
+            return SingleResHelper.turtleDesignException(e.getMessage());
         }
-        return SingleResponseDataHelper.turtleValueResponse(turtleValue);
+        return SingleResHelper.turtleValueResponse(turtleValue);
     }
 
 }
