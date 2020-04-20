@@ -1,6 +1,5 @@
 package com.github.entropyfeng.mydb.server;
 
-
 import com.github.entropyfeng.mydb.common.protobuf.ProtoParaHelper;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
@@ -27,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 
@@ -85,6 +83,19 @@ public class ServerDomain {
 
     private void runHash(){
 
+        logger.info("runHash");
+        while (true){
+            ClientCommand hashCommand=hashQueue.pollFirst();
+            if (hashCommand!=null){
+                execute(hashCommand,hashDomain);
+            }else {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
     private void runList() {
         logger.info("runList");
@@ -255,10 +266,19 @@ public class ServerDomain {
 
         switch (clientCommand.getModel()) {
             case VALUE:
-                parseForValue(types, values, channel, clientCommand);
+                constructCommand(types,values,channel,clientCommand,ValuesDomain.class,valuesQueue);
                 return;
             case ADMIN:
                 System.out.println(clientCommand.getOperationName());
+                return;
+            case LIST:
+                constructCommand(types,values,channel,clientCommand,ListDomain.class,listQueue);
+                return;
+            case SET:
+                constructCommand(types,values,channel,clientCommand,SetDomain.class,setQueue);
+                return;
+            case HASH:
+                constructCommand(types,values,channel,clientCommand,HashDomain.class,hashQueue);
                 return;
             default:
                 throw new UnsupportedOperationException();
@@ -266,7 +286,8 @@ public class ServerDomain {
     }
 
 
-    private void parseForValue(@NotNull Class<?>[] types, List<Object> values, Channel channel, @NotNull TurtleProtoBuf.ClientCommand command) {
+    private void constructCommand(@NotNull Class<?>[] types, @NotNull List<Object> values, @NotNull Channel channel, @NotNull TurtleProtoBuf.ClientCommand command,@NotNull Class<?> target,@NotNull ConcurrentLinkedDeque<ClientCommand> queue){
+
         Method method = null;
         final String operationName = command.getOperationName();
         final Long requestId = command.getRequestId();
@@ -274,9 +295,9 @@ public class ServerDomain {
         //找到合适的方法
         try {
             if (types.length == 0) {
-                method = ValuesDomain.class.getDeclaredMethod(operationName);
+                method = target.getDeclaredMethod(operationName);
             } else {
-                method = ValuesDomain.class.getDeclaredMethod(operationName, types);
+                method = target.getDeclaredMethod(operationName, types);
             }
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
@@ -285,9 +306,8 @@ public class ServerDomain {
         if (method == null) {
             channel.writeAndFlush(responseData);
         } else {
-            valuesQueue.offer(new ClientCommand(method, values, channel, requestId));
+            queue.offer(new ClientCommand(method, values, channel, requestId));
         }
-
     }
 
 }

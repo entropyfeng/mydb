@@ -16,8 +16,6 @@ public interface ListOperations {
 
     public void leftPush(String key, TurtleValue value);
 
-    public void leftPush(String key,TurtleValue value,long time);
-
     public default void leftPushAll(String key, TurtleValue... values) {
         leftPushAll(key, Arrays.asList(values));
 

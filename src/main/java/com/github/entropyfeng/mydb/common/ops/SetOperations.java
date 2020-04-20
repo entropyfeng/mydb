@@ -26,6 +26,5 @@ public interface SetOperations {
 
     public Collection<TurtleValue> difference (String key,Collection<TurtleValue> turtleValues);
 
-
     public Collection<TurtleValue> entries(String key);
 }

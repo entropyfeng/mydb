@@ -13,7 +13,6 @@ public class SingleResHelper {
         TurtleProtoBuf.ResponseData.Builder builder = TurtleProtoBuf.ResponseData.newBuilder();
         builder.setCollectionAble(false);
         builder.setSuccess(true);
-        builder.setVoidable(true);
         return builder.build();
     }
 
