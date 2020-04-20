@@ -2,37 +2,39 @@ package com.github.entropyfeng.mydb.server.command;
 
 import io.netty.channel.Channel;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 import java.util.List;
 
 /**
  * @author entropyfeng
  */
-public class ValuesCommand implements ICommand {
-
-
-    private final Method method;
-    private final List<Object> values;
-    private final Channel channel;
-    private final Long requestId;
-
-    public ValuesCommand(Method method, List<Object> values, Channel channel, Long requestId) {
+public class ClientCommand implements ICommand {
+    public ClientCommand(Method method, List<Object> values, Channel channel, Long requestId) {
         this.method = method;
         this.values = values;
         this.channel = channel;
         this.requestId = requestId;
     }
 
+    private final Method method;
+    private final List<Object> values;
+    private final Channel channel;
+    private final Long requestId;
+    private Long requestSequence;
+
     @Override
-    public Channel getChannel() {
-        return channel;
+    public Long getRequestId() {
+        return requestId;
     }
 
     @Override
     public Method getMethod() {
         return method;
+    }
+
+    @Override
+    public Channel getChannel() {
+        return channel;
     }
 
     @Override
@@ -43,10 +45,5 @@ public class ValuesCommand implements ICommand {
     @Override
     public Long getRequestSequence() {
         return null;
-    }
-
-    @Override
-    public Long getRequestId() {
-        return requestId;
     }
 }

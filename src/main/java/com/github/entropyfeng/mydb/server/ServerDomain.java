@@ -4,11 +4,13 @@ package com.github.entropyfeng.mydb.server;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoParaHelper;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
+import com.github.entropyfeng.mydb.core.domain.HashDomain;
 import com.github.entropyfeng.mydb.core.domain.ListDomain;
 import com.github.entropyfeng.mydb.core.domain.SetDomain;
 import com.github.entropyfeng.mydb.core.domain.ValuesDomain;
 import com.github.entropyfeng.mydb.core.TurtleValue;
 import com.github.entropyfeng.mydb.server.command.*;
+import com.github.entropyfeng.mydb.server.factory.HashThreadFactory;
 import com.github.entropyfeng.mydb.server.factory.ListThreadFactory;
 import com.github.entropyfeng.mydb.server.factory.SetThreadFactory;
 import com.github.entropyfeng.mydb.server.factory.ValuesThreadFactory;
@@ -25,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 
@@ -48,6 +51,8 @@ public class ServerDomain {
         setDomain=new SetDomain();
         setQueue=new ConcurrentLinkedDeque<>();
 
+        hashDomain=new HashDomain();
+        hashQueue=new ConcurrentLinkedDeque<>();
         start();
     }
 
@@ -61,23 +66,30 @@ public class ServerDomain {
 
     protected SetDomain setDomain;
 
+    protected HashDomain hashDomain;
 
-    protected ConcurrentLinkedDeque<ValuesCommand> valuesQueue;
+    protected ConcurrentLinkedDeque<ClientCommand> valuesQueue;
 
-    protected ConcurrentLinkedDeque<ListCommand> listQueue;
+    protected ConcurrentLinkedDeque<ClientCommand> listQueue;
 
-    protected ConcurrentLinkedDeque<SetCommand> setQueue;
+    protected ConcurrentLinkedDeque<ClientCommand> setQueue;
+
+    protected ConcurrentLinkedDeque<ClientCommand> hashQueue;
 
     public void start() {
         new ValuesThreadFactory().newThread(this::runValues).start();
         new ListThreadFactory().newThread(this::runList).start();
         new SetThreadFactory().newThread(this::runSet).start();
+        new HashThreadFactory().newThread(this::runHash).start();
     }
 
+    private void runHash(){
+
+    }
     private void runList() {
         logger.info("runList");
         while (true) {
-            ListCommand listCommand = listQueue.pollFirst();
+           ClientCommand listCommand = listQueue.pollFirst();
             if (listCommand != null) {
                 execute(listCommand, listDomain);
             }else {
@@ -93,7 +105,7 @@ public class ServerDomain {
     private void runValues() {
         logger.info("runValues");
         while (true) {
-            ValuesCommand valuesCommand = valuesQueue.pollFirst();
+            ClientCommand valuesCommand = valuesQueue.pollFirst();
             if (valuesCommand != null) {
 
                 execute(valuesCommand, valuesDomain);
@@ -110,7 +122,7 @@ public class ServerDomain {
     private void runSet() {
         logger.info("runSet");
         while (true) {
-            SetCommand setCommand = setQueue.pollFirst();
+            ClientCommand setCommand = setQueue.pollFirst();
             if (setCommand != null) {
                 execute(setCommand, setDomain);
             }else {
@@ -273,11 +285,9 @@ public class ServerDomain {
         if (method == null) {
             channel.writeAndFlush(responseData);
         } else {
-            System.out.println(method.getName());
-            valuesQueue.offer(new ValuesCommand(method, values, channel, requestId));
+            valuesQueue.offer(new ClientCommand(method, values, channel, requestId));
         }
 
     }
-
 
 }

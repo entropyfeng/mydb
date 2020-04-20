@@ -88,7 +88,7 @@ public class SetDomain implements ISetOperations {
     public @NotNull Collection<TurtleProtoBuf.ResponseData> entries(String key) {
        HashSet<TurtleValue> res= setHashMap.get(key);
        if (res==null){
-           return CollectionResHelper.nullResponse();
+           return CollectionResHelper.emptyResponse();
        }else {
            return CollectionResHelper.turtleResponse(res);
        }
