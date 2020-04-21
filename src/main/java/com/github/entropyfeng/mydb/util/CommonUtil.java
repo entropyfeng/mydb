@@ -1,12 +1,9 @@
 package com.github.entropyfeng.mydb.util;
 
 import com.google.common.base.Charsets;
-import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**

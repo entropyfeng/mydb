@@ -1,11 +1,15 @@
 package com.github.entropyfeng.mydb.core;
 
 import com.github.entropyfeng.mydb.common.TurtleValueType;
-import com.google.common.base.Objects;
+import com.google.common.base.Charsets;
+import com.google.common.hash.HashFunction;
+import com.google.common.hash.Hasher;
+import com.google.common.hash.Hashing;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 
 /**
  * @author entropyfeng
@@ -222,9 +226,26 @@ public class MyValue implements Comparable<MyValue> {
 
     }
 
+    @SuppressWarnings("all")
     @Override
     public int hashCode() {
-        return Objects.hashCode(type, value);
+        switch (type){
+            case INTEGER:return Hashing.murmur3_32().hashInt((Integer)value).asInt();
+            case LONG:return Hashing.murmur3_32().hashLong((Long)value).asInt();
+            case STRING:
+            case DOUBLE:
+            case NUMBER_INTEGER:return Hashing.murmur3_32().hashString(value.toString(),Charsets.UTF_8).asInt();
+            case NUMBER_DECIMAL:return Hashing.murmur3_32().hashString(((BigDecimal)value).toPlainString(),Charsets.UTF_8).asInt();
+            default:return 0;
+        }
+    }
+
+    public void shrink(){
+        if (type==TurtleValueType.STRING){
+            if (value instanceof StringBuilder){
+                this.value=((StringBuilder)value).toString();
+            }
+        }
     }
 
     @Override
@@ -246,6 +267,5 @@ public class MyValue implements Comparable<MyValue> {
                 return 0;
             }
         }
-
     }
 }
