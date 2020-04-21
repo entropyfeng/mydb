@@ -8,14 +8,12 @@ import org.junit.Test;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 
 public class TestSkipList {
 
 
-
     @Test
-    public void testInsert(){
+    public void testInsert() {
         SkipList<Double> skipList = new SkipList<>();
         ThreadLocalRandom random = ThreadLocalRandom.current();
         List<Double> res = random.doubles().limit(1000).distinct().boxed().collect(Collectors.toList());
@@ -25,13 +23,27 @@ public class TestSkipList {
     }
 
     @Test
-    public void testDelete(){
+    public void testDelete() {
 
-        SkipList<Double> skipList=new SkipList<>();
+        SkipList<Double> skipList = new SkipList<>();
         ThreadLocalRandom random = ThreadLocalRandom.current();
         List<Double> res = random.doubles().limit(1000).distinct().boxed().collect(Collectors.toList());
         res.forEach(aDouble -> skipList.insertNode(aDouble, 666));
-        res.forEach(aDouble -> skipList.deleteValue(aDouble,666));
-        Assert.assertEquals(0,skipList.size());
+        res.forEach(aDouble -> skipList.deleteValue(aDouble, 666));
+        Assert.assertEquals(0, skipList.size());
     }
+
+    @Test
+    public void testInRange1() {
+        SkipList<Double> skipList = new SkipList<>();
+        skipList.insertNode((double) 666, 666);
+        Assert.assertTrue(skipList.inRange(666, 666));
+    }
+    @Test
+    public void testInRange2() {
+        SkipList<Double> skipList = new SkipList<>();
+        skipList.insertNode((double) 666, 555);
+        Assert.assertFalse(skipList.inRange(666, 666));
+    }
+
 }

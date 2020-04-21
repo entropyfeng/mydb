@@ -1,13 +1,14 @@
 package com.github.entropyfeng.mydb.core.zset;
 
 
-import java.util.HashMap;
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.*;
 
 /**
  * @author entropyfeng
  */
-public class OrderSet<T extends Comparable<T>> {
+public class OrderSet<T extends Comparable<T>>  {
 
 
     private SkipList<T> skipList;
@@ -37,6 +38,10 @@ public class OrderSet<T extends Comparable<T>> {
         }
         return false;
     }
+    public int delete(double begin,double end){
+
+        return 0;
+    }
     public boolean exists(T value,double score){
       Double val=  hashMap.get(value);
       if (val==null){
@@ -59,13 +64,30 @@ public class OrderSet<T extends Comparable<T>> {
         return skipList.range(begin, end);
     }
 
-    public int deleteRange(double begin ,double end){
 
-        return 0;
+    public int count(double begin,double end){
+        return skipList.rangeSize(begin, end);
     }
 
+
     public int size(){
-        return skipList.size();
+        return hashMap.size();
+    }
+
+
+    public boolean isEmpty() {
+        return hashMap.size()==0;
+    }
+
+
+    public boolean contains(T o) {
+
+        return hashMap.containsKey(o);
+    }
+
+    public void clear() {
+        skipList.clear();
+        hashMap.clear();
     }
 
 }

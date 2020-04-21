@@ -6,8 +6,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
 
 /**
  * @author entropyfeng
@@ -33,9 +31,9 @@ public class SkipList<T extends Comparable<T>> {
      */
     private int maxLevel;
 
-    public SkipList() {
+    private void init(){
         //头结点默认值最小
-        header = new SkipListNode<T>(null, Double.NEGATIVE_INFINITY, 32);
+        header = new SkipListNode<>(null, Double.NEGATIVE_INFINITY, 32);
         //尾结点默认最大
         tail = new SkipListNode<>(null, Double.MAX_VALUE, 32);
         size = 0;
@@ -46,6 +44,10 @@ public class SkipList<T extends Comparable<T>> {
         }
 
         tail.back = header;
+    }
+    public SkipList() {
+
+        init();
     }
 
     /**
@@ -161,13 +163,25 @@ public class SkipList<T extends Comparable<T>> {
     }
 
     public boolean inRange(double begin, double end) {
-
-        return false;
+        return header.level[0].score<=begin&&tail.back.score>=end;
     }
+    public int rangeSize(double begin,double end){
 
-    public int deleteRange(double begin, double end) {
+        SkipListNode<T> tempNode = header;
 
-        return 0;
+        for (int i = maxLevel - 1; i >= 0; i--) {
+
+            while (tempNode.level[i] != tail && tempNode.level[i].score < begin) {
+                tempNode = tempNode.level[i];
+            }
+        }
+        tempNode = tempNode.level[0];
+        int resSize=0;
+        while (tempNode != tail && tempNode.score <= end) {
+            resSize++;
+            tempNode = tempNode.level[0];
+        }
+        return resSize;
     }
 
     /**
@@ -205,5 +219,8 @@ public class SkipList<T extends Comparable<T>> {
         return res;
     }
 
+    public void  clear(){
+        init();
+    }
 }
 
