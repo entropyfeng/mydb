@@ -2,10 +2,12 @@ package com.github.entropyfeng.mydb.core;
 
 import com.github.entropyfeng.mydb.common.CommonConstant;
 import com.github.entropyfeng.mydb.common.TurtleValueType;
+import com.github.entropyfeng.mydb.common.exception.TurtleDesignError;
 import com.github.entropyfeng.mydb.common.exception.TurtleValueElementOutBoundsException;
 import com.github.entropyfeng.mydb.util.BytesUtil;
 import com.github.entropyfeng.mydb.util.CommonUtil;
 import com.google.common.hash.Hashing;
+import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -21,15 +23,15 @@ import static com.github.entropyfeng.mydb.util.BytesUtil.bytesToInt;
 /**
  * 同时支持
  * {@link String}
- * {@link BigInteger}
  * {@link Integer}
  * {@link Long}
- * {@link BigDecimal}
  * {@link Double}
+ * {@link BigInteger}
+ * {@link BigDecimal}
  * 6种编码
  * @author entropyfeng
  */
-public class TurtleValue {
+public class TurtleValue implements Comparable<TurtleValue>{
     private TurtleValueType type;
     private byte[] values;
 
@@ -176,7 +178,7 @@ public class TurtleValue {
             case DOUBLE:return BytesUtil.bytesToDouble(values);
             case NUMBER_DECIMAL:return new BigDecimal(new String(values));
             case STRING:return new String(values);
-            default:throw new UnsupportedOperationException();
+            default:throw new TurtleDesignError("design error");
         }
     }
     private void handleBigDecimal(BigDecimal bigDecimal) {
@@ -235,7 +237,7 @@ public class TurtleValue {
      * @param longValue long value
      */
     private static void longAdd(byte[] bytes, long longValue) {
-        longToBytes(bytes, bytesToLong(bytes) + longValue);
+        longToBytes(bytesToLong(bytes) + longValue,bytes);
     }
 
     /**
@@ -243,7 +245,7 @@ public class TurtleValue {
      * @param intValue int value
      */
     private static void intAdd(byte[] bytes, int intValue) {
-        intToBytes(bytes, bytesToInt(bytes) + intValue);
+        intToBytes(bytesToInt(bytes) + intValue,bytes);
     }
 
     @Override
@@ -264,5 +266,23 @@ public class TurtleValue {
     @SuppressWarnings("all")
     public int hashCode() {
       return   Hashing.murmur3_32().hashBytes(values).asInt();
+    }
+
+    @Override
+    public int compareTo(@NotNull TurtleValue o) {
+
+        if (this.type==o.type){
+            switch (this.type){
+                case INTEGER:return Integer.compare((Integer) this.toObject(),(Integer) o.toObject());
+                case DOUBLE:return Double.compare((Double)this.toObject(),(Double)this.toObject());
+                case LONG:return Long.compare((Long)this.toObject(),(Long)this.toObject());
+                case NUMBER_INTEGER:return ((BigInteger)this.toObject()).compareTo((BigInteger) o.toObject());
+                case NUMBER_DECIMAL:return ((BigDecimal)this.toObject()).compareTo((BigDecimal)o.toObject());
+                case STRING:return ((String)o.toObject()).compareTo((String)o.toObject());
+                default:return 0;
+            }
+        }
+        return 0;
+
     }
 }

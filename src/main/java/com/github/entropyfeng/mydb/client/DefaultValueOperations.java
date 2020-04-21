@@ -184,7 +184,7 @@ public class DefaultValueOperations implements ValueOperations {
                 }
                 return entries;
             }
-            throw new IllegalArgumentException(" except "+first.getCollectionSize()+" find "+(resCollection.size()-1));
+            throw new IllegalArgumentException("except "+first.getCollectionSize()+" find "+(resCollection.size()-1));
         }
         ProtoExceptionHelper.handler(first.getExceptionType(),first.getException());
         return null;

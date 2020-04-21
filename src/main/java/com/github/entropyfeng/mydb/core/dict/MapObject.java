@@ -1,7 +1,6 @@
 package com.github.entropyfeng.mydb.core.dict;
 
 import com.github.entropyfeng.mydb.core.helper.Pair;
-import com.github.entropyfeng.mydb.util.CommonUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -261,8 +260,8 @@ class MapObject<K, V> {
         }
     }
 
-    private int hashing(Object o) {
-        return CommonUtil.hashing(o);
+    private int hashing(@NotNull Object o) {
+        return o.hashCode();
     }
     //-----------get and set-----------
 

@@ -25,7 +25,7 @@ public class CommonUtil {
 
         final int maxLevel=32;
         int res = 1;
-        while (ThreadLocalRandom.current().nextBoolean()&&res<=maxLevel) {
+        while (ThreadLocalRandom.current().nextBoolean()&&res<maxLevel) {
             res++;
         }
         return res;

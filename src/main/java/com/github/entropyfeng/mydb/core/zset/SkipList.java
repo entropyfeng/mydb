@@ -2,81 +2,70 @@ package com.github.entropyfeng.mydb.core.zset;
 
 import com.github.entropyfeng.mydb.core.helper.Pair;
 import com.github.entropyfeng.mydb.util.CommonUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 /**
  * @author entropyfeng
  * @date 2019/12/27 20:34
+ * a score-> multi value
+ * an value ->score
+ * not exists multi equals value
  */
 public class SkipList<T extends Comparable<T>> {
 
+    private static final int MAX_LEVEL = 32;
     private SkipListNode<T> header;
 
     private SkipListNode<T> tail;
-
     /**
      * 链表长度
      */
-    private long length;
-    /**
-     * 元素个数
-     */
-    private long counts;
+    private int size;
 
     /**
      * 当前跳表最大高度
+     * restrict max height is 32
      */
     private int maxLevel;
 
     public SkipList() {
+        //头结点默认值最小
         header = new SkipListNode<T>(null, Double.NEGATIVE_INFINITY, 32);
-        length = 0;
+        //尾结点默认最大
+        tail = new SkipListNode<>(null, Double.MAX_VALUE, 32);
+        size = 0;
         maxLevel = 0;
-    }
 
+        for (int i = 0; i < MAX_LEVEL; i++) {
+            header.level[i] = tail;
+        }
 
-    /**
-     * 查找value对应结点
-     *
-     * @param value notNull
-     * @return {@link SkipListNode}
-     */
-    private SkipListNode<T> findNode(T value) {
-        assert value != null;
-        SkipListNode<T> tempNode = header;
-        for (int i = maxLevel - 1; i >= 0; i--) {
-            while (tempNode.level[i] != null && compare(tempNode.level[i].value, value) < 0) {
-                tempNode = tempNode.level[i];
-            }
-        }
-        tempNode = tempNode.level[0];
-        if (tempNode == null) {
-            return null;
-        } else if (compare(tempNode.value, value) == 0) {
-            return tempNode;
-        } else {
-            return null;
-        }
+        tail.back = header;
     }
 
     /**
      * 前提一定存在该节点
      * 获取value 与 score 所对应的节点
+     *
      * @param value 值
      * @param score 分值
      * @return {@link SkipListNode}
      */
-    private SkipListNode<T> getNode(T value, double score) {
+    private @NotNull SkipListNode<T> getNode(@NotNull T value, double score) {
         SkipListNode<T> tempNode = header;
         for (int i = maxLevel - 1; i >= 0; i--) {
-            while (tempNode.level[i] != null && IsFirstLessThanSecond(tempNode.level[i].score, score, tempNode.level[i].value, value)) {
+            while (tempNode.level[i] != tail && isFirstLessThanSecond(tempNode.level[i].score, score, tempNode.level[i].value, value)) {
                 tempNode = tempNode.level[i];
             }
         }
         return tempNode.level[0];
     }
+
 
     /**
      * 比较大小
@@ -87,7 +76,7 @@ public class SkipList<T extends Comparable<T>> {
      * -1-> first less than second
      * 1 -> first greater than second
      */
-    private int compare(T first, T second) {
+    private int compareValue(T first, T second) {
         if (first != null && second != null) {
             return first.compareTo(second);
         } else if (first == null && second != null) {
@@ -104,24 +93,19 @@ public class SkipList<T extends Comparable<T>> {
      * 如果分值不同，比较分值大小
      * 如果分值相同，比较对象value
      *
-     * @param first  {@link SkipListNode}
-     * @param second {@link SkipListNode}
+     * @param firstScore  第一个分值
+     * @param secondScore 第二个分值
+     * @param firstValue  第一个值
+     * @param secondValue 第二个值
      * @return true->first less than second strictly
      * false->first more than second strictly
      */
-    private boolean IsFirstLessThanSecond(SkipListNode<T> first, SkipListNode<T> second) {
-        if (first.score != second.score) {
-            return first.score < second.score;
+    private boolean isFirstLessThanSecond(double firstScore, double secondScore, T firstValue, T secondValue) {
+        int res = Double.compare(firstScore, secondScore);
+        if (res == 0) {
+            return compareValue(firstValue, secondValue) < 0;
         } else {
-            return compare(first.value, second.value) < 0;
-        }
-    }
-
-    private boolean IsFirstLessThanSecond(double firstScore, double secondScore, T firstValue, T secondValue) {
-        if (firstScore != secondScore) {
-            return firstScore < secondScore;
-        } else {
-            return compare(firstValue, secondValue) < 0;
+            return res < 0;
         }
     }
 
@@ -132,18 +116,15 @@ public class SkipList<T extends Comparable<T>> {
      * @param value 值
      * @param score 分值
      */
-    public void zslInsert(T value, double score) {
-
-        assert value != null;
+    public void insertNode(@NotNull T value, double score) {
 
         SkipListNode<T> tempNode = header;
         final int currentLevel = CommonUtil.getLevel();
-        SkipListNode<T> newNode = new SkipListNode<T>(value, score, currentLevel);
+        SkipListNode<T> newNode = new SkipListNode<>(value, score, currentLevel);
         maxLevel = Math.max(maxLevel, currentLevel);
-        length++;
-
+        size++;
         for (int i = maxLevel - 1; i >= 0; i--) {
-            while (tempNode.level[i] != null && IsFirstLessThanSecond(tempNode.level[i].score, score, tempNode.level[i].value, value)) {
+            while (tempNode.level[i] != tail && isFirstLessThanSecond(tempNode.level[i].score, score, tempNode.level[i].value, value)) {
                 tempNode = tempNode.level[i];
             }
             if (i < currentLevel) {
@@ -151,81 +132,78 @@ public class SkipList<T extends Comparable<T>> {
                 tempNode.level[i] = newNode;
             }
         }
+        newNode.level[0].back = newNode;
+        newNode.back = tempNode;
     }
 
-    public List<T> getValues(double score){
-        SkipListNode<T> tempNode=header;
-        for (int i=maxLevel-1;i>=0;i--){
-            while (tempNode.level[i]!=null&&tempNode.level[i].score<score){
-                tempNode=tempNode.level[i];
+
+    /**
+     * @param begin score
+     * @param end   score
+     * @return {@link List} 即使没有与score 对应的值，将返回空列表
+     */
+    public @NotNull List<T> range(double begin, double end) {
+
+        SkipListNode<T> tempNode = header;
+
+        for (int i = maxLevel - 1; i >= 0; i--) {
+            while (tempNode.level[i] != tail && tempNode.level[i].score < begin) {
+                tempNode = tempNode.level[i];
             }
         }
-        tempNode=tempNode.level[0];
-        List<T> resList=new ArrayList<>();
-        while (tempNode!=null&&tempNode.score==score){
+        tempNode = tempNode.level[0];
+        List<T> resList = new ArrayList<>();
+        while (tempNode != tail && tempNode.score <= end) {
             resList.add(tempNode.value);
-            tempNode=tempNode.level[0];
+            tempNode = tempNode.level[0];
         }
         return resList;
     }
 
+    public boolean inRange(double begin, double end) {
 
+        return false;
+    }
+
+    public int deleteRange(double begin, double end) {
+
+        return 0;
+    }
 
     /**
-     * 前提一定存在该value和其对应的score
+     * 该list一定存在 value
+     *
      * @param value 值
-     * @param score 分值
      */
-    public void zslDelete(T value, double score) {
-        final int currentLevel = getNode(value, score).level.length;
+    public void deleteValue(@NotNull T value, double score) {
+
+        int currentLevel = getNode(value, score).level.length;
         SkipListNode<T> tempNode = header;
         for (int i = maxLevel - 1; i >= 0; i--) {
-            while (tempNode.level[i] != null && IsFirstLessThanSecond(tempNode.level[i].score, score, tempNode.value, value)) {
+            while (tempNode.level[i] != tail && compareValue(tempNode.level[i].value, value) < 0) {
                 tempNode = tempNode.level[i];
             }
             if (i < currentLevel) {
                 tempNode.level[i] = tempNode.level[i].level[i];
             }
         }
+        size--;
+        tempNode.level[0].back = tempNode;
     }
 
-
-    public int deleteValue(T value) {
-        assert value != null;
-        SkipListNode<T> node = findNode(value);
-        if (node == null) {
-            return 0;
-        } else {
-            int currentLevel = node.level.length;
-            SkipListNode<T> tempNode = header;
-            for (int i = maxLevel - 1; i >= 0; i--) {
-                while (tempNode.level[i] != null && compare(tempNode.level[i].value, value) < 0) {
-                    tempNode = tempNode.level[i];
-                }
-                if (i < currentLevel) {
-                    tempNode.level[i] = tempNode.level[i].level[i];
-                }
-            }
-        }
-        return 0;
+    public int size() {
+        return size;
     }
-
 
     public ArrayList<Pair<T, Double>> allValues() {
-        ArrayList<Pair<T, Double>> res = new ArrayList<Pair<T, Double>>();
-
+        ArrayList<Pair<T, Double>> res = new ArrayList<>();
         SkipListNode<T> tempNode = header.level[0];
-        while (tempNode != null) {
+        while (tempNode != tail) {
             res.add(new Pair<>(tempNode.value, tempNode.score));
             tempNode = tempNode.level[0];
         }
-        return  res;
+        return res;
     }
 
-    public static void main(String[] args) {
-
-
-
-    }
 }
 
