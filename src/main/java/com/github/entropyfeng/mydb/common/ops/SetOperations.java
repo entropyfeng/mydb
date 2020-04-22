@@ -8,6 +8,7 @@ import java.util.Collection;
  * @author entropyfeng
  */
 public interface SetOperations {
+
     public Boolean exist(String key);
 
     public Boolean exist(String key, TurtleValue value);

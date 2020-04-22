@@ -15,6 +15,7 @@ import java.util.HashSet;
  * @author entropyfeng
  */
 public class SetDomain implements ISetOperations {
+
     private HashMap<String, HashSet<TurtleValue>> setHashMap;
 
     public SetDomain() {

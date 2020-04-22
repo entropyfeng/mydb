@@ -2,14 +2,11 @@ package com.github.entropyfeng.mydb.core;
 
 import com.github.entropyfeng.mydb.common.TurtleValueType;
 import com.google.common.base.Charsets;
-import com.google.common.hash.HashFunction;
-import com.google.common.hash.Hasher;
 import com.google.common.hash.Hashing;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.nio.charset.Charset;
 
 /**
  * @author entropyfeng
