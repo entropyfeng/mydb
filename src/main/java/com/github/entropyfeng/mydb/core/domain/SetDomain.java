@@ -55,8 +55,20 @@ public class SetDomain implements ISetOperations {
 
     @Override
     public @NotNull TurtleProtoBuf.ResponseData union(String key, Collection<TurtleValue> turtleValues) {
-        setUnion(key, turtleValues);
+        setUnion(key,turtleValues);
         return SingleResHelper.voidResponse();
+    }
+
+    @Override
+    public @NotNull Collection<TurtleProtoBuf.ResponseData> unionAndGet(String key, String otherKey) {
+
+
+        return CollectionResHelper.turtleResponse(setUnion(key, otherKey));
+    }
+
+    @Override
+    public @NotNull Collection<TurtleProtoBuf.ResponseData> unionAndGet(String key, Collection<TurtleValue> turtleValues) {
+        return CollectionResHelper.turtleResponse(setUnion(key, turtleValues));
     }
 
     @Override

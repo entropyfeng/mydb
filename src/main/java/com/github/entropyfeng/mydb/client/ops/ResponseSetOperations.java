@@ -50,6 +50,16 @@ public class ResponseSetOperations implements ISetOperations {
     }
 
     @Override
+    public @NotNull Collection<TurtleProtoBuf.ResponseData> unionAndGet(String key, String otherKey) {
+        return null;
+    }
+
+    @Override
+    public @NotNull Collection<TurtleProtoBuf.ResponseData> unionAndGet(String key, Collection<TurtleValue> turtleValues) {
+        return null;
+    }
+
+  @Override
     public @NotNull TurtleProtoBuf.ResponseData union(String key, Collection<TurtleValue> turtleValues) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "union");
         builder.addStringPara(key);
