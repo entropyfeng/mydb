@@ -141,7 +141,7 @@ public class ValuesDomain extends BaseObject implements IValueOperations {
     }
 
     @Override
-    public @NotNull Collection<TurtleProtoBuf.ResponseData> allKeys() {
+    public @NotNull Collection<TurtleProtoBuf.ResponseData> dump() {
         return CollectionResHelper.stringResponse(valueMap.keySet());
     }
 

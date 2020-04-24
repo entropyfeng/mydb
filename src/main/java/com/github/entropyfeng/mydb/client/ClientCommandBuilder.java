@@ -76,6 +76,11 @@ public class ClientCommandBuilder {
         return this;
     }
 
+    public ClientCommandBuilder addDoubleCollectionPara(Collection<Double> doubles){
+        builder.addKeys(TurtleProtoBuf.TurtleParaType.COLLECTION);
+        builder.addValues(ProtoCommonValueHelper.doublesCollection(doubles));
+        return this;
+    }
     public ClientCommandBuilder setModifyAble(boolean modifyAble) {
 
         builder.setModify(true);

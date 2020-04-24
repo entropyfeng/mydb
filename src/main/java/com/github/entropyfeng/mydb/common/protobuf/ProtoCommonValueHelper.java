@@ -47,5 +47,12 @@ public class ProtoCommonValueHelper {
         return threadLocal.get().clear().setCollectionValue(collectionTypeBuilder.build()).build();
     }
 
+    public static TurtleProtoBuf.TurtleCommonValue doublesCollection(Collection<Double> doubles){
+        TurtleProtoBuf.TurtleCollectionType.Builder collectionTypeBuilder = TurtleProtoBuf.TurtleCollectionType.newBuilder();
+        collectionTypeBuilder.setCollectionType(TurtleProtoBuf.TurtleParaType.DOUBLE);
+        doubles.forEach(aDouble -> collectionTypeBuilder.addCollectionParas(doubleValue(aDouble)));
+        return threadLocal.get().clear().setCollectionValue(collectionTypeBuilder.build()).build();
+    }
+
 
 }

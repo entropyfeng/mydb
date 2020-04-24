@@ -123,5 +123,5 @@ public interface IValueOperations {
 
     @NotNull Collection<TurtleProtoBuf.ResponseData> allEntries();
 
-    @NotNull Collection<TurtleProtoBuf.ResponseData> allKeys();
+    @NotNull Collection<TurtleProtoBuf.ResponseData> dump();
 }
