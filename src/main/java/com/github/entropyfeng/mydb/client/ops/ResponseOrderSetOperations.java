@@ -110,8 +110,8 @@ public class ResponseOrderSetOperations implements IOrderSetOperations {
     public @NotNull TurtleProtoBuf.ResponseData delete(String key, Double begin, Double end) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.ZSET, "delete");
         builder.addStringPara(key);
-       builder.addDoublePara(begin);
-       builder.addDoublePara(end);
+        builder.addDoublePara(begin);
+        builder.addDoublePara(end);
 
         return ClientExecute.singleExecute(builder.build());
     }
