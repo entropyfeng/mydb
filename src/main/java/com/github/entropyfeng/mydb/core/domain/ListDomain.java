@@ -1,11 +1,13 @@
 package com.github.entropyfeng.mydb.core.domain;
 
 import com.github.entropyfeng.mydb.common.ops.IListOperations;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
 import com.github.entropyfeng.mydb.common.protobuf.SingleResHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.core.TurtleValue;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.*;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -14,7 +16,7 @@ import java.util.LinkedList;
 /**
  * @author entropyfeng
  */
-public class ListDomain implements IListOperations {
+public class ListDomain implements IListOperations, Serializable {
 
     private final HashMap<String, LinkedList<TurtleValue>> listMap;
 
@@ -195,4 +197,5 @@ public class ListDomain implements IListOperations {
 
         listMap.putIfAbsent(key,new LinkedList<>());
     }
+
 }

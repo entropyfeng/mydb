@@ -67,7 +67,7 @@ public class BaseObject {
         }
     }
 
-    protected void clearExpireTime(Map<String, Object> map) {
+    protected void clearExpireTime(Map<String, ?> map) {
         final long currentTime = TimeUtil.currentTime();
         String peek;
         while (expireQueue.peek() != null && expireQueue.peek().getValue() <= currentTime) {

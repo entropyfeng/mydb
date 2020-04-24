@@ -9,6 +9,34 @@ import com.google.protobuf.ByteString;
  */
 public class ProtoTurtleHelper {
 
+    public static TurtleProtoBuf.TurtleParaType convert(TurtleValueType turtleValueType){
+        TurtleProtoBuf.TurtleParaType type;
+        switch (turtleValueType) {
+            case INTEGER:
+                type = TurtleProtoBuf.TurtleParaType.INTEGER;
+                break;
+            case DOUBLE:
+                type = TurtleProtoBuf.TurtleParaType.DOUBLE;
+                break;
+            case STRING:
+                type = TurtleProtoBuf.TurtleParaType.STRING;
+                break;
+            case LONG:
+                type = TurtleProtoBuf.TurtleParaType.LONG;
+                break;
+            case NUMBER_INTEGER:
+                type = TurtleProtoBuf.TurtleParaType.NUMBER_INTEGER;
+                break;
+            case NUMBER_DECIMAL:
+                type = TurtleProtoBuf.TurtleParaType.NUMBER_DECIMAL;
+                break;
+            default:
+                throw new UnsupportedOperationException("unSupport" + turtleValueType);
+
+        }
+        return type;
+    }
+
     public static TurtleValue convertToTurtleValue(TurtleProtoBuf.TurtleValue protoTurtleValue) {
         TurtleValueType type;
         byte[] values = protoTurtleValue.getValues().toByteArray();

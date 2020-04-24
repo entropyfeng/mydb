@@ -8,13 +8,14 @@ import com.github.entropyfeng.mydb.core.TurtleValue;
 import com.github.entropyfeng.mydb.core.dict.ElasticMap;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 
 /**
  * @author entropyfeng
  */
-public class HashDomain implements IHashOperations {
+public class HashDomain implements IHashOperations, Serializable {
 
     public HashDomain() {
         this.hashMap = new HashMap<>();

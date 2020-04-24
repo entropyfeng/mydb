@@ -6466,6 +6466,1689 @@ public final class TurtleProtoBuf {
 
   }
 
+  public interface StringTurtleValuePairOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:StringTurtleValuePair)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string key = 1;</code>
+     */
+    java.lang.String getKey();
+    /**
+     * <code>string key = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getKeyBytes();
+
+    /**
+     * <code>.TurtleParaType turtleParaType = 2;</code>
+     */
+    int getTurtleParaTypeValue();
+    /**
+     * <code>.TurtleParaType turtleParaType = 2;</code>
+     */
+    com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType getTurtleParaType();
+
+    /**
+     * <code>bytes value = 3;</code>
+     */
+    com.google.protobuf.ByteString getValue();
+  }
+  /**
+   * Protobuf type {@code StringTurtleValuePair}
+   */
+  public  static final class StringTurtleValuePair extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:StringTurtleValuePair)
+      StringTurtleValuePairOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use StringTurtleValuePair.newBuilder() to construct.
+    private StringTurtleValuePair(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private StringTurtleValuePair() {
+      key_ = "";
+      turtleParaType_ = 0;
+      value_ = com.google.protobuf.ByteString.EMPTY;
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new StringTurtleValuePair();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private StringTurtleValuePair(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              key_ = s;
+              break;
+            }
+            case 16: {
+              int rawValue = input.readEnum();
+
+              turtleParaType_ = rawValue;
+              break;
+            }
+            case 26: {
+
+              value_ = input.readBytes();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.internal_static_StringTurtleValuePair_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.internal_static_StringTurtleValuePair_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair.class, com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair.Builder.class);
+    }
+
+    public static final int KEY_FIELD_NUMBER = 1;
+    private volatile java.lang.Object key_;
+    /**
+     * <code>string key = 1;</code>
+     */
+    public java.lang.String getKey() {
+      java.lang.Object ref = key_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        key_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string key = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getKeyBytes() {
+      java.lang.Object ref = key_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        key_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int TURTLEPARATYPE_FIELD_NUMBER = 2;
+    private int turtleParaType_;
+    /**
+     * <code>.TurtleParaType turtleParaType = 2;</code>
+     */
+    public int getTurtleParaTypeValue() {
+      return turtleParaType_;
+    }
+    /**
+     * <code>.TurtleParaType turtleParaType = 2;</code>
+     */
+    public com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType getTurtleParaType() {
+      @SuppressWarnings("deprecation")
+      com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType result = com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType.valueOf(turtleParaType_);
+      return result == null ? com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType.UNRECOGNIZED : result;
+    }
+
+    public static final int VALUE_FIELD_NUMBER = 3;
+    private com.google.protobuf.ByteString value_;
+    /**
+     * <code>bytes value = 3;</code>
+     */
+    public com.google.protobuf.ByteString getValue() {
+      return value_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!getKeyBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, key_);
+      }
+      if (turtleParaType_ != com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType.STRING.getNumber()) {
+        output.writeEnum(2, turtleParaType_);
+      }
+      if (!value_.isEmpty()) {
+        output.writeBytes(3, value_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!getKeyBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, key_);
+      }
+      if (turtleParaType_ != com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType.STRING.getNumber()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(2, turtleParaType_);
+      }
+      if (!value_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, value_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair)) {
+        return super.equals(obj);
+      }
+      com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair other = (com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair) obj;
+
+      if (!getKey()
+          .equals(other.getKey())) return false;
+      if (turtleParaType_ != other.turtleParaType_) return false;
+      if (!getValue()
+          .equals(other.getValue())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + KEY_FIELD_NUMBER;
+      hash = (53 * hash) + getKey().hashCode();
+      hash = (37 * hash) + TURTLEPARATYPE_FIELD_NUMBER;
+      hash = (53 * hash) + turtleParaType_;
+      hash = (37 * hash) + VALUE_FIELD_NUMBER;
+      hash = (53 * hash) + getValue().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code StringTurtleValuePair}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:StringTurtleValuePair)
+        com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePairOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.internal_static_StringTurtleValuePair_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.internal_static_StringTurtleValuePair_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair.class, com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair.Builder.class);
+      }
+
+      // Construct using com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        key_ = "";
+
+        turtleParaType_ = 0;
+
+        value_ = com.google.protobuf.ByteString.EMPTY;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.internal_static_StringTurtleValuePair_descriptor;
+      }
+
+      @java.lang.Override
+      public com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair getDefaultInstanceForType() {
+        return com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair build() {
+        com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair buildPartial() {
+        com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair result = new com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair(this);
+        result.key_ = key_;
+        result.turtleParaType_ = turtleParaType_;
+        result.value_ = value_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair) {
+          return mergeFrom((com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair other) {
+        if (other == com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair.getDefaultInstance()) return this;
+        if (!other.getKey().isEmpty()) {
+          key_ = other.key_;
+          onChanged();
+        }
+        if (other.turtleParaType_ != 0) {
+          setTurtleParaTypeValue(other.getTurtleParaTypeValue());
+        }
+        if (other.getValue() != com.google.protobuf.ByteString.EMPTY) {
+          setValue(other.getValue());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private java.lang.Object key_ = "";
+      /**
+       * <code>string key = 1;</code>
+       */
+      public java.lang.String getKey() {
+        java.lang.Object ref = key_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          key_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string key = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getKeyBytes() {
+        java.lang.Object ref = key_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          key_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string key = 1;</code>
+       */
+      public Builder setKey(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        key_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string key = 1;</code>
+       */
+      public Builder clearKey() {
+        
+        key_ = getDefaultInstance().getKey();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string key = 1;</code>
+       */
+      public Builder setKeyBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        key_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int turtleParaType_ = 0;
+      /**
+       * <code>.TurtleParaType turtleParaType = 2;</code>
+       */
+      public int getTurtleParaTypeValue() {
+        return turtleParaType_;
+      }
+      /**
+       * <code>.TurtleParaType turtleParaType = 2;</code>
+       */
+      public Builder setTurtleParaTypeValue(int value) {
+        turtleParaType_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.TurtleParaType turtleParaType = 2;</code>
+       */
+      public com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType getTurtleParaType() {
+        @SuppressWarnings("deprecation")
+        com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType result = com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType.valueOf(turtleParaType_);
+        return result == null ? com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>.TurtleParaType turtleParaType = 2;</code>
+       */
+      public Builder setTurtleParaType(com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        turtleParaType_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.TurtleParaType turtleParaType = 2;</code>
+       */
+      public Builder clearTurtleParaType() {
+        
+        turtleParaType_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString value_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes value = 3;</code>
+       */
+      public com.google.protobuf.ByteString getValue() {
+        return value_;
+      }
+      /**
+       * <code>bytes value = 3;</code>
+       */
+      public Builder setValue(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        value_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes value = 3;</code>
+       */
+      public Builder clearValue() {
+        
+        value_ = getDefaultInstance().getValue();
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:StringTurtleValuePair)
+    }
+
+    // @@protoc_insertion_point(class_scope:StringTurtleValuePair)
+    private static final com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair();
+    }
+
+    public static com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<StringTurtleValuePair>
+        PARSER = new com.google.protobuf.AbstractParser<StringTurtleValuePair>() {
+      @java.lang.Override
+      public StringTurtleValuePair parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new StringTurtleValuePair(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<StringTurtleValuePair> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<StringTurtleValuePair> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleValuePair getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface StringTurtleListPairOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:StringTurtleListPair)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string key = 1;</code>
+     */
+    java.lang.String getKey();
+    /**
+     * <code>string key = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getKeyBytes();
+
+    /**
+     * <code>repeated .TurtleParaType turtleParaTypes = 2;</code>
+     */
+    java.util.List<com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType> getTurtleParaTypesList();
+    /**
+     * <code>repeated .TurtleParaType turtleParaTypes = 2;</code>
+     */
+    int getTurtleParaTypesCount();
+    /**
+     * <code>repeated .TurtleParaType turtleParaTypes = 2;</code>
+     */
+    com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType getTurtleParaTypes(int index);
+    /**
+     * <code>repeated .TurtleParaType turtleParaTypes = 2;</code>
+     */
+    java.util.List<java.lang.Integer>
+    getTurtleParaTypesValueList();
+    /**
+     * <code>repeated .TurtleParaType turtleParaTypes = 2;</code>
+     */
+    int getTurtleParaTypesValue(int index);
+
+    /**
+     * <code>repeated bytes values = 3;</code>
+     */
+    java.util.List<com.google.protobuf.ByteString> getValuesList();
+    /**
+     * <code>repeated bytes values = 3;</code>
+     */
+    int getValuesCount();
+    /**
+     * <code>repeated bytes values = 3;</code>
+     */
+    com.google.protobuf.ByteString getValues(int index);
+  }
+  /**
+   * Protobuf type {@code StringTurtleListPair}
+   */
+  public  static final class StringTurtleListPair extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:StringTurtleListPair)
+      StringTurtleListPairOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use StringTurtleListPair.newBuilder() to construct.
+    private StringTurtleListPair(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private StringTurtleListPair() {
+      key_ = "";
+      turtleParaTypes_ = java.util.Collections.emptyList();
+      values_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new StringTurtleListPair();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private StringTurtleListPair(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              key_ = s;
+              break;
+            }
+            case 16: {
+              int rawValue = input.readEnum();
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                turtleParaTypes_ = new java.util.ArrayList<java.lang.Integer>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              turtleParaTypes_.add(rawValue);
+              break;
+            }
+            case 18: {
+              int length = input.readRawVarint32();
+              int oldLimit = input.pushLimit(length);
+              while(input.getBytesUntilLimit() > 0) {
+                int rawValue = input.readEnum();
+                if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                  turtleParaTypes_ = new java.util.ArrayList<java.lang.Integer>();
+                  mutable_bitField0_ |= 0x00000001;
+                }
+                turtleParaTypes_.add(rawValue);
+              }
+              input.popLimit(oldLimit);
+              break;
+            }
+            case 26: {
+              if (!((mutable_bitField0_ & 0x00000002) != 0)) {
+                values_ = new java.util.ArrayList<com.google.protobuf.ByteString>();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              values_.add(input.readBytes());
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          turtleParaTypes_ = java.util.Collections.unmodifiableList(turtleParaTypes_);
+        }
+        if (((mutable_bitField0_ & 0x00000002) != 0)) {
+          values_ = java.util.Collections.unmodifiableList(values_); // C
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.internal_static_StringTurtleListPair_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.internal_static_StringTurtleListPair_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair.class, com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair.Builder.class);
+    }
+
+    public static final int KEY_FIELD_NUMBER = 1;
+    private volatile java.lang.Object key_;
+    /**
+     * <code>string key = 1;</code>
+     */
+    public java.lang.String getKey() {
+      java.lang.Object ref = key_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        key_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string key = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getKeyBytes() {
+      java.lang.Object ref = key_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        key_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int TURTLEPARATYPES_FIELD_NUMBER = 2;
+    private java.util.List<java.lang.Integer> turtleParaTypes_;
+    private static final com.google.protobuf.Internal.ListAdapter.Converter<
+        java.lang.Integer, com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType> turtleParaTypes_converter_ =
+            new com.google.protobuf.Internal.ListAdapter.Converter<
+                java.lang.Integer, com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType>() {
+              public com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType convert(java.lang.Integer from) {
+                @SuppressWarnings("deprecation")
+                com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType result = com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType.valueOf(from);
+                return result == null ? com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType.UNRECOGNIZED : result;
+              }
+            };
+    /**
+     * <code>repeated .TurtleParaType turtleParaTypes = 2;</code>
+     */
+    public java.util.List<com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType> getTurtleParaTypesList() {
+      return new com.google.protobuf.Internal.ListAdapter<
+          java.lang.Integer, com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType>(turtleParaTypes_, turtleParaTypes_converter_);
+    }
+    /**
+     * <code>repeated .TurtleParaType turtleParaTypes = 2;</code>
+     */
+    public int getTurtleParaTypesCount() {
+      return turtleParaTypes_.size();
+    }
+    /**
+     * <code>repeated .TurtleParaType turtleParaTypes = 2;</code>
+     */
+    public com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType getTurtleParaTypes(int index) {
+      return turtleParaTypes_converter_.convert(turtleParaTypes_.get(index));
+    }
+    /**
+     * <code>repeated .TurtleParaType turtleParaTypes = 2;</code>
+     */
+    public java.util.List<java.lang.Integer>
+    getTurtleParaTypesValueList() {
+      return turtleParaTypes_;
+    }
+    /**
+     * <code>repeated .TurtleParaType turtleParaTypes = 2;</code>
+     */
+    public int getTurtleParaTypesValue(int index) {
+      return turtleParaTypes_.get(index);
+    }
+    private int turtleParaTypesMemoizedSerializedSize;
+
+    public static final int VALUES_FIELD_NUMBER = 3;
+    private java.util.List<com.google.protobuf.ByteString> values_;
+    /**
+     * <code>repeated bytes values = 3;</code>
+     */
+    public java.util.List<com.google.protobuf.ByteString>
+        getValuesList() {
+      return values_;
+    }
+    /**
+     * <code>repeated bytes values = 3;</code>
+     */
+    public int getValuesCount() {
+      return values_.size();
+    }
+    /**
+     * <code>repeated bytes values = 3;</code>
+     */
+    public com.google.protobuf.ByteString getValues(int index) {
+      return values_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (!getKeyBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, key_);
+      }
+      if (getTurtleParaTypesList().size() > 0) {
+        output.writeUInt32NoTag(18);
+        output.writeUInt32NoTag(turtleParaTypesMemoizedSerializedSize);
+      }
+      for (int i = 0; i < turtleParaTypes_.size(); i++) {
+        output.writeEnumNoTag(turtleParaTypes_.get(i));
+      }
+      for (int i = 0; i < values_.size(); i++) {
+        output.writeBytes(3, values_.get(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!getKeyBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, key_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < turtleParaTypes_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeEnumSizeNoTag(turtleParaTypes_.get(i));
+        }
+        size += dataSize;
+        if (!getTurtleParaTypesList().isEmpty()) {  size += 1;
+          size += com.google.protobuf.CodedOutputStream
+            .computeUInt32SizeNoTag(dataSize);
+        }turtleParaTypesMemoizedSerializedSize = dataSize;
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < values_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeBytesSizeNoTag(values_.get(i));
+        }
+        size += dataSize;
+        size += 1 * getValuesList().size();
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair)) {
+        return super.equals(obj);
+      }
+      com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair other = (com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair) obj;
+
+      if (!getKey()
+          .equals(other.getKey())) return false;
+      if (!turtleParaTypes_.equals(other.turtleParaTypes_)) return false;
+      if (!getValuesList()
+          .equals(other.getValuesList())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + KEY_FIELD_NUMBER;
+      hash = (53 * hash) + getKey().hashCode();
+      if (getTurtleParaTypesCount() > 0) {
+        hash = (37 * hash) + TURTLEPARATYPES_FIELD_NUMBER;
+        hash = (53 * hash) + turtleParaTypes_.hashCode();
+      }
+      if (getValuesCount() > 0) {
+        hash = (37 * hash) + VALUES_FIELD_NUMBER;
+        hash = (53 * hash) + getValuesList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code StringTurtleListPair}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:StringTurtleListPair)
+        com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPairOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.internal_static_StringTurtleListPair_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.internal_static_StringTurtleListPair_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair.class, com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair.Builder.class);
+      }
+
+      // Construct using com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        key_ = "";
+
+        turtleParaTypes_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        values_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.internal_static_StringTurtleListPair_descriptor;
+      }
+
+      @java.lang.Override
+      public com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair getDefaultInstanceForType() {
+        return com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair build() {
+        com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair buildPartial() {
+        com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair result = new com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair(this);
+        int from_bitField0_ = bitField0_;
+        result.key_ = key_;
+        if (((bitField0_ & 0x00000001) != 0)) {
+          turtleParaTypes_ = java.util.Collections.unmodifiableList(turtleParaTypes_);
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
+        result.turtleParaTypes_ = turtleParaTypes_;
+        if (((bitField0_ & 0x00000002) != 0)) {
+          values_ = java.util.Collections.unmodifiableList(values_);
+          bitField0_ = (bitField0_ & ~0x00000002);
+        }
+        result.values_ = values_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair) {
+          return mergeFrom((com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair other) {
+        if (other == com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair.getDefaultInstance()) return this;
+        if (!other.getKey().isEmpty()) {
+          key_ = other.key_;
+          onChanged();
+        }
+        if (!other.turtleParaTypes_.isEmpty()) {
+          if (turtleParaTypes_.isEmpty()) {
+            turtleParaTypes_ = other.turtleParaTypes_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureTurtleParaTypesIsMutable();
+            turtleParaTypes_.addAll(other.turtleParaTypes_);
+          }
+          onChanged();
+        }
+        if (!other.values_.isEmpty()) {
+          if (values_.isEmpty()) {
+            values_ = other.values_;
+            bitField0_ = (bitField0_ & ~0x00000002);
+          } else {
+            ensureValuesIsMutable();
+            values_.addAll(other.values_);
+          }
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object key_ = "";
+      /**
+       * <code>string key = 1;</code>
+       */
+      public java.lang.String getKey() {
+        java.lang.Object ref = key_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          key_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string key = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getKeyBytes() {
+        java.lang.Object ref = key_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          key_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string key = 1;</code>
+       */
+      public Builder setKey(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        key_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string key = 1;</code>
+       */
+      public Builder clearKey() {
+        
+        key_ = getDefaultInstance().getKey();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string key = 1;</code>
+       */
+      public Builder setKeyBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        key_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<java.lang.Integer> turtleParaTypes_ =
+        java.util.Collections.emptyList();
+      private void ensureTurtleParaTypesIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          turtleParaTypes_ = new java.util.ArrayList<java.lang.Integer>(turtleParaTypes_);
+          bitField0_ |= 0x00000001;
+        }
+      }
+      /**
+       * <code>repeated .TurtleParaType turtleParaTypes = 2;</code>
+       */
+      public java.util.List<com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType> getTurtleParaTypesList() {
+        return new com.google.protobuf.Internal.ListAdapter<
+            java.lang.Integer, com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType>(turtleParaTypes_, turtleParaTypes_converter_);
+      }
+      /**
+       * <code>repeated .TurtleParaType turtleParaTypes = 2;</code>
+       */
+      public int getTurtleParaTypesCount() {
+        return turtleParaTypes_.size();
+      }
+      /**
+       * <code>repeated .TurtleParaType turtleParaTypes = 2;</code>
+       */
+      public com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType getTurtleParaTypes(int index) {
+        return turtleParaTypes_converter_.convert(turtleParaTypes_.get(index));
+      }
+      /**
+       * <code>repeated .TurtleParaType turtleParaTypes = 2;</code>
+       */
+      public Builder setTurtleParaTypes(
+          int index, com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureTurtleParaTypesIsMutable();
+        turtleParaTypes_.set(index, value.getNumber());
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated .TurtleParaType turtleParaTypes = 2;</code>
+       */
+      public Builder addTurtleParaTypes(com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureTurtleParaTypesIsMutable();
+        turtleParaTypes_.add(value.getNumber());
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated .TurtleParaType turtleParaTypes = 2;</code>
+       */
+      public Builder addAllTurtleParaTypes(
+          java.lang.Iterable<? extends com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType> values) {
+        ensureTurtleParaTypesIsMutable();
+        for (com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType value : values) {
+          turtleParaTypes_.add(value.getNumber());
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated .TurtleParaType turtleParaTypes = 2;</code>
+       */
+      public Builder clearTurtleParaTypes() {
+        turtleParaTypes_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated .TurtleParaType turtleParaTypes = 2;</code>
+       */
+      public java.util.List<java.lang.Integer>
+      getTurtleParaTypesValueList() {
+        return java.util.Collections.unmodifiableList(turtleParaTypes_);
+      }
+      /**
+       * <code>repeated .TurtleParaType turtleParaTypes = 2;</code>
+       */
+      public int getTurtleParaTypesValue(int index) {
+        return turtleParaTypes_.get(index);
+      }
+      /**
+       * <code>repeated .TurtleParaType turtleParaTypes = 2;</code>
+       */
+      public Builder setTurtleParaTypesValue(
+          int index, int value) {
+        ensureTurtleParaTypesIsMutable();
+        turtleParaTypes_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated .TurtleParaType turtleParaTypes = 2;</code>
+       */
+      public Builder addTurtleParaTypesValue(int value) {
+        ensureTurtleParaTypesIsMutable();
+        turtleParaTypes_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated .TurtleParaType turtleParaTypes = 2;</code>
+       */
+      public Builder addAllTurtleParaTypesValue(
+          java.lang.Iterable<java.lang.Integer> values) {
+        ensureTurtleParaTypesIsMutable();
+        for (int value : values) {
+          turtleParaTypes_.add(value);
+        }
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<com.google.protobuf.ByteString> values_ = java.util.Collections.emptyList();
+      private void ensureValuesIsMutable() {
+        if (!((bitField0_ & 0x00000002) != 0)) {
+          values_ = new java.util.ArrayList<com.google.protobuf.ByteString>(values_);
+          bitField0_ |= 0x00000002;
+         }
+      }
+      /**
+       * <code>repeated bytes values = 3;</code>
+       */
+      public java.util.List<com.google.protobuf.ByteString>
+          getValuesList() {
+        return ((bitField0_ & 0x00000002) != 0) ?
+                 java.util.Collections.unmodifiableList(values_) : values_;
+      }
+      /**
+       * <code>repeated bytes values = 3;</code>
+       */
+      public int getValuesCount() {
+        return values_.size();
+      }
+      /**
+       * <code>repeated bytes values = 3;</code>
+       */
+      public com.google.protobuf.ByteString getValues(int index) {
+        return values_.get(index);
+      }
+      /**
+       * <code>repeated bytes values = 3;</code>
+       */
+      public Builder setValues(
+          int index, com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureValuesIsMutable();
+        values_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated bytes values = 3;</code>
+       */
+      public Builder addValues(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureValuesIsMutable();
+        values_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated bytes values = 3;</code>
+       */
+      public Builder addAllValues(
+          java.lang.Iterable<? extends com.google.protobuf.ByteString> values) {
+        ensureValuesIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, values_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated bytes values = 3;</code>
+       */
+      public Builder clearValues() {
+        values_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:StringTurtleListPair)
+    }
+
+    // @@protoc_insertion_point(class_scope:StringTurtleListPair)
+    private static final com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair();
+    }
+
+    public static com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<StringTurtleListPair>
+        PARSER = new com.google.protobuf.AbstractParser<StringTurtleListPair>() {
+      @java.lang.Override
+      public StringTurtleListPair parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new StringTurtleListPair(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<StringTurtleListPair> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<StringTurtleListPair> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.StringTurtleListPair getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface ResponseDataOrBuilder extends
       // @@protoc_insertion_point(interface_extends:ResponseData)
       com.google.protobuf.MessageOrBuilder {
@@ -9039,6 +10722,16 @@ public final class TurtleProtoBuf {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_TurtleTurtleValueEntry_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_StringTurtleValuePair_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_StringTurtleValuePair_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_StringTurtleListPair_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_StringTurtleListPair_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_ResponseData_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -9071,39 +10764,43 @@ public final class TurtleProtoBuf {
       "Entry\022\013\n\003key\030\001 \001(\t\022\033\n\005value\030\002 \001(\0132\014.Turt" +
       "leValue\"P\n\026TurtleTurtleValueEntry\022\031\n\003key" +
       "\030\001 \001(\0132\014.TurtleValue\022\033\n\005value\030\002 \001(\0132\014.Tu" +
-      "rtleValue\"\261\004\n\014ResponseData\022\022\n\nresponseId" +
-      "\030\001 \001(\003\022\030\n\020responseSequence\030\002 \001(\003\022\017\n\007succ" +
-      "ess\030\003 \001(\010\022\026\n\016collectionAble\030\005 \001(\010\022\035\n\004typ" +
-      "e\030\006 \001(\0162\017.TurtleParaType\022\025\n\013stringValue\030" +
-      "\007 \001(\tH\000\022\022\n\010intValue\030\010 \001(\005H\000\022\023\n\tlongValue" +
-      "\030\t \001(\003H\000\022\025\n\013doubleValue\030\n \001(\001H\000\022\023\n\tboolV" +
-      "alue\030\013 \001(\010H\000\022\024\n\nbytesValue\030\014 \001(\014H\000\022#\n\013tu" +
-      "rtleValue\030\r \001(\0132\014.TurtleValueH\000\0229\n\026strin" +
-      "gTurtleValueEntry\030\016 \001(\0132\027.StringTurtleVa" +
-      "lueEntryH\000\0229\n\026turtleTurtleValueEntry\030\017 \001" +
-      "(\0132\027.TurtleTurtleValueEntryH\000\022%\n\rexcepti" +
-      "onType\030\024 \001(\0162\016.ExceptionType\022\021\n\texceptio" +
-      "n\030\025 \001(\t\022\026\n\016collectionSize\030\026 \001(\003\022\020\n\010nulla" +
-      "ble\030\027 \001(\010\022\020\n\010voidable\030\030 \001(\010\022\017\n\007endAble\030\031" +
-      " \001(\010B\007\n\005Value*J\n\013TurtleModel\022\t\n\005ADMIN\020\000\022" +
-      "\t\n\005VALUE\020\001\022\010\n\004HASH\020\002\022\007\n\003SET\020\003\022\010\n\004ZSET\020\004\022" +
-      "\010\n\004LIST\020\005*\235\001\n\016TurtleParaType\022\n\n\006STRING\020\000" +
-      "\022\013\n\007INTEGER\020\001\022\010\n\004LONG\020\002\022\n\n\006DOUBLE\020\003\022\010\n\004B" +
-      "OOL\020\004\022\022\n\016NUMBER_INTEGER\020\005\022\022\n\016NUMBER_DECI" +
-      "MAL\020\006\022\020\n\014TURTLE_VALUE\020\007\022\016\n\nCOLLECTION\020\010\022" +
-      "\010\n\004VOID\020\t*\225\003\n\rExceptionType\022!\n\035Unsupport" +
-      "edOperationException\020\000\022\030\n\024NullPointerExc" +
-      "eption\020\001\022\032\n\026IllegalAccessException\020\002\022\035\n\031" +
-      "InvocationTargetException\020\003\022\031\n\025NoSuchMet" +
-      "hodException\020\004\022\032\n\026NoSuchElementException" +
-      "\020\005\022\024\n\020RuntimeException\020\006\022\036\n\032ElementOutOf" +
-      "BoundException\020\007\022(\n$TurtleValueElementOu" +
-      "tBoundsException\020\010\022\032\n\026TurtleTimeOutExcep" +
-      "tion\020\t\022\024\n\020OutOfMemoryError\020d\022\026\n\022StackOve" +
-      "rflowError\020e\022\024\n\020TurtleFatalError\020f\022\025\n\021Tu" +
-      "rtleDesignError\020gB=\n+com.github.entropyf" +
-      "eng.mydb.common.protobufB\016TurtleProtoBuf" +
-      "b\006proto3"
+      "rtleValue\"\\\n\025StringTurtleValuePair\022\013\n\003ke" +
+      "y\030\001 \001(\t\022\'\n\016turtleParaType\030\002 \001(\0162\017.Turtle" +
+      "ParaType\022\r\n\005value\030\003 \001(\014\"]\n\024StringTurtleL" +
+      "istPair\022\013\n\003key\030\001 \001(\t\022(\n\017turtleParaTypes\030" +
+      "\002 \003(\0162\017.TurtleParaType\022\016\n\006values\030\003 \003(\014\"\261" +
+      "\004\n\014ResponseData\022\022\n\nresponseId\030\001 \001(\003\022\030\n\020r" +
+      "esponseSequence\030\002 \001(\003\022\017\n\007success\030\003 \001(\010\022\026" +
+      "\n\016collectionAble\030\005 \001(\010\022\035\n\004type\030\006 \001(\0162\017.T" +
+      "urtleParaType\022\025\n\013stringValue\030\007 \001(\tH\000\022\022\n\010" +
+      "intValue\030\010 \001(\005H\000\022\023\n\tlongValue\030\t \001(\003H\000\022\025\n" +
+      "\013doubleValue\030\n \001(\001H\000\022\023\n\tboolValue\030\013 \001(\010H" +
+      "\000\022\024\n\nbytesValue\030\014 \001(\014H\000\022#\n\013turtleValue\030\r" +
+      " \001(\0132\014.TurtleValueH\000\0229\n\026stringTurtleValu" +
+      "eEntry\030\016 \001(\0132\027.StringTurtleValueEntryH\000\022" +
+      "9\n\026turtleTurtleValueEntry\030\017 \001(\0132\027.Turtle" +
+      "TurtleValueEntryH\000\022%\n\rexceptionType\030\024 \001(" +
+      "\0162\016.ExceptionType\022\021\n\texception\030\025 \001(\t\022\026\n\016" +
+      "collectionSize\030\026 \001(\003\022\020\n\010nullable\030\027 \001(\010\022\020" +
+      "\n\010voidable\030\030 \001(\010\022\017\n\007endAble\030\031 \001(\010B\007\n\005Val" +
+      "ue*J\n\013TurtleModel\022\t\n\005ADMIN\020\000\022\t\n\005VALUE\020\001\022" +
+      "\010\n\004HASH\020\002\022\007\n\003SET\020\003\022\010\n\004ZSET\020\004\022\010\n\004LIST\020\005*\235" +
+      "\001\n\016TurtleParaType\022\n\n\006STRING\020\000\022\013\n\007INTEGER" +
+      "\020\001\022\010\n\004LONG\020\002\022\n\n\006DOUBLE\020\003\022\010\n\004BOOL\020\004\022\022\n\016NU" +
+      "MBER_INTEGER\020\005\022\022\n\016NUMBER_DECIMAL\020\006\022\020\n\014TU" +
+      "RTLE_VALUE\020\007\022\016\n\nCOLLECTION\020\010\022\010\n\004VOID\020\t*\225" +
+      "\003\n\rExceptionType\022!\n\035UnsupportedOperation" +
+      "Exception\020\000\022\030\n\024NullPointerException\020\001\022\032\n" +
+      "\026IllegalAccessException\020\002\022\035\n\031InvocationT" +
+      "argetException\020\003\022\031\n\025NoSuchMethodExceptio" +
+      "n\020\004\022\032\n\026NoSuchElementException\020\005\022\024\n\020Runti" +
+      "meException\020\006\022\036\n\032ElementOutOfBoundExcept" +
+      "ion\020\007\022(\n$TurtleValueElementOutBoundsExce" +
+      "ption\020\010\022\032\n\026TurtleTimeOutException\020\t\022\024\n\020O" +
+      "utOfMemoryError\020d\022\026\n\022StackOverflowError\020" +
+      "e\022\024\n\020TurtleFatalError\020f\022\025\n\021TurtleDesignE" +
+      "rror\020gB=\n+com.github.entropyfeng.mydb.co" +
+      "mmon.protobufB\016TurtleProtoBufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -9145,8 +10842,20 @@ public final class TurtleProtoBuf {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_TurtleTurtleValueEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
-    internal_static_ResponseData_descriptor =
+    internal_static_StringTurtleValuePair_descriptor =
       getDescriptor().getMessageTypes().get(6);
+    internal_static_StringTurtleValuePair_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_StringTurtleValuePair_descriptor,
+        new java.lang.String[] { "Key", "TurtleParaType", "Value", });
+    internal_static_StringTurtleListPair_descriptor =
+      getDescriptor().getMessageTypes().get(7);
+    internal_static_StringTurtleListPair_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_StringTurtleListPair_descriptor,
+        new java.lang.String[] { "Key", "TurtleParaTypes", "Values", });
+    internal_static_ResponseData_descriptor =
+      getDescriptor().getMessageTypes().get(8);
     internal_static_ResponseData_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ResponseData_descriptor,

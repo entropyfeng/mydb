@@ -4,23 +4,25 @@ import com.github.entropyfeng.mydb.common.TurtleValueType;
 import com.github.entropyfeng.mydb.common.exception.TurtleDesignError;
 import com.github.entropyfeng.mydb.common.ops.IValueOperations;
 import com.github.entropyfeng.mydb.common.protobuf.CollectionResHelper;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
 import com.github.entropyfeng.mydb.common.protobuf.SingleResHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.core.TurtleValue;
+import com.github.entropyfeng.mydb.core.helper.Pair;
 import com.github.entropyfeng.mydb.core.obj.BaseObject;
 import com.github.entropyfeng.mydb.util.TimeUtil;
+import com.google.protobuf.ByteString;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 /**
  * @author entropyfeng
  */
-public class ValuesDomain extends BaseObject implements IValueOperations {
+public class ValuesDomain extends BaseObject implements IValueOperations, Serializable {
 
     private final HashMap<String, TurtleValue> valueMap;
 
@@ -141,7 +143,7 @@ public class ValuesDomain extends BaseObject implements IValueOperations {
     }
 
     @Override
-    public @NotNull Collection<TurtleProtoBuf.ResponseData> dump() {
+    public @NotNull Collection<TurtleProtoBuf.ResponseData> allKeys() {
         return CollectionResHelper.stringResponse(valueMap.keySet());
     }
 
@@ -156,6 +158,8 @@ public class ValuesDomain extends BaseObject implements IValueOperations {
             valueMap.remove(key);
         }
     }
+
+
 
     private @NotNull TurtleProtoBuf.ResponseData modifyHelper(String key, TurtleValueType type, Object value) {
         handleExpire(key);
@@ -193,5 +197,6 @@ public class ValuesDomain extends BaseObject implements IValueOperations {
         }
         return SingleResHelper.turtleValueResponse(turtleValue);
     }
+
 
 }

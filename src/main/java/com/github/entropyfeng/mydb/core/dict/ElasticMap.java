@@ -40,10 +40,11 @@ public class ElasticMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
     private boolean isRehashing = false;
 
 
+    @SuppressWarnings("unused")
     public ElasticMap(int initialCapacity, float loadFactor) {
         first = new MapObject<>(initialCapacity, loadFactor);
     }
-
+@SuppressWarnings("unused")
     public ElasticMap(int initialCapacity) {
         first = new MapObject<>(initialCapacity);
     }

@@ -7,6 +7,7 @@ import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.core.TurtleValue;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,7 +15,7 @@ import java.util.HashSet;
 /**
  * @author entropyfeng
  */
-public class SetDomain implements ISetOperations {
+public class SetDomain implements ISetOperations, Serializable {
 
     private HashMap<String, HashSet<TurtleValue>> setHashMap;
 

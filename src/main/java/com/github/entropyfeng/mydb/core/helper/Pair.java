@@ -1,6 +1,6 @@
 package com.github.entropyfeng.mydb.core.helper;
 
-import afu.org.checkerframework.checker.oigj.qual.O;
+import com.google.common.base.Objects;
 
 import java.util.Map;
 
@@ -36,6 +36,24 @@ public class Pair<K,V>implements Map.Entry<K,V> {
         V old=this.value;
         this.value = value;
         return old;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object){
+            return true;
+        }
+        if (!(object instanceof Pair)){
+            return false;
+        }
+        Pair<?, ?> pair = (Pair<?, ?>) object;
+        return Objects.equal(getKey(), pair.getKey()) &&
+                Objects.equal(getValue(), pair.getValue());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getKey(), getValue());
     }
 
     @Override

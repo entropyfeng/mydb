@@ -8,6 +8,7 @@ import com.github.entropyfeng.mydb.core.TurtleValue;
 import com.github.entropyfeng.mydb.core.zset.OrderSet;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 /**
  * @author entropyfeng
  */
-public class OrderSetDomain implements IOrderSetOperations {
+public class OrderSetDomain implements IOrderSetOperations, Serializable {
 
     private final HashMap<String, OrderSet<TurtleValue>> hashMap = new HashMap<>();
 
