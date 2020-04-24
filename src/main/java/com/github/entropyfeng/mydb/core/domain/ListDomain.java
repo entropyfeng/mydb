@@ -5,18 +5,24 @@ import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
 import com.github.entropyfeng.mydb.common.protobuf.SingleResHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.core.TurtleValue;
+import com.google.common.primitives.Bytes;
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.channel.rxtx.RxtxChannelConfig;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 
 /**
  * @author entropyfeng
  */
-public class ListDomain implements IListOperations, Serializable {
+public class ListDomain implements IListOperations {
 
     private final HashMap<String, LinkedList<TurtleValue>> listMap;
 
@@ -196,6 +202,31 @@ public class ListDomain implements IListOperations, Serializable {
     private void createIfNotExist(String key) {
 
         listMap.putIfAbsent(key,new LinkedList<>());
+    }
+
+    public static ListDomain read(InputStream inputStream){
+        ListDomain listDomain=new ListDomain();
+
+        return listDomain;
+    }
+    public static void write(ListDomain listDomain,DataOutputStream outputStream)throws IOException{
+
+
+
+
+        outputStream.writeInt(listDomain.listMap.size());
+        for (Map.Entry<String, LinkedList<TurtleValue>> entry : listDomain.listMap.entrySet()) {
+            String s = entry.getKey();
+            LinkedList<TurtleValue> turtleValues = entry.getValue();
+            outputStream.write(s.length());
+            outputStream.write(s.getBytes());
+            outputStream.write(turtleValues.size());
+            for (TurtleValue value : turtleValues) {
+
+            }
+
+
+        }
     }
 
 }

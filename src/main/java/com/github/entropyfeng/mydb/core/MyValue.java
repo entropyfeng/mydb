@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 /**
+ * 占用内存最多
  * @author entropyfeng
  */
 public class MyValue implements Comparable<MyValue> {

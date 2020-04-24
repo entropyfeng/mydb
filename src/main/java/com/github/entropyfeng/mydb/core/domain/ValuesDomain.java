@@ -22,7 +22,7 @@ import java.util.*;
 /**
  * @author entropyfeng
  */
-public class ValuesDomain extends BaseObject implements IValueOperations, Serializable {
+public class ValuesDomain extends BaseObject implements IValueOperations{
 
     private final HashMap<String, TurtleValue> valueMap;
 
@@ -196,6 +196,12 @@ public class ValuesDomain extends BaseObject implements IValueOperations, Serial
             return SingleResHelper.turtleDesignException(e.getMessage());
         }
         return SingleResHelper.turtleValueResponse(turtleValue);
+    }
+
+    public static ValuesDomain read(InputStream inputStream){
+      ValuesDomain valuesDomain=new ValuesDomain();
+
+      return valuesDomain;
     }
 
 

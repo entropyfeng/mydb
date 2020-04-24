@@ -7,8 +7,10 @@ import com.github.entropyfeng.mydb.common.exception.TurtleValueElementOutBoundsE
 import com.github.entropyfeng.mydb.util.BytesUtil;
 import com.github.entropyfeng.mydb.util.CommonUtil;
 import com.google.common.hash.Hashing;
+import com.google.protobuf.ByteString;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.DataOutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
@@ -31,9 +33,13 @@ import static com.github.entropyfeng.mydb.util.BytesUtil.bytesToInt;
  * 6种编码
  * @author entropyfeng
  */
-public class TurtleValue implements Comparable<TurtleValue>{
+public class TurtleValue implements Comparable<TurtleValue> {
     private TurtleValueType type;
     private byte[] values;
+
+    public TurtleValue(){
+
+    }
 
     public TurtleValueType getType() {
         return type;
@@ -283,6 +289,10 @@ public class TurtleValue implements Comparable<TurtleValue>{
             }
         }
         return 0;
+    }
+
+    public static void write( TurtleValue turtleValue,DataOutputStream outputStream){
+
 
     }
 }

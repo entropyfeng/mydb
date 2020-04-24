@@ -1,5 +1,7 @@
 package com.github.entropyfeng.mydb.util;
 
+import java.nio.ByteBuffer;
+
 /**
  * 默认大端法
  *
@@ -17,6 +19,13 @@ public class BytesUtil {
 
     }
 
+    public static void extraIntToBytes(int intValue, byte[] bytes){
+
+        bytes[1] = (byte) (intValue >> 24 & 0xff);
+        bytes[2] = (byte) (intValue >> 16 & 0xff);
+        bytes[3] = (byte) (intValue >> 8 & 0xff);
+        bytes[4] = (byte) (intValue & 0xff);
+    }
     public static int bytesToInt(byte byte0, byte byte1, byte byte2, byte byte3) {
         return (byte0 & 0xff) << 24
                 | (byte1 & 0xff) << 16
@@ -47,6 +56,17 @@ public class BytesUtil {
 
     }
 
+    public static void extraLongToBytes(long longValue,byte[] bytes){
+        bytes[1] = (byte) (longValue >> 56 & 0xff);
+        bytes[2] = (byte) (longValue >> 48 & 0xff);
+        bytes[3] = (byte) (longValue >> 40 & 0xff);
+        bytes[4] = (byte) (longValue >> 32 & 0xff);
+
+        bytes[5] = (byte) (longValue >> 24 & 0xff);
+        bytes[6] = (byte) (longValue >> 16 & 0xff);
+        bytes[7] = (byte) (longValue >> 8 & 0xff);
+        bytes[8] = (byte) (longValue & 0xff);
+    }
     public static long bytesToLong(byte[] bytes) {
         assert bytes.length == 8;
         return
@@ -90,5 +110,26 @@ public class BytesUtil {
         return bytes;
     }
 
+    public static byte[] concat(byte a,byte[] b){
+        byte[] newBytes=new byte[b.length+1];
+        System.arraycopy(b,0,newBytes,1,b.length);
+        newBytes[0]=a;
+        return newBytes;
+    }
+    public static byte[] concat(byte[] a,byte[] b){
+        byte[] newBytes=new byte[a.length+b.length];
+        System.arraycopy(b,0,newBytes,a.length,b.length);
+        return newBytes;
+    }
 
+    /**
+     * 向右移动1字节
+     * @param bytes byte 数组
+     * @return 移动后的数组
+     */
+    public static byte[] rightMove1(byte[] bytes){
+        byte[] newBytes=new byte[bytes.length+1];
+        System.arraycopy(bytes,0,newBytes,1,bytes.length);
+        return newBytes;
+    }
 }
