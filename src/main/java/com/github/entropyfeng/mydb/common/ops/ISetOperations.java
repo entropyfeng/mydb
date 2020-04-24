@@ -19,12 +19,15 @@ public interface ISetOperations {
 
     /**
      * 只做并操作不返回值
-     * @param key key
+     *
+     * @param key      key
      * @param otherKey other key
      * @return responseData
      */
     public @NotNull TurtleProtoBuf.ResponseData union(String key, String otherKey);
-   public @NotNull TurtleProtoBuf.ResponseData union(String key, Collection<TurtleValue> turtleValues);
+
+    public @NotNull TurtleProtoBuf.ResponseData union(String key, Collection<TurtleValue> turtleValues);
+
     public @NotNull Collection<TurtleProtoBuf.ResponseData> unionAndGet(String key, String otherKey);
 
     public @NotNull Collection<TurtleProtoBuf.ResponseData> unionAndGet(String key, Collection<TurtleValue> turtleValues);

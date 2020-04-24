@@ -205,6 +205,7 @@ public class SkipList<T extends Comparable<T>> {
         tempNode.level[0].back = tempNode;
     }
 
+
     public int size() {
         return size;
     }

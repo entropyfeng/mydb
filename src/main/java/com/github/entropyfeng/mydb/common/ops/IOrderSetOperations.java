@@ -35,9 +35,6 @@ public interface IOrderSetOperations {
 
     public @NotNull TurtleProtoBuf.ResponseData delete(String key);
 
-    public @NotNull Collection<TurtleProtoBuf.ResponseData> union(String key, String otherKey);
-
-    public @NotNull Collection<TurtleProtoBuf.ResponseData> unionAndStore(String key, String otherKey);
 
 
 }
