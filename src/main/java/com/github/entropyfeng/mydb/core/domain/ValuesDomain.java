@@ -11,21 +11,31 @@ import com.github.entropyfeng.mydb.core.obj.BaseObject;
 import com.github.entropyfeng.mydb.util.TimeUtil;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 /**
  * @author entropyfeng
  */
-public class ValuesDomain extends BaseObject implements IValueOperations{
+public class ValuesDomain extends BaseObject implements IValueOperations {
 
     private final HashMap<String, TurtleValue> valueMap;
 
     public ValuesDomain() {
         super();
         this.valueMap = new HashMap<>();
+    }
+
+    public ValuesDomain(HashMap<String, TurtleValue> valueMap, Map<String, Long> expireMap) {
+        super(expireMap);
+        this.valueMap = valueMap;
     }
 
 
@@ -157,7 +167,6 @@ public class ValuesDomain extends BaseObject implements IValueOperations{
     }
 
 
-
     private @NotNull TurtleProtoBuf.ResponseData modifyHelper(String key, TurtleValueType type, Object value) {
         handleExpire(key);
         TurtleValue turtleValue = valueMap.get(key);
@@ -195,11 +204,69 @@ public class ValuesDomain extends BaseObject implements IValueOperations{
         return SingleResHelper.turtleValueResponse(turtleValue);
     }
 
-    public static ValuesDomain read(InputStream inputStream){
-      ValuesDomain valuesDomain=new ValuesDomain();
 
-      return valuesDomain;
+    public static void write(ValuesDomain valuesDomain, DataOutputStream outputStream) throws IOException {
+
+        Map<String, Long> expireMap = valuesDomain.getExpireMap();
+        int sizeMap = valuesDomain.valueMap.size();
+        int sizeExpire = expireMap.size();
+        outputStream.writeInt(sizeMap);
+        outputStream.writeInt(sizeExpire);
+        for (Map.Entry<String, TurtleValue> entry : valuesDomain.valueMap.entrySet()) {
+            String s = entry.getKey();
+            byte[] stringBytes = s.getBytes();
+            outputStream.writeInt(stringBytes.length);
+            outputStream.write(stringBytes);
+            TurtleValue.write(entry.getValue(), outputStream);
+            if (expireMap.containsKey(s)) {
+                outputStream.writeBoolean(true);
+                outputStream.writeLong(expireMap.get(s));
+            } else {
+                outputStream.writeBoolean(false);
+            }
+        }
+
+    }
+
+    public static ValuesDomain read(DataInputStream inputStream) throws IOException {
+        int sizeMap = inputStream.readInt();
+        int sizeExpire = inputStream.readInt();
+        Map<String, Long> expireMap = new HashMap<>(sizeExpire);
+        HashMap<String, TurtleValue> valueMap = new HashMap<>(sizeMap);
+        ValuesDomain valuesDomain = new ValuesDomain(valueMap, expireMap);
+
+        for (int i = 0; i < sizeMap; i++) {
+            int stringSize = inputStream.readInt();
+            byte[] stringBytes = new byte[stringSize];
+            inputStream.readFully(stringBytes);
+            String s = new String(stringBytes);
+            TurtleValue turtleValue = TurtleValue.read(inputStream);
+            boolean expireMark = inputStream.readBoolean();
+            if (expireMark) {
+                //如果已经过期，则不添加
+                Long time = inputStream.readLong();
+                if (!TimeUtil.isExpire(time)) {
+                    valueMap.put(s, turtleValue);
+                    expireMap.put(s, time);
+                }
+            } else {
+                valueMap.put(s, turtleValue);
+            }
+
+        }
+
+        return valuesDomain;
     }
 
 
+    //-------------------------getter--------------------------
+
+    public HashMap<String, TurtleValue> getValueMap() {
+        return valueMap;
+    }
+
+    @Override
+    public Map<String, Long> getExpireMap() {
+        return super.getExpireMap();
+    }
 }

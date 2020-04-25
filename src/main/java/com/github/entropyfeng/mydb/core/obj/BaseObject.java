@@ -22,6 +22,10 @@ public class BaseObject {
         expireMap = new HashMap<>();
         expireQueue = new PriorityQueue<>();
     }
+    public BaseObject(Map<String,Long> expireMap){
+        this.expireMap=expireMap;
+        expireQueue=new PriorityQueue<>();
+    }
 
     /**
      * 设置该键值对将在 time 时过期
@@ -79,4 +83,7 @@ public class BaseObject {
         }
     }
 
+    public Map<String, Long> getExpireMap() {
+        return expireMap;
+    }
 }

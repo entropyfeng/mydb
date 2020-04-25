@@ -9,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -209,9 +208,10 @@ public class ListDomain implements IListOperations {
         outputStream.writeInt(listDomain.listMap.size());
         for (Map.Entry<String, LinkedList<TurtleValue>> entry : listDomain.listMap.entrySet()) {
             String s = entry.getKey();
+            byte[] stringBytes=s.getBytes();
             LinkedList<TurtleValue> turtleValues = entry.getValue();
-            outputStream.writeInt(s.length());
-            outputStream.write(s.getBytes());
+            outputStream.writeInt(stringBytes.length);
+            outputStream.write(stringBytes);
             outputStream.writeInt(turtleValues.size());
             for (TurtleValue value : turtleValues) {
                 TurtleValue.write(value, outputStream);

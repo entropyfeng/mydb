@@ -42,9 +42,4 @@ public class TestList {
 
     }
 
-    @Test
-    public void testString(){
-        String s= "ab";
-        System.out.println(s.getBytes().length);
-    }
 }
