@@ -1,18 +1,15 @@
 package com.github.entropyfeng.mydb.core.domain;
 
 import com.github.entropyfeng.mydb.common.ops.IListOperations;
-import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
 import com.github.entropyfeng.mydb.common.protobuf.SingleResHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.core.TurtleValue;
-import com.google.common.primitives.Bytes;
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.channel.rxtx.RxtxChannelConfig;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.*;
-import java.nio.Buffer;
-import java.nio.ByteBuffer;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -31,6 +28,9 @@ public class ListDomain implements IListOperations {
         this.listMap = new HashMap<>();
     }
 
+    public ListDomain(HashMap<String, LinkedList<TurtleValue>> map) {
+        this.listMap = map;
+    }
 
     @Override
     public @NotNull TurtleProtoBuf.ResponseData size() {
@@ -40,8 +40,8 @@ public class ListDomain implements IListOperations {
     @Override
     public @NotNull TurtleProtoBuf.ResponseData sizeOf(String key) {
 
-        LinkedList<TurtleValue> list=listMap.get(key);
-        int res=list==null?0:listMap.size();
+        LinkedList<TurtleValue> list = listMap.get(key);
+        int res = list == null ? 0 : listMap.size();
         return SingleResHelper.integerResponse(res);
     }
 
@@ -56,29 +56,29 @@ public class ListDomain implements IListOperations {
 
     @Override
     public @NotNull TurtleProtoBuf.ResponseData leftPushAll(String key, Collection<TurtleValue> values) {
-       createIfNotExist(key);
-       listMap.get(key).addAll(0,values);
+        createIfNotExist(key);
+        listMap.get(key).addAll(0, values);
         return SingleResHelper.voidResponse();
     }
 
     @Override
     public @NotNull TurtleProtoBuf.ResponseData leftPushIfPresent(String key, TurtleValue value) {
-        boolean res=false;
+        boolean res = false;
 
         if (listMap.containsKey(key)) {
             listMap.get(key).addFirst(value);
-            res=true;
+            res = true;
         }
         return SingleResHelper.boolResponse(res);
     }
 
     @Override
     public @NotNull TurtleProtoBuf.ResponseData leftPushIfAbsent(String key, TurtleValue value) {
-        boolean res=false;
+        boolean res = false;
         if (!listMap.containsKey(key)) {
-            listMap.put(key,new LinkedList<>());
+            listMap.put(key, new LinkedList<>());
             listMap.get(key).addFirst(value);
-            res=true;
+            res = true;
         }
         return SingleResHelper.boolResponse(res);
     }
@@ -99,11 +99,11 @@ public class ListDomain implements IListOperations {
 
     @Override
     public @NotNull TurtleProtoBuf.ResponseData rightPushIfPresent(String key, TurtleValue value) {
-        boolean res=false;
+        boolean res = false;
 
         if (listMap.containsKey(key)) {
             listMap.get(key).addLast(value);
-            res=true;
+            res = true;
         }
         return SingleResHelper.boolResponse(res);
 
@@ -111,11 +111,11 @@ public class ListDomain implements IListOperations {
 
     @Override
     public @NotNull TurtleProtoBuf.ResponseData rightPushIfAbsent(String key, TurtleValue value) {
-        boolean res=false;
+        boolean res = false;
         if (!listMap.containsKey(key)) {
-            listMap.put(key,new LinkedList<>());
+            listMap.put(key, new LinkedList<>());
             listMap.get(key).addLast(value);
-            res=true;
+            res = true;
         }
         return SingleResHelper.boolResponse(res);
     }
@@ -123,13 +123,13 @@ public class ListDomain implements IListOperations {
     @Override
     public @NotNull TurtleProtoBuf.ResponseData leftPop(String key) {
 
-        TurtleValue res=null;
+        TurtleValue res = null;
         if (listMap.containsKey(key)) {
-           res=listMap.get(key).pollFirst();
+            res = listMap.get(key).pollFirst();
         }
-        if (res==null){
+        if (res == null) {
             return SingleResHelper.nullResponse();
-        }else {
+        } else {
             return SingleResHelper.turtleValueResponse(res);
         }
 
@@ -137,26 +137,26 @@ public class ListDomain implements IListOperations {
 
     @Override
     public @NotNull TurtleProtoBuf.ResponseData left(String key) {
-        TurtleValue res=null;
+        TurtleValue res = null;
         if (listMap.containsKey(key)) {
-            res=listMap.get(key).peekFirst();
+            res = listMap.get(key).peekFirst();
         }
-        if (res==null){
+        if (res == null) {
             return SingleResHelper.nullResponse();
-        }else {
+        } else {
             return SingleResHelper.turtleValueResponse(res);
         }
     }
 
     @Override
     public @NotNull TurtleProtoBuf.ResponseData rightPop(String key) {
-        TurtleValue res=null;
+        TurtleValue res = null;
         if (listMap.containsKey(key)) {
-            res=listMap.get(key).pollLast();
+            res = listMap.get(key).pollLast();
         }
-        if (res==null){
+        if (res == null) {
             return SingleResHelper.nullResponse();
-        }else {
+        } else {
             return SingleResHelper.turtleValueResponse(res);
         }
 
@@ -164,13 +164,13 @@ public class ListDomain implements IListOperations {
 
     @Override
     public @NotNull TurtleProtoBuf.ResponseData right(String key) {
-        TurtleValue res=null;
+        TurtleValue res = null;
         if (listMap.containsKey(key)) {
-            res=listMap.get(key).peekLast();
+            res = listMap.get(key).peekLast();
         }
-        if (res==null){
+        if (res == null) {
             return SingleResHelper.nullResponse();
-        }else {
+        } else {
             return SingleResHelper.turtleValueResponse(res);
         }
     }
@@ -189,40 +189,61 @@ public class ListDomain implements IListOperations {
 
     @Override
     public @NotNull TurtleProtoBuf.ResponseData exist(String key) {
-        return SingleResHelper.boolResponse(listMap.get(key)!=null);
+        return SingleResHelper.boolResponse(listMap.get(key) != null);
     }
 
     @Override
     public @NotNull TurtleProtoBuf.ResponseData exist(String key, TurtleValue value) {
-        LinkedList<TurtleValue> list= listMap.get(key);
-        boolean res= list != null && list.contains(value);
+        LinkedList<TurtleValue> list = listMap.get(key);
+        boolean res = list != null && list.contains(value);
         return SingleResHelper.boolResponse(res);
     }
 
     private void createIfNotExist(String key) {
 
-        listMap.putIfAbsent(key,new LinkedList<>());
+        listMap.putIfAbsent(key, new LinkedList<>());
     }
 
-    public static ListDomain read(InputStream inputStream){
-        ListDomain listDomain=new ListDomain();
-
-        return listDomain;
-    }
-    public static void write(ListDomain listDomain,DataOutputStream outputStream)throws IOException{
+    public static void write(ListDomain listDomain, DataOutputStream outputStream) throws IOException {
 
         outputStream.writeInt(listDomain.listMap.size());
         for (Map.Entry<String, LinkedList<TurtleValue>> entry : listDomain.listMap.entrySet()) {
             String s = entry.getKey();
             LinkedList<TurtleValue> turtleValues = entry.getValue();
-            outputStream.write(s.length());
+            outputStream.writeInt(s.length());
             outputStream.write(s.getBytes());
-            outputStream.write(turtleValues.size());
+            outputStream.writeInt(turtleValues.size());
             for (TurtleValue value : turtleValues) {
-                TurtleValue.write(value,outputStream);
+                TurtleValue.write(value, outputStream);
             }
         }
         outputStream.flush();
     }
 
+    public static ListDomain read(DataInputStream inputStream) throws IOException {
+
+        int mapSize = inputStream.readInt();
+        HashMap<String, LinkedList<TurtleValue>> map = new HashMap<>(mapSize);
+        ListDomain listDomain = new ListDomain(map);
+        for (int i = 0; i < mapSize; i++) {
+
+            int bytesSize = inputStream.readInt();
+            byte[] stringBytes = new byte[bytesSize];
+            inputStream.readFully(stringBytes);
+            String string = new String(stringBytes);
+
+            LinkedList<TurtleValue> linkedList = new LinkedList<>();
+            map.put(string, linkedList);
+
+            int turtleSize = inputStream.readInt();
+            for (int j = 0; j < turtleSize; j++) {
+                linkedList.push(TurtleValue.read(inputStream));
+            }
+        }
+        return listDomain;
+    }
+
+    public HashMap<String, LinkedList<TurtleValue>> getListMap() {
+        return listMap;
+    }
 }

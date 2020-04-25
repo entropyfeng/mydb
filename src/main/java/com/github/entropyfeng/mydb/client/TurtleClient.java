@@ -1,7 +1,6 @@
 package com.github.entropyfeng.mydb.client;
 
 import com.github.entropyfeng.mydb.client.conn.TurtleClientChannelFactory;
-import com.github.entropyfeng.mydb.common.CommonCommand;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;

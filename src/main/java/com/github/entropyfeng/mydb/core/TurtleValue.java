@@ -22,7 +22,7 @@ import static com.github.entropyfeng.mydb.util.BytesUtil.*;
 
 /**
  * 同时支持
- * {@link String}
+ * {@link Byte[]}
  * {@link Integer}
  * {@link Long}
  * {@link Double}
@@ -325,7 +325,6 @@ public class TurtleValue implements Comparable<TurtleValue> {
         int length = inputStream.readInt();
         byte[] values = new byte[length];
         inputStream.readFully(values);
-
         return new TurtleValue(values, TurtleValueType.construct(type));
     }
 }

@@ -60,7 +60,7 @@ public class TurtleServer {
                     .localAddress(host, port)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
-                        protected void initChannel(SocketChannel ch) throws Exception {
+                        protected void initChannel(SocketChannel ch) {
 
                             ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());//入站
                             ch.pipeline().addLast(new ProtobufDecoder(TurtleProtoBuf.ClientCommand.getDefaultInstance()));//入站
