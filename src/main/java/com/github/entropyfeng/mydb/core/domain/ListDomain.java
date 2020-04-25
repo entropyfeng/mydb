@@ -211,9 +211,6 @@ public class ListDomain implements IListOperations {
     }
     public static void write(ListDomain listDomain,DataOutputStream outputStream)throws IOException{
 
-
-
-
         outputStream.writeInt(listDomain.listMap.size());
         for (Map.Entry<String, LinkedList<TurtleValue>> entry : listDomain.listMap.entrySet()) {
             String s = entry.getKey();
@@ -222,11 +219,10 @@ public class ListDomain implements IListOperations {
             outputStream.write(s.getBytes());
             outputStream.write(turtleValues.size());
             for (TurtleValue value : turtleValues) {
-
+                TurtleValue.write(value,outputStream);
             }
-
-
         }
+        outputStream.flush();
     }
 
 }

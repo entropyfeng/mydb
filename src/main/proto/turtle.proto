@@ -15,14 +15,6 @@ enum TurtleModel{ //支持模式
 
     LIST=5;
 }
-enum TurtleValueType{
-    String=0;
-    Long=1;
-    Double=2;
-    NumberInteger=3;
-    NumberDecimal=4;
-    Bytes=5;
-}
 message TurtleValue{ //数据库基本对象
     TurtleParaType turtleParaType=1;
     bytes values=2;

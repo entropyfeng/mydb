@@ -47,12 +47,12 @@ public class MyValue implements Comparable<MyValue> {
     }
 
     public MyValue(String string) {
-        this.value = TurtleValueType.STRING;
+        this.value = TurtleValueType.BYTES;
         this.value = string;
     }
 
     public void append(String otherKey) throws UnsupportedOperationException {
-        if (type == TurtleValueType.STRING) {
+        if (type == TurtleValueType.BYTES) {
             if (value instanceof String) {
                 value = new StringBuilder((String) value).append(otherKey);
             } else {
@@ -230,7 +230,7 @@ public class MyValue implements Comparable<MyValue> {
         switch (type){
             case INTEGER:return Hashing.murmur3_32().hashInt((Integer)value).asInt();
             case LONG:return Hashing.murmur3_32().hashLong((Long)value).asInt();
-            case STRING:
+            case BYTES:
             case DOUBLE:
             case NUMBER_INTEGER:return Hashing.murmur3_32().hashString(value.toString(),Charsets.UTF_8).asInt();
             case NUMBER_DECIMAL:return Hashing.murmur3_32().hashString(((BigDecimal)value).toPlainString(),Charsets.UTF_8).asInt();
@@ -239,7 +239,7 @@ public class MyValue implements Comparable<MyValue> {
     }
 
     public void shrink(){
-        if (type==TurtleValueType.STRING){
+        if (type==TurtleValueType.BYTES){
             if (value instanceof StringBuilder){
                 this.value=((StringBuilder)value).toString();
             }
@@ -255,11 +255,11 @@ public class MyValue implements Comparable<MyValue> {
                 case LONG:return Long.compare((Long)(value),(Long)that.value);
                 case DOUBLE:return Double.compare((Double)value,(Double)that.value);
                 case INTEGER:return Integer.compare((Integer)value,(Integer)that.value);
-                case STRING:return value.toString().compareTo(that.value.toString());
+                case BYTES:return value.toString().compareTo(that.value.toString());
                 default:return 0;
             }
         }else {
-            if (this.type!=TurtleValueType.STRING&&that.type!=TurtleValueType.STRING){
+            if (this.type!=TurtleValueType.BYTES &&that.type!=TurtleValueType.BYTES){
               return   castToBigDecimal(this.type,this.value).compareTo(castToBigDecimal(that.type,that.value));
             }else {
                 return 0;

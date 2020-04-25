@@ -18,7 +18,7 @@ public class ProtoTurtleHelper {
             case DOUBLE:
                 type = TurtleProtoBuf.TurtleParaType.DOUBLE;
                 break;
-            case STRING:
+            case BYTES:
                 type = TurtleProtoBuf.TurtleParaType.STRING;
                 break;
             case LONG:
@@ -45,7 +45,7 @@ public class ProtoTurtleHelper {
                 type = TurtleValueType.LONG;
                 break;
             case STRING:
-                type = TurtleValueType.STRING;
+                type = TurtleValueType.BYTES;
                 break;
             case DOUBLE:
                 type = TurtleValueType.DOUBLE;
@@ -75,7 +75,7 @@ public class ProtoTurtleHelper {
             case DOUBLE:
                 type = TurtleProtoBuf.TurtleParaType.DOUBLE;
                 break;
-            case STRING:
+            case BYTES:
                 type = TurtleProtoBuf.TurtleParaType.STRING;
                 break;
             case LONG:

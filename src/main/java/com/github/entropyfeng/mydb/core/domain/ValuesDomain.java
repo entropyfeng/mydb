@@ -4,14 +4,11 @@ import com.github.entropyfeng.mydb.common.TurtleValueType;
 import com.github.entropyfeng.mydb.common.exception.TurtleDesignError;
 import com.github.entropyfeng.mydb.common.ops.IValueOperations;
 import com.github.entropyfeng.mydb.common.protobuf.CollectionResHelper;
-import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
 import com.github.entropyfeng.mydb.common.protobuf.SingleResHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.core.TurtleValue;
-import com.github.entropyfeng.mydb.core.helper.Pair;
 import com.github.entropyfeng.mydb.core.obj.BaseObject;
 import com.github.entropyfeng.mydb.util.TimeUtil;
-import com.google.protobuf.ByteString;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
@@ -127,7 +124,7 @@ public class ValuesDomain extends BaseObject implements IValueOperations{
 
     @Override
     public @NotNull TurtleProtoBuf.ResponseData append(@NotNull String key, @NotNull String appendValue) throws UnsupportedOperationException, NoSuchElementException {
-        return modifyHelper(key, TurtleValueType.STRING, appendValue);
+        return modifyHelper(key, TurtleValueType.BYTES, appendValue);
     }
 
 
@@ -169,7 +166,7 @@ public class ValuesDomain extends BaseObject implements IValueOperations{
         }
         try {
             switch (type) {
-                case STRING:
+                case BYTES:
                     turtleValue.append((String) value);
                     break;
                 case LONG:

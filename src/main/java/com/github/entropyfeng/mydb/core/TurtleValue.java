@@ -7,19 +7,17 @@ import com.github.entropyfeng.mydb.common.exception.TurtleValueElementOutBoundsE
 import com.github.entropyfeng.mydb.util.BytesUtil;
 import com.github.entropyfeng.mydb.util.CommonUtil;
 import com.google.common.hash.Hashing;
-import com.google.protobuf.ByteString;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
-import java.util.Objects;
-
 
 import static com.github.entropyfeng.mydb.util.BytesUtil.*;
-import static com.github.entropyfeng.mydb.util.BytesUtil.bytesToInt;
 
 
 /**
@@ -31,15 +29,13 @@ import static com.github.entropyfeng.mydb.util.BytesUtil.bytesToInt;
  * {@link BigInteger}
  * {@link BigDecimal}
  * 6种编码
+ *
  * @author entropyfeng
  */
 public class TurtleValue implements Comparable<TurtleValue> {
     private TurtleValueType type;
     private byte[] values;
 
-    public TurtleValue(){
-
-    }
 
     public TurtleValueType getType() {
         return type;
@@ -54,14 +50,14 @@ public class TurtleValue implements Comparable<TurtleValue> {
         this.values = bytes;
     }
 
-    public TurtleValue(String value){
-        Objects.requireNonNull(value);
-        if(value.length()> CommonConstant.MAX_STRING_LENGTH){
+    public TurtleValue(@NotNull String value) {
+        if (value.length() > CommonConstant.MAX_STRING_LENGTH) {
             throw new TurtleValueElementOutBoundsException();
         }
-        this.type=TurtleValueType.STRING;
-        this.values=value.getBytes();
+        this.type = TurtleValueType.BYTES;
+        this.values = value.getBytes();
     }
+
     public TurtleValue(int value) {
         this(BytesUtil.allocate4(value), TurtleValueType.INTEGER);
     }
@@ -69,7 +65,6 @@ public class TurtleValue implements Comparable<TurtleValue> {
     public TurtleValue(double value) {
         this(BytesUtil.allocate8(value), TurtleValueType.DOUBLE);
     }
-
 
     public TurtleValue(long value) {
         this(BytesUtil.allocate8(value), TurtleValueType.LONG);
@@ -83,8 +78,15 @@ public class TurtleValue implements Comparable<TurtleValue> {
         this(value.toPlainString().getBytes(), TurtleValueType.NUMBER_DECIMAL);
     }
 
+    public TurtleValue(@NotNull byte[] values) {
+        if (values.length > CommonConstant.MAX_STRING_LENGTH) {
+            throw new TurtleValueElementOutBoundsException();
+        }
+        this.type = TurtleValueType.BYTES;
+    }
+
     public void append(String value) throws UnsupportedOperationException {
-        if (this.type == TurtleValueType.STRING) {
+        if (this.type == TurtleValueType.BYTES) {
             this.values = CommonUtil.mergeBytes(this.values, value.getBytes());
         } else {
             throw new UnsupportedOperationException("unSupport append operation on" + type.toString());
@@ -98,7 +100,7 @@ public class TurtleValue implements Comparable<TurtleValue> {
                 longAdd(this.values, longValue);
                 return;
             case INTEGER:
-                handleLong(longValue+bytesToInt(this.values));
+                handleLong(longValue + bytesToInt(this.values));
                 return;
             case NUMBER_INTEGER:
                 handleBigInteger(toBigInteger(this).add(BigInteger.valueOf(longValue)));
@@ -115,17 +117,17 @@ public class TurtleValue implements Comparable<TurtleValue> {
         switch (type) {
             case INTEGER:
                 intAdd(this.values, intValue);
-               return;
+                return;
             case LONG:
                 longAdd(this.values, intValue);
                 return;
             case NUMBER_INTEGER:
                 handleBigInteger(toBigInteger(this).add(BigInteger.valueOf(intValue)));
-               return;
+                return;
             case DOUBLE:
             case NUMBER_DECIMAL:
                 handleBigDecimal(toBigDecimal(this).add(BigDecimal.valueOf(intValue)));
-               return;
+                return;
             default:
                 throw new UnsupportedOperationException("unSupport append operation on" + type.toString());
         }
@@ -138,11 +140,11 @@ public class TurtleValue implements Comparable<TurtleValue> {
             case INTEGER:
             case NUMBER_INTEGER:
                 handleBigInteger(bigInteger.add(toBigInteger(this)));
-               return;
+                return;
             case NUMBER_DECIMAL:
             case DOUBLE:
                 handleBigDecimal(toBigDecimal(this).add(new BigDecimal(bigInteger)));
-               return;
+                return;
             default:
                 throw new UnsupportedOperationException("unSupport append operation on" + type.toString());
         }
@@ -153,40 +155,51 @@ public class TurtleValue implements Comparable<TurtleValue> {
         switch (type) {
             case DOUBLE:
                 doubleAdd(this.values, doubleValue);
-               return;
+                return;
             case LONG:
             case INTEGER:
             case NUMBER_INTEGER:
             case NUMBER_DECIMAL:
                 handleBigDecimal(toBigDecimal(this).add(BigDecimal.valueOf(doubleValue)));
-               return;
+                return;
             default:
                 throw new UnsupportedOperationException("unSupport append operation on" + type.toString());
         }
     }
 
-    public void increment(BigDecimal bigDecimal){
-        switch (type){
+    public void increment(BigDecimal bigDecimal) {
+        switch (type) {
             case DOUBLE:
             case INTEGER:
             case LONG:
             case NUMBER_DECIMAL:
-            case NUMBER_INTEGER:handleBigDecimal(toBigDecimal(this).add(bigDecimal));return;
-            default:throw  new UnsupportedOperationException("unSupport append operation on" + type.toString());
+            case NUMBER_INTEGER:
+                handleBigDecimal(toBigDecimal(this).add(bigDecimal));
+                return;
+            default:
+                throw new UnsupportedOperationException("unSupport append operation on" + type.toString());
         }
     }
 
-    public Object toObject(){
-        switch (type){
-            case NUMBER_INTEGER:return new BigInteger(values);
-            case LONG:return BytesUtil.bytesToLong(values);
-            case INTEGER:return BytesUtil.bytesToInt(values);
-            case DOUBLE:return BytesUtil.bytesToDouble(values);
-            case NUMBER_DECIMAL:return new BigDecimal(new String(values));
-            case STRING:return new String(values);
-            default:throw new TurtleDesignError("design error");
+    public Object toObject() {
+        switch (type) {
+            case NUMBER_INTEGER:
+                return new BigInteger(values);
+            case LONG:
+                return BytesUtil.bytesToLong(values);
+            case INTEGER:
+                return BytesUtil.bytesToInt(values);
+            case DOUBLE:
+                return BytesUtil.bytesToDouble(values);
+            case NUMBER_DECIMAL:
+                return new BigDecimal(new String(values));
+            case BYTES:
+                return new String(values);
+            default:
+                throw new TurtleDesignError("design error");
         }
     }
+
     private void handleBigDecimal(BigDecimal bigDecimal) {
         this.values = bigDecimal.toPlainString().getBytes();
         this.type = TurtleValueType.NUMBER_DECIMAL;
@@ -215,7 +228,7 @@ public class TurtleValue implements Comparable<TurtleValue> {
                 return new BigDecimal(ByteBuffer.wrap(turtleValue.values).getLong());
             case NUMBER_DECIMAL:
                 return new BigDecimal(new String(turtleValue.values));
-            case STRING:
+            case BYTES:
             default:
                 throw new UnsupportedOperationException("unSupport operation " + turtleValue.type.toString());
         }
@@ -234,30 +247,31 @@ public class TurtleValue implements Comparable<TurtleValue> {
                 throw new UnsupportedOperationException("unSupport operation " + turtleValue.type.toString());
         }
     }
+
     private static void doubleAdd(byte[] bytes, double doubleValue) {
         doubleToBytes(bytes, bytesToDouble(bytes) + doubleValue);
     }
 
     /**
-     * @param bytes long type
+     * @param bytes     long type
      * @param longValue long value
      */
     private static void longAdd(byte[] bytes, long longValue) {
-        longToBytes(bytesToLong(bytes) + longValue,bytes);
+        longToBytes(bytesToLong(bytes) + longValue, bytes);
     }
 
     /**
-     * @param bytes int type
+     * @param bytes    int type
      * @param intValue int value
      */
     private static void intAdd(byte[] bytes, int intValue) {
-        intToBytes(bytesToInt(bytes) + intValue,bytes);
+        intToBytes(bytesToInt(bytes) + intValue, bytes);
     }
 
     @Override
     public boolean equals(Object o) {
 
-        if (this == o){
+        if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
@@ -271,28 +285,47 @@ public class TurtleValue implements Comparable<TurtleValue> {
     @Override
     @SuppressWarnings("all")
     public int hashCode() {
-      return   Hashing.murmur3_32().hashBytes(values).asInt();
+        return Hashing.murmur3_32().hashBytes(values).asInt();
     }
 
     @Override
     public int compareTo(@NotNull TurtleValue o) {
 
-        if (this.type==o.type){
-            switch (this.type){
-                case INTEGER:return Integer.compare((Integer) this.toObject(),(Integer) o.toObject());
-                case DOUBLE:return Double.compare((Double)this.toObject(),(Double)this.toObject());
-                case LONG:return Long.compare((Long)this.toObject(),(Long)this.toObject());
-                case NUMBER_INTEGER:return ((BigInteger)this.toObject()).compareTo((BigInteger) o.toObject());
-                case NUMBER_DECIMAL:return ((BigDecimal)this.toObject()).compareTo((BigDecimal)o.toObject());
-                case STRING:return ((String)o.toObject()).compareTo((String)o.toObject());
-                default:return 0;
+        if (this.type == o.type) {
+            switch (this.type) {
+                case INTEGER:
+                    return Integer.compare((Integer) this.toObject(), (Integer) o.toObject());
+                case DOUBLE:
+                    return Double.compare((Double) this.toObject(), (Double) this.toObject());
+                case LONG:
+                    return Long.compare((Long) this.toObject(), (Long) this.toObject());
+                case NUMBER_INTEGER:
+                    return ((BigInteger) this.toObject()).compareTo((BigInteger) o.toObject());
+                case NUMBER_DECIMAL:
+                    return ((BigDecimal) this.toObject()).compareTo((BigDecimal) o.toObject());
+                case BYTES:
+                    return ((String) o.toObject()).compareTo((String) o.toObject());
+                default:
+                    return 0;
             }
         }
         return 0;
     }
 
-    public static void write( TurtleValue turtleValue,DataOutputStream outputStream){
+    public static void write(TurtleValue turtleValue, DataOutputStream outputStream) throws IOException {
 
+        outputStream.writeByte(turtleValue.type.getValue());
+        outputStream.writeInt(turtleValue.values.length);
+        outputStream.write(turtleValue.values);
+        outputStream.flush();
+    }
 
+    public static TurtleValue read(DataInputStream inputStream) throws IOException {
+        byte type = inputStream.readByte();
+        int length = inputStream.readInt();
+        byte[] values = new byte[length];
+        inputStream.readFully(values);
+
+        return new TurtleValue(values, TurtleValueType.construct(type));
     }
 }
