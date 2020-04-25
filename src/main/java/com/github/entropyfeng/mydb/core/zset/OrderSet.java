@@ -105,4 +105,7 @@ public class OrderSet<T extends Comparable<T>> {
         hashMap.clear();
     }
 
+    public HashMap<T, Double> getHashMap() {
+        return hashMap;
+    }
 }

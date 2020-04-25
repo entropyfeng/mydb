@@ -28,7 +28,6 @@ public class TurtleServer {
      * @param host 主机地址
      */
     public TurtleServer(String host, String port) {
-
         this.port = Integer.parseInt(port);
         this.host = host;
     }

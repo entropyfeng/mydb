@@ -8,9 +8,13 @@ import com.github.entropyfeng.mydb.core.TurtleValue;
 import com.github.entropyfeng.mydb.core.dict.ElasticMap;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author entropyfeng
@@ -21,6 +25,9 @@ public class HashDomain implements IHashOperations, Serializable {
         this.hashMap = new HashMap<>();
     }
 
+    public HashDomain(HashMap<String, ElasticMap<TurtleValue, TurtleValue>> hashMap){
+        this.hashMap=hashMap;
+    }
     private HashMap<String, ElasticMap<TurtleValue, TurtleValue>> hashMap;
 
     @Override
@@ -108,5 +115,47 @@ public class HashDomain implements IHashOperations, Serializable {
             hashMap.put(key,new ElasticMap<>());
         }
     }
+    public static void write(HashDomain hashDomain,DataOutputStream outputStream)throws IOException {
+        HashMap<String, ElasticMap<TurtleValue, TurtleValue>> hashMap=  hashDomain.hashMap;
+        outputStream.writeInt(hashMap.size());
+        for (Map.Entry<String, ElasticMap<TurtleValue, TurtleValue>> entry : hashMap.entrySet()) {
 
+            String s = entry.getKey();
+            byte[] stringBytes=s.getBytes();
+            ElasticMap<TurtleValue, TurtleValue> elasticMap = entry.getValue();
+            outputStream.writeInt(elasticMap.size());
+            outputStream.writeInt(stringBytes.length);
+            outputStream.write(stringBytes);
+
+            for (Map.Entry<TurtleValue, TurtleValue> e : elasticMap.entrySet()) {
+                TurtleValue key = e.getKey();
+                TurtleValue value = e.getValue();
+                TurtleValue.write(key,outputStream);
+                TurtleValue.write(value,outputStream);
+            }
+        }
+    }
+    public static HashDomain read(DataInputStream inputStream) throws IOException {
+        HashMap<String, ElasticMap<TurtleValue, TurtleValue>> map=new HashMap<>();
+        HashDomain hashDomain=new HashDomain(map);
+        int hashSize=inputStream.readInt();
+        for (int i = 0; i <hashSize ; i++) {
+            int elasticSize=inputStream.readInt();
+            int stringSize=inputStream.readInt();
+            byte []stringBytes=new byte[stringSize];
+            inputStream.readFully(stringBytes);
+            String string=new String(stringBytes);
+            ElasticMap<TurtleValue,TurtleValue> elasticMap=new ElasticMap<>();
+            map.put(string,elasticMap);
+            for (int j = 0; j < elasticSize; j++) {
+                elasticMap.put(TurtleValue.read(inputStream),TurtleValue.read(inputStream));
+            }
+        }
+        return hashDomain;
+    }
+    //---------------getter---------------
+
+    public HashMap<String, ElasticMap<TurtleValue, TurtleValue>> getHashMap() {
+        return hashMap;
+    }
 }
