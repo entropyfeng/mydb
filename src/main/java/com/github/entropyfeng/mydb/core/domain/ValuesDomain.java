@@ -1,6 +1,7 @@
 package com.github.entropyfeng.mydb.core.domain;
 
 import com.github.entropyfeng.mydb.common.TurtleValueType;
+import com.github.entropyfeng.mydb.common.exception.DumpFileException;
 import com.github.entropyfeng.mydb.common.exception.TurtleDesignError;
 import com.github.entropyfeng.mydb.common.ops.IValueOperations;
 import com.github.entropyfeng.mydb.common.protobuf.CollectionResHelper;
@@ -230,7 +231,7 @@ public class ValuesDomain extends ExpireObject implements IValueOperations {
         byte[] magicNumber=new byte[Constant.MAGIC_NUMBER.length];
         inputStream.readFully(magicNumber);
         if (!Arrays.equals(Constant.MAGIC_NUMBER,magicNumber)){
-            throw new IOException("un support dump file !");
+            throw new DumpFileException("error values dump file.");
         }
         int sizeMap = inputStream.readInt();
         int sizeExpire = inputStream.readInt();

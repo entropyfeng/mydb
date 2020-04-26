@@ -53,18 +53,18 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<TurtleProto
             res.get(msg.getResponseId()).add(msg);
             if (msg.getEndAble()) {
                 dispatchResCollection(msg.getResponseId());
-
             }
             //第一次出现responseId对应的节点
         } else if (msg.getCollectionAble()) {
 
-
-            res.put(msg.getResponseId(), new ArrayList<>());
-            res.get(msg.getResponseId()).add(msg);
+            ArrayList<TurtleProtoBuf.ResponseData> responseData=new ArrayList<>();
+            responseData.add(msg);
+            res.put(msg.getResponseId(), responseData);
             if (msg.getEndAble()) {
                 dispatchResCollection(msg.getResponseId());
             }
         } else {
+            //single response
             ClientExecute.resMap.put(msg.getResponseId(), msg);
         }
     }

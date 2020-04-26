@@ -1,5 +1,6 @@
 package com.github.entropyfeng.mydb.core.domain;
 
+import com.github.entropyfeng.mydb.common.exception.DumpFileException;
 import com.github.entropyfeng.mydb.common.ops.IOrderSetOperations;
 import com.github.entropyfeng.mydb.common.protobuf.CollectionResHelper;
 import com.github.entropyfeng.mydb.common.protobuf.SingleResHelper;
@@ -204,7 +205,7 @@ public class OrderSetDomain implements IOrderSetOperations {
         byte[] magicNumber = new byte[Constant.MAGIC_NUMBER.length];
         inputStream.readFully(magicNumber);
         if (!Arrays.equals(Constant.MAGIC_NUMBER, magicNumber)) {
-            throw new IOException("un support dump file !");
+            throw new DumpFileException("error order set dump file.");
         }
 
         int mapSize = inputStream.readInt();

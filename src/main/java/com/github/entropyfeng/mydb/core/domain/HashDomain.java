@@ -1,5 +1,6 @@
 package com.github.entropyfeng.mydb.core.domain;
 
+import com.github.entropyfeng.mydb.common.exception.DumpFileException;
 import com.github.entropyfeng.mydb.common.ops.IHashOperations;
 import com.github.entropyfeng.mydb.common.protobuf.CollectionResHelper;
 import com.github.entropyfeng.mydb.common.protobuf.SingleResHelper;
@@ -119,7 +120,7 @@ public class HashDomain implements IHashOperations, Serializable {
     }
     public static void write(HashDomain hashDomain,DataOutputStream outputStream)throws IOException {
         outputStream.write(Constant.MAGIC_NUMBER);
-        
+
         HashMap<String, ElasticMap<TurtleValue, TurtleValue>> hashMap=  hashDomain.hashMap;
         outputStream.writeInt(hashMap.size());
         for (Map.Entry<String, ElasticMap<TurtleValue, TurtleValue>> entry : hashMap.entrySet()) {
@@ -143,7 +144,7 @@ public class HashDomain implements IHashOperations, Serializable {
         byte[] magicNumber=new byte[Constant.MAGIC_NUMBER.length];
         inputStream.readFully(magicNumber);
         if (!Arrays.equals(Constant.MAGIC_NUMBER,magicNumber)){
-            throw new IOException("un support dump file !");
+            throw new DumpFileException("error hash dump file.");
         }
 
         HashMap<String, ElasticMap<TurtleValue, TurtleValue>> map=new HashMap<>();

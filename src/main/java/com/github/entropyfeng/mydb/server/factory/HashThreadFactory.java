@@ -4,6 +4,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ThreadFactory;
 
+/**
+ * @author entropyfeng
+ */
 public class HashThreadFactory implements ThreadFactory {
     @Override
     public Thread newThread(@NotNull Runnable r) {

@@ -1,5 +1,6 @@
 package com.github.entropyfeng.mydb.core.domain;
 
+import com.github.entropyfeng.mydb.common.exception.DumpFileException;
 import com.github.entropyfeng.mydb.common.ops.IListOperations;
 import com.github.entropyfeng.mydb.common.protobuf.SingleResHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
@@ -224,7 +225,7 @@ public class ListDomain implements IListOperations {
         byte[] magicNumber=new byte[Constant.MAGIC_NUMBER.length];
         inputStream.readFully(magicNumber);
         if (!Arrays.equals(Constant.MAGIC_NUMBER,magicNumber)){
-            throw new IOException("un support dump file !");
+            throw new DumpFileException("error list dump file.");
         }
 
         int mapSize = inputStream.readInt();
