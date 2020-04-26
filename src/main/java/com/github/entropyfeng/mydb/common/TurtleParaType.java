@@ -25,5 +25,5 @@ public enum TurtleParaType {
 
     TURTLE_VALUE,
 
-    COLLECTION;
+    COLLECTION
 }

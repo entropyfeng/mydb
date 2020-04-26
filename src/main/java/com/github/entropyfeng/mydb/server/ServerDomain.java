@@ -5,6 +5,7 @@ import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.core.TurtleValue;
 import com.github.entropyfeng.mydb.core.domain.*;
+import com.github.entropyfeng.mydb.core.zset.OrderSet;
 import com.github.entropyfeng.mydb.server.command.ClientCommand;
 import com.github.entropyfeng.mydb.server.command.ICommand;
 import com.github.entropyfeng.mydb.server.factory.*;
@@ -22,6 +23,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 
 /**
@@ -30,6 +33,21 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 public class ServerDomain {
 
     private static final Logger logger = LoggerFactory.getLogger(ServerDomain.class);
+
+    public void xxx() {
+        ScheduledExecutorService scheduled = new ScheduledThreadPoolExecutor(1, r -> {
+            Thread thread = new Thread(r, "producer and customer thread");
+            thread.setDaemon(true);
+            return thread;
+        });
+
+    }
+
+    public void xx() {
+        if (valuesQueue.isEmpty()) {
+
+        }
+    }
 
     public ServerDomain(TurtleServer turtleServer) {
         this.adminObject = new AdminObject(this);
@@ -75,7 +93,7 @@ public class ServerDomain {
 
     protected ConcurrentLinkedDeque<ClientCommand> hashQueue;
 
-    private ConcurrentLinkedDeque<ClientCommand> orderSetQueue;
+    protected ConcurrentLinkedDeque<ClientCommand> orderSetQueue;
 
     protected Thread valueThread;
     protected Thread listThread;
@@ -106,10 +124,12 @@ public class ServerDomain {
                 execute(orderCommand, orderSetDomain);
             } else {
                 try {
-                    Thread.sleep(00);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+
+                System.out.println("interrupt");
             }
         }
     }
@@ -314,6 +334,9 @@ public class ServerDomain {
                 return;
             case HASH:
                 constructCommand(types, values, channel, clientCommand, HashDomain.class, hashQueue);
+                return;
+            case ZSET:
+                constructCommand(types, values, channel, clientCommand, OrderSet.class, orderSetQueue);
                 return;
             default:
                 throw new UnsupportedOperationException();

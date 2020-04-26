@@ -7,7 +7,6 @@ import com.github.entropyfeng.mydb.common.protobuf.CollectionResHelper;
 import com.github.entropyfeng.mydb.common.protobuf.SingleResHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.core.TurtleValue;
-import com.github.entropyfeng.mydb.core.obj.BaseObject;
 import com.github.entropyfeng.mydb.util.TimeUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,7 +23,7 @@ import java.util.NoSuchElementException;
 /**
  * @author entropyfeng
  */
-public class ValuesDomain extends BaseObject implements IValueOperations {
+public class ValuesDomain extends ExpireObject implements IValueOperations {
 
     private final HashMap<String, TurtleValue> valueMap;
 

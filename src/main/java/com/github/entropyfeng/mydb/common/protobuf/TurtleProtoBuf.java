@@ -372,6 +372,10 @@ public final class TurtleProtoBuf {
      */
     TurtleTimeOutException(9),
     /**
+     * <code>IllegalArgumentException = 10;</code>
+     */
+    IllegalArgumentException(10),
+    /**
      * <pre>
      *Error--------------
      * </pre>
@@ -435,6 +439,10 @@ public final class TurtleProtoBuf {
      */
     public static final int TurtleTimeOutException_VALUE = 9;
     /**
+     * <code>IllegalArgumentException = 10;</code>
+     */
+    public static final int IllegalArgumentException_VALUE = 10;
+    /**
      * <pre>
      *Error--------------
      * </pre>
@@ -484,6 +492,7 @@ public final class TurtleProtoBuf {
         case 7: return ElementOutOfBoundException;
         case 8: return TurtleValueElementOutBoundsException;
         case 9: return TurtleTimeOutException;
+        case 10: return IllegalArgumentException;
         case 100: return OutOfMemoryError;
         case 101: return StackOverflowError;
         case 102: return TurtleFatalError;
@@ -8178,15 +8187,6 @@ public final class TurtleProtoBuf {
     boolean getCollectionAble();
 
     /**
-     * <code>.TurtleParaType type = 6;</code>
-     */
-    int getTypeValue();
-    /**
-     * <code>.TurtleParaType type = 6;</code>
-     */
-    com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType getType();
-
-    /**
      * <code>string stringValue = 7;</code>
      */
     java.lang.String getStringValue();
@@ -8314,7 +8314,6 @@ public final class TurtleProtoBuf {
       super(builder);
     }
     private ResponseData() {
-      type_ = 0;
       exceptionType_ = 0;
       exception_ = "";
     }
@@ -8367,12 +8366,6 @@ public final class TurtleProtoBuf {
             case 40: {
 
               collectionAble_ = input.readBool();
-              break;
-            }
-            case 48: {
-              int rawValue = input.readEnum();
-
-              type_ = rawValue;
               break;
             }
             case 58: {
@@ -8602,23 +8595,6 @@ public final class TurtleProtoBuf {
      */
     public boolean getCollectionAble() {
       return collectionAble_;
-    }
-
-    public static final int TYPE_FIELD_NUMBER = 6;
-    private int type_;
-    /**
-     * <code>.TurtleParaType type = 6;</code>
-     */
-    public int getTypeValue() {
-      return type_;
-    }
-    /**
-     * <code>.TurtleParaType type = 6;</code>
-     */
-    public com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType getType() {
-      @SuppressWarnings("deprecation")
-      com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType result = com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType.valueOf(type_);
-      return result == null ? com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType.UNRECOGNIZED : result;
     }
 
     public static final int STRINGVALUE_FIELD_NUMBER = 7;
@@ -8910,9 +8886,6 @@ public final class TurtleProtoBuf {
       if (collectionAble_ != false) {
         output.writeBool(5, collectionAble_);
       }
-      if (type_ != com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType.STRING.getNumber()) {
-        output.writeEnum(6, type_);
-      }
       if (valueCase_ == 7) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 7, value_);
       }
@@ -8987,10 +8960,6 @@ public final class TurtleProtoBuf {
       if (collectionAble_ != false) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(5, collectionAble_);
-      }
-      if (type_ != com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType.STRING.getNumber()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(6, type_);
       }
       if (valueCase_ == 7) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, value_);
@@ -9078,7 +9047,6 @@ public final class TurtleProtoBuf {
           != other.getSuccess()) return false;
       if (getCollectionAble()
           != other.getCollectionAble()) return false;
-      if (type_ != other.type_) return false;
       if (exceptionType_ != other.exceptionType_) return false;
       if (!getException()
           .equals(other.getException())) return false;
@@ -9155,8 +9123,6 @@ public final class TurtleProtoBuf {
       hash = (37 * hash) + COLLECTIONABLE_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getCollectionAble());
-      hash = (37 * hash) + TYPE_FIELD_NUMBER;
-      hash = (53 * hash) + type_;
       hash = (37 * hash) + EXCEPTIONTYPE_FIELD_NUMBER;
       hash = (53 * hash) + exceptionType_;
       hash = (37 * hash) + EXCEPTION_FIELD_NUMBER;
@@ -9357,8 +9323,6 @@ public final class TurtleProtoBuf {
 
         collectionAble_ = false;
 
-        type_ = 0;
-
         exceptionType_ = 0;
 
         exception_ = "";
@@ -9403,7 +9367,6 @@ public final class TurtleProtoBuf {
         result.responseSequence_ = responseSequence_;
         result.success_ = success_;
         result.collectionAble_ = collectionAble_;
-        result.type_ = type_;
         if (valueCase_ == 7) {
           result.value_ = value_;
         }
@@ -9509,9 +9472,6 @@ public final class TurtleProtoBuf {
         }
         if (other.getCollectionAble() != false) {
           setCollectionAble(other.getCollectionAble());
-        }
-        if (other.type_ != 0) {
-          setTypeValue(other.getTypeValue());
         }
         if (other.exceptionType_ != 0) {
           setExceptionTypeValue(other.getExceptionTypeValue());
@@ -9731,51 +9691,6 @@ public final class TurtleProtoBuf {
       public Builder clearCollectionAble() {
         
         collectionAble_ = false;
-        onChanged();
-        return this;
-      }
-
-      private int type_ = 0;
-      /**
-       * <code>.TurtleParaType type = 6;</code>
-       */
-      public int getTypeValue() {
-        return type_;
-      }
-      /**
-       * <code>.TurtleParaType type = 6;</code>
-       */
-      public Builder setTypeValue(int value) {
-        type_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>.TurtleParaType type = 6;</code>
-       */
-      public com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType getType() {
-        @SuppressWarnings("deprecation")
-        com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType result = com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType.valueOf(type_);
-        return result == null ? com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType.UNRECOGNIZED : result;
-      }
-      /**
-       * <code>.TurtleParaType type = 6;</code>
-       */
-      public Builder setType(com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.TurtleParaType value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        
-        type_ = value.getNumber();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>.TurtleParaType type = 6;</code>
-       */
-      public Builder clearType() {
-        
-        type_ = 0;
         onChanged();
         return this;
       }
@@ -10768,39 +10683,39 @@ public final class TurtleProtoBuf {
       "y\030\001 \001(\t\022\'\n\016turtleParaType\030\002 \001(\0162\017.Turtle" +
       "ParaType\022\r\n\005value\030\003 \001(\014\"]\n\024StringTurtleL" +
       "istPair\022\013\n\003key\030\001 \001(\t\022(\n\017turtleParaTypes\030" +
-      "\002 \003(\0162\017.TurtleParaType\022\016\n\006values\030\003 \003(\014\"\261" +
+      "\002 \003(\0162\017.TurtleParaType\022\016\n\006values\030\003 \003(\014\"\222" +
       "\004\n\014ResponseData\022\022\n\nresponseId\030\001 \001(\003\022\030\n\020r" +
       "esponseSequence\030\002 \001(\003\022\017\n\007success\030\003 \001(\010\022\026" +
-      "\n\016collectionAble\030\005 \001(\010\022\035\n\004type\030\006 \001(\0162\017.T" +
-      "urtleParaType\022\025\n\013stringValue\030\007 \001(\tH\000\022\022\n\010" +
-      "intValue\030\010 \001(\005H\000\022\023\n\tlongValue\030\t \001(\003H\000\022\025\n" +
-      "\013doubleValue\030\n \001(\001H\000\022\023\n\tboolValue\030\013 \001(\010H" +
-      "\000\022\024\n\nbytesValue\030\014 \001(\014H\000\022#\n\013turtleValue\030\r" +
-      " \001(\0132\014.TurtleValueH\000\0229\n\026stringTurtleValu" +
-      "eEntry\030\016 \001(\0132\027.StringTurtleValueEntryH\000\022" +
-      "9\n\026turtleTurtleValueEntry\030\017 \001(\0132\027.Turtle" +
-      "TurtleValueEntryH\000\022%\n\rexceptionType\030\024 \001(" +
-      "\0162\016.ExceptionType\022\021\n\texception\030\025 \001(\t\022\026\n\016" +
-      "collectionSize\030\026 \001(\003\022\020\n\010nullable\030\027 \001(\010\022\020" +
-      "\n\010voidable\030\030 \001(\010\022\017\n\007endAble\030\031 \001(\010B\007\n\005Val" +
-      "ue*J\n\013TurtleModel\022\t\n\005ADMIN\020\000\022\t\n\005VALUE\020\001\022" +
-      "\010\n\004HASH\020\002\022\007\n\003SET\020\003\022\010\n\004ZSET\020\004\022\010\n\004LIST\020\005*\235" +
-      "\001\n\016TurtleParaType\022\n\n\006STRING\020\000\022\013\n\007INTEGER" +
-      "\020\001\022\010\n\004LONG\020\002\022\n\n\006DOUBLE\020\003\022\010\n\004BOOL\020\004\022\022\n\016NU" +
-      "MBER_INTEGER\020\005\022\022\n\016NUMBER_DECIMAL\020\006\022\020\n\014TU" +
-      "RTLE_VALUE\020\007\022\016\n\nCOLLECTION\020\010\022\010\n\004VOID\020\t*\225" +
-      "\003\n\rExceptionType\022!\n\035UnsupportedOperation" +
-      "Exception\020\000\022\030\n\024NullPointerException\020\001\022\032\n" +
-      "\026IllegalAccessException\020\002\022\035\n\031InvocationT" +
-      "argetException\020\003\022\031\n\025NoSuchMethodExceptio" +
-      "n\020\004\022\032\n\026NoSuchElementException\020\005\022\024\n\020Runti" +
-      "meException\020\006\022\036\n\032ElementOutOfBoundExcept" +
-      "ion\020\007\022(\n$TurtleValueElementOutBoundsExce" +
-      "ption\020\010\022\032\n\026TurtleTimeOutException\020\t\022\024\n\020O" +
-      "utOfMemoryError\020d\022\026\n\022StackOverflowError\020" +
-      "e\022\024\n\020TurtleFatalError\020f\022\025\n\021TurtleDesignE" +
-      "rror\020gB=\n+com.github.entropyfeng.mydb.co" +
-      "mmon.protobufB\016TurtleProtoBufb\006proto3"
+      "\n\016collectionAble\030\005 \001(\010\022\025\n\013stringValue\030\007 " +
+      "\001(\tH\000\022\022\n\010intValue\030\010 \001(\005H\000\022\023\n\tlongValue\030\t" +
+      " \001(\003H\000\022\025\n\013doubleValue\030\n \001(\001H\000\022\023\n\tboolVal" +
+      "ue\030\013 \001(\010H\000\022\024\n\nbytesValue\030\014 \001(\014H\000\022#\n\013turt" +
+      "leValue\030\r \001(\0132\014.TurtleValueH\000\0229\n\026stringT" +
+      "urtleValueEntry\030\016 \001(\0132\027.StringTurtleValu" +
+      "eEntryH\000\0229\n\026turtleTurtleValueEntry\030\017 \001(\013" +
+      "2\027.TurtleTurtleValueEntryH\000\022%\n\rexception" +
+      "Type\030\024 \001(\0162\016.ExceptionType\022\021\n\texception\030" +
+      "\025 \001(\t\022\026\n\016collectionSize\030\026 \001(\003\022\020\n\010nullabl" +
+      "e\030\027 \001(\010\022\020\n\010voidable\030\030 \001(\010\022\017\n\007endAble\030\031 \001" +
+      "(\010B\007\n\005Value*J\n\013TurtleModel\022\t\n\005ADMIN\020\000\022\t\n" +
+      "\005VALUE\020\001\022\010\n\004HASH\020\002\022\007\n\003SET\020\003\022\010\n\004ZSET\020\004\022\010\n" +
+      "\004LIST\020\005*\235\001\n\016TurtleParaType\022\n\n\006STRING\020\000\022\013" +
+      "\n\007INTEGER\020\001\022\010\n\004LONG\020\002\022\n\n\006DOUBLE\020\003\022\010\n\004BOO" +
+      "L\020\004\022\022\n\016NUMBER_INTEGER\020\005\022\022\n\016NUMBER_DECIMA" +
+      "L\020\006\022\020\n\014TURTLE_VALUE\020\007\022\016\n\nCOLLECTION\020\010\022\010\n" +
+      "\004VOID\020\t*\263\003\n\rExceptionType\022!\n\035Unsupported" +
+      "OperationException\020\000\022\030\n\024NullPointerExcep" +
+      "tion\020\001\022\032\n\026IllegalAccessException\020\002\022\035\n\031In" +
+      "vocationTargetException\020\003\022\031\n\025NoSuchMetho" +
+      "dException\020\004\022\032\n\026NoSuchElementException\020\005" +
+      "\022\024\n\020RuntimeException\020\006\022\036\n\032ElementOutOfBo" +
+      "undException\020\007\022(\n$TurtleValueElementOutB" +
+      "oundsException\020\010\022\032\n\026TurtleTimeOutExcepti" +
+      "on\020\t\022\034\n\030IllegalArgumentException\020\n\022\024\n\020Ou" +
+      "tOfMemoryError\020d\022\026\n\022StackOverflowError\020e" +
+      "\022\024\n\020TurtleFatalError\020f\022\025\n\021TurtleDesignEr" +
+      "ror\020gB=\n+com.github.entropyfeng.mydb.com" +
+      "mon.protobufB\016TurtleProtoBufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -10859,7 +10774,7 @@ public final class TurtleProtoBuf {
     internal_static_ResponseData_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ResponseData_descriptor,
-        new java.lang.String[] { "ResponseId", "ResponseSequence", "Success", "CollectionAble", "Type", "StringValue", "IntValue", "LongValue", "DoubleValue", "BoolValue", "BytesValue", "TurtleValue", "StringTurtleValueEntry", "TurtleTurtleValueEntry", "ExceptionType", "Exception", "CollectionSize", "Nullable", "Voidable", "EndAble", "Value", });
+        new java.lang.String[] { "ResponseId", "ResponseSequence", "Success", "CollectionAble", "StringValue", "IntValue", "LongValue", "DoubleValue", "BoolValue", "BytesValue", "TurtleValue", "StringTurtleValueEntry", "TurtleTurtleValueEntry", "ExceptionType", "Exception", "CollectionSize", "Nullable", "Voidable", "EndAble", "Value", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

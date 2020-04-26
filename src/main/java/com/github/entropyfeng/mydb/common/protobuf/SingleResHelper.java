@@ -80,6 +80,14 @@ public class SingleResHelper {
         builder.setException(msg);
         return builder.build();
     }
+    public static TurtleProtoBuf.ResponseData illegalArgumentException(@NotNull String msg){
+        TurtleProtoBuf.ResponseData.Builder builder = TurtleProtoBuf.ResponseData.newBuilder();
+        builder.setSuccess(false);
+        builder.setCollectionAble(false);
+        builder.setExceptionType(TurtleProtoBuf.ExceptionType.IllegalArgumentException);
+        builder.setException(msg);
+        return builder.build();
+    }
     public static TurtleProtoBuf.ResponseData turtleDesignException(@NotNull String msg){
         TurtleProtoBuf.ResponseData.Builder builder = TurtleProtoBuf.ResponseData.newBuilder();
         builder.setSuccess(false);

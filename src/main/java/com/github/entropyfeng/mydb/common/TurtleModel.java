@@ -16,6 +16,9 @@ public enum TurtleModel {
      */
     VALUE,
 
+    /**
+     * opsForHash
+     */
     HASH,
 
     /**
@@ -23,6 +26,9 @@ public enum TurtleModel {
      */
     SET,
 
+    /**
+     * opsForOrderSet
+     */
     ZSET,
 
     /**

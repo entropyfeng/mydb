@@ -91,7 +91,7 @@ enum ExceptionType{
     ElementOutOfBoundException=7;
     TurtleValueElementOutBoundsException=8;
     TurtleTimeOutException=9;
-
+    IllegalArgumentException=10;
     //Error--------------
     OutOfMemoryError=100;
     StackOverflowError=101;
@@ -128,7 +128,6 @@ message ResponseData{
 
     bool collectionAble=5;//返回值是否为集合
 
-    TurtleParaType type=6;
     oneof Value{
         string stringValue=7;
         int32 intValue=8;
@@ -147,8 +146,8 @@ message ResponseData{
 
     int64 collectionSize=22;
 
-    bool nullable=23;
-    bool voidable=24;
+    bool nullable=23;//是否为空,仅在非集合有效
+    bool voidable=24;//是否为空,仅在集合有效
     bool endAble=25;
 }
 

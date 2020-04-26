@@ -6,7 +6,6 @@ import com.github.entropyfeng.mydb.common.protobuf.SingleResHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.core.TurtleValue;
 import com.github.entropyfeng.mydb.core.zset.OrderSet;
-import com.sun.org.apache.xpath.internal.operations.Or;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInputStream;
@@ -84,8 +83,19 @@ public class OrderSetDomain implements IOrderSetOperations {
     @Override
     public TurtleProtoBuf.ResponseData add(String key, Collection<TurtleValue> values, Collection<Double> doubles) {
 
+        if (values.size() != doubles.size()) {
+            return SingleResHelper.illegalArgumentException("para not consistence");
+        }
 
-        return null;
+        createIfNotExists(key);
+        OrderSet<TurtleValue> orderSet = hashMap.get(key);
+        TurtleValue[] resValues = values.toArray(new TurtleValue[0]);
+        Double[] resDoubles = doubles.toArray(new Double[0]);
+        int size = values.size();
+        for (int i = 0; i < size; i++) {
+            orderSet.add(resValues[i], resDoubles[i]);
+        }
+        return SingleResHelper.integerResponse(size);
     }
 
     @NotNull
@@ -170,19 +180,19 @@ public class OrderSetDomain implements IOrderSetOperations {
 
     public static void write(OrderSetDomain orderSetDomain, DataOutputStream outputStream) throws IOException {
 
-        HashMap<String, OrderSet<TurtleValue>> map=orderSetDomain.hashMap;
+        HashMap<String, OrderSet<TurtleValue>> map = orderSetDomain.hashMap;
         outputStream.writeInt(map.size());
         for (Map.Entry<String, OrderSet<TurtleValue>> entry : map.entrySet()) {
             String s = entry.getKey();
             OrderSet<TurtleValue> orderSet = entry.getValue();
             outputStream.writeInt(orderSet.size());
-            byte[] stringBytes=s.getBytes();
+            byte[] stringBytes = s.getBytes();
             outputStream.writeInt(stringBytes.length);
             outputStream.write(stringBytes);
             for (Map.Entry<TurtleValue, Double> e : orderSet.getHashMap().entrySet()) {
                 TurtleValue turtleValue = e.getKey();
                 Double aDouble = e.getValue();
-                TurtleValue.write(turtleValue,outputStream);
+                TurtleValue.write(turtleValue, outputStream);
                 outputStream.writeDouble(aDouble);
             }
 
@@ -191,22 +201,22 @@ public class OrderSetDomain implements IOrderSetOperations {
     }
 
     public static OrderSetDomain read(DataInputStream dataInputStream) throws IOException {
-       int mapSize= dataInputStream.readInt();
-        HashMap<String, OrderSet<TurtleValue>> map=new HashMap<>(mapSize);
-        OrderSetDomain orderSetDomain=new OrderSetDomain(map);
+        int mapSize = dataInputStream.readInt();
+        HashMap<String, OrderSet<TurtleValue>> map = new HashMap<>(mapSize);
+        OrderSetDomain orderSetDomain = new OrderSetDomain(map);
         for (int i = 0; i < mapSize; i++) {
-            int size=dataInputStream.readInt();
-            int stringSize=dataInputStream.readInt();
-            byte[] stringBytes=new byte[stringSize];
+            int size = dataInputStream.readInt();
+            int stringSize = dataInputStream.readInt();
+            byte[] stringBytes = new byte[stringSize];
             dataInputStream.readFully(stringBytes);
-            String string=new String(stringBytes);
-            OrderSet<TurtleValue> orderSet=new OrderSet<>();
-            map.put(string,orderSet);
+            String string = new String(stringBytes);
+            OrderSet<TurtleValue> orderSet = new OrderSet<>();
+            map.put(string, orderSet);
             for (int j = 0; j < size; j++) {
 
-               TurtleValue turtleValue= TurtleValue.read(dataInputStream);
-               double aDouble= dataInputStream.readDouble();
-               orderSet.add(turtleValue,aDouble);
+                TurtleValue turtleValue = TurtleValue.read(dataInputStream);
+                double aDouble = dataInputStream.readDouble();
+                orderSet.add(turtleValue, aDouble);
             }
         }
         return orderSetDomain;

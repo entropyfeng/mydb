@@ -1,4 +1,4 @@
-package com.github.entropyfeng.mydb.core.obj;
+package com.github.entropyfeng.mydb.core.domain;
 
 import com.github.entropyfeng.mydb.core.helper.StringLongPair;
 import com.github.entropyfeng.mydb.util.TimeUtil;
@@ -8,7 +8,7 @@ import java.util.*;
 /**
  * @author entropyfeng
  */
-public class BaseObject {
+public class ExpireObject {
     /**
      * 过期字典，用于查看该String 是否设定过期
      */
@@ -18,11 +18,11 @@ public class BaseObject {
      */
     private PriorityQueue<StringLongPair> expireQueue;
 
-    public BaseObject() {
+    public ExpireObject() {
         expireMap = new HashMap<>();
         expireQueue = new PriorityQueue<>();
     }
-    public BaseObject(Map<String,Long> expireMap){
+    public ExpireObject(Map<String,Long> expireMap){
         this.expireMap=expireMap;
         expireQueue=new PriorityQueue<>();
     }
