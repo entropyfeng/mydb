@@ -95,10 +95,6 @@ public class OrderSet<T extends Comparable<T>> {
     }
 
 
-    public boolean contains(T o) {
-
-        return hashMap.containsKey(o);
-    }
 
     public void clear() {
         skipList.clear();

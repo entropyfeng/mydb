@@ -26,15 +26,7 @@ public class AdminObject {
       long timeStamp=System.currentTimeMillis();
 
 
-
-      File file=new File("./"+timeStamp+".values.dump");
-
-      FileOutputStream fileOutputStream=new FileOutputStream(file);
-
-      ObjectOutputStream objectOutputStream=new ObjectOutputStream(fileOutputStream);
-      objectOutputStream.writeObject(serverDomain.valuesDomain);
-      objectOutputStream.close();
-
+      
 
 
    }

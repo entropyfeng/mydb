@@ -198,6 +198,7 @@ public class OrderSetDomain implements IOrderSetOperations {
             int size=dataInputStream.readInt();
             int stringSize=dataInputStream.readInt();
             byte[] stringBytes=new byte[stringSize];
+            dataInputStream.readFully(stringBytes);
             String string=new String(stringBytes);
             OrderSet<TurtleValue> orderSet=new OrderSet<>();
             map.put(string,orderSet);
@@ -207,8 +208,13 @@ public class OrderSetDomain implements IOrderSetOperations {
                double aDouble= dataInputStream.readDouble();
                orderSet.add(turtleValue,aDouble);
             }
-
         }
         return orderSetDomain;
+    }
+
+    //----------------getter------------------
+
+    public HashMap<String, OrderSet<TurtleValue>> getHashMap() {
+        return hashMap;
     }
 }
