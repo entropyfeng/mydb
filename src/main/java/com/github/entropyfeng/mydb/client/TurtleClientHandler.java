@@ -75,8 +75,6 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<TurtleProto
      * @param responseId responseId
      */
     private void dispatchResCollection(Long responseId) {
-        //按照sequenceId排序
-        //List<TurtleProtoBuf.ResponseData> temp = res.remove(responseId).parallelStream().sorted(Comparator.comparingLong(TurtleProtoBuf.ResponseData::getResponseSequence)).collect(Collectors.toList());
 
         ClientExecute.collectionResMap.put(responseId, res.remove(responseId));
 

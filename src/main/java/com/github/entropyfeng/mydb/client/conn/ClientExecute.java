@@ -6,6 +6,7 @@ import io.netty.channel.Channel;
 
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 
 /**
@@ -14,6 +15,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ClientExecute {
 
     public static ConcurrentHashMap<Long, TurtleProtoBuf.ResponseData> resMap = new ConcurrentHashMap<>();
+
+    public static AtomicLong singleRequest = new AtomicLong(0);
 
     public static ConcurrentHashMap<Long, Collection<TurtleProtoBuf.ResponseData>> collectionResMap = new ConcurrentHashMap<>();
 

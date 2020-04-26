@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * 出站
  * @author entropyfeng
  */
 public class TurtleClientProtoEncoder extends MessageToByteEncoder<TurtleProtoBuf.ClientCommand> {

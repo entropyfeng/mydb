@@ -358,7 +358,7 @@ public class ServerDomain {
                 method = target.getDeclaredMethod(operationName, types);
             }
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            logger.info(e.getMessage());
             responseData = TurtleProtoBuf.ResponseData.newBuilder().setSuccess(false).setExceptionType(TurtleProtoBuf.ExceptionType.NoSuchMethodException).build();
         }
         if (method == null) {

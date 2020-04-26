@@ -152,4 +152,10 @@ message ResponseData{
 }
 
 
-
+message ClientRequest{
+    TurtleModel model=1;
+    int64 requestId=2;
+    int64 requestSequence=3;
+    bool modify=4;
+    bytes payload=5;
+}

@@ -30,61 +30,51 @@ public class ClientCommandBuilder {
     }
 
 
-    public ClientCommandBuilder addStringPara(String string){
+    public void addStringPara(String string){
         builder.addKeys(TurtleProtoBuf.TurtleParaType.STRING);
         builder.addValues(ProtoCommonValueHelper.stringValue(string));
-        return this;
 
     }
 
-    public ClientCommandBuilder addLongPara(Long longValue){
+    public void addLongPara(Long longValue){
         builder.addKeys(TurtleProtoBuf.TurtleParaType.LONG);
         builder.addValues(ProtoCommonValueHelper.longValue(longValue));
-        return this;
     }
-    public ClientCommandBuilder addDoublePara(Double doubleValue){
+    public void addDoublePara(Double doubleValue){
         builder.addKeys(TurtleProtoBuf.TurtleParaType.DOUBLE);
         builder.addValues(ProtoCommonValueHelper.doubleValue(doubleValue));
-        return this;
     }
-    public ClientCommandBuilder addIntegerValue(Integer integer){
+    public void addIntegerValue(Integer integer){
         builder.addKeys(TurtleProtoBuf.TurtleParaType.INTEGER);
         builder.addValues(ProtoCommonValueHelper.integerValue(integer));
-        return this;
     }
-    public ClientCommandBuilder addTurtlePara(TurtleValue turtleValue) {
+    public void addTurtlePara(TurtleValue turtleValue) {
 
         builder.addKeys(TurtleProtoBuf.TurtleParaType.TURTLE_VALUE);
         builder.addValues(ProtoCommonValueHelper.turtleValue(turtleValue));
-        return this;
     }
 
-    public ClientCommandBuilder addBigIntegerPara(BigInteger bigInteger){
+    public void addBigIntegerPara(BigInteger bigInteger){
         builder.addKeys(TurtleProtoBuf.TurtleParaType.NUMBER_INTEGER);
         builder.addValues(ProtoCommonValueHelper.stringValue(bigInteger.toString()));
-        return this;
     }
-    public ClientCommandBuilder addBigDecimalPara(BigDecimal bigDecimal){
+    public void addBigDecimalPara(BigDecimal bigDecimal){
         builder.addKeys(TurtleProtoBuf.TurtleParaType.NUMBER_DECIMAL);
         builder.addValues(ProtoCommonValueHelper.stringValue(bigDecimal.toPlainString()));
-        return this;
     }
-    public ClientCommandBuilder addTurtleCollectionPara(Collection<TurtleValue> turtleValues) {
+    public void addTurtleCollectionPara(Collection<TurtleValue> turtleValues) {
 
         builder.addKeys(TurtleProtoBuf.TurtleParaType.COLLECTION);
         builder.addValues(ProtoCommonValueHelper.turtleValueCollection(turtleValues));
-        return this;
     }
 
-    public ClientCommandBuilder addDoubleCollectionPara(Collection<Double> doubles){
+    public void addDoubleCollectionPara(Collection<Double> doubles){
         builder.addKeys(TurtleProtoBuf.TurtleParaType.COLLECTION);
         builder.addValues(ProtoCommonValueHelper.doublesCollection(doubles));
-        return this;
     }
-    public ClientCommandBuilder setModifyAble(boolean modifyAble) {
+    public void setModifyAble(boolean modifyAble) {
 
-        builder.setModify(true);
-        return this;
+        builder.setModify(modifyAble);
     }
 
     public TurtleProtoBuf.ClientCommand build() {
