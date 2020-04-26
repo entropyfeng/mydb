@@ -4,6 +4,7 @@ import com.github.entropyfeng.mydb.common.ops.IOrderSetOperations;
 import com.github.entropyfeng.mydb.common.protobuf.CollectionResHelper;
 import com.github.entropyfeng.mydb.common.protobuf.SingleResHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
+import com.github.entropyfeng.mydb.config.Constant;
 import com.github.entropyfeng.mydb.core.TurtleValue;
 import com.github.entropyfeng.mydb.core.zset.OrderSet;
 import org.jetbrains.annotations.NotNull;
@@ -11,10 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author entropyfeng
@@ -180,6 +178,8 @@ public class OrderSetDomain implements IOrderSetOperations {
 
     public static void write(OrderSetDomain orderSetDomain, DataOutputStream outputStream) throws IOException {
 
+        outputStream.write(Constant.MAGIC_NUMBER);
+
         HashMap<String, OrderSet<TurtleValue>> map = orderSetDomain.hashMap;
         outputStream.writeInt(map.size());
         for (Map.Entry<String, OrderSet<TurtleValue>> entry : map.entrySet()) {
@@ -200,22 +200,28 @@ public class OrderSetDomain implements IOrderSetOperations {
 
     }
 
-    public static OrderSetDomain read(DataInputStream dataInputStream) throws IOException {
-        int mapSize = dataInputStream.readInt();
+    public static OrderSetDomain read(DataInputStream inputStream) throws IOException {
+        byte[] magicNumber = new byte[Constant.MAGIC_NUMBER.length];
+        inputStream.readFully(magicNumber);
+        if (!Arrays.equals(Constant.MAGIC_NUMBER, magicNumber)) {
+            throw new IOException("un support dump file !");
+        }
+
+        int mapSize = inputStream.readInt();
         HashMap<String, OrderSet<TurtleValue>> map = new HashMap<>(mapSize);
         OrderSetDomain orderSetDomain = new OrderSetDomain(map);
         for (int i = 0; i < mapSize; i++) {
-            int size = dataInputStream.readInt();
-            int stringSize = dataInputStream.readInt();
+            int size = inputStream.readInt();
+            int stringSize = inputStream.readInt();
             byte[] stringBytes = new byte[stringSize];
-            dataInputStream.readFully(stringBytes);
+            inputStream.readFully(stringBytes);
             String string = new String(stringBytes);
             OrderSet<TurtleValue> orderSet = new OrderSet<>();
             map.put(string, orderSet);
             for (int j = 0; j < size; j++) {
 
-                TurtleValue turtleValue = TurtleValue.read(dataInputStream);
-                double aDouble = dataInputStream.readDouble();
+                TurtleValue turtleValue = TurtleValue.read(inputStream);
+                double aDouble = inputStream.readDouble();
                 orderSet.add(turtleValue, aDouble);
             }
         }

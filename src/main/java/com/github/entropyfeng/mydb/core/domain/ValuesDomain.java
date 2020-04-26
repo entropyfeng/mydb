@@ -6,6 +6,7 @@ import com.github.entropyfeng.mydb.common.ops.IValueOperations;
 import com.github.entropyfeng.mydb.common.protobuf.CollectionResHelper;
 import com.github.entropyfeng.mydb.common.protobuf.SingleResHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
+import com.github.entropyfeng.mydb.config.Constant;
 import com.github.entropyfeng.mydb.core.TurtleValue;
 import com.github.entropyfeng.mydb.util.TimeUtil;
 import org.jetbrains.annotations.NotNull;
@@ -15,10 +16,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 /**
  * @author entropyfeng
@@ -206,6 +204,7 @@ public class ValuesDomain extends ExpireObject implements IValueOperations {
 
     public static void write(ValuesDomain valuesDomain, DataOutputStream outputStream) throws IOException {
 
+        outputStream.write(Constant.MAGIC_NUMBER);
         Map<String, Long> expireMap = valuesDomain.getExpireMap();
         int sizeMap = valuesDomain.valueMap.size();
         int sizeExpire = expireMap.size();
@@ -228,6 +227,11 @@ public class ValuesDomain extends ExpireObject implements IValueOperations {
     }
 
     public static ValuesDomain read(DataInputStream inputStream) throws IOException {
+        byte[] magicNumber=new byte[Constant.MAGIC_NUMBER.length];
+        inputStream.readFully(magicNumber);
+        if (!Arrays.equals(Constant.MAGIC_NUMBER,magicNumber)){
+            throw new IOException("un support dump file !");
+        }
         int sizeMap = inputStream.readInt();
         int sizeExpire = inputStream.readInt();
         Map<String, Long> expireMap = new HashMap<>(sizeExpire);

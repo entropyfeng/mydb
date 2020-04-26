@@ -4,6 +4,7 @@ import com.github.entropyfeng.mydb.common.ops.IHashOperations;
 import com.github.entropyfeng.mydb.common.protobuf.CollectionResHelper;
 import com.github.entropyfeng.mydb.common.protobuf.SingleResHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
+import com.github.entropyfeng.mydb.config.Constant;
 import com.github.entropyfeng.mydb.core.TurtleValue;
 import com.github.entropyfeng.mydb.core.dict.ElasticMap;
 import org.jetbrains.annotations.NotNull;
@@ -12,6 +13,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -116,6 +118,8 @@ public class HashDomain implements IHashOperations, Serializable {
         }
     }
     public static void write(HashDomain hashDomain,DataOutputStream outputStream)throws IOException {
+        outputStream.write(Constant.MAGIC_NUMBER);
+        
         HashMap<String, ElasticMap<TurtleValue, TurtleValue>> hashMap=  hashDomain.hashMap;
         outputStream.writeInt(hashMap.size());
         for (Map.Entry<String, ElasticMap<TurtleValue, TurtleValue>> entry : hashMap.entrySet()) {
@@ -136,6 +140,12 @@ public class HashDomain implements IHashOperations, Serializable {
         }
     }
     public static HashDomain read(DataInputStream inputStream) throws IOException {
+        byte[] magicNumber=new byte[Constant.MAGIC_NUMBER.length];
+        inputStream.readFully(magicNumber);
+        if (!Arrays.equals(Constant.MAGIC_NUMBER,magicNumber)){
+            throw new IOException("un support dump file !");
+        }
+
         HashMap<String, ElasticMap<TurtleValue, TurtleValue>> map=new HashMap<>();
         HashDomain hashDomain=new HashDomain(map);
         int hashSize=inputStream.readInt();

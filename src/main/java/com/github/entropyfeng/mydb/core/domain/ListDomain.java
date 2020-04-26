@@ -3,16 +3,14 @@ package com.github.entropyfeng.mydb.core.domain;
 import com.github.entropyfeng.mydb.common.ops.IListOperations;
 import com.github.entropyfeng.mydb.common.protobuf.SingleResHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
+import com.github.entropyfeng.mydb.config.Constant;
 import com.github.entropyfeng.mydb.core.TurtleValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -205,6 +203,8 @@ public class ListDomain implements IListOperations {
 
     public static void write(ListDomain listDomain, DataOutputStream outputStream) throws IOException {
 
+        outputStream.write(Constant.MAGIC_NUMBER);
+
         outputStream.writeInt(listDomain.listMap.size());
         for (Map.Entry<String, LinkedList<TurtleValue>> entry : listDomain.listMap.entrySet()) {
             String s = entry.getKey();
@@ -221,6 +221,11 @@ public class ListDomain implements IListOperations {
     }
 
     public static ListDomain read(DataInputStream inputStream) throws IOException {
+        byte[] magicNumber=new byte[Constant.MAGIC_NUMBER.length];
+        inputStream.readFully(magicNumber);
+        if (!Arrays.equals(Constant.MAGIC_NUMBER,magicNumber)){
+            throw new IOException("un support dump file !");
+        }
 
         int mapSize = inputStream.readInt();
         HashMap<String, LinkedList<TurtleValue>> map = new HashMap<>(mapSize);
@@ -243,6 +248,7 @@ public class ListDomain implements IListOperations {
         return listDomain;
     }
 
+    //------------------getter-------------------
     public HashMap<String, LinkedList<TurtleValue>> getListMap() {
         return listMap;
     }
