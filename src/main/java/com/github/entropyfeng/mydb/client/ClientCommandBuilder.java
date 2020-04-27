@@ -116,6 +116,7 @@ public class ClientCommandBuilder {
         //end
         resBuilder.clear();
         resBuilder.setEndAble(true);
+        resBuilder.setRequestId(requestId);
         channel.writeAndFlush(resBuilder.build());
 
     }

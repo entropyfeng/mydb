@@ -21,12 +21,10 @@ public class TestValues {
 
         Assert.assertTrue(responseData.getSuccess());
 
-        System.out.println(responseData.getSuccess());
         TurtleProtoBuf.ResponseData res = responseDataTemplate.opsForValues().get("1008611");
 
         Assert.assertEquals(ProtoTurtleHelper.convertToTurtleValue(res.getTurtleValue()).toObject(), 187);
-
-        System.out.println("end");
+        
     }
 
     @Test

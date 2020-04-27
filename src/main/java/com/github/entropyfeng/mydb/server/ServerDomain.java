@@ -206,6 +206,7 @@ public class ServerDomain {
             ((Collection) res).forEach(object -> command.getChannel().write(addResponseId((TurtleProtoBuf.ResponseData) object, command.getRequestId())));
             command.getChannel().flush();
         } else {
+            System.out.println("write");
             command.getChannel().writeAndFlush(addResponseId((TurtleProtoBuf.ResponseData) res, command.getRequestId()));
         }
     }
@@ -285,8 +286,10 @@ public class ServerDomain {
             responseData = TurtleProtoBuf.ResponseData.newBuilder().setSuccess(false).setExceptionType(TurtleProtoBuf.ExceptionType.NoSuchMethodException).build();
         }
         if (method == null) {
+            logger.info("method construct error");
             channel.writeAndFlush(responseData);
         } else {
+            logger.info("method construct success");
             queue.offer(new ClientCommand(method, clientRequest.getObjects(), channel, requestId));
         }
     }
