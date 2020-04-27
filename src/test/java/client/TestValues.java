@@ -24,7 +24,7 @@ public class TestValues {
         TurtleProtoBuf.ResponseData res = responseDataTemplate.opsForValues().get("1008611");
 
         Assert.assertEquals(ProtoTurtleHelper.convertToTurtleValue(res.getTurtleValue()).toObject(), 187);
-        
+
     }
 
     @Test
@@ -36,7 +36,8 @@ public class TestValues {
         }
         Collection<TurtleProtoBuf.ResponseData> resList = responseDataTemplate.opsForValues().allValues();
 
-        System.out.println(resList.size());
+        Assert.assertEquals(10,resList.size());
+
     }
 
     @Test
@@ -47,17 +48,16 @@ public class TestValues {
     }
 
     @Test
-    public void testHa(){
-        int pos=10;
-        TurtleTemplate turtleTemplate=new TurtleTemplate();
-        TurtleValue[] turtleValue =new TurtleValue[pos];
-        for (int i = 0; i <pos ; i++) {
-            turtleValue[i]=new TurtleValue(i);
-            turtleTemplate.opsForValues().set(i+"",new TurtleValue(i));
+    public void testHa() {
+        int pos = 10;
+        TurtleTemplate turtleTemplate = new TurtleTemplate();
+        TurtleValue[] turtleValue = new TurtleValue[pos];
+        for (int i = 0; i < pos; i++) {
+            turtleValue[i] = new TurtleValue(i);
+            turtleTemplate.opsForValues().set(i + "", new TurtleValue(i));
         }
 
-      Collection<TurtleValue> res=  turtleTemplate.opsForValues().allValues();
-        System.out.println(res.size());
-        Assert.assertArrayEquals(turtleValue,turtleTemplate.opsForValues().allValues().toArray());
+        Collection<TurtleValue> res = turtleTemplate.opsForValues().allValues();
+        Assert.assertArrayEquals(turtleValue, turtleTemplate.opsForValues().allValues().toArray());
     }
 }

@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 
@@ -176,7 +175,7 @@ public class ServerDomain {
 
 
     public void execute(ICommand command, Object target) {
-        Object res = null;
+        Object res;
 
         try {
             if (command.getValues().size() == 0) {
@@ -201,12 +200,11 @@ public class ServerDomain {
             command.getChannel().writeAndFlush(builder.build());
             return;
         }
-        Objects.requireNonNull(res);
+
         if (res instanceof Collection) {
             ((Collection) res).forEach(object -> command.getChannel().write(addResponseId((TurtleProtoBuf.ResponseData) object, command.getRequestId())));
             command.getChannel().flush();
         } else {
-            System.out.println("write");
             command.getChannel().writeAndFlush(addResponseId((TurtleProtoBuf.ResponseData) res, command.getRequestId()));
         }
     }
@@ -237,7 +235,8 @@ public class ServerDomain {
         builder.setExceptionType(TurtleProtoBuf.ExceptionType.InvocationTargetException);
     }
 
-    public void parseCommand(ClientRequest clientRequest, Channel channel) {
+
+    public void accept(ClientRequest clientRequest,Channel channel){
 
         switch (clientRequest.getModel()) {
             case VALUE:
@@ -263,11 +262,6 @@ public class ServerDomain {
         }
     }
 
-    public void accept(ClientRequest clientRequest,Channel channel){
-
-        parseCommand(clientRequest,channel);
-    }
-
     private void constructCommand(ClientRequest clientRequest,Channel channel,Class<?> target,ConcurrentLinkedDeque<ClientCommand> queue){
         Method method=null;
         final String operationName = clientRequest.getOperationName();
@@ -286,10 +280,8 @@ public class ServerDomain {
             responseData = TurtleProtoBuf.ResponseData.newBuilder().setSuccess(false).setExceptionType(TurtleProtoBuf.ExceptionType.NoSuchMethodException).build();
         }
         if (method == null) {
-            logger.info("method construct error");
             channel.writeAndFlush(responseData);
         } else {
-            logger.info("method construct success");
             queue.offer(new ClientCommand(method, clientRequest.getObjects(), channel, requestId));
         }
     }

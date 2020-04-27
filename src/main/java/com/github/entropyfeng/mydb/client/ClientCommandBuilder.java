@@ -77,6 +77,7 @@ public class ClientCommandBuilder {
         objects.add(doubles);
     }
 
+    @SuppressWarnings("unused")
     public void addStringCollectionPara(Collection<String> strings){
         headBuilder.addKeys(TurtleProtoBuf.TurtleParaType.COLLECTION_STRING);
         objects.add(strings);
@@ -122,7 +123,10 @@ public class ClientCommandBuilder {
     }
 
 
+
+    @SuppressWarnings("all")
     public static void handleSingle(Channel channel, TurtleProtoBuf.TurtleParaType type, Object object, int location, Long requestId, TurtleProtoBuf.RequestBodyPayload.Builder bodyBuilder, TurtleProtoBuf.ClientCommand.Builder resBuilder){
+
         resBuilder.clear();
         resBuilder.setRequestId(requestId);
         resBuilder.setBeginAble(false);
