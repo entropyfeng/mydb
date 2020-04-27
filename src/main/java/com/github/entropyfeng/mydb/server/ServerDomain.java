@@ -24,30 +24,51 @@ public class ServerDomain {
 
     private static final Logger logger = LoggerFactory.getLogger(ServerDomain.class);
 
-    public ServerDomain(TurtleServer turtleServer) {
+    public ServerDomain() {
+
         this.adminObject = new AdminObject(this);
-        this.turtleServer = turtleServer;
 
+        this.valuesDomain = new ValuesDomain();
+        this.valuesQueue = new ConcurrentLinkedDeque<>();
 
-        valuesDomain = new ValuesDomain();
-        valuesQueue = new ConcurrentLinkedDeque<>();
+        this.listDomain = new ListDomain();
+        this.listQueue = new ConcurrentLinkedDeque<>();
 
-        listDomain = new ListDomain();
-        listQueue = new ConcurrentLinkedDeque<>();
+        this.setDomain = new SetDomain();
+        this.setQueue = new ConcurrentLinkedDeque<>();
 
-        setDomain = new SetDomain();
-        setQueue = new ConcurrentLinkedDeque<>();
+        this.hashDomain = new HashDomain();
+        this.hashQueue = new ConcurrentLinkedDeque<>();
 
-        hashDomain = new HashDomain();
-        hashQueue = new ConcurrentLinkedDeque<>();
-
-        orderSetDomain = new OrderSetDomain();
-        orderSetQueue = new ConcurrentLinkedDeque<>();
+        this.orderSetDomain = new OrderSetDomain();
+        this.orderSetQueue = new ConcurrentLinkedDeque<>();
 
         start();
     }
 
-    private final TurtleServer turtleServer;
+    public ServerDomain(ValuesDomain valuesDomain,ListDomain listDomain,SetDomain setDomain,HashDomain hashDomain,OrderSetDomain orderSetDomain){
+
+        this.adminObject = new AdminObject(this);
+
+        this.valuesDomain =valuesDomain;
+        this.valuesQueue = new ConcurrentLinkedDeque<>();
+
+        this.listDomain =listDomain;
+        this.listQueue = new ConcurrentLinkedDeque<>();
+
+        this.setDomain = setDomain;
+        this.setQueue = new ConcurrentLinkedDeque<>();
+
+        this.hashDomain = hashDomain;
+        this.hashQueue = new ConcurrentLinkedDeque<>();
+
+        this.orderSetDomain =orderSetDomain;
+        this.orderSetQueue = new ConcurrentLinkedDeque<>();
+
+        start();
+
+
+    }
 
     protected AdminObject adminObject;
 

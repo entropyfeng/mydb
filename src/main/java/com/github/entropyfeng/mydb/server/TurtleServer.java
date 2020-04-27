@@ -45,7 +45,7 @@ public class TurtleServer {
 
     public void start() throws Exception {
 
-        serverDomain=new ServerDomain(this);
+        serverDomain=new ServerDomain();
 
         NioEventLoopGroup boss = new NioEventLoopGroup(1);
         //IO密集型 2n+1
