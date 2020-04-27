@@ -104,8 +104,6 @@ public class ServerDomain {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
-                System.out.println("interrupt");
             }
         }
     }
@@ -184,7 +182,8 @@ public class ServerDomain {
             if (command.getValues().size() == 0) {
                 res = command.getMethod().invoke(target);
             } else {
-                res = command.getMethod().invoke(target, command.getValues().toArray());
+
+                res = command.getMethod().invoke(target, command.getValues().toArray(new Object[0]));
             }
         } catch (IllegalAccessException e) {
             TurtleProtoBuf.ResponseData.Builder builder = TurtleProtoBuf.ResponseData.newBuilder();

@@ -114,7 +114,7 @@ public class ClientRequest {
                 objects.add(location,body.getIntValue());
                 break;
             case LONG:
-                objects.add(location,body.getLocation());
+                objects.add(location,body.getLongValue());
                 break;
             case STRING:
                 objects.add(location,body.getStringValue());

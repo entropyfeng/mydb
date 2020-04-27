@@ -22,7 +22,6 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<TurtleProto
     private final ServerDomain serverDomain;
 
 
-
     private static volatile AtomicBoolean interrupted = new AtomicBoolean(false);
 
     public static ConcurrentHashMap<ChannelId, Channel> clientMap = new ConcurrentHashMap<>();
@@ -31,7 +30,8 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<TurtleProto
 
     private static ConcurrentLinkedDeque<TurtleProtoBuf.ClientCommand> blockingDeque = new ConcurrentLinkedDeque<>();
 
-    private ConcurrentHashMap<Long,ClientRequest> requestMap=new ConcurrentHashMap<>();
+    private ConcurrentHashMap<Long, ClientRequest> requestMap = new ConcurrentHashMap<>();
+
     public TurtleServerHandler(ServerDomain serverDomain) {
 
         this.serverDomain = serverDomain;
@@ -54,23 +54,30 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<TurtleProto
 
     /**
      * netty 可以保证同一个客户端的请求顺序发送
+     *
      * @param ctx {@link ChannelHandlerContext}
      * @param msg {@link com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.ClientCommand}
      */
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, TurtleProtoBuf.ClientCommand msg) {
-        if (msg.getEndAble()){
-            serverDomain.accept(requestMap.remove(msg.getRequestId()),ctx.channel());
+
+        logger.info(msg.toString());
+        if (msg.getEndAble()) {
+            ClientRequest clientRequest = requestMap.remove(msg.getRequestId());
+            if (clientRequest != null) {
+                serverDomain.accept(clientRequest, ctx.channel());
+            }
             return;
         }
-        if (msg.getBeginAble()){
-          TurtleProtoBuf.RequestHeaderPayload header= msg.getHeader();
-          requestMap.put(msg.getRequestId(),new ClientRequest(header,msg.getRequestId()));
-        }else {
-            requestMap.get(msg.getRequestId()).put(msg.getBody());
+        if (msg.getBeginAble()) {
+            TurtleProtoBuf.RequestHeaderPayload header = msg.getHeader();
+            requestMap.put(msg.getRequestId(), new ClientRequest(header, msg.getRequestId()));
+        } else {
+            ClientRequest clientRequest = requestMap.get(msg.getRequestId());
+            if (clientRequest != null) {
+                clientRequest.put(msg.getBody());
+            }
         }
-
-
     }
 
     @Override
@@ -80,8 +87,22 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<TurtleProto
     }
 
     @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        super.channelInactive(ctx);
+        logger.info("channel InActive");
+    }
+
+    @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
         super.channelUnregistered(ctx);
         clientMap.remove(ctx.channel().id());
+        logger.info("channel unRegister");
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        super.exceptionCaught(ctx, cause);
+        requestMap.clear();
+        logger.info("exceptionCaught");
     }
 }

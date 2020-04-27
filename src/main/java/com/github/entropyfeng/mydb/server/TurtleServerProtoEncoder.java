@@ -17,13 +17,11 @@ public class TurtleServerProtoEncoder extends MessageToByteEncoder<TurtleProtoBu
 
     @Override
     protected void encode(ChannelHandlerContext ctx, TurtleProtoBuf.ResponseData msg, ByteBuf out) throws Exception {
-        logger.info("begin encode");
         int bodyLen = msg.getSerializedSize();
         int headerLen = computeRawVarint32Size(bodyLen);
         out.ensureWritable(headerLen + bodyLen);
         writeRawVarint32(out, bodyLen);
         out.writeBytes(msg.toByteArray());
-        logger.info("end encode");
     }
 
 

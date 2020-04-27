@@ -56,44 +56,7 @@ public class TestProtoParaHelper {
         b2p(TurtleProtoBuf.TurtleParaType.UNRECOGNIZED);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void testCollectionCast1() {
-        List<Student> list = new ArrayList<>();
-        ProtoParaHelper.constructCollection(list, TurtleParaType.COLLECTION);
-    }
 
-
-    @Test
-    public void testCollection() {
-        List<String> list = new ArrayList<>();
-        list.add("10086a");
-        list.add("10086b");
-        TurtleProtoBuf.TurtleCommonValue res = ProtoParaHelper.constructCollection(list, TurtleParaType.STRING);
-        @SuppressWarnings("all")
-        Collection<String> collection = (Collection<String>) ProtoParaHelper.handlerCollection(TurtleProtoBuf.TurtleParaType.STRING, res.getCollectionValue().getCollectionParasList());
-        Assert.assertArrayEquals(collection.toArray(new String[0]), stringArray);
-    }
-
-    /**
-     * @// TODO: 2020/4/4 编码异常未解决
-     */
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
-    @Test
-    public void testCollection1() {
-
-        List<TurtleValue> values = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-            values.add(new TurtleValue(BigInteger.valueOf(i)));
-        }
-
-        TurtleProtoBuf.TurtleCommonValue commonValue = ProtoParaHelper.constructCollection(values, TurtleParaType.TURTLE_VALUE);
-
-
-        @SuppressWarnings("unchecked")
-        Collection<TurtleValue> res = (Collection<TurtleValue>) ProtoParaHelper.handlerCollection(TurtleProtoBuf.TurtleParaType.TURTLE_VALUE, commonValue.getCollectionValue().getCollectionParasList());
-        TurtleValue turtleValue = res.stream().reduce(this::add).get();
-        Assert.assertEquals(BigInteger.valueOf(4950),turtleValue.toObject());
-    }
 
     private TurtleValue add(TurtleValue first, TurtleValue second) {
         first.increment(new BigInteger(second.getValues()));

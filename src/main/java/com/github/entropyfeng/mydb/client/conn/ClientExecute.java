@@ -17,9 +17,9 @@ public class ClientExecute {
 
     public static ConcurrentHashMap<Long, TurtleProtoBuf.ResponseData> resMap = new ConcurrentHashMap<>();
 
-    public static AtomicLong singleId = new AtomicLong(0);
+    public static AtomicLong singleId = new AtomicLong(1);
 
-    public static AtomicLong collectionId=new AtomicLong(0);
+    public static AtomicLong collectionId=new AtomicLong(1);
 
     public static ConcurrentHashMap<Long, Collection<TurtleProtoBuf.ResponseData>> collectionResMap = new ConcurrentHashMap<>();
 
