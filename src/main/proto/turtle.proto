@@ -87,6 +87,14 @@ message  TurtleTurtleValueEntry{
     TurtleValue key=1;
     TurtleValue value=2;
 }
+message ResponseHeaderPayload{
+    int64 responseSequence=1;
+    bool success=2;
+
+}
+message ResponseBodyPayload{
+
+}
 message ResponseData{
 
     int64 responseId=1;

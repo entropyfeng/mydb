@@ -28,6 +28,7 @@ public class ServerDomain {
         this.adminObject = new AdminObject(this);
         this.turtleServer = turtleServer;
 
+
         valuesDomain = new ValuesDomain();
         valuesQueue = new ConcurrentLinkedDeque<>();
 

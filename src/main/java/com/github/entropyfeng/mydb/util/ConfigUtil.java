@@ -2,10 +2,12 @@ package com.github.entropyfeng.mydb.util;
 
 import com.github.entropyfeng.mydb.config.Constant;
 import io.netty.util.internal.StringUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 /**
@@ -21,13 +23,16 @@ public class ConfigUtil {
      * @param filename 文件名
      * @return {@link Properties}
      */
+    @NotNull
     public static Properties readProperties(String filename) {
         Properties properties = new Properties();
         InputStream inputStream = ConfigUtil.class.getClassLoader().getResourceAsStream(filename);
-        try {
-            properties.load(new InputStreamReader(inputStream, "UTF-8"));
-        } catch (IOException e) {
-            properties = null;
+        if (inputStream!=null){
+            try {
+                properties.load(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+            } catch (IOException e) {
+                properties = new Properties();
+            }
         }
         return properties;
     }
@@ -80,6 +85,12 @@ public class ConfigUtil {
             stringBuilder.append("illegal host in config file .\n");
         }
 
+        //backupPath
+        String path=properties.getProperty(Constant.BACK_UP_PATH_NAME);
+        if (StringUtil.isNullOrEmpty(path)){
+            res=false;
+            stringBuilder.append("backUpPath is illegal .\n");
+        }
         if(!res){
             throw new Error(stringBuilder.toString());
         }

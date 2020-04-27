@@ -1,6 +1,5 @@
 package com.github.entropyfeng.mydb.config;
 
-import com.github.entropyfeng.mydb.util.CommonUtil;
 import com.github.entropyfeng.mydb.util.ConfigUtil;
 
 import java.util.Properties;

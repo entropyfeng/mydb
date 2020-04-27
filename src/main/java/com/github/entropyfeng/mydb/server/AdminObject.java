@@ -1,14 +1,16 @@
 package com.github.entropyfeng.mydb.server;
 
+import com.github.entropyfeng.mydb.config.CommonConfig;
 import com.github.entropyfeng.mydb.core.domain.ValuesDomain;
 import com.github.entropyfeng.mydb.server.persistence.*;
-import org.checkerframework.checker.units.qual.C;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.*;
+
+import static com.github.entropyfeng.mydb.config.Constant.*;
 
 /**
  * @author entropyfeng
@@ -17,20 +19,16 @@ public class AdminObject {
    private static final Logger logger= LoggerFactory.getLogger(AdminObject.class);
    private ServerDomain serverDomain;
 
-   public static final String VALUES_SUFFIX="values.dump";
-   public static final String HASH_SUFFIX="hash.dump";
-   public static final String SET_SUFFIX="set.dump";
-   public static final String LIST_SUFFIX="list.dump";
-   public static final String ORDER_SET_SUFFIX="orderSet.dump";
+
 
    public AdminObject(ServerDomain serverDomain){
        this.serverDomain=serverDomain;
    }
 
-   private static boolean dumpValues(ValuesDomain valuesDomain,String filePath){
+   private  boolean dumpValues(ValuesDomain valuesDomain,String filePath){
       //------values---------------
       long timeStamp=System.currentTimeMillis();
-      String prefix=filePath+timeStamp+"-";
+      String prefix=filePath+timeStamp;
       CountDownLatch countDownLatch=new CountDownLatch(1);
       StringBuilder valuesBuilder=new StringBuilder();
       File valuesDump=new File(prefix+VALUES_SUFFIX);
@@ -51,8 +49,9 @@ public class AdminObject {
 
    }
 
-   public static int dumpAll(ServerDomain serverDomain,String filePath) throws IOException {
+   public static int dumpAll(ServerDomain serverDomain) throws IOException {
 
+      String filePath= CommonConfig.getProperties().getProperty(BACK_UP_PATH_NAME);
       long timeStamp=System.currentTimeMillis();
       String prefix=filePath+timeStamp+"-";
       CountDownLatch countDownLatch=new CountDownLatch(5);
