@@ -1,30 +1,21 @@
 package com.github.entropyfeng.mydb.server;
 
-import com.github.entropyfeng.mydb.common.protobuf.ProtoParaHelper;
-import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
-import com.github.entropyfeng.mydb.core.TurtleValue;
 import com.github.entropyfeng.mydb.core.domain.*;
 import com.github.entropyfeng.mydb.core.zset.OrderSet;
 import com.github.entropyfeng.mydb.server.command.ClientCommand;
+import com.github.entropyfeng.mydb.server.command.ClientRequest;
 import com.github.entropyfeng.mydb.server.command.ICommand;
 import com.github.entropyfeng.mydb.server.factory.*;
 import io.netty.channel.Channel;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 
 /**
@@ -33,21 +24,6 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 public class ServerDomain {
 
     private static final Logger logger = LoggerFactory.getLogger(ServerDomain.class);
-
-    public void xxx() {
-        ScheduledExecutorService scheduled = new ScheduledThreadPoolExecutor(1, r -> {
-            Thread thread = new Thread(r, "producer and customer thread");
-            thread.setDaemon(true);
-            return thread;
-        });
-
-    }
-
-    public void xx() {
-        if (valuesQueue.isEmpty()) {
-
-        }
-    }
 
     public ServerDomain(TurtleServer turtleServer) {
         this.adminObject = new AdminObject(this);
@@ -261,96 +237,44 @@ public class ServerDomain {
         builder.setExceptionType(TurtleProtoBuf.ExceptionType.InvocationTargetException);
     }
 
-    public void acceptClientCommand(TurtleProtoBuf.ClientCommand clientCommand, Channel channel) {
-        parseCommand(clientCommand, channel);
-    }
+    public void parseCommand(ClientRequest clientRequest, Channel channel) {
 
-    public void parseCommand(TurtleProtoBuf.ClientCommand clientCommand, Channel channel) {
-
-        final int paraNumbers = clientCommand.getKeysCount();
-        final Class<?>[] types = new Class[paraNumbers];
-        final List<Object> values = new ArrayList<>(paraNumbers);
-        final List<TurtleProtoBuf.TurtleParaType> typesList = clientCommand.getKeysList();
-        final List<TurtleProtoBuf.TurtleCommonValue> valuesList = clientCommand.getValuesList();
-
-        for (int i = 0; i < paraNumbers; i++) {
-            final TurtleProtoBuf.TurtleCommonValue value = valuesList.get(i);
-            final TurtleProtoBuf.TurtleParaType type = typesList.get(i);
-            switch (type) {
-                case STRING:
-                    types[i] = String.class;
-                    values.add(value.getStringValue());
-                    break;
-                case DOUBLE:
-                    types[i] = Double.class;
-                    values.add(value.getDoubleValue());
-                    break;
-                case INTEGER:
-                    types[i] = Integer.class;
-                    values.add(value.getIntValue());
-                    break;
-                case LONG:
-                    types[i] = Long.class;
-                    values.add(value.getLongValue());
-                    break;
-                case NUMBER_INTEGER:
-                    types[i] = BigInteger.class;
-                    values.add(new BigInteger(value.getStringValue()));
-                    break;
-                case NUMBER_DECIMAL:
-                    types[i] = BigDecimal.class;
-                    values.add(new BigDecimal(value.getStringValue()));
-                    break;
-                case TURTLE_VALUE:
-                    types[i] = TurtleValue.class;
-                    values.add(ProtoTurtleHelper.convertToTurtleValue(value.getTurtleValue()));
-                    break;
-                case BOOL:
-                    types[i] = Boolean.class;
-                    values.add(value.getBoolValue());
-                    break;
-                case COLLECTION:
-                    types[i] = Collection.class;
-                    values.add(ProtoParaHelper.handlerCollection(type, value.getCollectionValue().getCollectionParasList()));
-                    break;
-                default:
-                    throw new UnsupportedOperationException(type.name());
-            }
-        }
-
-
-        switch (clientCommand.getModel()) {
+        switch (clientRequest.getModel()) {
             case VALUE:
-                constructCommand(types, values, channel, clientCommand, ValuesDomain.class, valuesQueue);
+                constructCommand(clientRequest, channel, ValuesDomain.class, valuesQueue);
                 return;
             case ADMIN:
-                System.out.println(clientCommand.getOperationName());
+                System.out.println(clientRequest.getOperationName());
                 return;
             case LIST:
-                constructCommand(types, values, channel, clientCommand, ListDomain.class, listQueue);
+                constructCommand(clientRequest, channel, ListDomain.class, listQueue);
                 return;
             case SET:
-                constructCommand(types, values, channel, clientCommand, SetDomain.class, setQueue);
+                constructCommand(clientRequest, channel,  SetDomain.class, setQueue);
                 return;
             case HASH:
-                constructCommand(types, values, channel, clientCommand, HashDomain.class, hashQueue);
+                constructCommand(clientRequest, channel, HashDomain.class, hashQueue);
                 return;
             case ZSET:
-                constructCommand(types, values, channel, clientCommand, OrderSet.class, orderSetQueue);
+                constructCommand(clientRequest, channel,  OrderSet.class, orderSetQueue);
                 return;
             default:
                 throw new UnsupportedOperationException();
         }
     }
 
+    public void accept(ClientRequest clientRequest,Channel channel){
 
-    private void constructCommand(@NotNull Class<?>[] types, @NotNull List<Object> values, @NotNull Channel channel, @NotNull TurtleProtoBuf.ClientCommand command, @NotNull Class<?> target, @NotNull ConcurrentLinkedDeque<ClientCommand> queue) {
+        parseCommand(clientRequest,channel);
+    }
 
-        Method method = null;
-        final String operationName = command.getOperationName();
-        final Long requestId = command.getRequestId();
+    private void constructCommand(ClientRequest clientRequest,Channel channel,Class<?> target,ConcurrentLinkedDeque<ClientCommand> queue){
+        Method method=null;
+        final String operationName = clientRequest.getOperationName();
+        final Long requestId = clientRequest.getRequestId();
+        final Class<?>[]types=clientRequest.getTypes();
         TurtleProtoBuf.ResponseData responseData = null;
-        //找到合适的方法
+
         try {
             if (types.length == 0) {
                 method = target.getDeclaredMethod(operationName);
@@ -364,8 +288,7 @@ public class ServerDomain {
         if (method == null) {
             channel.writeAndFlush(responseData);
         } else {
-            queue.offer(new ClientCommand(method, values, channel, requestId));
+            queue.offer(new ClientCommand(method, clientRequest.getObjects(), channel, requestId));
         }
     }
-
 }

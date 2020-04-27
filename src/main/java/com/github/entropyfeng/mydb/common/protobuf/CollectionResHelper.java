@@ -41,7 +41,7 @@ public class CollectionResHelper {
             entryBuilder.clear();
 
             entryBuilder.setKey(stringTurtleValueEntry.getKey());
-            entryBuilder.setValue(ProtoTurtleHelper.convertToProtoTurtleValue(stringTurtleValueEntry.getValue()));
+            entryBuilder.setValue(ProtoTurtleHelper.convertToProto(stringTurtleValueEntry.getValue()));
 
             builder.setStringTurtleValueEntry(entryBuilder.build());
             builder.setEndAble(false);
@@ -68,8 +68,8 @@ public class CollectionResHelper {
             builder.clear();
             entryBuilder.clear();
 
-            entryBuilder.setKey(ProtoTurtleHelper.convertToProtoTurtleValue(entry.getKey()));
-            entryBuilder.setValue(ProtoTurtleHelper.convertToProtoTurtleValue(entry.getValue()));
+            entryBuilder.setKey(ProtoTurtleHelper.convertToProto(entry.getKey()));
+            entryBuilder.setValue(ProtoTurtleHelper.convertToProto(entry.getValue()));
 
             builder.setEndAble(false);
             builder.setTurtleTurtleValueEntry(entryBuilder.build());
@@ -126,7 +126,7 @@ public class CollectionResHelper {
 
         collection.forEach(turtleValue -> {
             builder.clear();
-            builder.setTurtleValue(ProtoTurtleHelper.convertToProtoTurtleValue(turtleValue));
+            builder.setTurtleValue(ProtoTurtleHelper.convertToProto(turtleValue));
             builder.setEndAble(false);
             resList.add(builder.build());
         });

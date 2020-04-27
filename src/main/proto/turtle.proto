@@ -15,8 +15,16 @@ enum TurtleModel{ //支持模式
 
     LIST=5;
 }
+enum TurtleValueType{
+    Bytes=0;
+    Integer=1;
+    Long=2;
+    Double=3;
+    NumberInteger=4;
+    NumberDecimal=5;
+}
 message TurtleValue{ //数据库基本对象
-    TurtleParaType turtleParaType=1;
+    TurtleValueType turtleValueType=1;
     bytes values=2;
 }
 enum TurtleParaType{//所支持的参数类型
@@ -38,48 +46,19 @@ enum TurtleParaType{//所支持的参数类型
 
     COLLECTION=8;
 
-    VOID=9;
+    BYTES=9;
+
+   COLLECTION_TURTLE_VALUE=10;
+   COLLECTION_DOUBLE=11;
+   COLLECTION_INTEGER=12;
+   COLLECTION_LONG=13;
+   COLLECTION_NUMBER_INTEGER=14;
+   COLLECTION_NUMBER_DECIMAL=15;
+   COLLECTION_BYTES=16;
+   COLLECTION_STRING=17;
 
 }
 
-
-message TurtleCollectionType{//集合类型
-
-   TurtleParaType collectionType=1;
-   repeated TurtleCommonValue collectionParas=2;
-}
-
-
-message TurtleCommonValue{//基础类型
-    oneof Value{
-        string stringValue=1;
-        int32 intValue=2;
-        int64 longValue=3;
-        double doubleValue=4;
-        bool boolValue=5;
-        TurtleCollectionType collectionValue=6;
-        TurtleValue turtleValue=7;
-
-    }
-
-}
-//即使大于4G,也可以将其拆分为多条命令
-message ClientCommand{//客户端命令
-
-     TurtleModel model=1;
-
-     string operationName=2;
-
-     repeated TurtleParaType keys=3;
-
-     repeated TurtleCommonValue values=4;
-
-     int64 requestId=5;
-
-     bool modify=6;//修改标识
-
-     int64 requestSequence=7;
-}
 enum ExceptionType{
     UnsupportedOperationException=0;
     NullPointerException=1;
@@ -151,11 +130,33 @@ message ResponseData{
     bool endAble=25;
 }
 
+message RequestHeaderPayload{
+    int64 requestSequence=1;
+    TurtleModel model=2;
+    string operationName=3;
+    repeated TurtleParaType keys=4;
+    bool modify=5;
+}
+message RequestBodyPayload{
+    int64 requestSequence=1;
+    int32 location=2;
+    oneof Value{
+        string stringValue=3;
+        int32 intValue=4;
+        int64 longValue=5;
+        double doubleValue=6;
+        bool boolValue=7;
+        bytes bytesValue=8;
+        TurtleValue turtleValue=9;
+    }
+}
+message ClientCommand{//客户端命令
 
-message ClientRequest{
-    TurtleModel model=1;
-    int64 requestId=2;
-    int64 requestSequence=3;
-    bool modify=4;
-    bytes payload=5;
+    int64 requestId=1;
+    bool beginAble=2;
+    bool endAble=3;
+    oneof Value{
+          RequestHeaderPayload header=4;
+          RequestBodyPayload body=5;
+    }
 }

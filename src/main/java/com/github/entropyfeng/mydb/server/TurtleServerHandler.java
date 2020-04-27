@@ -1,6 +1,7 @@
 package com.github.entropyfeng.mydb.server;
 
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
+import com.github.entropyfeng.mydb.server.command.ClientRequest;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelId;
@@ -30,6 +31,7 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<TurtleProto
 
     private static ConcurrentLinkedDeque<TurtleProtoBuf.ClientCommand> blockingDeque = new ConcurrentLinkedDeque<>();
 
+    private ConcurrentHashMap<Long,ClientRequest> requestMap=new ConcurrentHashMap<>();
     public TurtleServerHandler(ServerDomain serverDomain) {
 
         this.serverDomain = serverDomain;
@@ -50,10 +52,25 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<TurtleProto
     }
 
 
+    /**
+     * netty 可以保证同一个客户端的请求顺序发送
+     * @param ctx {@link ChannelHandlerContext}
+     * @param msg {@link com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.ClientCommand}
+     */
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, TurtleProtoBuf.ClientCommand msg) {
+        if (msg.getEndAble()){
+            serverDomain.accept(requestMap.remove(msg.getRequestId()),ctx.channel());
+            return;
+        }
+        if (msg.getBeginAble()){
+          TurtleProtoBuf.RequestHeaderPayload header= msg.getHeader();
+          requestMap.put(msg.getRequestId(),new ClientRequest(header,msg.getRequestId()));
+        }else {
+            requestMap.get(msg.getRequestId()).put(msg.getBody());
+        }
 
-        serverDomain.acceptClientCommand(msg, ctx.channel());
+
     }
 
     @Override

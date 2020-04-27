@@ -27,26 +27,7 @@ public class TurtleClient {
                 .option(ChannelOption.RCVBUF_ALLOCATOR, new AdaptiveRecvByteBufAllocator(1 << 10, 1 << 20, 1 << 30))
                 .option(ChannelOption.SO_KEEPALIVE, true)
                 .handler(new TurtleClientChannelInitializer());
-        /* try {
-            ChannelFuture channelFuture = client.connect().sync();
-            System.out.println("client start and bind on " + channelFuture.channel().localAddress() + " and connect to" + channelFuture.channel().remoteAddress());
-            if (channelFuture.isSuccess()) {
-                TurtleClientChannelFactory.setChannel(channelFuture.channel());
-                TurtleClientChannelFactory.setReady(true);
-                System.out.println("setReady");
 
-                channelFuture.sync();
-               // channelFuture.channel().closeFuture().sync();
-               // channelFuture.channel().writeAndFlush(CommonCommand.sayHelloCommand());
-                System.out.println("endSet");
-            }
-
-        } finally {
-
-
-            // 如果连接不成功则直接关闭
-            eventLoopGroup.shutdownGracefully().sync();
-        }*/
       doConnect();
     }
 

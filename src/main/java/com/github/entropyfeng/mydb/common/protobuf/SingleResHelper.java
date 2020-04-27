@@ -38,7 +38,7 @@ public class SingleResHelper {
         TurtleProtoBuf.ResponseData.Builder builder = TurtleProtoBuf.ResponseData.newBuilder();
         builder.setCollectionAble(false);
         builder.setSuccess(true);
-        builder.setTurtleValue(ProtoTurtleHelper.convertToProtoTurtleValue(turtleValue));
+        builder.setTurtleValue(ProtoTurtleHelper.convertToProto(turtleValue));
         return builder.build();
     }
 

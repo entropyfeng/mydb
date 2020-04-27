@@ -95,7 +95,7 @@ public class ProtoParaHelper {
                 return TurtleProtoBuf.TurtleCommonValue.newBuilder().setBoolValue((Boolean) object).build();
 
             case TURTLE_VALUE:
-                return TurtleProtoBuf.TurtleCommonValue.newBuilder().setTurtleValue(ProtoTurtleHelper.convertToProtoTurtleValue((TurtleValue) object)).build();
+                return TurtleProtoBuf.TurtleCommonValue.newBuilder().setTurtleValue(ProtoTurtleHelper.convertToProto((TurtleValue) object)).build();
             case COLLECTION:
                 return constructCollection(((Collection<?>) object), paraType);
             default:
