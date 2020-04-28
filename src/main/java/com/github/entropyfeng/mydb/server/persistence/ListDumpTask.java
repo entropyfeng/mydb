@@ -1,40 +1,36 @@
 package com.github.entropyfeng.mydb.server.persistence;
 
+import com.github.entropyfeng.mydb.config.Constant;
 import com.github.entropyfeng.mydb.core.domain.ListDomain;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.DataOutputStream;
+import java.io.FileOutputStream;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 
 /**
  * @author entropyfeng
  */
-public class ListDumpTask implements Runnable {
-    private static final Logger logger= LoggerFactory.getLogger(ListDumpTask.class);
+public class ListDumpTask implements Callable<Boolean> {
+
     private CountDownLatch countDownLatch;
     private ListDomain listDomain;
-    private File file;
-    private StringBuilder builder;
-    public ListDumpTask(CountDownLatch countDownLatch,ListDomain domain, File file, StringBuilder resBuilder){
-        this.countDownLatch=countDownLatch;
-        this.listDomain=domain;
-        this.file=file;
-        this.builder=resBuilder;
+    private String path;
+
+    public ListDumpTask(CountDownLatch countDownLatch, ListDomain domain, String path) {
+        this.countDownLatch = countDownLatch;
+        this.listDomain = domain;
+        this.path = path;
+
     }
 
     @Override
-    public void run() {
+    public Boolean call() throws Exception {
         try {
-            FileOutputStream fileOutputStream=new FileOutputStream(file);
-            DataOutputStream dataOutputStream=new DataOutputStream(fileOutputStream);
-            ListDomain.write(listDomain,dataOutputStream);
-        } catch (FileNotFoundException e){
-            builder.append("list dump file not find");
-            logger.info("list dump file not find");
-        } catch (IOException e){
-            builder.append(e.getMessage());
-            logger.info(e.getMessage());
+            FileOutputStream fileOutputStream = new FileOutputStream(path + Constant.LIST_SUFFIX);
+            DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
+            ListDomain.write(listDomain, dataOutputStream);
+            return true;
         } finally {
             countDownLatch.countDown();
         }

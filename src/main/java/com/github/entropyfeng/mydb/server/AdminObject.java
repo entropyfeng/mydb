@@ -10,11 +10,10 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.util.concurrent.*;
 import java.util.regex.Pattern;
 
-import static com.github.entropyfeng.mydb.config.Constant.*;
+import static com.github.entropyfeng.mydb.config.Constant.BACK_UP_PATH_NAME;
 import static java.util.regex.Pattern.compile;
 
 /**
@@ -22,90 +21,86 @@ import static java.util.regex.Pattern.compile;
  */
 public class AdminObject {
     private static final Logger logger = LoggerFactory.getLogger(AdminObject.class);
-    private ServerDomain serverDomain;
 
+    private ServerDomain serverDomain;
 
     public AdminObject(ServerDomain serverDomain) {
         this.serverDomain = serverDomain;
     }
 
-    public static int dumpAll(ServerDomain serverDomain) throws IOException {
+    public static void main(String[] args) {
+        String filePath = CommonConfig.getProperties().getProperty(BACK_UP_PATH_NAME);
+        File file = new File(filePath);
+        System.out.println(file.mkdir());
+    }
+
+    public static void dumpAll(ServerDomain serverDomain) {
 
         String filePath = CommonConfig.getProperties().getProperty(BACK_UP_PATH_NAME);
-        long timeStamp = System.currentTimeMillis();
-        String prefix = filePath + timeStamp;
+        String prefix = filePath + System.currentTimeMillis();
         CountDownLatch countDownLatch = new CountDownLatch(5);
+        ExecutorService service = new ThreadPoolExecutor(2, 5, 10, TimeUnit.SECONDS, new LinkedBlockingDeque<>(), new DumpFactory());
 
         File file = new File(filePath);
         if (!file.exists()) {
-            file.mkdir();
+            //不存在且未创建成功,则返回。
+            if (!file.mkdir()) {
+                return;
+            }
         }
-        //------values---------------
-        StringBuilder valuesBuilder = new StringBuilder();
-        File valuesDump = new File(prefix + VALUES_SUFFIX);
-
-        new ValuesDumpFactory().newThread(new ValuesDumpTask(countDownLatch, serverDomain.valuesDomain, valuesDump, valuesBuilder)).start();
-
-        //------set-----------------
-
-        StringBuilder setBuilder = new StringBuilder();
-        File setDump = new File(prefix + SET_SUFFIX);
-        new SetDumpFactory().newThread(new SetDumpTask(countDownLatch, serverDomain.setDomain, setDump, setBuilder)).start();
-
-        //--------list--------------
-
-        StringBuilder listBuilder = new StringBuilder();
-        File listDump = new File(prefix + LIST_SUFFIX);
-        new ListDumpFactory().newThread(new ListDumpTask(countDownLatch, serverDomain.listDomain, listDump, listBuilder)).start();
-
-        //--------hash---------------
-        StringBuilder hashBuilder = new StringBuilder();
-        File hashDump = new File(prefix + HASH_SUFFIX);
-        new HashDumpFactory().newThread(new HashDumpTask(countDownLatch, serverDomain.hashDomain, hashDump, hashBuilder)).start();
-
-        //-----orderSet----------------------
-        StringBuilder orderSetBuilder = new StringBuilder();
-        File orderSetDump = new File(prefix + ORDER_SET_SUFFIX);
-        new OrderSetDumpFactory().newThread(new OrderSetDumpTask(countDownLatch, serverDomain.orderSetDomain, orderSetDump, orderSetBuilder)).start();
-
+        Future<Boolean> valuesFuture = service.submit(new ValuesDumpTask(countDownLatch, serverDomain.valuesDomain, prefix));
+        Future<Boolean> listFuture = service.submit(new ListDumpTask(countDownLatch, serverDomain.listDomain, prefix));
+        Future<Boolean> setFuture = service.submit(new SetDumpTask(countDownLatch, serverDomain.setDomain, prefix));
+        Future<Boolean> hashFuture = service.submit(new HashDumpTask(countDownLatch, serverDomain.hashDomain, prefix));
+        Future<Boolean> orderSetFuture = service.submit(new OrderSetDumpTask(countDownLatch, serverDomain.orderSetDomain, prefix));
 
         try {
             countDownLatch.await();
+            //一般不会触发中断事件
         } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        //------values---------------
+
+        try {
+            valuesFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
             logger.info(e.getMessage());
         }
 
-        int successDump = 0;
+        //------set-----------------
 
-        if (valuesBuilder.length() == 0) {
-            successDump++;
-        } else {
-            logger.info(valuesBuilder.toString());
-        }
-        if (setBuilder.length() == 0) {
-            successDump++;
-        } else {
-            logger.info(setBuilder.toString());
-        }
-        if (hashBuilder.length() == 0) {
-            successDump++;
-        } else {
-            logger.info(hashBuilder.toString());
-        }
-        if (listBuilder.length() == 0) {
-            successDump++;
-        } else {
-            logger.info(listBuilder.toString());
-        }
-        if (orderSetBuilder.length() == 0) {
-            successDump++;
-        } else {
-            logger.info(orderSetBuilder.toString());
+        try {
+            setFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            logger.info(e.getMessage());
         }
 
+        //--------list--------------
+        try {
+            listFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            logger.info(e.getMessage());
+        }
 
-        return successDump;
+        //--------hash---------------
 
+        try {
+            hashFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            logger.info(e.getMessage());
+        }
+
+        //-----orderSet----------------------
+
+        try {
+            orderSetFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            logger.info(e.getMessage());
+        }
+
+        service.shutdown();
     }
 
     public @NotNull ServerDomain load() {
@@ -116,12 +111,14 @@ public class AdminObject {
         File folder = new File(path);
         //如果不存在文件夹，则新建一个文件夹。
         if (!folder.exists()) {
-            folder.mkdir();
+           logger.info("dump file folder not exists");
+           return new ServerDomain();
         }
 
         String[] names = folder.list(filter);
 
         CountDownLatch countDownLatch = new CountDownLatch(5);
+
         ExecutorService service = new ThreadPoolExecutor(1, 5, 10, TimeUnit.SECONDS, new LinkedBlockingDeque<>(), new LoadFactory());
         Future<ValuesDomain> valuesDomainFuture = service.submit(new ValuesLoadTask(names, path, countDownLatch));
         Future<ListDomain> listDomainFuture = service.submit(new ListLoadTask(names, path, countDownLatch));
@@ -137,76 +134,62 @@ public class AdminObject {
         }
 
         //---------------Values------------------
-        ValuesDomain valuesDomain=null;
+        ValuesDomain valuesDomain = null;
         try {
-           valuesDomain= valuesDomainFuture.get();
+            valuesDomain = valuesDomainFuture.get();
         } catch (InterruptedException | ExecutionException e) {
-           logger.info(e.getMessage());
+            logger.info(e.getMessage());
         }
-        if (valuesDomain==null){
-            valuesDomain=new ValuesDomain();
+        if (valuesDomain == null) {
+            valuesDomain = new ValuesDomain();
         }
 
         //-----------list------------------------
 
-        ListDomain listDomain=null;
+        ListDomain listDomain = null;
         try {
-            listDomain=listDomainFuture.get();
+            listDomain = listDomainFuture.get();
         } catch (InterruptedException | ExecutionException e) {
             logger.info(e.getMessage());
         }
-        if (listDomain==null){
-            listDomain=new ListDomain();
+        if (listDomain == null) {
+            listDomain = new ListDomain();
         }
         //-----------set------------------------
 
-        SetDomain setDomain=null;
+        SetDomain setDomain = null;
         try {
-            setDomain=setDomainFuture.get();
-        }catch (InterruptedException |ExecutionException e){
+            setDomain = setDomainFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
             logger.info(e.getMessage());
         }
-        if (setDomain==null){
-            setDomain=new SetDomain();
+        if (setDomain == null) {
+            setDomain = new SetDomain();
         }
         //--------hash------------------------
-        HashDomain hashDomain=null;
+        HashDomain hashDomain = null;
         try {
-         hashDomain=   hashDomainFuture.get();
+            hashDomain = hashDomainFuture.get();
         } catch (InterruptedException | ExecutionException e) {
-            logger.info(e.getMessage());;
+            logger.info(e.getMessage());
+
         }
-        if (hashDomain==null){
-            hashDomain=new HashDomain();
+        if (hashDomain == null) {
+            hashDomain = new HashDomain();
         }
         //--------orderSet----------------------
-        OrderSetDomain orderSetDomain=null;
+        OrderSetDomain orderSetDomain = null;
         try {
-            orderSetDomain=orderSetDomainFuture.get();
+            orderSetDomain = orderSetDomainFuture.get();
         } catch (InterruptedException | ExecutionException e) {
             logger.info(e.getMessage());
         }
-        if (orderSetDomain==null){
-            orderSetDomain=new OrderSetDomain();
+        if (orderSetDomain == null) {
+            orderSetDomain = new OrderSetDomain();
         }
-        return new ServerDomain(valuesDomain,listDomain,setDomain,hashDomain,orderSetDomain);
-    }
-
-    public static ServerDomain loadServerDomain(ServerDomain serverDomain) {
-
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-        ExecutorService service = new ThreadPoolExecutor(2, 5, 10, TimeUnit.SECONDS, new LinkedBlockingDeque<>(), new DumpFactory());
-        TestDumpTask testDumpTask = new TestDumpTask(countDownLatch, null, null);
-        Future<Boolean> res = service.submit(testDumpTask);
-
         service.shutdown();
-        System.out.println(res.isDone());
-
-        return null;
+        return new ServerDomain(valuesDomain, listDomain, setDomain, hashDomain, orderSetDomain);
     }
 
-    public static void main(String[] args) {
 
-        new AdminObject(null).load();
-    }
 }

@@ -1,40 +1,36 @@
 package com.github.entropyfeng.mydb.server.persistence;
 
+import com.github.entropyfeng.mydb.config.Constant;
 import com.github.entropyfeng.mydb.core.domain.ValuesDomain;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.DataOutputStream;
+import java.io.FileOutputStream;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 
 /**
  * @author entropyfeng
  */
-public class ValuesDumpTask implements Runnable {
-    private static final Logger logger= LoggerFactory.getLogger(ValuesDumpTask.class);
+public class ValuesDumpTask implements Callable<Boolean> {
+
+    private String path;
     private CountDownLatch countDownLatch;
     private ValuesDomain valuesDomain;
-    private File file;
-    private StringBuilder builder;
-    public ValuesDumpTask(CountDownLatch countDownLatch, ValuesDomain domain, File file, StringBuilder resBuilder){
-        this.countDownLatch=countDownLatch;
-        this.valuesDomain=domain;
-        this.file=file;
-        this.builder=resBuilder;
+
+    public ValuesDumpTask(CountDownLatch countDownLatch, ValuesDomain domain, String path) {
+        this.countDownLatch = countDownLatch;
+        this.valuesDomain = domain;
+        this.path = path;
+
     }
 
     @Override
-    public void run() {
+    public Boolean call() throws Exception {
         try {
-            FileOutputStream fileOutputStream=new FileOutputStream(file);
-            DataOutputStream dataOutputStream=new DataOutputStream(fileOutputStream);
-            ValuesDomain.write(valuesDomain,dataOutputStream);
-        } catch (FileNotFoundException e){
-            builder.append("values dump file not find");
-            logger.info("values dump file not find");
-        } catch (IOException e){
-            builder.append(e.getMessage());
-            logger.info(e.getMessage());
+            FileOutputStream fileOutputStream = new FileOutputStream(path + Constant.VALUES_SUFFIX);
+            DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
+            ValuesDomain.write(valuesDomain, dataOutputStream);
+            return true;
         } finally {
             countDownLatch.countDown();
         }

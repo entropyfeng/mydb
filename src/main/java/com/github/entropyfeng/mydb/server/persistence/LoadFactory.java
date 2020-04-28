@@ -10,6 +10,6 @@ import java.util.concurrent.ThreadFactory;
 public class LoadFactory implements ThreadFactory {
     @Override
     public Thread newThread(@NotNull Runnable r) {
-        return new Thread(r,"loadDumpFileThread");
+        return new Thread(r, "loadDumpFileThread");
     }
 }

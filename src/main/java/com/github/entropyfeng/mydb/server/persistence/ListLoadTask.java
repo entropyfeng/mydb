@@ -22,11 +22,12 @@ public class ListLoadTask implements Callable<ListDomain> {
     private String[] fileNames;
     private String path;
     private CountDownLatch countDownLatch;
-    private final   Pattern listPattern = compile("-list.dump$");
+    private final Pattern listPattern = compile("-list.dump$");
+
     public ListLoadTask(String[] fileNames, String path, CountDownLatch countDownLatch) {
         this.fileNames = fileNames;
         this.path = path;
-        this.countDownLatch=countDownLatch;
+        this.countDownLatch = countDownLatch;
     }
 
 
@@ -34,14 +35,14 @@ public class ListLoadTask implements Callable<ListDomain> {
     public ListDomain call() throws Exception {
 
         Optional<String> listFilename = Arrays.stream(fileNames).filter(s -> !listPattern.matcher(s).matches()).max(String::compareTo);
-        ListDomain listDomain=null;
-        if (listFilename.isPresent()){
+        ListDomain listDomain = null;
+        if (listFilename.isPresent()) {
             File valuesDump = new File(path + listFilename.get());
             try {
                 FileInputStream fileInputStream = new FileInputStream(valuesDump);
                 DataInputStream dataInputStream = new DataInputStream(fileInputStream);
                 listDomain = ListDomain.read(dataInputStream);
-            }finally {
+            } finally {
                 countDownLatch.countDown();
             }
         }

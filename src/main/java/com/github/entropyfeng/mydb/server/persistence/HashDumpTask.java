@@ -1,40 +1,35 @@
 package com.github.entropyfeng.mydb.server.persistence;
 
+import com.github.entropyfeng.mydb.config.Constant;
 import com.github.entropyfeng.mydb.core.domain.HashDomain;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.DataOutputStream;
+import java.io.FileOutputStream;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 
 /**
  * @author entropyfeng
  */
-public class HashDumpTask implements Runnable {
-    private static final Logger logger= LoggerFactory.getLogger(HashDumpTask.class);
+public class HashDumpTask implements Callable<Boolean> {
     private CountDownLatch countDownLatch;
     private HashDomain hashDomain;
-    private File file;
-    private StringBuilder builder;
-    public HashDumpTask(CountDownLatch countDownLatch, HashDomain domain, File file, StringBuilder resBuilder){
-        this.countDownLatch=countDownLatch;
-        this.hashDomain=domain;
-        this.file=file;
-        this.builder=resBuilder;
+    private String path;
+
+    public HashDumpTask(CountDownLatch countDownLatch, HashDomain domain, String path) {
+        this.countDownLatch = countDownLatch;
+        this.hashDomain = domain;
+        this.path = path;
     }
 
+
     @Override
-    public void run() {
+    public Boolean call() throws Exception {
         try {
-            FileOutputStream fileOutputStream=new FileOutputStream(file);
-            DataOutputStream dataOutputStream=new DataOutputStream(fileOutputStream);
-            HashDomain.write(hashDomain,dataOutputStream);
-        } catch (FileNotFoundException e){
-            builder.append("hash dump file not find");
-            logger.info("hash dump file not find");
-        } catch (IOException e){
-            builder.append(e.getMessage());
-            logger.info(e.getMessage());
+            FileOutputStream fileOutputStream = new FileOutputStream(path + Constant.HASH_SUFFIX);
+            DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
+            HashDomain.write(hashDomain, dataOutputStream);
+            return true;
         } finally {
             countDownLatch.countDown();
         }
