@@ -30,8 +30,8 @@ public class OrderSetDumpTask implements Runnable {
             DataOutputStream dataOutputStream=new DataOutputStream(fileOutputStream);
             OrderSetDomain.write(orderSetDomain,dataOutputStream);
         } catch (FileNotFoundException e){
-            builder.append("list dump file not find");
-            logger.info("list dump file not find");
+            builder.append("orderSet dump file not find");
+            logger.info("orderSet dump file not find");
         } catch (IOException e){
             builder.append(e.getMessage());
             logger.info(e.getMessage());
