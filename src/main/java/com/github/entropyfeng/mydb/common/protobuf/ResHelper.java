@@ -32,8 +32,7 @@ public class ResHelper {
     public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> emptyRes() {
 
         ProtoBuf.ResBody.Builder bodyBuilder = ProtoBuf.ResBody.newBuilder();
-        ArrayList<ProtoBuf.ResBody> resBodies = new ArrayList<>(1);
-        resBodies.add(bodyBuilder.build());
+        ArrayList<ProtoBuf.ResBody> resBodies = new ArrayList<>(0);
         return new Pair<>(EMPTY_HEAD, resBodies);
 
     }

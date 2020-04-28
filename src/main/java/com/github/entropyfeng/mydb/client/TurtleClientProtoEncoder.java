@@ -24,7 +24,6 @@ public class TurtleClientProtoEncoder extends MessageToByteEncoder<ProtoBuf.Clie
         writeRawVarint32(out, bodyLen);
         out.writeBytes(msg.toByteArray());
 
-        logger.info("do encode");
     }
 
 

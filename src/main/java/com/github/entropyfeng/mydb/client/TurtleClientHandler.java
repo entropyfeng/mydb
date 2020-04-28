@@ -24,10 +24,15 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<ResponseDat
     private static HashMap<Long, Pair<ResHead,Collection<ResBody>>> res = new HashMap<>();
 
     @Override
+    public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
+        super.channelRegistered(ctx);
+        logger.info("channel registered !");
+    }
+
+    @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
-        logger.info("channel active");
-
+        logger.info("channel active !");
     }
 
     @Override
@@ -49,6 +54,8 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<ResponseDat
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ResponseData msg) throws Exception {
 
+        System.out.println("read");
+        System.out.println(msg.toString());
         if (msg.getEndAble()){
             dispatchRes(msg.getRequestId());
             return;
@@ -73,7 +80,7 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<ResponseDat
 
         Pair<ResHead,Collection<ResBody>> pair=res.remove(responseId);
         if (pair!=null){
-            ClientExecute.resMap.put(responseId, res.remove(responseId));
+            ClientExecute.resMap.put(responseId, pair);
         }
     }
 

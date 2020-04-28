@@ -154,7 +154,7 @@ public class ServerDomain {
                 execute(listCommand, listDomain);
             } else {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -171,7 +171,7 @@ public class ServerDomain {
                 execute(valuesCommand, valuesDomain);
             } else {
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -187,7 +187,7 @@ public class ServerDomain {
                 execute(setCommand, setDomain);
             } else {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -198,7 +198,6 @@ public class ServerDomain {
 
     public void execute(ICommand command, Object target) {
         Object res;
-
         try {
             if (command.getValues().size() == 0) {
                 res = command.getMethod().invoke(target);
@@ -215,6 +214,7 @@ public class ServerDomain {
             return;
         }
 
+        logger.info("---------------------------");
         Pair<ResHead, Collection<ResBody>> pair = ((Pair<ResHead, Collection<ResBody>>) res);
 
         writeChannel(pair, command.getChannel(), command.getRequestId());
@@ -232,9 +232,14 @@ public class ServerDomain {
         channel.write(resDataBuilder.build());
         resDataBuilder.clear().setEndAble(true).setRequestId(requestId);
         channel.write(resDataBuilder.build());
+        channel.flush();
     }
 
     private void writeChannel(Pair<ResHead, Collection<ResBody>> pair, Channel channel, Long requestId) {
+
+
+        logger.info("writeChannel requestId ->{} ; ",requestId);
+
 
         //-----------header-------------------------
         ResponseData.Builder responseBuilder = ResponseData.newBuilder();
@@ -242,6 +247,7 @@ public class ServerDomain {
         responseBuilder.setBeginAble(true);
         responseBuilder.setEndAble(false);
         responseBuilder.setRequestId(requestId);
+        logger.info(pair.getKey().getSuccess()+"");
         channel.write(responseBuilder.build());
 
 
@@ -249,6 +255,8 @@ public class ServerDomain {
         responseBuilder.clear();
         responseBuilder.setRequestId(requestId);
         responseBuilder.setEndAble(false);
+        responseBuilder.setBeginAble(false);
+        logger.info("body size {}",pair.getValue().size());
         pair.getValue().forEach(resBody -> channel.write(responseBuilder.setBody(resBody).build()));
 
 
@@ -256,7 +264,10 @@ public class ServerDomain {
         responseBuilder.clear();
         responseBuilder.setRequestId(requestId);
         responseBuilder.setEndAble(true);
+        responseBuilder.setBeginAble(false);
+        logger.info(responseBuilder.build().toString());
         channel.write(responseBuilder.build());
+        channel.flush();
     }
 
 

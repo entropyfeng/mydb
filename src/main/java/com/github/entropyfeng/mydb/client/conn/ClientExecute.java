@@ -20,14 +20,14 @@ public class ClientExecute {
 
     public static ConcurrentHashMap<Long,Pair<ResHead,Collection<ResBody>>> resMap=new ConcurrentHashMap<>();
 
-    public static AtomicLong singleId = new AtomicLong(1);
+    public static AtomicLong requestIdPool = new AtomicLong(1);
 
     public static Pair<ResHead, Collection<ResBody>> execute(ClientCommandBuilder commandBuilder){
 
         Channel channel = TurtleClientChannelFactory.getChannel();
         if (channel != null) {
             Pair<ResHead, Collection<ResBody>> responseData;
-            long requestId= singleId.getAndIncrement();
+            long requestId= requestIdPool.getAndIncrement();
             commandBuilder.writeChannel(channel,requestId);
 
             //blocking....

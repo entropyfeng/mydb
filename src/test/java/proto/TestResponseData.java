@@ -9,18 +9,8 @@ public class TestResponseData {
     @Test
     public void testLast() {
 
-        ProtoBuf.ResponseData responseData = ProtoBuf.ResponseData.newBuilder().setEndAble(true).build();
-        byte[] arr = responseData.toByteArray();
-        System.out.println(arr.length);
-    }
-
-    @Test
-    public void test() {
 
     }
 
-    @Test
-    public void testBuilder() {
 
-    }
 }
