@@ -24,12 +24,14 @@ public class ClientRequest {
     private Class<?>[] types;
     private ArrayList<Object> objects;
     private final Long requestId;
+    private boolean modify;
     @SuppressWarnings("all")
     public ClientRequest(TurtleProtoBuf.RequestHeaderPayload header,Long requestId){
         this.operationName=header.getOperationName();
         this.typeList=header.getKeysList();
         this.requestId=requestId;
         this.model= ProtoModelHelper.convertToTurtleModel(header.getModel());
+        this.modify=header.getModify();
 
         final int size=typeList.size();
         types=new Class<?>[size];
@@ -100,6 +102,7 @@ public class ClientRequest {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public void put(TurtleProtoBuf.RequestBodyPayload body){
 
         int location=body.getLocation();
@@ -177,5 +180,9 @@ public class ClientRequest {
 
     public ArrayList<Object> getObjects() {
         return objects;
+    }
+
+    public boolean getModify(){
+        return this.modify;
     }
 }

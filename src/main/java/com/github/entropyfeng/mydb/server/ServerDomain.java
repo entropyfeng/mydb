@@ -1,6 +1,7 @@
 package com.github.entropyfeng.mydb.server;
 
 import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
+import com.github.entropyfeng.mydb.config.ServerStatus;
 import com.github.entropyfeng.mydb.core.domain.*;
 import com.github.entropyfeng.mydb.core.zset.OrderSet;
 import com.github.entropyfeng.mydb.server.command.ClientCommand;
@@ -15,6 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 /**
@@ -24,49 +26,41 @@ public class ServerDomain {
 
     private static final Logger logger = LoggerFactory.getLogger(ServerDomain.class);
 
+    /**
+     * 服务器状态
+     */
+    private volatile ServerStatus serverStatus;
+
+    public static AtomicBoolean interrupted=new AtomicBoolean(false);
+
     public ServerDomain() {
 
         this.adminObject = new AdminObject(this);
 
         this.valuesDomain = new ValuesDomain();
-        this.valuesQueue = new ConcurrentLinkedDeque<>();
-
         this.listDomain = new ListDomain();
-        this.listQueue = new ConcurrentLinkedDeque<>();
-
         this.setDomain = new SetDomain();
-        this.setQueue = new ConcurrentLinkedDeque<>();
-
         this.hashDomain = new HashDomain();
-        this.hashQueue = new ConcurrentLinkedDeque<>();
-
         this.orderSetDomain = new OrderSetDomain();
-        this.orderSetQueue = new ConcurrentLinkedDeque<>();
+
+        constructQueue();
 
         start();
     }
+
 
     public ServerDomain(ValuesDomain valuesDomain,ListDomain listDomain,SetDomain setDomain,HashDomain hashDomain,OrderSetDomain orderSetDomain){
 
         this.adminObject = new AdminObject(this);
 
         this.valuesDomain =valuesDomain;
-        this.valuesQueue = new ConcurrentLinkedDeque<>();
-
         this.listDomain =listDomain;
-        this.listQueue = new ConcurrentLinkedDeque<>();
-
         this.setDomain = setDomain;
-        this.setQueue = new ConcurrentLinkedDeque<>();
-
         this.hashDomain = hashDomain;
-        this.hashQueue = new ConcurrentLinkedDeque<>();
-
         this.orderSetDomain =orderSetDomain;
-        this.orderSetQueue = new ConcurrentLinkedDeque<>();
 
+        constructQueue();
         start();
-
 
     }
 
@@ -92,6 +86,7 @@ public class ServerDomain {
 
     protected ConcurrentLinkedDeque<ClientCommand> orderSetQueue;
 
+    protected ConcurrentLinkedDeque<ClientCommand> adminQueue;
     protected Thread valueThread;
     protected Thread listThread;
     protected Thread setThread;
@@ -99,6 +94,7 @@ public class ServerDomain {
     protected Thread orderSetThread;
 
     public void start() {
+
         valueThread = new ValuesThreadFactory().newThread(this::runValues);
         listThread = new ListThreadFactory().newThread(this::runList);
         setThread = new SetThreadFactory().newThread(this::runSet);
@@ -110,6 +106,7 @@ public class ServerDomain {
         setThread.start();
         hashThread.start();
         orderSetThread.start();
+
 
     }
 
@@ -128,6 +125,7 @@ public class ServerDomain {
             }
         }
     }
+
 
     private void runHash() {
 
@@ -306,5 +304,14 @@ public class ServerDomain {
         } else {
             queue.offer(new ClientCommand(method, clientRequest.getObjects(), channel, requestId));
         }
+    }
+    private void constructQueue(){
+        this.valuesQueue = new ConcurrentLinkedDeque<>();
+        this.listQueue = new ConcurrentLinkedDeque<>();
+        this.setQueue = new ConcurrentLinkedDeque<>();
+        this.hashQueue = new ConcurrentLinkedDeque<>();
+        this.orderSetQueue = new ConcurrentLinkedDeque<>();
+
+        this.adminQueue=new ConcurrentLinkedDeque<>();
     }
 }

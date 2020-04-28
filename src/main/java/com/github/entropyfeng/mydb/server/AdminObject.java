@@ -1,20 +1,11 @@
 package com.github.entropyfeng.mydb.server;
 
-import com.github.entropyfeng.mydb.config.CommonConfig;
-import com.github.entropyfeng.mydb.config.Constant;
-import com.github.entropyfeng.mydb.core.domain.*;
-import com.github.entropyfeng.mydb.server.persistence.*;
-import org.jetbrains.annotations.NotNull;
+import com.github.entropyfeng.mydb.common.protobuf.SingleResHelper;
+import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.util.concurrent.*;
-import java.util.regex.Pattern;
-
-import static com.github.entropyfeng.mydb.config.Constant.BACK_UP_PATH_NAME;
-import static java.util.regex.Pattern.compile;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author entropyfeng
@@ -28,6 +19,16 @@ public class AdminObject {
         this.serverDomain = serverDomain;
     }
 
+    public TurtleProtoBuf.ResponseData dump(){
 
+        logger.info("request dump");
+        logger.info("request complete all task in all domains .");
+        ServerDomain.interrupted.set(true);
+        logger.info("all queue is empty .");
+        logger.info("begin dump .");
+        PersistenceHelper.dumpAll(serverDomain);
+        logger.info("after dump .");
+        return SingleResHelper.voidResponse();
+    }
 
 }

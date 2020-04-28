@@ -65,6 +65,7 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<TurtleProto
             ClientRequest clientRequest = requestMap.remove(msg.getRequestId());
             if (clientRequest != null) {
                 serverDomain.accept(clientRequest, ctx.channel());
+
             }
             return;
         }

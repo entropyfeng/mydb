@@ -46,6 +46,7 @@ public class TurtleServer {
 
     public void start() throws Exception {
 
+        //从dump加载实例
         serverDomain=PersistenceHelper.load();
 
         NioEventLoopGroup boss = new NioEventLoopGroup(1);

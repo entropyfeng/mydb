@@ -16,6 +16,11 @@ public enum ServerStatus {
     /**
      * 阻塞
      */
-    BLOCKING
+    BLOCKING,
+
+    /**
+     * 正在dump文件
+     */
+    RUNNING_DUMP
 
 }
