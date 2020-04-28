@@ -40,12 +40,13 @@ public class TurtleServer {
     public TurtleServer(String host, int port) {
         this.port = port;
         this.host = host;
+        logger.info("server at host-> {} ,port ->{}",host,port);
     }
 
 
     public void start() throws Exception {
 
-        serverDomain=new ServerDomain();
+        serverDomain=PersistenceHelper.load();
 
         NioEventLoopGroup boss = new NioEventLoopGroup(1);
         //IO密集型 2n+1

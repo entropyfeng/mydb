@@ -36,15 +36,16 @@ public class SetLoadTask implements Callable<SetDomain> {
 
         Optional<String> setFilename = Arrays.stream(fileNames).filter(s -> !setPattern.matcher(s).matches()).max(String::compareTo);
         SetDomain setDomain = null;
-        if (setFilename.isPresent()) {
-            File valuesDump = new File(path + setFilename.get());
-            try {
+        try {
+            if (setFilename.isPresent()) {
+                File valuesDump = new File(path + setFilename.get());
+
                 FileInputStream fileInputStream = new FileInputStream(valuesDump);
                 DataInputStream dataInputStream = new DataInputStream(fileInputStream);
                 setDomain = SetDomain.read(dataInputStream);
-            } finally {
-                countDownLatch.countDown();
             }
+        } finally {
+            countDownLatch.countDown();
         }
         return setDomain;
     }

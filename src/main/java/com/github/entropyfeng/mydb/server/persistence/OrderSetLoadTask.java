@@ -36,15 +36,16 @@ public class OrderSetLoadTask implements Callable<OrderSetDomain> {
 
         Optional<String> orderSetFilename = Arrays.stream(fileNames).filter(s -> !orderSetPattern.matcher(s).matches()).max(String::compareTo);
         OrderSetDomain orderSetDomain = null;
-        if (orderSetFilename.isPresent()) {
-            File valuesDump = new File(path + orderSetFilename.get());
-            try {
+        try {
+            if (orderSetFilename.isPresent()) {
+                File valuesDump = new File(path + orderSetFilename.get());
+
                 FileInputStream fileInputStream = new FileInputStream(valuesDump);
                 DataInputStream dataInputStream = new DataInputStream(fileInputStream);
                 orderSetDomain = OrderSetDomain.read(dataInputStream);
-            } finally {
-                countDownLatch.countDown();
             }
+        } finally {
+            countDownLatch.countDown();
         }
         return orderSetDomain;
     }

@@ -36,15 +36,16 @@ public class ListLoadTask implements Callable<ListDomain> {
 
         Optional<String> listFilename = Arrays.stream(fileNames).filter(s -> !listPattern.matcher(s).matches()).max(String::compareTo);
         ListDomain listDomain = null;
-        if (listFilename.isPresent()) {
-            File valuesDump = new File(path + listFilename.get());
-            try {
+        try {
+            if (listFilename.isPresent()) {
+                File valuesDump = new File(path + listFilename.get());
+
                 FileInputStream fileInputStream = new FileInputStream(valuesDump);
                 DataInputStream dataInputStream = new DataInputStream(fileInputStream);
                 listDomain = ListDomain.read(dataInputStream);
-            } finally {
-                countDownLatch.countDown();
             }
+        } finally {
+            countDownLatch.countDown();
         }
         return listDomain;
     }

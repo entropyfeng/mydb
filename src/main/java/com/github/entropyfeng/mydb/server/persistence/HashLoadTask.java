@@ -36,15 +36,16 @@ public class HashLoadTask implements Callable<HashDomain> {
 
         Optional<String> hashFilename = Arrays.stream(fileNames).filter(s -> !hashPattern.matcher(s).matches()).max(String::compareTo);
         HashDomain hashDomain = null;
-        if (hashFilename.isPresent()) {
-            File valuesDump = new File(path + hashFilename.get());
-            try {
+        try {
+            if (hashFilename.isPresent()) {
+                File valuesDump = new File(path + hashFilename.get());
+
                 FileInputStream fileInputStream = new FileInputStream(valuesDump);
                 DataInputStream dataInputStream = new DataInputStream(fileInputStream);
                 hashDomain = HashDomain.read(dataInputStream);
-            } finally {
-                countDownLatch.countDown();
             }
+        } finally {
+            countDownLatch.countDown();
         }
         return hashDomain;
     }

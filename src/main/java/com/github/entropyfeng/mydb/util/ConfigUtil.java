@@ -96,7 +96,7 @@ public class ConfigUtil {
         }
 
     }
-    public static long getIntegerProperty(Properties properties,String paraName){
-        return new Long(properties.getProperty(paraName));
+    public static Integer getIntegerProperty(Properties properties,String paraName){
+        return new Integer(properties.getProperty(paraName));
     }
 }

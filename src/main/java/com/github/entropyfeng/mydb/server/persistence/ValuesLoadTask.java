@@ -36,15 +36,15 @@ public class ValuesLoadTask implements Callable<ValuesDomain> {
 
         Optional<String> valuesFilename = Arrays.stream(fileNames).filter(s -> !valuesPattern.matcher(s).matches()).max(String::compareTo);
         ValuesDomain valuesDomain = null;
-        if (valuesFilename.isPresent()) {
-            File valuesDump = new File(path + valuesFilename.get());
-            try {
+        try {
+            if (valuesFilename.isPresent()) {
+                File valuesDump = new File(path + valuesFilename.get());
                 FileInputStream fileInputStream = new FileInputStream(valuesDump);
                 DataInputStream dataInputStream = new DataInputStream(fileInputStream);
                 valuesDomain = ValuesDomain.read(dataInputStream);
-            } finally {
-                countDownLatch.countDown();
             }
+        } finally {
+            countDownLatch.countDown();
         }
         return valuesDomain;
     }
