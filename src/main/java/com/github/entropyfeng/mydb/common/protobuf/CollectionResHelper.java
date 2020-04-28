@@ -12,7 +12,6 @@ import java.util.Set;
  */
 public class CollectionResHelper {
 
-
     public static Collection<TurtleProtoBuf.ResponseData> emptyResponse() {
 
         TurtleProtoBuf.ResponseData.Builder builder = TurtleProtoBuf.ResponseData.newBuilder();

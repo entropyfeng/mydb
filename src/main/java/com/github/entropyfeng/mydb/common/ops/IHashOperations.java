@@ -11,20 +11,20 @@ import java.util.Collection;
  */
 public interface IHashOperations {
 
-    public @NotNull TurtleProtoBuf.ResponseData get(@NotNull String key, @NotNull TurtleValue tKey);
+    @NotNull TurtleProtoBuf.ResponseData get(@NotNull String key, @NotNull TurtleValue tKey);
 
-    public @NotNull Collection<TurtleProtoBuf.ResponseData> get(@NotNull String key);
+    @NotNull Collection<TurtleProtoBuf.ResponseData> get(@NotNull String key);
 
-    public @NotNull TurtleProtoBuf.ResponseData exists(@NotNull String key, @NotNull TurtleValue tKey, TurtleValue tValue);
+    @NotNull TurtleProtoBuf.ResponseData exists(@NotNull String key, @NotNull TurtleValue tKey, TurtleValue tValue);
 
-    public @NotNull TurtleProtoBuf.ResponseData exists(@NotNull String key);
+    @NotNull TurtleProtoBuf.ResponseData exists(@NotNull String key);
 
-    public @NotNull TurtleProtoBuf.ResponseData put(@NotNull String key, @NotNull TurtleValue tKey, @NotNull TurtleValue tValue);
+    @NotNull TurtleProtoBuf.ResponseData put(@NotNull String key, @NotNull TurtleValue tKey, @NotNull TurtleValue tValue);
 
-    public @NotNull TurtleProtoBuf.ResponseData delete(@NotNull String key);
+    @NotNull TurtleProtoBuf.ResponseData delete(@NotNull String key);
 
-    public @NotNull TurtleProtoBuf.ResponseData delete(@NotNull String key, @NotNull TurtleValue tKey);
+    @NotNull TurtleProtoBuf.ResponseData delete(@NotNull String key, @NotNull TurtleValue tKey);
 
-    public @NotNull TurtleProtoBuf.ResponseData sizeOf(@NotNull String key);
+    @NotNull TurtleProtoBuf.ResponseData sizeOf(@NotNull String key);
 
 }

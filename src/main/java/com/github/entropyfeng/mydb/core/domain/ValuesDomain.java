@@ -256,7 +256,6 @@ public class ValuesDomain extends ExpireObject implements IValueOperations {
             } else {
                 valueMap.put(s, turtleValue);
             }
-
         }
 
         return valuesDomain;

@@ -3,7 +3,6 @@ package com.github.entropyfeng.mydb;
 import com.github.entropyfeng.mydb.config.CommonConfig;
 import com.github.entropyfeng.mydb.config.Constant;
 import com.github.entropyfeng.mydb.server.TurtleServer;
-import com.github.entropyfeng.mydb.util.CommonUtil;
 import com.github.entropyfeng.mydb.util.ConfigUtil;
 
 /**

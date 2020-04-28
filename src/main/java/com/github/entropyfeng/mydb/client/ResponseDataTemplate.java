@@ -1,13 +1,7 @@
 package com.github.entropyfeng.mydb.client;
 
-import com.github.entropyfeng.mydb.client.ops.ResponseHashOperations;
-import com.github.entropyfeng.mydb.client.ops.ResponseListOperations;
-import com.github.entropyfeng.mydb.client.ops.ResponseSetOperations;
-import com.github.entropyfeng.mydb.client.ops.ResponseValueOperations;
-import com.github.entropyfeng.mydb.common.ops.IHashOperations;
-import com.github.entropyfeng.mydb.common.ops.IListOperations;
-import com.github.entropyfeng.mydb.common.ops.ISetOperations;
-import com.github.entropyfeng.mydb.common.ops.IValueOperations;
+import com.github.entropyfeng.mydb.client.ops.*;
+import com.github.entropyfeng.mydb.common.ops.*;
 
 /**
  * @author entropyfeng
@@ -20,6 +14,7 @@ public class ResponseDataTemplate {
         this.listOperations = new ResponseListOperations();
         this.setOperations = new ResponseSetOperations();
         this.hashOperations = new ResponseHashOperations();
+        this.orderSetOperations=new ResponseOrderSetOperations();
     }
 
     private IValueOperations valueOperations;
@@ -29,6 +24,8 @@ public class ResponseDataTemplate {
     private ISetOperations setOperations;
 
     private IHashOperations hashOperations;
+
+    private IOrderSetOperations orderSetOperations;
 
     public IValueOperations opsForValues() {
         return this.valueOperations;
@@ -44,5 +41,9 @@ public class ResponseDataTemplate {
 
     public IHashOperations opsForHash() {
         return this.hashOperations;
+    }
+
+    public IOrderSetOperations opsForOrderSet(){
+        return this.orderSetOperations;
     }
 }
