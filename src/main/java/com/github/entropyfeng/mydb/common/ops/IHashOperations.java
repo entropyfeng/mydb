@@ -1,7 +1,8 @@
 package com.github.entropyfeng.mydb.common.ops;
 
-import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.core.TurtleValue;
+import com.github.entropyfeng.mydb.core.helper.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -11,20 +12,20 @@ import java.util.Collection;
  */
 public interface IHashOperations {
 
-    @NotNull TurtleProtoBuf.ResponseData get(@NotNull String key, @NotNull TurtleValue tKey);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> get(@NotNull String key, @NotNull TurtleValue tKey);
 
-    @NotNull Collection<TurtleProtoBuf.ResponseData> get(@NotNull String key);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> get(@NotNull String key);
 
-    @NotNull TurtleProtoBuf.ResponseData exists(@NotNull String key, @NotNull TurtleValue tKey, TurtleValue tValue);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exists(@NotNull String key, @NotNull TurtleValue tKey, TurtleValue tValue);
 
-    @NotNull TurtleProtoBuf.ResponseData exists(@NotNull String key);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exists(@NotNull String key);
 
-    @NotNull TurtleProtoBuf.ResponseData put(@NotNull String key, @NotNull TurtleValue tKey, @NotNull TurtleValue tValue);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> put(@NotNull String key, @NotNull TurtleValue tKey, @NotNull TurtleValue tValue);
 
-    @NotNull TurtleProtoBuf.ResponseData delete(@NotNull String key);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> delete(@NotNull String key);
 
-    @NotNull TurtleProtoBuf.ResponseData delete(@NotNull String key, @NotNull TurtleValue tKey);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> delete(@NotNull String key, @NotNull TurtleValue tKey);
 
-    @NotNull TurtleProtoBuf.ResponseData sizeOf(@NotNull String key);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> sizeOf(@NotNull String key);
 
 }

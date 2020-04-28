@@ -2,13 +2,12 @@ package com.github.entropyfeng.mydb.core.domain;
 
 import com.github.entropyfeng.mydb.common.TurtleValueType;
 import com.github.entropyfeng.mydb.common.exception.DumpFileException;
-import com.github.entropyfeng.mydb.common.exception.TurtleDesignError;
 import com.github.entropyfeng.mydb.common.ops.IValueOperations;
-import com.github.entropyfeng.mydb.common.protobuf.CollectionResHelper;
-import com.github.entropyfeng.mydb.common.protobuf.SingleResHelper;
-import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
+import com.github.entropyfeng.mydb.common.protobuf.ResHelper;
 import com.github.entropyfeng.mydb.config.Constant;
 import com.github.entropyfeng.mydb.core.TurtleValue;
+import com.github.entropyfeng.mydb.core.helper.Pair;
 import com.github.entropyfeng.mydb.util.TimeUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,25 +37,25 @@ public class ValuesDomain extends ExpireObject implements IValueOperations {
 
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData set(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> set(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time) {
         //如果过期
         if (isExpire(key)) {
             //删除过期字典条目
             deleteExpireTime(key);
         }
         if (valueMap.size() >= Integer.MAX_VALUE) {
-            return SingleResHelper.elementOutOfBoundException("size of map out of limit .!");
+            return ResHelper.elementOutOfBoundException("size of map out of limit .!");
         }
 
         valueMap.put(key, value);
         if (!TimeUtil.isExpire(time)) {
             putExpireTime(key, time);
         }
-        return SingleResHelper.voidResponse();
+        return ResHelper.emptyRes();
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData setIfAbsent(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> setIfAbsent(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time) {
         boolean res = false;
         handleExpire(key);
         if (!valueMap.containsKey(key)) {
@@ -66,13 +65,11 @@ public class ValuesDomain extends ExpireObject implements IValueOperations {
             }
             res = true;
         }
-
-
-        return SingleResHelper.boolResponse(res);
+        return ResHelper.boolRes(res);
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData setIfPresent(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> setIfPresent(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time) {
         boolean res = false;
         if (isExpire(key)) {
             deleteExpireTime(key);
@@ -85,23 +82,23 @@ public class ValuesDomain extends ExpireObject implements IValueOperations {
             }
             res = true;
         }
-        return SingleResHelper.boolResponse(res);
+        return ResHelper.boolRes(res);
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData get(@NotNull String key) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> get(@NotNull String key) {
         handleExpire(key);
 
         TurtleValue turtleValue = valueMap.get(key);
         if (turtleValue == null) {
-            return SingleResHelper.nullResponse();
+            return ResHelper.emptyRes();
         } else {
-            return SingleResHelper.turtleValueResponse(turtleValue);
+            return ResHelper.turtleRes(turtleValue);
         }
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData increment(@NotNull String key, @NotNull Integer intValue) throws UnsupportedOperationException, NoSuchElementException {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> increment(@NotNull String key, @NotNull Integer intValue) throws UnsupportedOperationException, NoSuchElementException {
 
 
         return modifyHelper(key, TurtleValueType.INTEGER, intValue);
@@ -109,48 +106,48 @@ public class ValuesDomain extends ExpireObject implements IValueOperations {
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData increment(@NotNull String key, @NotNull Long longValue) throws UnsupportedOperationException, NoSuchElementException {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> increment(@NotNull String key, @NotNull Long longValue) throws UnsupportedOperationException, NoSuchElementException {
 
         return modifyHelper(key, TurtleValueType.LONG, longValue);
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData increment(@NotNull String key, @NotNull Double doubleValue) throws UnsupportedOperationException, NoSuchElementException {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> increment(@NotNull String key, @NotNull Double doubleValue) throws UnsupportedOperationException, NoSuchElementException {
 
         return modifyHelper(key, TurtleValueType.DOUBLE, doubleValue);
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData increment(@NotNull String key, @NotNull BigInteger bigInteger) throws UnsupportedOperationException, NoSuchElementException {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> increment(@NotNull String key, @NotNull BigInteger bigInteger) throws UnsupportedOperationException, NoSuchElementException {
         return modifyHelper(key, TurtleValueType.NUMBER_INTEGER, bigInteger);
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData increment(@NotNull String key, @NotNull BigDecimal bigDecimal) throws UnsupportedOperationException, NoSuchElementException {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> increment(@NotNull String key, @NotNull BigDecimal bigDecimal) throws UnsupportedOperationException, NoSuchElementException {
         return modifyHelper(key, TurtleValueType.NUMBER_DECIMAL, bigDecimal);
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData append(@NotNull String key, @NotNull String appendValue) throws UnsupportedOperationException, NoSuchElementException {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> append(@NotNull String key, @NotNull String appendValue) throws UnsupportedOperationException, NoSuchElementException {
         return modifyHelper(key, TurtleValueType.BYTES, appendValue);
     }
 
-
     @Override
-    @NotNull
-    public Collection<TurtleProtoBuf.ResponseData> allValues() {
-        return CollectionResHelper.turtleResponse(valueMap.values());
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> allValues() {
+        return ResHelper.turtleCollectionRes(valueMap.values());
     }
 
     @Override
-    public @NotNull Collection<TurtleProtoBuf.ResponseData> allEntries() {
-        return CollectionResHelper.stringTurtleResponse(valueMap.entrySet());
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> allEntries() {
+
+        return ResHelper.stringTurtleCollectionRes(valueMap.entrySet());
     }
 
     @Override
-    public @NotNull Collection<TurtleProtoBuf.ResponseData> allKeys() {
-        return CollectionResHelper.stringResponse(valueMap.keySet());
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> allKeys() {
+        return ResHelper.stringCollectionRes(valueMap.keySet());
     }
+
 
     /**
      * 移除过期键
@@ -165,17 +162,14 @@ public class ValuesDomain extends ExpireObject implements IValueOperations {
     }
 
 
-    private @NotNull TurtleProtoBuf.ResponseData modifyHelper(String key, TurtleValueType type, Object value) {
+    private @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> modifyHelper(String key, TurtleValueType type, Object value) {
         handleExpire(key);
         TurtleValue turtleValue = valueMap.get(key);
         if (turtleValue == null) {
-            return SingleResHelper.noSuchElementException();
+            return ResHelper.emptyRes();
         }
         try {
             switch (type) {
-                case BYTES:
-                    turtleValue.append((String) value);
-                    break;
                 case LONG:
                     turtleValue.increment((Long) value);
                     break;
@@ -191,15 +185,14 @@ public class ValuesDomain extends ExpireObject implements IValueOperations {
                 case NUMBER_DECIMAL:
                     turtleValue.increment((BigDecimal) value);
                     break;
+                    //默认 bytes
                 default:
-                    throw new TurtleDesignError("unSupport enum type: " + type);
+                    turtleValue.append((String) value);
             }
         } catch (UnsupportedOperationException e) {
-            return SingleResHelper.unSupportOperationException();
-        } catch (TurtleDesignError e) {
-            return SingleResHelper.turtleDesignException(e.getMessage());
+            return ResHelper.unsupportedOperationException(e.getMessage());
         }
-        return SingleResHelper.turtleValueResponse(turtleValue);
+        return ResHelper.turtleRes(turtleValue);
     }
 
 

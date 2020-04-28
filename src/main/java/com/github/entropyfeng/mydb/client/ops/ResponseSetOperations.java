@@ -4,8 +4,9 @@ import com.github.entropyfeng.mydb.client.ClientCommandBuilder;
 import com.github.entropyfeng.mydb.client.conn.ClientExecute;
 import com.github.entropyfeng.mydb.common.TurtleModel;
 import com.github.entropyfeng.mydb.common.ops.ISetOperations;
-import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.core.TurtleValue;
+import com.github.entropyfeng.mydb.core.helper.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -17,98 +18,98 @@ public class ResponseSetOperations implements ISetOperations {
 
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData exist(String key) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exist(String key) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "exist");
         builder.addStringPara(key);
-        return ClientExecute.singleExecute(builder.build());
+        return ClientExecute.execute(builder);
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData exist(String key, TurtleValue value) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exist(String key, TurtleValue value) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "exist");
         builder.addStringPara(key);
         builder.addTurtlePara(value);
-        return ClientExecute.singleExecute(builder.build());
+        return ClientExecute.execute(builder);
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData add(String key, TurtleValue value) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> add(String key, TurtleValue value) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "add");
         builder.addStringPara(key);
         builder.addTurtlePara(value);
         builder.setModifyAble(true);
-        return ClientExecute.singleExecute(builder.build());
+        return ClientExecute.execute(builder);
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData union(String key, String otherKey) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> union(String key, String otherKey) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "union");
         builder.addStringPara(key);
         builder.addStringPara(otherKey);
         builder.setModifyAble(true);
-        return ClientExecute.singleExecute(builder.build());
+        return ClientExecute.execute(builder);
     }
 
     @Override
-    public @NotNull Collection<TurtleProtoBuf.ResponseData> unionAndGet(String key, String otherKey) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> unionAndGet(String key, String otherKey) {
         return null;
     }
 
     @Override
-    public @NotNull Collection<TurtleProtoBuf.ResponseData> unionAndGet(String key, Collection<TurtleValue> turtleValues) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> unionAndGet(String key, Collection<TurtleValue> turtleValues) {
         return null;
     }
 
   @Override
-    public @NotNull TurtleProtoBuf.ResponseData union(String key, Collection<TurtleValue> turtleValues) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> union(String key, Collection<TurtleValue> turtleValues) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "union");
         builder.addStringPara(key);
         builder.addTurtleCollectionPara(turtleValues);
         builder.setModifyAble(true);
-        return ClientExecute.singleExecute(builder.build());
+        return ClientExecute.execute(builder);
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData intersect(String key, String otherKey) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> intersect(String key, String otherKey) {
 
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "intersect");
         builder.addStringPara(key);
         builder.addStringPara(otherKey);
         builder.setModifyAble(true);
-        return ClientExecute.singleExecute(builder.build());
+        return ClientExecute.execute(builder);
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData intersect(String key, Collection<TurtleValue> turtleValues) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> intersect(String key, Collection<TurtleValue> turtleValues) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "intersect");
         builder.addStringPara(key);
         builder.addTurtleCollectionPara(turtleValues);
         builder.setModifyAble(true);
-        return ClientExecute.singleExecute(builder.build());
+        return ClientExecute.execute(builder);
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData difference(String key, String otherKey) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> difference(String key, String otherKey) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "difference");
         builder.addStringPara(key);
         builder.addStringPara(otherKey);
         builder.setModifyAble(true);
-        return ClientExecute.singleExecute(builder.build());
+        return ClientExecute.execute(builder);
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData difference(String key, Collection<TurtleValue> turtleValues) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> difference(String key, Collection<TurtleValue> turtleValues) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "difference");
         builder.addStringPara(key);
         builder.addTurtleCollectionPara(turtleValues);
         builder.setModifyAble(true);
-        return ClientExecute.singleExecute(builder.build());
+        return ClientExecute.execute(builder);
     }
 
     @Override
-    public @NotNull Collection<TurtleProtoBuf.ResponseData> entries(String key) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> entries(String key) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "entries");
         builder.addStringPara(key);
-        return ClientExecute.collectionExecute(builder.build());
+        return ClientExecute.execute(builder);
     }
 }

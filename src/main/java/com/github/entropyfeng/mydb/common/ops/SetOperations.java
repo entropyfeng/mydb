@@ -9,23 +9,23 @@ import java.util.Collection;
  */
 public interface SetOperations {
 
-    public Boolean exist(String key);
+    Boolean exist(String key);
 
-    public Boolean exist(String key, TurtleValue value);
+    Boolean exist(String key, TurtleValue value);
 
-    public void add(String key,TurtleValue value);
+    void add(String key, TurtleValue value);
 
-    public Collection<TurtleValue> union (String key,String otherKey);
+    Collection<TurtleValue> union(String key, String otherKey);
 
-    public Collection<TurtleValue> union (String key,Collection<TurtleValue> turtleValues);
+    Collection<TurtleValue> union(String key, Collection<TurtleValue> turtleValues);
 
-    public Collection<TurtleValue> intersect (String key,String otherKey);
+    Collection<TurtleValue> intersect(String key, String otherKey);
 
-    public Collection<TurtleValue> intersect (String key,Collection<TurtleValue> turtleValues);
+    Collection<TurtleValue> intersect(String key, Collection<TurtleValue> turtleValues);
 
-    public Collection<TurtleValue> difference (String key,String otherKey);
+    Collection<TurtleValue> difference(String key, String otherKey);
 
-    public Collection<TurtleValue> difference (String key,Collection<TurtleValue> turtleValues);
+    Collection<TurtleValue> difference(String key, Collection<TurtleValue> turtleValues);
 
-    public Collection<TurtleValue> entries(String key);
+    Collection<TurtleValue> entries(String key);
 }

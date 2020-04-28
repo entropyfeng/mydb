@@ -1,7 +1,8 @@
 package com.github.entropyfeng.mydb.common.ops;
 
-import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.core.TurtleValue;
+import com.github.entropyfeng.mydb.core.helper.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -11,29 +12,29 @@ import java.util.Collection;
  */
 public interface IOrderSetOperations {
 
-    public @NotNull TurtleProtoBuf.ResponseData exists(String key, TurtleValue value, Double score);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exists(String key, TurtleValue value, Double score);
 
-    public @NotNull TurtleProtoBuf.ResponseData exists(String key, TurtleValue value);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exists(String key, TurtleValue value);
 
-    public @NotNull TurtleProtoBuf.ResponseData exists(String key);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exists(String key);
 
-    public @NotNull TurtleProtoBuf.ResponseData add(String key, TurtleValue value, Double score);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> add(String key, TurtleValue value, Double score);
 
-    public @NotNull TurtleProtoBuf.ResponseData add(String key, Collection<TurtleValue> values, Collection<Double> doubles);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> add(String key, Collection<TurtleValue> values, Collection<Double> doubles);
 
-    public @NotNull TurtleProtoBuf.ResponseData count(String key, Double begin, Double end);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> count(String key, Double begin, Double end);
 
-    public @NotNull  Collection<TurtleProtoBuf.ResponseData> range(String key, Double begin, Double end);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> range(String key, Double begin, Double end);
 
-    public @NotNull TurtleProtoBuf.ResponseData inRange(String key, Double begin, Double end);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> inRange(String key, Double begin, Double end);
 
-    public @NotNull TurtleProtoBuf.ResponseData delete(String key, TurtleValue value, Double score);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> delete(String key, TurtleValue value, Double score);
 
-    public @NotNull TurtleProtoBuf.ResponseData delete(String key, Double begin, Double end);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> delete(String key, Double begin, Double end);
 
-    public @NotNull TurtleProtoBuf.ResponseData delete(String key, TurtleValue value);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> delete(String key, TurtleValue value);
 
-    public @NotNull TurtleProtoBuf.ResponseData delete(String key);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> delete(String key);
 
 
 

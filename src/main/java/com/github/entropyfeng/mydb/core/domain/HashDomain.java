@@ -2,18 +2,17 @@ package com.github.entropyfeng.mydb.core.domain;
 
 import com.github.entropyfeng.mydb.common.exception.DumpFileException;
 import com.github.entropyfeng.mydb.common.ops.IHashOperations;
-import com.github.entropyfeng.mydb.common.protobuf.CollectionResHelper;
-import com.github.entropyfeng.mydb.common.protobuf.SingleResHelper;
-import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
+import com.github.entropyfeng.mydb.common.protobuf.ResHelper;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.config.Constant;
 import com.github.entropyfeng.mydb.core.TurtleValue;
 import com.github.entropyfeng.mydb.core.dict.ElasticMap;
+import com.github.entropyfeng.mydb.core.helper.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -22,7 +21,7 @@ import java.util.Map;
 /**
  * @author entropyfeng
  */
-public class HashDomain implements IHashOperations, Serializable {
+public class HashDomain implements IHashOperations {
 
     public HashDomain() {
         this.hashMap = new HashMap<>();
@@ -34,7 +33,7 @@ public class HashDomain implements IHashOperations, Serializable {
     private HashMap<String, ElasticMap<TurtleValue, TurtleValue>> hashMap;
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData get(@NotNull String key, @NotNull TurtleValue tKey) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> get(@NotNull String key, @NotNull TurtleValue tKey) {
 
         ElasticMap<TurtleValue, TurtleValue> map = hashMap.get(key);
         TurtleValue res = null;
@@ -43,71 +42,71 @@ public class HashDomain implements IHashOperations, Serializable {
         }
 
         if (res == null) {
-            return SingleResHelper.nullResponse();
+            return ResHelper.emptyRes();
         } else {
-            return SingleResHelper.turtleValueResponse(res);
+            return ResHelper.turtleRes(res);
         }
     }
 
     @Override
-    public @NotNull Collection<TurtleProtoBuf.ResponseData> get(@NotNull String key) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> get(@NotNull String key) {
 
         ElasticMap<TurtleValue, TurtleValue> res = hashMap.get(key);
 
         if (res == null) {
-            return CollectionResHelper.emptyResponse();
+            return ResHelper.emptyRes();
         } else {
-            return CollectionResHelper.turtleTurtleResponse(res.entrySet());
+            return ResHelper.turtleTurtleCollectionRes(res.entrySet());
         }
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData exists(@NotNull String key, @NotNull TurtleValue tKey, TurtleValue tValue) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exists(@NotNull String key, @NotNull TurtleValue tKey, TurtleValue tValue) {
         ElasticMap<TurtleValue, TurtleValue> map = hashMap.get(key);
 
         boolean res = false;
         if (map != null) {
             res = map.containsKey(tKey);
         }
-        return SingleResHelper.boolResponse(res);
+        return ResHelper.boolRes(res);
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData exists(@NotNull String key) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exists(@NotNull String key) {
 
-        return SingleResHelper.boolResponse(hashMap.containsKey(key));
+        return ResHelper.boolRes(hashMap.containsKey(key));
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData put(@NotNull String key, @NotNull TurtleValue tKey, @NotNull TurtleValue tValue) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> put(@NotNull String key, @NotNull TurtleValue tKey, @NotNull TurtleValue tValue) {
 
         createIfNotExist(key);
         hashMap.get(key).put(tKey,tValue);
-        return SingleResHelper.voidResponse();
+        return ResHelper.emptyRes();
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData delete(@NotNull String key) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> delete(@NotNull String key) {
         hashMap.remove(key);
-        return SingleResHelper.voidResponse();
+        return ResHelper.emptyRes();
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData delete(@NotNull String key, @NotNull TurtleValue tKey) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> delete(@NotNull String key, @NotNull TurtleValue tKey) {
        ElasticMap<TurtleValue,TurtleValue> map= hashMap.get(key);
        if (map!=null){
            map.remove(tKey);
        }
-        return SingleResHelper.voidResponse();
+        return ResHelper.emptyRes();
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData sizeOf(@NotNull String key) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> sizeOf(@NotNull String key) {
         ElasticMap<TurtleValue,TurtleValue> map= hashMap.get(key);
         if (map!=null){
-            return SingleResHelper.integerResponse(map.size());
+            return ResHelper.intRes(map.size());
         }else {
-            return SingleResHelper.integerResponse(0);
+            return ResHelper.intRes(0);
         }
     }
 
@@ -147,7 +146,7 @@ public class HashDomain implements IHashOperations, Serializable {
             throw new DumpFileException("error hash dump file.");
         }
 
-        HashMap<String, ElasticMap<TurtleValue, TurtleValue>> map=new HashMap<>();
+        HashMap<String, ElasticMap<TurtleValue, TurtleValue>> map=new HashMap<>(0);
         HashDomain hashDomain=new HashDomain(map);
         int hashSize=inputStream.readInt();
         for (int i = 0; i <hashSize ; i++) {

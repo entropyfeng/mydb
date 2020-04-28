@@ -1,6 +1,6 @@
 package com.github.entropyfeng.mydb.server;
 
-import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -64,7 +64,7 @@ public class TurtleServer {
                         protected void initChannel(SocketChannel ch) {
 
                             ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());//入站
-                            ch.pipeline().addLast(new ProtobufDecoder(TurtleProtoBuf.ClientCommand.getDefaultInstance()));//入站
+                            ch.pipeline().addLast(new ProtobufDecoder(ProtoBuf.ClientCommand.getDefaultInstance()));//入站
                             ch.pipeline().addLast(new TurtleServerHandler(serverDomain));//入站
                             ch.pipeline().addLast(new TurtleServerProtoEncoder());//出站
                         }

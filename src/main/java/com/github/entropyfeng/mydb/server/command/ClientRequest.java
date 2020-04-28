@@ -1,9 +1,9 @@
 package com.github.entropyfeng.mydb.server.command;
 
 import com.github.entropyfeng.mydb.common.TurtleModel;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoModelHelper;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
-import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.core.TurtleValue;
 
 import java.math.BigDecimal;
@@ -20,13 +20,13 @@ public class ClientRequest {
 
     private final String operationName;
     private final TurtleModel model;
-    private List<TurtleProtoBuf.TurtleParaType> typeList;
+    private List<ProtoBuf.TurtleParaType> typeList;
     private Class<?>[] types;
     private ArrayList<Object> objects;
     private final Long requestId;
     private boolean modify;
     @SuppressWarnings("all")
-    public ClientRequest(TurtleProtoBuf.RequestHeaderPayload header,Long requestId){
+    public ClientRequest(ProtoBuf.RequestHeaderPayload header, Long requestId){
         this.operationName=header.getOperationName();
         this.typeList=header.getKeysList();
         this.requestId=requestId;
@@ -103,7 +103,7 @@ public class ClientRequest {
     }
 
     @SuppressWarnings("unchecked")
-    public void put(TurtleProtoBuf.RequestBodyPayload body){
+    public void put(ProtoBuf.RequestBodyPayload body){
 
         int location=body.getLocation();
         switch (typeList.get(location)){

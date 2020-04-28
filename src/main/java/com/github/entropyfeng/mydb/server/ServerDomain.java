@@ -1,8 +1,8 @@
 package com.github.entropyfeng.mydb.server;
 
-import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.config.ServerStatus;
 import com.github.entropyfeng.mydb.core.domain.*;
+import com.github.entropyfeng.mydb.core.helper.Pair;
 import com.github.entropyfeng.mydb.core.zset.OrderSet;
 import com.github.entropyfeng.mydb.server.command.ClientCommand;
 import com.github.entropyfeng.mydb.server.command.ClientRequest;
@@ -18,6 +18,8 @@ import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.*;
+
 
 /**
  * @author entropyfeng
@@ -31,7 +33,7 @@ public class ServerDomain {
      */
     private volatile ServerStatus serverStatus;
 
-    public static AtomicBoolean interrupted=new AtomicBoolean(false);
+    public static AtomicBoolean interrupted = new AtomicBoolean(false);
 
     public ServerDomain() {
 
@@ -49,15 +51,15 @@ public class ServerDomain {
     }
 
 
-    public ServerDomain(ValuesDomain valuesDomain,ListDomain listDomain,SetDomain setDomain,HashDomain hashDomain,OrderSetDomain orderSetDomain){
+    public ServerDomain(ValuesDomain valuesDomain, ListDomain listDomain, SetDomain setDomain, HashDomain hashDomain, OrderSetDomain orderSetDomain) {
 
         this.adminObject = new AdminObject(this);
 
-        this.valuesDomain =valuesDomain;
-        this.listDomain =listDomain;
+        this.valuesDomain = valuesDomain;
+        this.listDomain = listDomain;
         this.setDomain = setDomain;
         this.hashDomain = hashDomain;
-        this.orderSetDomain =orderSetDomain;
+        this.orderSetDomain = orderSetDomain;
 
         constructQueue();
         start();
@@ -205,58 +207,60 @@ public class ServerDomain {
                 res = command.getMethod().invoke(target, command.getValues().toArray(new Object[0]));
             }
         } catch (IllegalAccessException e) {
-            TurtleProtoBuf.ResponseData.Builder builder = TurtleProtoBuf.ResponseData.newBuilder();
-            handlerException(command, builder, e.toString());
-            builder.setExceptionType(TurtleProtoBuf.ExceptionType.IllegalAccessException);
-            builder.setException("禁止访问！");
-            command.getChannel().writeAndFlush(builder.build());
+            exceptionWrite(command.getChannel(), command.getRequestId(), ExceptionType.IllegalAccessException, "禁止访问" + e.getMessage());
             return;
         } catch (InvocationTargetException e) {
             //调用函数的内部有未捕获的异常
-            TurtleProtoBuf.ResponseData.Builder builder = TurtleProtoBuf.ResponseData.newBuilder();
-            handlerException(command, builder, e.toString());
-            builder.setExceptionType(TurtleProtoBuf.ExceptionType.InvocationTargetException);
-            builder.setException("调用函数内部错误!");
-            command.getChannel().writeAndFlush(builder.build());
+            exceptionWrite(command.getChannel(), command.getRequestId(), ExceptionType.InvocationTargetException, e.getMessage());
             return;
         }
 
-        if (res instanceof Collection) {
-            ((Collection) res).forEach(object -> command.getChannel().write(addResponseId((TurtleProtoBuf.ResponseData) object, command.getRequestId())));
-            command.getChannel().flush();
-        } else {
-            command.getChannel().writeAndFlush(addResponseId((TurtleProtoBuf.ResponseData) res, command.getRequestId()));
-        }
+        Pair<ResHead, Collection<ResBody>> pair = ((Pair<ResHead, Collection<ResBody>>) res);
+
+        writeChannel(pair, command.getChannel(), command.getRequestId());
+    }
+
+    private void exceptionWrite(Channel channel, Long requestId, ExceptionType exceptionType, String msg) {
+        ResHead.Builder headBuilder = ResHead.newBuilder();
+        headBuilder.setSuccess(false);
+        headBuilder.setResSize(0);
+        headBuilder.setInnerException(msg);
+        headBuilder.setInnerExceptionType(exceptionType);
+
+        ResponseData.Builder resDataBuilder = ResponseData.newBuilder().setRequestId(requestId).setHeader(headBuilder.build());
+
+        channel.write(resDataBuilder.build());
+        resDataBuilder.clear().setEndAble(true).setRequestId(requestId);
+        channel.write(resDataBuilder.build());
+    }
+
+    private void writeChannel(Pair<ResHead, Collection<ResBody>> pair, Channel channel, Long requestId) {
+
+        //-----------header-------------------------
+        ResponseData.Builder responseBuilder = ResponseData.newBuilder();
+        responseBuilder.setHeader(pair.getKey());
+        responseBuilder.setBeginAble(true);
+        responseBuilder.setEndAble(false);
+        responseBuilder.setRequestId(requestId);
+        channel.write(responseBuilder.build());
+
+
+        //-----------body---------------------------
+        responseBuilder.clear();
+        responseBuilder.setRequestId(requestId);
+        responseBuilder.setEndAble(false);
+        pair.getValue().forEach(resBody -> channel.write(responseBuilder.setBody(resBody).build()));
+
+
+        //---------------end------------------
+        responseBuilder.clear();
+        responseBuilder.setRequestId(requestId);
+        responseBuilder.setEndAble(true);
+        channel.write(responseBuilder.build());
     }
 
 
-    /**
-     * 为返回值套上ResponseId
-     *
-     * @param responseData {@link com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.ResponseData}
-     * @param requestId    long
-     * @return 加上 requestId 后的返回值
-     */
-    private TurtleProtoBuf.ResponseData addResponseId(TurtleProtoBuf.ResponseData responseData, Long requestId) {
-
-        //再次创建了对象，会影响性能
-        return responseData.toBuilder().setResponseId(requestId).build();
-    }
-
-    private void handlerException(ICommand command, TurtleProtoBuf.ResponseData.Builder builder, String excMsg) {
-
-        builder.setSuccess(false);
-        //设置是否为集合
-        if (command.getMethod().getReturnType().equals(Collection.class)) {
-            builder.setCollectionAble(true);
-        }
-        builder.setResponseId(command.getRequestId());
-        builder.setException(excMsg);
-        builder.setExceptionType(TurtleProtoBuf.ExceptionType.InvocationTargetException);
-    }
-
-
-    public void accept(ClientRequest clientRequest,Channel channel){
+    public void accept(ClientRequest clientRequest, Channel channel) {
 
         switch (clientRequest.getModel()) {
             case VALUE:
@@ -269,25 +273,24 @@ public class ServerDomain {
                 constructCommand(clientRequest, channel, ListDomain.class, listQueue);
                 return;
             case SET:
-                constructCommand(clientRequest, channel,  SetDomain.class, setQueue);
+                constructCommand(clientRequest, channel, SetDomain.class, setQueue);
                 return;
             case HASH:
                 constructCommand(clientRequest, channel, HashDomain.class, hashQueue);
                 return;
             case ZSET:
-                constructCommand(clientRequest, channel,  OrderSet.class, orderSetQueue);
+                constructCommand(clientRequest, channel, OrderSet.class, orderSetQueue);
                 return;
             default:
                 throw new UnsupportedOperationException();
         }
     }
 
-    private void constructCommand(ClientRequest clientRequest,Channel channel,Class<?> target,ConcurrentLinkedDeque<ClientCommand> queue){
-        Method method=null;
+    private void constructCommand(ClientRequest clientRequest, Channel channel, Class<?> target, ConcurrentLinkedDeque<ClientCommand> queue) {
+        Method method = null;
         final String operationName = clientRequest.getOperationName();
         final Long requestId = clientRequest.getRequestId();
-        final Class<?>[]types=clientRequest.getTypes();
-        TurtleProtoBuf.ResponseData responseData = null;
+        final Class<?>[] types = clientRequest.getTypes();
 
         try {
             if (types.length == 0) {
@@ -297,21 +300,21 @@ public class ServerDomain {
             }
         } catch (NoSuchMethodException e) {
             logger.info(e.getMessage());
-            responseData = TurtleProtoBuf.ResponseData.newBuilder().setSuccess(false).setExceptionType(TurtleProtoBuf.ExceptionType.NoSuchMethodException).build();
+            exceptionWrite(channel, requestId, ExceptionType.NoSuchMethodException, e.getMessage());
+            return;
         }
-        if (method == null) {
-            channel.writeAndFlush(responseData);
-        } else {
-            queue.offer(new ClientCommand(method, clientRequest.getObjects(), channel, requestId));
-        }
+
+        queue.offer(new ClientCommand(method, clientRequest.getObjects(), channel, requestId));
+
     }
-    private void constructQueue(){
+
+    private void constructQueue() {
         this.valuesQueue = new ConcurrentLinkedDeque<>();
         this.listQueue = new ConcurrentLinkedDeque<>();
         this.setQueue = new ConcurrentLinkedDeque<>();
         this.hashQueue = new ConcurrentLinkedDeque<>();
         this.orderSetQueue = new ConcurrentLinkedDeque<>();
 
-        this.adminQueue=new ConcurrentLinkedDeque<>();
+        this.adminQueue = new ConcurrentLinkedDeque<>();
     }
 }

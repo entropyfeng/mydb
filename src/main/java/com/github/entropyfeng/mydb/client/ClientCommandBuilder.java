@@ -1,9 +1,9 @@
 package com.github.entropyfeng.mydb.client;
 
 import com.github.entropyfeng.mydb.common.TurtleModel;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoModelHelper;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
-import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.core.TurtleValue;
 import com.google.protobuf.ByteString;
 import io.netty.channel.Channel;
@@ -19,7 +19,7 @@ import java.util.List;
 public class ClientCommandBuilder {
 
     private ArrayList<Object> objects = new ArrayList<>();
-    private TurtleProtoBuf.RequestHeaderPayload.Builder headBuilder = TurtleProtoBuf.RequestHeaderPayload.newBuilder();
+    private ProtoBuf.RequestHeaderPayload.Builder headBuilder = ProtoBuf.RequestHeaderPayload.newBuilder();
 
     public ClientCommandBuilder(TurtleModel turtleModel, String operationName) {
         headBuilder.setModel(ProtoModelHelper.convertToProtoTurtleModel(turtleModel));
@@ -29,57 +29,57 @@ public class ClientCommandBuilder {
 
     public void addStringPara(String string) {
 
-        headBuilder.addKeys(TurtleProtoBuf.TurtleParaType.STRING);
+        headBuilder.addKeys(ProtoBuf.TurtleParaType.STRING);
         objects.add(string);
     }
 
     public void addLongPara(Long longValue) {
-        headBuilder.addKeys(TurtleProtoBuf.TurtleParaType.LONG);
+        headBuilder.addKeys(ProtoBuf.TurtleParaType.LONG);
         objects.add(longValue);
     }
 
     public void addDoublePara(Double doubleValue) {
-        headBuilder.addKeys(TurtleProtoBuf.TurtleParaType.DOUBLE);
+        headBuilder.addKeys(ProtoBuf.TurtleParaType.DOUBLE);
         objects.add(doubleValue);
 
     }
 
     public void addIntegerValue(Integer integer) {
-        headBuilder.addKeys(TurtleProtoBuf.TurtleParaType.INTEGER);
+        headBuilder.addKeys(ProtoBuf.TurtleParaType.INTEGER);
         objects.add(integer);
     }
 
     public void addTurtlePara(TurtleValue turtleValue) {
 
-        headBuilder.addKeys(TurtleProtoBuf.TurtleParaType.TURTLE_VALUE);
+        headBuilder.addKeys(ProtoBuf.TurtleParaType.TURTLE_VALUE);
         objects.add(turtleValue);
     }
 
     public void addBigIntegerPara(BigInteger bigInteger) {
-        headBuilder.addKeys(TurtleProtoBuf.TurtleParaType.NUMBER_INTEGER);
+        headBuilder.addKeys(ProtoBuf.TurtleParaType.NUMBER_INTEGER);
         objects.add(bigInteger);
 
     }
 
     public void addBigDecimalPara(BigDecimal bigDecimal) {
-        headBuilder.addKeys(TurtleProtoBuf.TurtleParaType.NUMBER_DECIMAL);
+        headBuilder.addKeys(ProtoBuf.TurtleParaType.NUMBER_DECIMAL);
         objects.add(bigDecimal);
     }
 
     public void addTurtleCollectionPara(Collection<TurtleValue> turtleValues) {
 
-        headBuilder.addKeys(TurtleProtoBuf.TurtleParaType.COLLECTION_TURTLE_VALUE);
+        headBuilder.addKeys(ProtoBuf.TurtleParaType.COLLECTION_TURTLE_VALUE);
         objects.add(turtleValues);
     }
 
     public void addDoubleCollectionPara(Collection<Double> doubles) {
-        headBuilder.addKeys(TurtleProtoBuf.TurtleParaType.COLLECTION_DOUBLE);
+        headBuilder.addKeys(ProtoBuf.TurtleParaType.COLLECTION_DOUBLE);
         objects.add(doubles);
     }
 
     @SuppressWarnings("unused")
     public void addStringCollectionPara(Collection<String> strings){
-        headBuilder.addKeys(TurtleProtoBuf.TurtleParaType.COLLECTION_STRING);
+        headBuilder.addKeys(ProtoBuf.TurtleParaType.COLLECTION_STRING);
         objects.add(strings);
     }
 
@@ -89,14 +89,10 @@ public class ClientCommandBuilder {
     }
 
 
-    public ClientCommandBuilder build() {
-        objects.trimToSize();
-        return this;
-    }
-
 
     public void writeChannel(Channel channel, Long requestId) {
-        TurtleProtoBuf.ClientCommand.Builder resBuilder = TurtleProtoBuf.ClientCommand.newBuilder();
+
+        ProtoBuf.ClientCommand.Builder resBuilder = ProtoBuf.ClientCommand.newBuilder();
 
         //header
         resBuilder.setBeginAble(true);
@@ -107,8 +103,8 @@ public class ClientCommandBuilder {
 
 
         //body,if body is empty ,skip it
-        TurtleProtoBuf.RequestBodyPayload.Builder bodyBuilder = TurtleProtoBuf.RequestBodyPayload.newBuilder();
-        List<TurtleProtoBuf.TurtleParaType> list = headBuilder.getKeysList();
+        ProtoBuf.RequestBodyPayload.Builder bodyBuilder = ProtoBuf.RequestBodyPayload.newBuilder();
+        List<ProtoBuf.TurtleParaType> list = headBuilder.getKeysList();
 
         for (int i = 0; i < list.size(); i++) {
             handleSingle(channel,list.get(i),objects.get(i),i,requestId,bodyBuilder,resBuilder);
@@ -125,7 +121,7 @@ public class ClientCommandBuilder {
 
 
     @SuppressWarnings("all")
-    public static void handleSingle(Channel channel, TurtleProtoBuf.TurtleParaType type, Object object, int location, Long requestId, TurtleProtoBuf.RequestBodyPayload.Builder bodyBuilder, TurtleProtoBuf.ClientCommand.Builder resBuilder){
+    public static void handleSingle(Channel channel, ProtoBuf.TurtleParaType type, Object object, int location, Long requestId, ProtoBuf.RequestBodyPayload.Builder bodyBuilder, ProtoBuf.ClientCommand.Builder resBuilder){
 
         resBuilder.clear();
         resBuilder.setRequestId(requestId);

@@ -1,7 +1,8 @@
 package com.github.entropyfeng.mydb.common.ops;
 
-import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.core.TurtleValue;
+import com.github.entropyfeng.mydb.core.helper.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -11,11 +12,11 @@ import java.util.Collection;
  */
 public interface ISetOperations {
 
-    public @NotNull TurtleProtoBuf.ResponseData exist(String key);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exist(String key);
 
-    public @NotNull TurtleProtoBuf.ResponseData exist(String key, TurtleValue value);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exist(String key, TurtleValue value);
 
-    public @NotNull TurtleProtoBuf.ResponseData add(String key, TurtleValue value);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> add(String key, TurtleValue value);
 
     /**
      * 只做并操作不返回值
@@ -24,21 +25,21 @@ public interface ISetOperations {
      * @param otherKey other key
      * @return responseData
      */
-    public @NotNull TurtleProtoBuf.ResponseData union(String key, String otherKey);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> union(String key, String otherKey);
 
-    public @NotNull TurtleProtoBuf.ResponseData union(String key, Collection<TurtleValue> turtleValues);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> union(String key, Collection<TurtleValue> turtleValues);
 
-    public @NotNull Collection<TurtleProtoBuf.ResponseData> unionAndGet(String key, String otherKey);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> unionAndGet(String key, String otherKey);
 
-    public @NotNull Collection<TurtleProtoBuf.ResponseData> unionAndGet(String key, Collection<TurtleValue> turtleValues);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> unionAndGet(String key, Collection<TurtleValue> turtleValues);
 
-    public @NotNull TurtleProtoBuf.ResponseData intersect(String key, String otherKey);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> intersect(String key, String otherKey);
 
-    public @NotNull TurtleProtoBuf.ResponseData intersect(String key, Collection<TurtleValue> turtleValues);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> intersect(String key, Collection<TurtleValue> turtleValues);
 
-    public @NotNull TurtleProtoBuf.ResponseData difference(String key, String otherKey);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> difference(String key, String otherKey);
 
-    public @NotNull TurtleProtoBuf.ResponseData difference(String key, Collection<TurtleValue> turtleValues);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> difference(String key, Collection<TurtleValue> turtleValues);
 
-    public @NotNull Collection<TurtleProtoBuf.ResponseData> entries(String key);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> entries(String key);
 }

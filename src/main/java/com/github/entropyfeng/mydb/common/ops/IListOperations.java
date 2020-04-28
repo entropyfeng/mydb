@@ -1,7 +1,8 @@
 package com.github.entropyfeng.mydb.common.ops;
 
-import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.core.TurtleValue;
+import com.github.entropyfeng.mydb.core.helper.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -12,46 +13,45 @@ import java.util.Collection;
  */
 public interface IListOperations {
 
-    public @NotNull TurtleProtoBuf.ResponseData size();
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> size();
 
+    @NotNull  Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> sizeOf(String key);
 
-    public @NotNull TurtleProtoBuf.ResponseData sizeOf(String key);
+    @NotNull  Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> leftPush(String key, TurtleValue value);
 
-    public @NotNull TurtleProtoBuf.ResponseData leftPush(String key, TurtleValue value);
-
-    public default @NotNull TurtleProtoBuf.ResponseData leftPushAll(String key, TurtleValue... values) {
+    default @NotNull  Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> leftPushAll(String key, TurtleValue... values) {
        return leftPushAll(key, Arrays.asList(values));
        
     }
 
-    public @NotNull TurtleProtoBuf.ResponseData leftPushAll(String key, Collection<TurtleValue> values);
+    @NotNull  Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> leftPushAll(String key, Collection<TurtleValue> values);
     
-    public @NotNull TurtleProtoBuf.ResponseData leftPushIfPresent(String key, TurtleValue value);
+    @NotNull  Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> leftPushIfPresent(String key, TurtleValue value);
 
-    public @NotNull TurtleProtoBuf.ResponseData leftPushIfAbsent(String key, TurtleValue value);
+    @NotNull  Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> leftPushIfAbsent(String key, TurtleValue value);
 
-    public @NotNull TurtleProtoBuf.ResponseData rightPush(String key, TurtleValue value);
+    @NotNull  Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> rightPush(String key, TurtleValue value);
 
 
-    public @NotNull TurtleProtoBuf.ResponseData rightPushAll(String key, Collection<TurtleValue> values);
+    @NotNull  Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> rightPushAll(String key, Collection<TurtleValue> values);
 
-    public @NotNull TurtleProtoBuf.ResponseData rightPushIfPresent(String key, TurtleValue value);
+    @NotNull  Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> rightPushIfPresent(String key, TurtleValue value);
 
-    public @NotNull TurtleProtoBuf.ResponseData rightPushIfAbsent(String key, TurtleValue value);
+    @NotNull  Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> rightPushIfAbsent(String key, TurtleValue value);
 
-    public @NotNull TurtleProtoBuf.ResponseData leftPop(String key);
+    @NotNull  Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> leftPop(String key);
     
-    public @NotNull TurtleProtoBuf.ResponseData left(String key);
+    @NotNull  Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> left(String key);
 
-    public @NotNull TurtleProtoBuf.ResponseData rightPop(String key);
+    @NotNull  Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> rightPop(String key);
 
-    public @NotNull TurtleProtoBuf.ResponseData right(String key);
+    @NotNull  Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> right(String key);
 
-    public @NotNull TurtleProtoBuf.ResponseData clear(String key);
+    @NotNull  Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear(String key);
 
-    public @NotNull TurtleProtoBuf.ResponseData clearAll();
+    @NotNull  Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clearAll();
 
-    public @NotNull TurtleProtoBuf.ResponseData exist(String key);
+    @NotNull  Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exist(String key);
 
-    public @NotNull TurtleProtoBuf.ResponseData exist(String key,TurtleValue value);
+    @NotNull  Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exist(String key, TurtleValue value);
 }

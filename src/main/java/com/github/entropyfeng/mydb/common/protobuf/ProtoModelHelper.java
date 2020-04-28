@@ -2,25 +2,23 @@ package com.github.entropyfeng.mydb.common.protobuf;
 
 import com.github.entropyfeng.mydb.common.TurtleModel;
 
-import java.util.List;
-
 /**
  * @author entropyfeng
  */
 public class ProtoModelHelper {
 
-    public static TurtleProtoBuf.TurtleModel convertToProtoTurtleModel(TurtleModel turtleModel){
+    public static ProtoBuf.TurtleModel convertToProtoTurtleModel(TurtleModel turtleModel){
         switch (turtleModel){
-            case SET:return TurtleProtoBuf.TurtleModel.SET;
-            case HASH:return TurtleProtoBuf.TurtleModel.HASH;
-            case LIST:return TurtleProtoBuf.TurtleModel.LIST;
-            case ZSET:return TurtleProtoBuf.TurtleModel.ZSET;
-            case ADMIN:return TurtleProtoBuf.TurtleModel.ADMIN;
-            case VALUE:return TurtleProtoBuf.TurtleModel.VALUE;
+            case SET:return ProtoBuf.TurtleModel.SET;
+            case HASH:return ProtoBuf.TurtleModel.HASH;
+            case LIST:return ProtoBuf.TurtleModel.LIST;
+            case ZSET:return ProtoBuf.TurtleModel.ZSET;
+            case ADMIN:return ProtoBuf.TurtleModel.ADMIN;
+            case VALUE:return ProtoBuf.TurtleModel.VALUE;
             default:throw new UnsupportedOperationException("unSupport model"+turtleModel);
         }
     }
-    public static TurtleModel convertToTurtleModel(TurtleProtoBuf.TurtleModel protoTurtleModel){
+    public static TurtleModel convertToTurtleModel(ProtoBuf.TurtleModel protoTurtleModel){
         switch (protoTurtleModel){
             case VALUE:return TurtleModel.VALUE;
             case ADMIN:return TurtleModel.ADMIN;

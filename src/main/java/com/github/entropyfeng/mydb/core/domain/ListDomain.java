@@ -2,10 +2,12 @@ package com.github.entropyfeng.mydb.core.domain;
 
 import com.github.entropyfeng.mydb.common.exception.DumpFileException;
 import com.github.entropyfeng.mydb.common.ops.IListOperations;
-import com.github.entropyfeng.mydb.common.protobuf.SingleResHelper;
-import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResBody;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResHead;
+import com.github.entropyfeng.mydb.common.protobuf.ResHelper;
 import com.github.entropyfeng.mydb.config.Constant;
 import com.github.entropyfeng.mydb.core.TurtleValue;
+import com.github.entropyfeng.mydb.core.helper.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInputStream;
@@ -29,172 +31,172 @@ public class ListDomain implements IListOperations {
     public ListDomain(HashMap<String, LinkedList<TurtleValue>> map) {
         this.listMap = map;
     }
-
+   
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData size() {
-        return SingleResHelper.integerResponse(listMap.size());
+    public @NotNull  Pair<ResHead, Collection<ResBody>> size() {
+        return ResHelper.intRes(listMap.size());
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData sizeOf(String key) {
+    public @NotNull  Pair<ResHead, Collection<ResBody>> sizeOf(String key) {
 
         LinkedList<TurtleValue> list = listMap.get(key);
         int res = list == null ? 0 : listMap.size();
-        return SingleResHelper.integerResponse(res);
+        return ResHelper.intRes(res);
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData leftPush(String key, TurtleValue value) {
+    public @NotNull  Pair<ResHead, Collection<ResBody>> leftPush(String key, TurtleValue value) {
         createIfNotExist(key);
         listMap.get(key).addFirst(value);
 
-        return SingleResHelper.voidResponse();
+        return ResHelper.emptyRes();
     }
 
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData leftPushAll(String key, Collection<TurtleValue> values) {
+    public @NotNull  Pair<ResHead, Collection<ResBody>> leftPushAll(String key, Collection<TurtleValue> values) {
         createIfNotExist(key);
         listMap.get(key).addAll(0, values);
-        return SingleResHelper.voidResponse();
+        return ResHelper.emptyRes();
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData leftPushIfPresent(String key, TurtleValue value) {
+    public @NotNull  Pair<ResHead, Collection<ResBody>> leftPushIfPresent(String key, TurtleValue value) {
         boolean res = false;
 
         if (listMap.containsKey(key)) {
             listMap.get(key).addFirst(value);
             res = true;
         }
-        return SingleResHelper.boolResponse(res);
+        return ResHelper.boolRes(res);
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData leftPushIfAbsent(String key, TurtleValue value) {
+    public @NotNull  Pair<ResHead, Collection<ResBody>> leftPushIfAbsent(String key, TurtleValue value) {
         boolean res = false;
         if (!listMap.containsKey(key)) {
             listMap.put(key, new LinkedList<>());
             listMap.get(key).addFirst(value);
             res = true;
         }
-        return SingleResHelper.boolResponse(res);
+        return ResHelper.boolRes(res);
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData rightPush(String key, TurtleValue value) {
+    public @NotNull  Pair<ResHead, Collection<ResBody>> rightPush(String key, TurtleValue value) {
         createIfNotExist(key);
         listMap.get(key).addLast(value);
-        return SingleResHelper.voidResponse();
+        return ResHelper.emptyRes();
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData rightPushAll(String key, Collection<TurtleValue> values) {
+    public @NotNull  Pair<ResHead, Collection<ResBody>> rightPushAll(String key, Collection<TurtleValue> values) {
         createIfNotExist(key);
         listMap.get(key).addAll(values);
-        return SingleResHelper.voidResponse();
+        return ResHelper.emptyRes();
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData rightPushIfPresent(String key, TurtleValue value) {
+    public @NotNull  Pair<ResHead, Collection<ResBody>> rightPushIfPresent(String key, TurtleValue value) {
         boolean res = false;
 
         if (listMap.containsKey(key)) {
             listMap.get(key).addLast(value);
             res = true;
         }
-        return SingleResHelper.boolResponse(res);
+        return ResHelper.boolRes(res);
 
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData rightPushIfAbsent(String key, TurtleValue value) {
+    public @NotNull  Pair<ResHead, Collection<ResBody>> rightPushIfAbsent(String key, TurtleValue value) {
         boolean res = false;
         if (!listMap.containsKey(key)) {
             listMap.put(key, new LinkedList<>());
             listMap.get(key).addLast(value);
             res = true;
         }
-        return SingleResHelper.boolResponse(res);
+        return ResHelper.boolRes(res);
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData leftPop(String key) {
+    public @NotNull  Pair<ResHead, Collection<ResBody>> leftPop(String key) {
 
         TurtleValue res = null;
         if (listMap.containsKey(key)) {
             res = listMap.get(key).pollFirst();
         }
         if (res == null) {
-            return SingleResHelper.nullResponse();
+            return ResHelper.emptyRes();
         } else {
-            return SingleResHelper.turtleValueResponse(res);
+            return ResHelper.turtleRes(res);
         }
 
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData left(String key) {
+    public @NotNull  Pair<ResHead, Collection<ResBody>> left(String key) {
         TurtleValue res = null;
         if (listMap.containsKey(key)) {
             res = listMap.get(key).peekFirst();
         }
         if (res == null) {
-            return SingleResHelper.nullResponse();
+            return ResHelper.emptyRes();
         } else {
-            return SingleResHelper.turtleValueResponse(res);
+            return ResHelper.turtleRes(res);
         }
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData rightPop(String key) {
+    public @NotNull  Pair<ResHead, Collection<ResBody>> rightPop(String key) {
         TurtleValue res = null;
         if (listMap.containsKey(key)) {
             res = listMap.get(key).pollLast();
         }
         if (res == null) {
-            return SingleResHelper.nullResponse();
+            return ResHelper.emptyRes();
         } else {
-            return SingleResHelper.turtleValueResponse(res);
+            return ResHelper.turtleRes(res);
         }
 
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData right(String key) {
+    public @NotNull  Pair<ResHead, Collection<ResBody>> right(String key) {
         TurtleValue res = null;
         if (listMap.containsKey(key)) {
             res = listMap.get(key).peekLast();
         }
         if (res == null) {
-            return SingleResHelper.nullResponse();
+            return ResHelper.emptyRes();
         } else {
-            return SingleResHelper.turtleValueResponse(res);
+            return ResHelper.turtleRes(res);
         }
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData clear(String key) {
+    public @NotNull  Pair<ResHead, Collection<ResBody>> clear(String key) {
         listMap.remove(key);
-        return SingleResHelper.voidResponse();
+        return ResHelper.emptyRes();
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData clearAll() {
+    public @NotNull  Pair<ResHead, Collection<ResBody>> clearAll() {
         listMap.clear();
-        return SingleResHelper.voidResponse();
+        return ResHelper.emptyRes();
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData exist(String key) {
-        return SingleResHelper.boolResponse(listMap.get(key) != null);
+    public @NotNull  Pair<ResHead, Collection<ResBody>> exist(String key) {
+        return ResHelper.boolRes(listMap.get(key) != null);
     }
 
     @Override
-    public @NotNull TurtleProtoBuf.ResponseData exist(String key, TurtleValue value) {
+    public @NotNull  Pair<ResHead, Collection<ResBody>> exist(String key, TurtleValue value) {
         LinkedList<TurtleValue> list = listMap.get(key);
         boolean res = list != null && list.contains(value);
-        return SingleResHelper.boolResponse(res);
+        return ResHelper.boolRes(res);
     }
 
     private void createIfNotExist(String key) {
@@ -250,6 +252,7 @@ public class ListDomain implements IListOperations {
     }
 
     //------------------getter-------------------
+
     public HashMap<String, LinkedList<TurtleValue>> getListMap() {
         return listMap;
     }

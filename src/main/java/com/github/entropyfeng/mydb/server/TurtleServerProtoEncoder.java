@@ -1,6 +1,6 @@
 package com.github.entropyfeng.mydb.server;
 
-import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
@@ -10,13 +10,13 @@ import org.slf4j.LoggerFactory;
 /**
  * @author entropyfeng
  */
-public class TurtleServerProtoEncoder extends MessageToByteEncoder<TurtleProtoBuf.ResponseData> {
+public class TurtleServerProtoEncoder extends MessageToByteEncoder<ProtoBuf.ResponseData> {
 
     private static final Logger logger= LoggerFactory.getLogger(TurtleServerProtoEncoder.class);
 
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, TurtleProtoBuf.ResponseData msg, ByteBuf out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, ProtoBuf.ResponseData msg, ByteBuf out) throws Exception {
         int bodyLen = msg.getSerializedSize();
         int headerLen = computeRawVarint32Size(bodyLen);
         out.ensureWritable(headerLen + bodyLen);

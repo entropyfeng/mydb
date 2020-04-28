@@ -1,6 +1,6 @@
 package com.github.entropyfeng.mydb.server;
 
-import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.server.command.ClientRequest;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * @author entropyfeng
  */
-public class TurtleServerHandler extends SimpleChannelInboundHandler<TurtleProtoBuf.ClientCommand> {
+public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.ClientCommand> {
     private static final Logger logger = LoggerFactory.getLogger(TurtleServerHandler.class);
 
     private final ServerDomain serverDomain;
@@ -28,7 +28,7 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<TurtleProto
 
     public static ConcurrentHashMap<ChannelId, Channel> serverMap = new ConcurrentHashMap<>();
 
-    private static ConcurrentLinkedDeque<TurtleProtoBuf.ClientCommand> blockingDeque = new ConcurrentLinkedDeque<>();
+    private static ConcurrentLinkedDeque<ProtoBuf.ClientCommand> blockingDeque = new ConcurrentLinkedDeque<>();
 
     private ConcurrentHashMap<Long, ClientRequest> requestMap = new ConcurrentHashMap<>();
 
@@ -56,21 +56,20 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<TurtleProto
      * netty 可以保证同一个客户端的请求顺序发送
      *
      * @param ctx {@link ChannelHandlerContext}
-     * @param msg {@link com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf.ClientCommand}
+     * @param msg {@link ProtoBuf.ClientCommand}
      */
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, TurtleProtoBuf.ClientCommand msg) {
+    protected void channelRead0(ChannelHandlerContext ctx, ProtoBuf.ClientCommand msg) {
 
         if (msg.getEndAble()) {
             ClientRequest clientRequest = requestMap.remove(msg.getRequestId());
             if (clientRequest != null) {
                 serverDomain.accept(clientRequest, ctx.channel());
-
             }
             return;
         }
         if (msg.getBeginAble()) {
-            TurtleProtoBuf.RequestHeaderPayload header = msg.getHeader();
+            ProtoBuf.RequestHeaderPayload header = msg.getHeader();
             requestMap.put(msg.getRequestId(), new ClientRequest(header, msg.getRequestId()));
         } else {
             ClientRequest clientRequest = requestMap.get(msg.getRequestId());

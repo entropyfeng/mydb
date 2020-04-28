@@ -3,7 +3,7 @@ package com.github.entropyfeng.mydb.client;
 
 import com.github.entropyfeng.mydb.client.conn.ClientExecute;
 import com.github.entropyfeng.mydb.client.conn.TurtleClientChannelFactory;
-import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
+import com.github.entropyfeng.mydb.core.helper.Pair;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
@@ -11,15 +11,17 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
+import static com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.*;
+
 
 /**
  * @author entropyfeng
  */
-public class TurtleClientHandler extends SimpleChannelInboundHandler<TurtleProtoBuf.ResponseData> {
+public class TurtleClientHandler extends SimpleChannelInboundHandler<ResponseData> {
 
     private static final Logger logger = LoggerFactory.getLogger(TurtleClientHandler.class);
 
-    private static HashMap<Long, Collection<TurtleProtoBuf.ResponseData>> res = new HashMap<>();
+    private static HashMap<Long, Pair<ResHead,Collection<ResBody>>> res = new HashMap<>();
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -45,27 +47,20 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<TurtleProto
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, TurtleProtoBuf.ResponseData msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, ResponseData msg) throws Exception {
 
-        //若存在id->TurtleResponse
-        //意味着这是一个集合,之前已经处理过responseId对应的节点
-        if (res.containsKey(msg.getResponseId())) {
-            res.get(msg.getResponseId()).add(msg);
-            if (msg.getEndAble()) {
-                dispatchResCollection(msg.getResponseId());
+        if (msg.getEndAble()){
+            dispatchRes(msg.getRequestId());
+            return;
+        }
+        if (msg.getBeginAble()){
+            ResHead head=msg.getHeader();
+            res.put(msg.getRequestId(),new Pair<>(head,new ArrayList<>(head.getResSize())));
+        }else {
+            Pair<ResHead,Collection<ResBody>> pair=res.get(msg.getRequestId());
+            if (pair!=null){
+                pair.getValue().add(msg.getBody());
             }
-            //第一次出现responseId对应的节点
-        } else if (msg.getCollectionAble()) {
-
-            ArrayList<TurtleProtoBuf.ResponseData> responseData=new ArrayList<>();
-            responseData.add(msg);
-            res.put(msg.getResponseId(), responseData);
-            if (msg.getEndAble()) {
-                dispatchResCollection(msg.getResponseId());
-            }
-        } else {
-            //single response
-            ClientExecute.resMap.put(msg.getResponseId(), msg);
         }
     }
 
@@ -74,11 +69,12 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<TurtleProto
      *
      * @param responseId responseId
      */
-    private void dispatchResCollection(Long responseId) {
+    private void dispatchRes(Long responseId) {
 
-        ClientExecute.collectionResMap.put(responseId, res.remove(responseId));
-
+        Pair<ResHead,Collection<ResBody>> pair=res.remove(responseId);
+        if (pair!=null){
+            ClientExecute.resMap.put(responseId, res.remove(responseId));
+        }
     }
-
 
 }

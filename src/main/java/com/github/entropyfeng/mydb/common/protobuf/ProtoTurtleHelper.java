@@ -9,33 +9,33 @@ import com.google.protobuf.ByteString;
  */
 public class ProtoTurtleHelper {
 
-    public static TurtleProtoBuf.TurtleValueType convert(TurtleValueType turtleValueType) {
-        TurtleProtoBuf.TurtleValueType type;
+    public static ProtoBuf.TurtleValueType convert(TurtleValueType turtleValueType) {
+        ProtoBuf.TurtleValueType type;
         switch (turtleValueType) {
             case INTEGER:
-                type = TurtleProtoBuf.TurtleValueType.Integer;
+                type = ProtoBuf.TurtleValueType.Integer;
                 break;
             case DOUBLE:
-                type = TurtleProtoBuf.TurtleValueType.Double;
+                type = ProtoBuf.TurtleValueType.Double;
                 break;
             case NUMBER_DECIMAL:
-                type = TurtleProtoBuf.TurtleValueType.NumberDecimal;
+                type = ProtoBuf.TurtleValueType.NumberDecimal;
                 break;
             case LONG:
-                type = TurtleProtoBuf.TurtleValueType.Long;
+                type = ProtoBuf.TurtleValueType.Long;
                 break;
             case NUMBER_INTEGER:
-                type = TurtleProtoBuf.TurtleValueType.NumberInteger;
+                type = ProtoBuf.TurtleValueType.NumberInteger;
                 break;
             default:
-                type = TurtleProtoBuf.TurtleValueType.Bytes;
+                type = ProtoBuf.TurtleValueType.Bytes;
                 break;
 
         }
         return type;
     }
 
-    public static TurtleValue convertToTurtleValue(TurtleProtoBuf.TurtleValue protoTurtleValue) {
+    public static TurtleValue convertToTurtleValue(ProtoBuf.TurtleValue protoTurtleValue) {
         TurtleValueType type;
         byte[] values = protoTurtleValue.getValues().toByteArray();
         switch (protoTurtleValue.getTurtleValueType()) {
@@ -62,29 +62,29 @@ public class ProtoTurtleHelper {
         return new TurtleValue(values, type);
     }
 
-    public static TurtleProtoBuf.TurtleValue convertToProto(TurtleValue turtleValue) {
-        TurtleProtoBuf.TurtleValueType type;
+    public static ProtoBuf.TurtleValue convertToProto(TurtleValue turtleValue) {
+        ProtoBuf.TurtleValueType type;
         switch (turtleValue.getType()) {
             case INTEGER:
-                type = TurtleProtoBuf.TurtleValueType.Integer;
+                type = ProtoBuf.TurtleValueType.Integer;
                 break;
             case DOUBLE:
-                type = TurtleProtoBuf.TurtleValueType.Double;
+                type = ProtoBuf.TurtleValueType.Double;
                 break;
             case LONG:
-                type = TurtleProtoBuf.TurtleValueType.Long;
+                type = ProtoBuf.TurtleValueType.Long;
                 break;
             case NUMBER_INTEGER:
-                type = TurtleProtoBuf.TurtleValueType.NumberInteger;
+                type = ProtoBuf.TurtleValueType.NumberInteger;
                 break;
             case NUMBER_DECIMAL:
-                type = TurtleProtoBuf.TurtleValueType.NumberDecimal;
+                type = ProtoBuf.TurtleValueType.NumberDecimal;
                 break;
             default:
-                type= TurtleProtoBuf.TurtleValueType.Bytes;
+                type= ProtoBuf.TurtleValueType.Bytes;
                 break;
 
         }
-        return TurtleProtoBuf.TurtleValue.newBuilder().setTurtleValueType(type).setValues(ByteString.copyFrom(turtleValue.getValues())).build();
+        return ProtoBuf.TurtleValue.newBuilder().setTurtleValueType(type).setValues(ByteString.copyFrom(turtleValue.getValues())).build();
     }
 }

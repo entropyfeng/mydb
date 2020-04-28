@@ -5,7 +5,6 @@ import com.github.entropyfeng.mydb.common.exception.TurtleFatalError;
 import com.github.entropyfeng.mydb.common.exception.TurtleTimeOutException;
 import com.github.entropyfeng.mydb.common.exception.TurtleValueElementOutBoundsException;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.NoSuchElementException;
 
 /**
@@ -13,7 +12,7 @@ import java.util.NoSuchElementException;
  */
 public class ProtoExceptionHelper {
 
-    public static void handler(TurtleProtoBuf.ExceptionType type,String msg)throws RuntimeException  {
+    public static void handler(ProtoBuf.ExceptionType type, String msg)throws RuntimeException  {
         switch (type){
             case NoSuchMethodException:
             case IllegalAccessException:

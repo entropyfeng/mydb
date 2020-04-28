@@ -1,6 +1,6 @@
 package com.github.entropyfeng.mydb.client;
 
-import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
@@ -17,7 +17,7 @@ public class TurtleClientChannelInitializer extends ChannelInitializer<Channel> 
         //入站
         ch.pipeline().addLast("ProtobufVarint32FrameDecoder",new ProtobufVarint32FrameDecoder());
         //入站
-        ch.pipeline().addLast("ProtobufDecoder",new ProtobufDecoder(TurtleProtoBuf.ResponseData.getDefaultInstance()));
+        ch.pipeline().addLast("ProtobufDecoder",new ProtobufDecoder(ProtoBuf.ResponseData.getDefaultInstance()));
         //入站
         ch.pipeline().addLast("TurtleClientHandler", new TurtleClientHandler());
     }

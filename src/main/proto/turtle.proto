@@ -1,6 +1,6 @@
 syntax="proto3";
 option java_package = "com.github.entropyfeng.mydb.common.protobuf";
-option java_outer_classname = "TurtleProtoBuf";
+option java_outer_classname = "ProtoBuf";
 enum TurtleModel{ //支持模式
 
     ADMIN=0;
@@ -108,8 +108,8 @@ message ResBody{
         TurtleTurtleValueEntry turtleTurtleValueEntry=15;
     }
 }
-message Response{
 
+message ResponseData{
     int64 requestId=1;
     bool beginAble=2;
     bool endAble=3;
@@ -117,39 +117,6 @@ message Response{
         ResHead header=4;
         ResBody body=5;
     }
-
-}
-message ResponseData{
-
-    int64 responseId=1;
-
-    int64 responseSequence=2;
-
-    bool success=3;
-
-    bool collectionAble=5;//返回值是否为集合
-
-    oneof Value{
-        string stringValue=7;
-        int32 intValue=8;
-        int64 longValue=9;
-        double doubleValue=10;
-        bool boolValue=11;
-        bytes bytesValue=12;
-        TurtleValue turtleValue=13;
-        StringTurtleValueEntry stringTurtleValueEntry=14;
-        TurtleTurtleValueEntry turtleTurtleValueEntry=15;
-    }
-
-    ExceptionType exceptionType=20;
-
-    string exception=21;
-
-    int64 collectionSize=22;
-
-    bool nullable=23;//是否为空,仅在非集合有效
-    bool voidable=24;//是否为空,仅在集合有效
-    bool endAble=25;
 }
 
 message RequestHeaderPayload{

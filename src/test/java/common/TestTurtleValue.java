@@ -1,7 +1,7 @@
 package common;
 
+import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
-import com.github.entropyfeng.mydb.common.protobuf.TurtleProtoBuf;
 import com.github.entropyfeng.mydb.core.TurtleValue;
 import com.google.protobuf.ByteString;
 import org.junit.Assert;
@@ -24,7 +24,7 @@ public class TestTurtleValue {
     public void test() {
 
         TurtleValue turtleValue = new TurtleValue(new BigInteger("7"));
-        TurtleProtoBuf.TurtleValue turtleValue1 = ProtoTurtleHelper.convertToProto(turtleValue);
+        ProtoBuf.TurtleValue turtleValue1 = ProtoTurtleHelper.convertToProto(turtleValue);
         TurtleValue turtleValue2 = ProtoTurtleHelper.convertToTurtleValue(turtleValue1);
         Assert.assertEquals(turtleValue, turtleValue2);
     }
