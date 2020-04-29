@@ -1,6 +1,9 @@
 package com.github.entropyfeng.mydb.server;
 
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
+import com.github.entropyfeng.mydb.server.handler.TurtleServerChannelInitializer;
+import com.github.entropyfeng.mydb.server.handler.TurtleServerHandler;
+import com.github.entropyfeng.mydb.server.handler.TurtleServerProtoEncoder;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -61,16 +64,7 @@ public class TurtleServer {
                     .childOption(ChannelOption.RCVBUF_ALLOCATOR, new AdaptiveRecvByteBufAllocator(1 << 10, 1 << 20, 1 << 30))
                     .childOption(ChannelOption.SO_KEEPALIVE, true)
                     .localAddress(host, port)
-                    .childHandler(new ChannelInitializer<SocketChannel>() {
-                        @Override
-                        protected void initChannel(SocketChannel ch) {
-
-                            ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());//入站
-                            ch.pipeline().addLast(new ProtobufDecoder(ProtoBuf.ClientCommand.getDefaultInstance()));//入站
-                            ch.pipeline().addLast(new TurtleServerHandler(serverDomain));//入站
-                            ch.pipeline().addLast(new TurtleServerProtoEncoder());//出站
-                        }
-                    });
+                    .childHandler(new TurtleServerChannelInitializer(serverDomain));
 
             ChannelFuture channelFuture = serverBootstrap.bind().sync();
 

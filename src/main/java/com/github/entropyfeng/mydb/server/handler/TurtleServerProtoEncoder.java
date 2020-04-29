@@ -1,4 +1,4 @@
-package com.github.entropyfeng.mydb.server;
+package com.github.entropyfeng.mydb.server.handler;
 
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import io.netty.buffer.ByteBuf;
