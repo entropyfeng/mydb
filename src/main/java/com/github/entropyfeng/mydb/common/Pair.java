@@ -1,4 +1,4 @@
-package com.github.entropyfeng.mydb.core.helper;
+package com.github.entropyfeng.mydb.common;
 
 import com.google.common.base.Objects;
 

@@ -1,8 +1,7 @@
 package com.github.entropyfeng.mydb.client.conn;
 
 import com.github.entropyfeng.mydb.client.ClientCommandBuilder;
-import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
-import com.github.entropyfeng.mydb.core.helper.Pair;
+import com.github.entropyfeng.mydb.common.Pair;
 
 import java.util.Collection;
 import java.util.concurrent.Callable;

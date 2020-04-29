@@ -1,4 +1,4 @@
-package com.github.entropyfeng.mydb.core.dict;
+package com.github.entropyfeng.mydb.server.core.dict;
 
 import com.github.entropyfeng.mydb.common.exception.ElementOutOfBoundException;
 import org.jetbrains.annotations.NotNull;

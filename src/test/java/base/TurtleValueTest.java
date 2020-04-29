@@ -1,7 +1,7 @@
 package base;
 
 import com.github.entropyfeng.mydb.common.TurtleValueType;
-import com.github.entropyfeng.mydb.core.TurtleValue;
+import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.common.exception.TurtleValueElementOutBoundsException;
 import org.junit.Assert;
 import org.junit.Test;

@@ -1,6 +1,6 @@
 package com.github.entropyfeng.mydb.server;
 
-import com.github.entropyfeng.mydb.core.helper.Pair;
+import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.server.command.ClientRequest;
 
 import java.nio.channels.Channel;

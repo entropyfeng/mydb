@@ -2,7 +2,7 @@ package common;
 
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
-import com.github.entropyfeng.mydb.core.TurtleValue;
+import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.google.protobuf.ByteString;
 import org.junit.Assert;
 import org.junit.Test;

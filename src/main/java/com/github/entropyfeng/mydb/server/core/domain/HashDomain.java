@@ -1,13 +1,13 @@
-package com.github.entropyfeng.mydb.core.domain;
+package com.github.entropyfeng.mydb.server.core.domain;
 
 import com.github.entropyfeng.mydb.common.exception.DumpFileException;
 import com.github.entropyfeng.mydb.common.ops.IHashOperations;
 import com.github.entropyfeng.mydb.server.ResServerHelper;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.config.Constant;
-import com.github.entropyfeng.mydb.core.TurtleValue;
-import com.github.entropyfeng.mydb.core.dict.ElasticMap;
-import com.github.entropyfeng.mydb.core.helper.Pair;
+import com.github.entropyfeng.mydb.common.TurtleValue;
+import com.github.entropyfeng.mydb.server.core.dict.ElasticMap;
+import com.github.entropyfeng.mydb.common.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInputStream;

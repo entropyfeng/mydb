@@ -47,7 +47,9 @@ public class TurtleServer {
     public void start() throws Exception {
 
         //从dump加载实例
+        logger.info("begin load dump file.");
         serverDomain=PersistenceHelper.load();
+        logger.info("complete load dump file");
 
         NioEventLoopGroup boss = new NioEventLoopGroup(1);
         //IO密集型 2n+1

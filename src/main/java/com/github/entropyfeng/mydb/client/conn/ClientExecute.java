@@ -2,10 +2,9 @@ package com.github.entropyfeng.mydb.client.conn;
 
 import com.github.entropyfeng.mydb.client.ClientCommandBuilder;
 import com.github.entropyfeng.mydb.common.exception.TurtleTimeOutException;
-import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResBody;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResHead;
-import com.github.entropyfeng.mydb.core.helper.Pair;
+import com.github.entropyfeng.mydb.common.Pair;
 import io.netty.channel.Channel;
 
 import java.util.Collection;

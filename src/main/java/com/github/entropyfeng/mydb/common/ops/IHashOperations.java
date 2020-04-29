@@ -1,8 +1,8 @@
 package com.github.entropyfeng.mydb.common.ops;
 
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
-import com.github.entropyfeng.mydb.core.TurtleValue;
-import com.github.entropyfeng.mydb.core.helper.Pair;
+import com.github.entropyfeng.mydb.common.TurtleValue;
+import com.github.entropyfeng.mydb.common.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;

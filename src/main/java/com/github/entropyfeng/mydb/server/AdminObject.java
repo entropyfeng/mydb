@@ -15,6 +15,7 @@ public class AdminObject {
         this.serverDomain = serverDomain;
     }
 
+    
 
     public void ordinaryDump(){
 

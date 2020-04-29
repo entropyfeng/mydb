@@ -5,8 +5,8 @@ import com.github.entropyfeng.mydb.client.ops.ResponseHashOperations;
 import com.github.entropyfeng.mydb.common.ops.HashOperations;
 import com.github.entropyfeng.mydb.common.ops.IHashOperations;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
-import com.github.entropyfeng.mydb.core.TurtleValue;
-import com.github.entropyfeng.mydb.core.helper.Pair;
+import com.github.entropyfeng.mydb.common.TurtleValue;
+import com.github.entropyfeng.mydb.common.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;

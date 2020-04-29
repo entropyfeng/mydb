@@ -1,4 +1,4 @@
-package com.github.entropyfeng.mydb.core.dict;
+package com.github.entropyfeng.mydb.server.core.dict;
 
 
 import java.util.Map;

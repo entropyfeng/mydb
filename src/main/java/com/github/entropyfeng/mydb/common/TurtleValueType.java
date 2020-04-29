@@ -1,7 +1,5 @@
 package com.github.entropyfeng.mydb.common;
 
-import com.github.entropyfeng.mydb.core.TurtleValue;
-
 /**
  * @see TurtleValue 仅支持以下6种类型
  * @author entropyfeng

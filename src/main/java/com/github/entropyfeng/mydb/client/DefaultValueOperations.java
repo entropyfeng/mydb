@@ -7,8 +7,8 @@ import com.github.entropyfeng.mydb.common.ops.IValueOperations;
 import com.github.entropyfeng.mydb.common.ops.ValueOperations;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResBody;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResHead;
-import com.github.entropyfeng.mydb.core.TurtleValue;
-import com.github.entropyfeng.mydb.core.helper.Pair;
+import com.github.entropyfeng.mydb.common.TurtleValue;
+import com.github.entropyfeng.mydb.common.Pair;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

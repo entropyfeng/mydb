@@ -1,7 +1,7 @@
 package com.github.entropyfeng.mydb.server.persistence;
 
 import com.github.entropyfeng.mydb.config.Constant;
-import com.github.entropyfeng.mydb.core.domain.ValuesDomain;
+import com.github.entropyfeng.mydb.server.core.domain.ValuesDomain;
 
 import java.io.DataOutputStream;
 import java.io.FileOutputStream;

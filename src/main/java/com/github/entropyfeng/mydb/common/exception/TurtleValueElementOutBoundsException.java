@@ -1,6 +1,6 @@
 package com.github.entropyfeng.mydb.common.exception;
 
-import com.github.entropyfeng.mydb.core.TurtleValue;
+import com.github.entropyfeng.mydb.common.TurtleValue;
 
 /**
  * {@link TurtleValue}长度超限异常

@@ -3,8 +3,8 @@ package com.github.entropyfeng.mydb.client.conn;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoExceptionHelper;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
-import com.github.entropyfeng.mydb.core.TurtleValue;
-import com.github.entropyfeng.mydb.core.helper.Pair;
+import com.github.entropyfeng.mydb.common.TurtleValue;
+import com.github.entropyfeng.mydb.common.Pair;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;

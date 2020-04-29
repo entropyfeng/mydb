@@ -1,7 +1,7 @@
 package base;
 
-import com.github.entropyfeng.mydb.core.helper.Pair;
-import com.github.entropyfeng.mydb.core.zset.SkipList;
+import com.github.entropyfeng.mydb.common.Pair;
+import com.github.entropyfeng.mydb.server.core.zset.SkipList;
 import org.junit.Assert;
 import org.junit.Test;
 

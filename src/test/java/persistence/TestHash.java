@@ -1,8 +1,8 @@
 package persistence;
 
-import com.github.entropyfeng.mydb.core.TurtleValue;
-import com.github.entropyfeng.mydb.core.dict.ElasticMap;
-import com.github.entropyfeng.mydb.core.domain.HashDomain;
+import com.github.entropyfeng.mydb.common.TurtleValue;
+import com.github.entropyfeng.mydb.server.core.dict.ElasticMap;
+import com.github.entropyfeng.mydb.server.core.domain.HashDomain;
 import org.junit.Assert;
 import org.junit.Test;
 

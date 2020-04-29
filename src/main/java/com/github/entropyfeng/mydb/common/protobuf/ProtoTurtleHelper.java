@@ -1,7 +1,7 @@
 package com.github.entropyfeng.mydb.common.protobuf;
 
 import com.github.entropyfeng.mydb.common.TurtleValueType;
-import com.github.entropyfeng.mydb.core.TurtleValue;
+import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.google.protobuf.ByteString;
 
 /**

@@ -3,7 +3,7 @@ package com.github.entropyfeng.mydb.client;
 
 import com.github.entropyfeng.mydb.client.conn.ClientExecute;
 import com.github.entropyfeng.mydb.client.conn.TurtleClientChannelFactory;
-import com.github.entropyfeng.mydb.core.helper.Pair;
+import com.github.entropyfeng.mydb.common.Pair;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;

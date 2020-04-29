@@ -1,13 +1,13 @@
-package com.github.entropyfeng.mydb.core.dict;
+package com.github.entropyfeng.mydb.server.core.dict;
 
-import com.github.entropyfeng.mydb.core.helper.Pair;
+import com.github.entropyfeng.mydb.common.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import static com.github.entropyfeng.mydb.core.dict.ElasticMap.*;
+import static com.github.entropyfeng.mydb.server.core.dict.ElasticMap.*;
 
 /**
  * @author entropyfeng

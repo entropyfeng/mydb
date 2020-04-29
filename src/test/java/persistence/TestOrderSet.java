@@ -1,8 +1,8 @@
 package persistence;
 
-import com.github.entropyfeng.mydb.core.TurtleValue;
-import com.github.entropyfeng.mydb.core.domain.OrderSetDomain;
-import com.github.entropyfeng.mydb.core.zset.OrderSet;
+import com.github.entropyfeng.mydb.common.TurtleValue;
+import com.github.entropyfeng.mydb.server.core.domain.OrderSetDomain;
+import com.github.entropyfeng.mydb.server.core.zset.OrderSet;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -5,8 +5,8 @@ import com.github.entropyfeng.mydb.client.ops.ResponseOrderSetOperations;
 import com.github.entropyfeng.mydb.common.ops.IOrderSetOperations;
 import com.github.entropyfeng.mydb.common.ops.OrderSetOperations;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
-import com.github.entropyfeng.mydb.core.TurtleValue;
-import com.github.entropyfeng.mydb.core.helper.Pair;
+import com.github.entropyfeng.mydb.common.TurtleValue;
+import com.github.entropyfeng.mydb.common.Pair;
 
 import java.util.Collection;
 

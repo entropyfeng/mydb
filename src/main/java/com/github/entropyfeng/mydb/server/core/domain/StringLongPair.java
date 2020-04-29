@@ -1,4 +1,4 @@
-package com.github.entropyfeng.mydb.core.helper;
+package com.github.entropyfeng.mydb.server.core.domain;
 
 import org.jetbrains.annotations.NotNull;
 

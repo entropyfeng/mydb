@@ -5,7 +5,7 @@ import com.github.entropyfeng.mydb.common.exception.TurtleValueElementOutBoundsE
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoModelHelper;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
-import com.github.entropyfeng.mydb.core.TurtleValue;
+import com.github.entropyfeng.mydb.common.TurtleValue;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

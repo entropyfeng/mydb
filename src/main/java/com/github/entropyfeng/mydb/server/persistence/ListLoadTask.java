@@ -1,6 +1,6 @@
 package com.github.entropyfeng.mydb.server.persistence;
 
-import com.github.entropyfeng.mydb.core.domain.ListDomain;
+import com.github.entropyfeng.mydb.server.core.domain.ListDomain;
 
 import java.io.DataInputStream;
 import java.io.File;
