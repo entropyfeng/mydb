@@ -1,6 +1,7 @@
 package com.github.entropyfeng.mydb.server.command;
 
 import com.github.entropyfeng.mydb.common.TurtleModel;
+import com.github.entropyfeng.mydb.common.exception.TurtleValueElementOutBoundsException;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoModelHelper;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
@@ -25,6 +26,7 @@ public class ClientRequest {
     private ArrayList<Object> objects;
     private final Long requestId;
     private boolean modify;
+
     @SuppressWarnings("all")
     public ClientRequest(ProtoBuf.RequestHeaderPayload header, Long requestId){
         this.operationName=header.getOperationName();
@@ -97,13 +99,14 @@ public class ClientRequest {
                 case COLLECTION_STRING:
                     objects.add(i,new ArrayList<String>());
                     types[i]=Collection.class;
+                    break;
                 default:throw new UnsupportedOperationException();
             }
         }
     }
 
     @SuppressWarnings("unchecked")
-    public void put(ProtoBuf.RequestBodyPayload body){
+    public void put(ProtoBuf.RequestBodyPayload body)throws TurtleValueElementOutBoundsException {
 
         int location=body.getLocation();
         switch (typeList.get(location)){
@@ -132,7 +135,8 @@ public class ClientRequest {
                 objects.add(location,new BigDecimal(body.getStringValue()));
                 break;
             case TURTLE_VALUE:
-                objects.add(location, ProtoTurtleHelper.convertToTurtleValue(body.getTurtleValue()));
+                //turtleValue's byte array length may too long,this method may cause exception
+                objects.add(location, ProtoTurtleHelper.convertToDbTurtle(body.getTurtleValue()));
                 break;
             case COLLECTION_INTEGER:
                 ((ArrayList<Integer>)objects.get(location)).add(body.getIntValue());
@@ -153,7 +157,7 @@ public class ClientRequest {
                 ((ArrayList<BigDecimal>)objects.get(location)).add(new BigDecimal(body.getStringValue()));
                 break;
             case COLLECTION_TURTLE_VALUE:
-                ((ArrayList<TurtleValue>)objects.get(location)).add(ProtoTurtleHelper.convertToTurtleValue(body.getTurtleValue()));
+                ((ArrayList<TurtleValue>)objects.get(location)).add(ProtoTurtleHelper.convertToDbTurtle(body.getTurtleValue()));
                 break;
             default:throw  new UnsupportedOperationException();
 

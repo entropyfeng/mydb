@@ -8,7 +8,7 @@ package com.github.entropyfeng.mydb.common;
 public final class CommonConstant {
 
 
-    public static final Integer MAX_STRING_LENGTH=1<<29;
+    public static final Integer MAX_BYTES_LENGTH=1<<29;
 
     public static final String HELLO_SERVER="hello server !";
 

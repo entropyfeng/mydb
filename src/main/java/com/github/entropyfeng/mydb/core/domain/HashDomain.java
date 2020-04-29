@@ -2,7 +2,7 @@ package com.github.entropyfeng.mydb.core.domain;
 
 import com.github.entropyfeng.mydb.common.exception.DumpFileException;
 import com.github.entropyfeng.mydb.common.ops.IHashOperations;
-import com.github.entropyfeng.mydb.common.protobuf.ResHelper;
+import com.github.entropyfeng.mydb.server.ResServerHelper;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.config.Constant;
 import com.github.entropyfeng.mydb.core.TurtleValue;
@@ -42,9 +42,9 @@ public class HashDomain implements IHashOperations {
         }
 
         if (res == null) {
-            return ResHelper.emptyRes();
+            return ResServerHelper.emptyRes();
         } else {
-            return ResHelper.turtleRes(res);
+            return ResServerHelper.turtleRes(res);
         }
     }
 
@@ -54,9 +54,9 @@ public class HashDomain implements IHashOperations {
         ElasticMap<TurtleValue, TurtleValue> res = hashMap.get(key);
 
         if (res == null) {
-            return ResHelper.emptyRes();
+            return ResServerHelper.emptyRes();
         } else {
-            return ResHelper.turtleTurtleCollectionRes(res.entrySet());
+            return ResServerHelper.turtleTurtleCollectionRes(res.entrySet());
         }
     }
 
@@ -68,13 +68,13 @@ public class HashDomain implements IHashOperations {
         if (map != null) {
             res = map.containsKey(tKey);
         }
-        return ResHelper.boolRes(res);
+        return ResServerHelper.boolRes(res);
     }
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exists(@NotNull String key) {
 
-        return ResHelper.boolRes(hashMap.containsKey(key));
+        return ResServerHelper.boolRes(hashMap.containsKey(key));
     }
 
     @Override
@@ -82,13 +82,13 @@ public class HashDomain implements IHashOperations {
 
         createIfNotExist(key);
         hashMap.get(key).put(tKey,tValue);
-        return ResHelper.emptyRes();
+        return ResServerHelper.emptyRes();
     }
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> delete(@NotNull String key) {
         hashMap.remove(key);
-        return ResHelper.emptyRes();
+        return ResServerHelper.emptyRes();
     }
 
     @Override
@@ -97,16 +97,16 @@ public class HashDomain implements IHashOperations {
        if (map!=null){
            map.remove(tKey);
        }
-        return ResHelper.emptyRes();
+        return ResServerHelper.emptyRes();
     }
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> sizeOf(@NotNull String key) {
         ElasticMap<TurtleValue,TurtleValue> map= hashMap.get(key);
         if (map!=null){
-            return ResHelper.intRes(map.size());
+            return ResServerHelper.intRes(map.size());
         }else {
-            return ResHelper.intRes(0);
+            return ResServerHelper.intRes(0);
         }
     }
 

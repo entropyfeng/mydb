@@ -22,7 +22,7 @@ public class ClientResHelper {
         ResHead resHead = pair.getKey();
         if (resHead.getSuccess()) {
             ProtoBuf.TurtleValue turtleValue = ((ArrayList<ResBody>) pair.getValue()).get(0).getTurtleValue();
-            return ProtoTurtleHelper.convertToTurtleValue(turtleValue);
+            return ProtoTurtleHelper.convertToDbTurtle(turtleValue);
         } else {
             ProtoExceptionHelper.handler(resHead.getInnerExceptionType(), resHead.getInnerException());
             return null;
@@ -61,7 +61,7 @@ public class ClientResHelper {
         ResHead resHead = pair.getKey();
         if (resHead.getSuccess()) {
             ArrayList<TurtleValue> res = new ArrayList<>(resHead.getResSize());
-            pair.getValue().forEach(resBody -> res.add(ProtoTurtleHelper.convertToTurtleValue(resBody.getTurtleValue())));
+            pair.getValue().forEach(resBody -> res.add(ProtoTurtleHelper.convertToDbTurtle(resBody.getTurtleValue())));
             if (res.size() == resHead.getResSize()) {
                 return res;
             }
@@ -93,7 +93,7 @@ public class ClientResHelper {
             ArrayList<Pair<String, TurtleValue>> res = new ArrayList<>(resHead.getResSize());
             pair.getValue().forEach(resBody -> {
                 String key = resBody.getStringValue();
-                TurtleValue value = ProtoTurtleHelper.convertToTurtleValue(resBody.getStringTurtleValueEntry().getValue());
+                TurtleValue value = ProtoTurtleHelper.convertToDbTurtle(resBody.getStringTurtleValueEntry().getValue());
                  res.add(new Pair<>(key,value));
 
             });

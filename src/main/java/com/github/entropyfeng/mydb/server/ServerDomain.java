@@ -95,6 +95,8 @@ public class ServerDomain {
     protected Thread hashThread;
     protected Thread orderSetThread;
 
+    protected Thread adminThread;
+
     public void start() {
 
         valueThread = new ValuesThreadFactory().newThread(this::runValues);
@@ -103,12 +105,14 @@ public class ServerDomain {
         hashThread = new HashThreadFactory().newThread(this::runHash);
         orderSetThread = new OrderSetThreadFactory().newThread(this::runOrderSet);
 
+        adminThread=new AdminThreadFactory().newThread(this::runAdmin);
+
         valueThread.start();
         listThread.start();
         setThread.start();
         hashThread.start();
         orderSetThread.start();
-
+        adminThread.start();
 
     }
 
@@ -178,6 +182,22 @@ public class ServerDomain {
             }
         }
     }
+    private void runAdmin() {
+        logger.info("runAdmin");
+        while (true) {
+            ClientCommand adminCommand = valuesQueue.pollFirst();
+            if (adminCommand != null) {
+
+                execute(adminCommand, adminObject);
+            } else {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 
     private void runSet() {
         logger.info("runSet");
@@ -214,7 +234,6 @@ public class ServerDomain {
             return;
         }
 
-        logger.info("---------------------------");
         Pair<ResHead, Collection<ResBody>> pair = ((Pair<ResHead, Collection<ResBody>>) res);
 
         writeChannel(pair, command.getChannel(), command.getRequestId());
@@ -278,7 +297,7 @@ public class ServerDomain {
                 constructCommand(clientRequest, channel, ValuesDomain.class, valuesQueue);
                 return;
             case ADMIN:
-                System.out.println(clientRequest.getOperationName());
+                constructCommand(clientRequest,channel,AdminObject.class,adminQueue);
                 return;
             case LIST:
                 constructCommand(clientRequest, channel, ListDomain.class, listQueue);
@@ -298,7 +317,7 @@ public class ServerDomain {
     }
 
     private void constructCommand(ClientRequest clientRequest, Channel channel, Class<?> target, ConcurrentLinkedDeque<ClientCommand> queue) {
-        Method method = null;
+        Method method;
         final String operationName = clientRequest.getOperationName();
         final Long requestId = clientRequest.getRequestId();
         final Class<?>[] types = clientRequest.getTypes();

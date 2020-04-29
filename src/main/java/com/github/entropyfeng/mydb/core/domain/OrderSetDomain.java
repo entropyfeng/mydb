@@ -2,7 +2,7 @@ package com.github.entropyfeng.mydb.core.domain;
 
 import com.github.entropyfeng.mydb.common.exception.DumpFileException;
 import com.github.entropyfeng.mydb.common.ops.IOrderSetOperations;
-import com.github.entropyfeng.mydb.common.protobuf.ResHelper;
+import com.github.entropyfeng.mydb.server.ResServerHelper;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.config.Constant;
 import com.github.entropyfeng.mydb.core.TurtleValue;
@@ -50,7 +50,7 @@ public class OrderSetDomain implements IOrderSetOperations {
         if (orderSet != null) {
             res = orderSet.exists(value, score);
         }
-        return ResHelper.boolRes(res);
+        return ResServerHelper.boolRes(res);
     }
 
     @NotNull
@@ -61,13 +61,13 @@ public class OrderSetDomain implements IOrderSetOperations {
         if (orderSet != null) {
             res = orderSet.exists(value);
         }
-        return ResHelper.boolRes(res);
+        return ResServerHelper.boolRes(res);
     }
 
     @NotNull
     @Override
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exists(String key) {
-        return ResHelper.boolRes(hashMap.containsKey(key));
+        return ResServerHelper.boolRes(hashMap.containsKey(key));
     }
 
     @NotNull
@@ -75,7 +75,7 @@ public class OrderSetDomain implements IOrderSetOperations {
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> add(String key, TurtleValue value, Double score) {
         createIfNotExists(key);
 
-        return ResHelper.boolRes(hashMap.get(key).add(value, score));
+        return ResServerHelper.boolRes(hashMap.get(key).add(value, score));
     }
 
     @NotNull
@@ -83,7 +83,7 @@ public class OrderSetDomain implements IOrderSetOperations {
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> add(String key, Collection<TurtleValue> values, Collection<Double> doubles) {
 
         if (values.size() != doubles.size()) {
-            return ResHelper.illegalArgumentException("para not consistence");
+            return ResServerHelper.illegalArgumentException("para not consistence");
         }
 
         createIfNotExists(key);
@@ -94,7 +94,7 @@ public class OrderSetDomain implements IOrderSetOperations {
         for (int i = 0; i < size; i++) {
             orderSet.add(resValues[i], resDoubles[i]);
         }
-        return ResHelper.intRes(size);
+        return ResServerHelper.intRes(size);
     }
 
     @NotNull
@@ -105,7 +105,7 @@ public class OrderSetDomain implements IOrderSetOperations {
         if (set != null) {
             res = set.count(begin, end);
         }
-        return ResHelper.intRes(res);
+        return ResServerHelper.intRes(res);
     }
 
     @NotNull
@@ -117,9 +117,9 @@ public class OrderSetDomain implements IOrderSetOperations {
             res = set.range(begin, end);
         }
         if (res != null && res.size() != 0) {
-            return ResHelper.turtleCollectionRes(res);
+            return ResServerHelper.turtleCollectionRes(res);
         } else {
-            return ResHelper.emptyRes();
+            return ResServerHelper.emptyRes();
         }
     }
 
@@ -129,7 +129,7 @@ public class OrderSetDomain implements IOrderSetOperations {
         OrderSet<TurtleValue> set = hashMap.get(key);
         int res = set.count(begin, end);
 
-        return ResHelper.boolRes(res != 0);
+        return ResServerHelper.boolRes(res != 0);
     }
 
     @NotNull
@@ -140,7 +140,7 @@ public class OrderSetDomain implements IOrderSetOperations {
         if (set != null) {
             res = set.delete(value, score);
         }
-        return ResHelper.boolRes(res);
+        return ResServerHelper.boolRes(res);
     }
 
     @NotNull
@@ -153,7 +153,7 @@ public class OrderSetDomain implements IOrderSetOperations {
         }
 
 
-        return ResHelper.intRes(res);
+        return ResServerHelper.intRes(res);
     }
 
     @NotNull
@@ -165,7 +165,7 @@ public class OrderSetDomain implements IOrderSetOperations {
             res = set.delete(value);
         }
 
-        return ResHelper.boolRes(res);
+        return ResServerHelper.boolRes(res);
     }
 
     @NotNull
@@ -173,7 +173,7 @@ public class OrderSetDomain implements IOrderSetOperations {
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> delete(String key) {
 
         hashMap.remove(key);
-        return ResHelper.emptyRes();
+        return ResServerHelper.emptyRes();
     }
 
 

@@ -45,17 +45,28 @@ public class TurtleValue implements Comparable<TurtleValue> {
         return values;
     }
 
-    public TurtleValue(byte[] bytes, TurtleValueType type) {
+    /**
+     * not recommend using this method to build a turtleValue instance
+     * @param bytes byte[]
+     * @param type {@link TurtleValueType}
+     * @throws TurtleValueElementOutBoundsException when the bytes value length overflow the limit {@link CommonConstant}
+     */
+    public TurtleValue(byte[] bytes, TurtleValueType type)throws TurtleValueElementOutBoundsException {
+        if (bytes.length>CommonConstant.MAX_BYTES_LENGTH){
+           throw new TurtleValueElementOutBoundsException();
+        }
         this.type = type;
         this.values = bytes;
     }
 
-    public TurtleValue(@NotNull String value) {
-        if (value.length() > CommonConstant.MAX_STRING_LENGTH) {
+    public TurtleValue(@NotNull String value)throws TurtleValueElementOutBoundsException {
+
+        byte[] tempBytes = value.getBytes();
+        if (tempBytes.length > CommonConstant.MAX_BYTES_LENGTH) {
             throw new TurtleValueElementOutBoundsException();
         }
         this.type = TurtleValueType.BYTES;
-        this.values = value.getBytes();
+        this.values = tempBytes;
     }
 
     public TurtleValue(int value) {
@@ -78,16 +89,25 @@ public class TurtleValue implements Comparable<TurtleValue> {
         this(value.toPlainString().getBytes(), TurtleValueType.NUMBER_DECIMAL);
     }
 
-    public TurtleValue(@NotNull byte[] values) {
-        if (values.length > CommonConstant.MAX_STRING_LENGTH) {
+    public TurtleValue(@NotNull byte[] values) throws TurtleValueElementOutBoundsException {
+        if (values.length > CommonConstant.MAX_BYTES_LENGTH) {
             throw new TurtleValueElementOutBoundsException();
         }
         this.type = TurtleValueType.BYTES;
     }
 
-    public void append(String value) throws UnsupportedOperationException {
+    public void append(String value) throws UnsupportedOperationException, TurtleValueElementOutBoundsException {
         if (this.type == TurtleValueType.BYTES) {
-            this.values = CommonUtil.mergeBytes(this.values, value.getBytes());
+            try {
+                byte[] tempBytes = value.getBytes();
+                if (tempBytes.length + this.values.length > CommonConstant.MAX_BYTES_LENGTH) {
+                    throw new TurtleValueElementOutBoundsException();
+                }
+                this.values = CommonUtil.mergeBytes(this.values, value.getBytes());
+            } catch (Exception e) {
+                throw new TurtleValueElementOutBoundsException();
+            }
+
         } else {
             throw new UnsupportedOperationException("unSupport append operation on" + type.toString());
         }

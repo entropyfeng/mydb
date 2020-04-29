@@ -4,7 +4,7 @@ import com.github.entropyfeng.mydb.common.TurtleValueType;
 import com.github.entropyfeng.mydb.common.exception.DumpFileException;
 import com.github.entropyfeng.mydb.common.ops.IValueOperations;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
-import com.github.entropyfeng.mydb.common.protobuf.ResHelper;
+import com.github.entropyfeng.mydb.server.ResServerHelper;
 import com.github.entropyfeng.mydb.config.Constant;
 import com.github.entropyfeng.mydb.core.TurtleValue;
 import com.github.entropyfeng.mydb.core.helper.Pair;
@@ -44,14 +44,14 @@ public class ValuesDomain extends ExpireObject implements IValueOperations {
             deleteExpireTime(key);
         }
         if (valueMap.size() >= Integer.MAX_VALUE) {
-            return ResHelper.elementOutOfBoundException("size of map out of limit .!");
+            return ResServerHelper.elementOutOfBoundException("size of map out of limit .!");
         }
 
         valueMap.put(key, value);
         if (!TimeUtil.isExpire(time)) {
             putExpireTime(key, time);
         }
-        return ResHelper.emptyRes();
+        return ResServerHelper.emptyRes();
     }
 
     @Override
@@ -65,7 +65,7 @@ public class ValuesDomain extends ExpireObject implements IValueOperations {
             }
             res = true;
         }
-        return ResHelper.boolRes(res);
+        return ResServerHelper.boolRes(res);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class ValuesDomain extends ExpireObject implements IValueOperations {
             }
             res = true;
         }
-        return ResHelper.boolRes(res);
+        return ResServerHelper.boolRes(res);
     }
 
     @Override
@@ -91,9 +91,9 @@ public class ValuesDomain extends ExpireObject implements IValueOperations {
 
         TurtleValue turtleValue = valueMap.get(key);
         if (turtleValue == null) {
-            return ResHelper.emptyRes();
+            return ResServerHelper.emptyRes();
         } else {
-            return ResHelper.turtleRes(turtleValue);
+            return ResServerHelper.turtleRes(turtleValue);
         }
     }
 
@@ -134,18 +134,18 @@ public class ValuesDomain extends ExpireObject implements IValueOperations {
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> allValues() {
-        return ResHelper.turtleCollectionRes(valueMap.values());
+        return ResServerHelper.turtleCollectionRes(valueMap.values());
     }
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> allEntries() {
 
-        return ResHelper.stringTurtleCollectionRes(valueMap.entrySet());
+        return ResServerHelper.stringTurtleCollectionRes(valueMap.entrySet());
     }
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> allKeys() {
-        return ResHelper.stringCollectionRes(valueMap.keySet());
+        return ResServerHelper.stringCollectionRes(valueMap.keySet());
     }
 
 
@@ -166,7 +166,7 @@ public class ValuesDomain extends ExpireObject implements IValueOperations {
         handleExpire(key);
         TurtleValue turtleValue = valueMap.get(key);
         if (turtleValue == null) {
-            return ResHelper.emptyRes();
+            return ResServerHelper.emptyRes();
         }
         try {
             switch (type) {
@@ -190,9 +190,9 @@ public class ValuesDomain extends ExpireObject implements IValueOperations {
                     turtleValue.append((String) value);
             }
         } catch (UnsupportedOperationException e) {
-            return ResHelper.unsupportedOperationException(e.getMessage());
+            return ResServerHelper.unsupportedOperationException(e.getMessage());
         }
-        return ResHelper.turtleRes(turtleValue);
+        return ResServerHelper.turtleRes(turtleValue);
     }
 
 

@@ -4,7 +4,7 @@ import com.github.entropyfeng.mydb.common.exception.DumpFileException;
 import com.github.entropyfeng.mydb.common.ops.IListOperations;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResBody;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResHead;
-import com.github.entropyfeng.mydb.common.protobuf.ResHelper;
+import com.github.entropyfeng.mydb.server.ResServerHelper;
 import com.github.entropyfeng.mydb.config.Constant;
 import com.github.entropyfeng.mydb.core.TurtleValue;
 import com.github.entropyfeng.mydb.core.helper.Pair;
@@ -34,7 +34,7 @@ public class ListDomain implements IListOperations {
    
     @Override
     public @NotNull  Pair<ResHead, Collection<ResBody>> size() {
-        return ResHelper.intRes(listMap.size());
+        return ResServerHelper.intRes(listMap.size());
     }
 
     @Override
@@ -42,7 +42,7 @@ public class ListDomain implements IListOperations {
 
         LinkedList<TurtleValue> list = listMap.get(key);
         int res = list == null ? 0 : listMap.size();
-        return ResHelper.intRes(res);
+        return ResServerHelper.intRes(res);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class ListDomain implements IListOperations {
         createIfNotExist(key);
         listMap.get(key).addFirst(value);
 
-        return ResHelper.emptyRes();
+        return ResServerHelper.emptyRes();
     }
 
 
@@ -58,7 +58,7 @@ public class ListDomain implements IListOperations {
     public @NotNull  Pair<ResHead, Collection<ResBody>> leftPushAll(String key, Collection<TurtleValue> values) {
         createIfNotExist(key);
         listMap.get(key).addAll(0, values);
-        return ResHelper.emptyRes();
+        return ResServerHelper.emptyRes();
     }
 
     @Override
@@ -69,7 +69,7 @@ public class ListDomain implements IListOperations {
             listMap.get(key).addFirst(value);
             res = true;
         }
-        return ResHelper.boolRes(res);
+        return ResServerHelper.boolRes(res);
     }
 
     @Override
@@ -80,21 +80,21 @@ public class ListDomain implements IListOperations {
             listMap.get(key).addFirst(value);
             res = true;
         }
-        return ResHelper.boolRes(res);
+        return ResServerHelper.boolRes(res);
     }
 
     @Override
     public @NotNull  Pair<ResHead, Collection<ResBody>> rightPush(String key, TurtleValue value) {
         createIfNotExist(key);
         listMap.get(key).addLast(value);
-        return ResHelper.emptyRes();
+        return ResServerHelper.emptyRes();
     }
 
     @Override
     public @NotNull  Pair<ResHead, Collection<ResBody>> rightPushAll(String key, Collection<TurtleValue> values) {
         createIfNotExist(key);
         listMap.get(key).addAll(values);
-        return ResHelper.emptyRes();
+        return ResServerHelper.emptyRes();
     }
 
     @Override
@@ -105,7 +105,7 @@ public class ListDomain implements IListOperations {
             listMap.get(key).addLast(value);
             res = true;
         }
-        return ResHelper.boolRes(res);
+        return ResServerHelper.boolRes(res);
 
     }
 
@@ -117,7 +117,7 @@ public class ListDomain implements IListOperations {
             listMap.get(key).addLast(value);
             res = true;
         }
-        return ResHelper.boolRes(res);
+        return ResServerHelper.boolRes(res);
     }
 
     @Override
@@ -128,9 +128,9 @@ public class ListDomain implements IListOperations {
             res = listMap.get(key).pollFirst();
         }
         if (res == null) {
-            return ResHelper.emptyRes();
+            return ResServerHelper.emptyRes();
         } else {
-            return ResHelper.turtleRes(res);
+            return ResServerHelper.turtleRes(res);
         }
 
     }
@@ -142,9 +142,9 @@ public class ListDomain implements IListOperations {
             res = listMap.get(key).peekFirst();
         }
         if (res == null) {
-            return ResHelper.emptyRes();
+            return ResServerHelper.emptyRes();
         } else {
-            return ResHelper.turtleRes(res);
+            return ResServerHelper.turtleRes(res);
         }
     }
 
@@ -155,9 +155,9 @@ public class ListDomain implements IListOperations {
             res = listMap.get(key).pollLast();
         }
         if (res == null) {
-            return ResHelper.emptyRes();
+            return ResServerHelper.emptyRes();
         } else {
-            return ResHelper.turtleRes(res);
+            return ResServerHelper.turtleRes(res);
         }
 
     }
@@ -169,34 +169,34 @@ public class ListDomain implements IListOperations {
             res = listMap.get(key).peekLast();
         }
         if (res == null) {
-            return ResHelper.emptyRes();
+            return ResServerHelper.emptyRes();
         } else {
-            return ResHelper.turtleRes(res);
+            return ResServerHelper.turtleRes(res);
         }
     }
 
     @Override
     public @NotNull  Pair<ResHead, Collection<ResBody>> clear(String key) {
         listMap.remove(key);
-        return ResHelper.emptyRes();
+        return ResServerHelper.emptyRes();
     }
 
     @Override
     public @NotNull  Pair<ResHead, Collection<ResBody>> clearAll() {
         listMap.clear();
-        return ResHelper.emptyRes();
+        return ResServerHelper.emptyRes();
     }
 
     @Override
     public @NotNull  Pair<ResHead, Collection<ResBody>> exist(String key) {
-        return ResHelper.boolRes(listMap.get(key) != null);
+        return ResServerHelper.boolRes(listMap.get(key) != null);
     }
 
     @Override
     public @NotNull  Pair<ResHead, Collection<ResBody>> exist(String key, TurtleValue value) {
         LinkedList<TurtleValue> list = listMap.get(key);
         boolean res = list != null && list.contains(value);
-        return ResHelper.boolRes(res);
+        return ResServerHelper.boolRes(res);
     }
 
     private void createIfNotExist(String key) {

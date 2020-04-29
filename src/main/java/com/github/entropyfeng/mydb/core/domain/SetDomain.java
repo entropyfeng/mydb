@@ -2,7 +2,7 @@ package com.github.entropyfeng.mydb.core.domain;
 
 import com.github.entropyfeng.mydb.common.exception.DumpFileException;
 import com.github.entropyfeng.mydb.common.ops.ISetOperations;
-import com.github.entropyfeng.mydb.common.protobuf.ResHelper;
+import com.github.entropyfeng.mydb.server.ResServerHelper;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.config.Constant;
 import com.github.entropyfeng.mydb.core.TurtleValue;
@@ -34,7 +34,7 @@ public class SetDomain implements ISetOperations, Serializable {
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exist(String key) {
 
-        return ResHelper.boolRes(setHashMap.containsKey(key));
+        return ResServerHelper.boolRes(setHashMap.containsKey(key));
     }
 
     @Override
@@ -44,74 +44,74 @@ public class SetDomain implements ISetOperations, Serializable {
         if (set != null && set.contains(value)) {
             res = true;
         }
-        return ResHelper.boolRes(res);
+        return ResServerHelper.boolRes(res);
     }
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> add(String key, TurtleValue value) {
         createIfNotExists(key);
         setHashMap.get(key).add(value);
-        return ResHelper.emptyRes();
+        return ResServerHelper.emptyRes();
     }
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> union(String key, String otherKey) {
 
         setUnion(key, otherKey);
-        return ResHelper.emptyRes();
+        return ResServerHelper.emptyRes();
     }
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> union(String key, Collection<TurtleValue> turtleValues) {
         setUnion(key, turtleValues);
-        return ResHelper.emptyRes();
+        return ResServerHelper.emptyRes();
     }
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> unionAndGet(String key, String otherKey) {
 
 
-        return ResHelper.turtleCollectionRes(setUnion(key, otherKey));
+        return ResServerHelper.turtleCollectionRes(setUnion(key, otherKey));
     }
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> unionAndGet(String key, Collection<TurtleValue> turtleValues) {
-        return ResHelper.turtleCollectionRes(setUnion(key, turtleValues));
+        return ResServerHelper.turtleCollectionRes(setUnion(key, turtleValues));
     }
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> intersect(String key, String otherKey) {
 
         setIntersect(key, otherKey);
-        return ResHelper.emptyRes();
+        return ResServerHelper.emptyRes();
     }
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> intersect(String key, Collection<TurtleValue> turtleValues) {
         setIntersect(key, turtleValues);
-        return ResHelper.emptyRes();
+        return ResServerHelper.emptyRes();
     }
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> difference(String key, String otherKey) {
 
         setDifference(key, otherKey);
-        return ResHelper.emptyRes();
+        return ResServerHelper.emptyRes();
     }
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> difference(String key, Collection<TurtleValue> turtleValues) {
         setDifference(key, turtleValues);
-        return ResHelper.emptyRes();
+        return ResServerHelper.emptyRes();
     }
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> entries(String key) {
         HashSet<TurtleValue> res = setHashMap.get(key);
         if (res == null) {
-            return ResHelper.emptyRes();
+            return ResServerHelper.emptyRes();
         } else {
-            return ResHelper.turtleCollectionRes(res);
+            return ResServerHelper.turtleCollectionRes(res);
         }
     }
 

@@ -35,7 +35,7 @@ public class ProtoTurtleHelper {
         return type;
     }
 
-    public static TurtleValue convertToTurtleValue(ProtoBuf.TurtleValue protoTurtleValue) {
+    public static TurtleValue convertToDbTurtle(ProtoBuf.TurtleValue protoTurtleValue) {
         TurtleValueType type;
         byte[] values = protoTurtleValue.getValues().toByteArray();
         switch (protoTurtleValue.getTurtleValueType()) {

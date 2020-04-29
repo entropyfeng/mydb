@@ -25,7 +25,7 @@ public class TestTurtleValue {
 
         TurtleValue turtleValue = new TurtleValue(new BigInteger("7"));
         ProtoBuf.TurtleValue turtleValue1 = ProtoTurtleHelper.convertToProto(turtleValue);
-        TurtleValue turtleValue2 = ProtoTurtleHelper.convertToTurtleValue(turtleValue1);
+        TurtleValue turtleValue2 = ProtoTurtleHelper.convertToDbTurtle(turtleValue1);
         Assert.assertEquals(turtleValue, turtleValue2);
     }
 }

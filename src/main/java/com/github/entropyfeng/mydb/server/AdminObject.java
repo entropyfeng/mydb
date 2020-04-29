@@ -15,9 +15,15 @@ public class AdminObject {
         this.serverDomain = serverDomain;
     }
 
+
+    public void ordinaryDump(){
+
+
+    }
+
     public void dump(){
 
-        logger.info("request dump");
+        logger.info("dump begin");
         logger.info("request complete all task in all domains .");
         ServerDomain.interrupted.set(true);
         logger.info("all queue is empty .");

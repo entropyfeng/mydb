@@ -1,11 +1,13 @@
 package com.github.entropyfeng.mydb.server;
 
+import com.github.entropyfeng.mydb.common.exception.TurtleValueElementOutBoundsException;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.server.command.ClientRequest;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelId;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.timeout.IdleStateHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,11 +72,18 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Cl
         }
         if (msg.getBeginAble()) {
             ProtoBuf.RequestHeaderPayload header = msg.getHeader();
-            requestMap.put(msg.getRequestId(), new ClientRequest(header, msg.getRequestId()));
+            ClientRequest clientRequest=new ClientRequest(header, msg.getRequestId());
+            requestMap.put(msg.getRequestId(), clientRequest);
         } else {
             ClientRequest clientRequest = requestMap.get(msg.getRequestId());
             if (clientRequest != null) {
-                clientRequest.put(msg.getBody());
+                try {
+                    clientRequest.put(msg.getBody());
+                }catch (TurtleValueElementOutBoundsException e){
+                    logger.info("turtleValue length too long at requestId ->{}",msg.getRequestId());
+                    ResServerHelper.writeOuterException(msg.getRequestId(),ctx.channel(), ProtoBuf.ExceptionType.TurtleValueElementOutBoundsException,"");
+                    requestMap.remove(msg.getRequestId());
+                }
             }
         }
     }

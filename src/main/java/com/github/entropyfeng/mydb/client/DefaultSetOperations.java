@@ -5,7 +5,6 @@ import com.github.entropyfeng.mydb.client.ops.ResponseSetOperations;
 import com.github.entropyfeng.mydb.common.ops.ISetOperations;
 import com.github.entropyfeng.mydb.common.ops.SetOperations;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
-import com.github.entropyfeng.mydb.common.protobuf.ResHelper;
 import com.github.entropyfeng.mydb.core.TurtleValue;
 import com.github.entropyfeng.mydb.core.helper.Pair;
 
