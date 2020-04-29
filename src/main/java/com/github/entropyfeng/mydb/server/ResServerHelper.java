@@ -1,5 +1,6 @@
 package com.github.entropyfeng.mydb.server;
 
+import com.github.entropyfeng.mydb.common.exception.TurtleValueElementOutBoundsException;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
 import com.github.entropyfeng.mydb.core.TurtleValue;
@@ -170,6 +171,20 @@ public class ResServerHelper {
         ArrayList<ProtoBuf.ResBody> resBodies = new ArrayList<>(0);
         return new Pair<>(headBuilder.build(), resBodies);
     }
+
+
+
+    public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> turtleValueElementOutBoundsException(String exception) {
+
+        ProtoBuf.ResHead.Builder headBuilder = ProtoBuf.ResHead.newBuilder();
+        headBuilder.setSuccess(false);
+        headBuilder.setInnerException(exception);
+        headBuilder.setInnerExceptionType(ProtoBuf.ExceptionType.TurtleValueElementOutBoundsException);
+
+        ArrayList<ProtoBuf.ResBody> resBodies = new ArrayList<>(0);
+        return new Pair<>(headBuilder.build(), resBodies);
+    }
+
 
     public static void writeOuterException(Long requestId, Channel channel, ProtoBuf.ExceptionType exceptionType, String msg) {
         ProtoBuf.ResHead.Builder headBuilder = ProtoBuf.ResHead.newBuilder();

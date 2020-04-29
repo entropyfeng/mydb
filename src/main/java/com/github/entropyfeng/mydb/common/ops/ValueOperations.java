@@ -102,17 +102,24 @@ public interface ValueOperations {
     TurtleValue get(String key);
 
 
-    TurtleValue increment(String key, Integer intValue) throws UnsupportedOperationException, NoSuchElementException;
+    /**
+     * 将key所对应的value 增加 int
+     * @param key the key
+     * @param intValue 整数值
+     * @return {@link TurtleValue}
+     * @throws UnsupportedOperationException  when operation on a byte[]
+     */
+    TurtleValue increment(String key, Integer intValue) throws UnsupportedOperationException;
 
-    TurtleValue increment(String key, Long longValue) throws UnsupportedOperationException, NoSuchElementException;
+    TurtleValue increment(String key, Long longValue) throws UnsupportedOperationException;
 
-    TurtleValue increment(String key, Double doubleValue) throws UnsupportedOperationException, NoSuchElementException;
+    TurtleValue increment(String key, Double doubleValue) throws UnsupportedOperationException;
 
-    TurtleValue increment(String key, BigInteger bigInteger) throws UnsupportedOperationException, NoSuchElementException;
+    TurtleValue increment(String key, BigInteger bigInteger) throws UnsupportedOperationException;
 
-    TurtleValue increment(String key, BigDecimal bigDecimal) throws UnsupportedOperationException, NoSuchElementException;
+    TurtleValue increment(String key, BigDecimal bigDecimal) throws UnsupportedOperationException;
 
-    void append(String key, String appendValue) throws UnsupportedOperationException, NoSuchElementException;
+    void append(String key, String appendValue) throws UnsupportedOperationException;
 
     Collection<TurtleValue> allValues();
 

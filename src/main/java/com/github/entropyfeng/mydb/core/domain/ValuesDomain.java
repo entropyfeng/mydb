@@ -2,12 +2,13 @@ package com.github.entropyfeng.mydb.core.domain;
 
 import com.github.entropyfeng.mydb.common.TurtleValueType;
 import com.github.entropyfeng.mydb.common.exception.DumpFileException;
+import com.github.entropyfeng.mydb.common.exception.TurtleValueElementOutBoundsException;
 import com.github.entropyfeng.mydb.common.ops.IValueOperations;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
-import com.github.entropyfeng.mydb.server.ResServerHelper;
 import com.github.entropyfeng.mydb.config.Constant;
 import com.github.entropyfeng.mydb.core.TurtleValue;
 import com.github.entropyfeng.mydb.core.helper.Pair;
+import com.github.entropyfeng.mydb.server.ResServerHelper;
 import com.github.entropyfeng.mydb.util.TimeUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -165,33 +166,65 @@ public class ValuesDomain extends ExpireObject implements IValueOperations {
     private @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> modifyHelper(String key, TurtleValueType type, Object value) {
         handleExpire(key);
         TurtleValue turtleValue = valueMap.get(key);
+        //if not exists key previously,set the default value
         if (turtleValue == null) {
-            return ResServerHelper.emptyRes();
-        }
-        try {
-            switch (type) {
-                case LONG:
-                    turtleValue.increment((Long) value);
-                    break;
-                case DOUBLE:
-                    turtleValue.increment((Double) value);
-                    break;
-                case INTEGER:
-                    turtleValue.increment((Integer) value);
-                    break;
-                case NUMBER_INTEGER:
-                    turtleValue.increment((BigInteger) value);
-                    break;
-                case NUMBER_DECIMAL:
-                    turtleValue.increment((BigDecimal) value);
-                    break;
-                    //默认 bytes
-                default:
-                    turtleValue.append((String) value);
+            try {
+                switch (type) {
+                    case DOUBLE:
+                        turtleValue = new TurtleValue((Double) value);
+                        break;
+                    case LONG:
+                        turtleValue = new TurtleValue((Long) value);
+                        break;
+                    case INTEGER:
+                        turtleValue = new TurtleValue((Integer) value);
+                        break;
+                    case NUMBER_INTEGER:
+                        turtleValue = new TurtleValue((BigInteger) value);
+                        break;
+                    case NUMBER_DECIMAL:
+                        turtleValue = new TurtleValue((BigDecimal) value);
+                        break;
+                    default:
+                        turtleValue = new TurtleValue((String) value);
+                }
+                valueMap.put(key, turtleValue);
+
+            } catch (TurtleValueElementOutBoundsException e) {
+
+                return ResServerHelper.turtleValueElementOutBoundsException("");
             }
-        } catch (UnsupportedOperationException e) {
-            return ResServerHelper.unsupportedOperationException(e.getMessage());
+
+        } else {
+            try {
+                switch (type) {
+                    case LONG:
+                        turtleValue.increment((Long) value);
+                        break;
+                    case DOUBLE:
+                        turtleValue.increment((Double) value);
+                        break;
+                    case INTEGER:
+                        turtleValue.increment((Integer) value);
+                        break;
+                    case NUMBER_INTEGER:
+                        turtleValue.increment((BigInteger) value);
+                        break;
+                    case NUMBER_DECIMAL:
+                        turtleValue.increment((BigDecimal) value);
+                        break;
+                    //default type---> bytes
+                    default:
+                        turtleValue.append((String) value);
+                }
+            } catch (UnsupportedOperationException e) {
+                return ResServerHelper.unsupportedOperationException(e.getMessage());
+            } catch (TurtleValueElementOutBoundsException e) {
+                return ResServerHelper.turtleValueElementOutBoundsException("");
+            }
         }
+
+
         return ResServerHelper.turtleRes(turtleValue);
     }
 
@@ -221,9 +254,9 @@ public class ValuesDomain extends ExpireObject implements IValueOperations {
     }
 
     public static ValuesDomain read(DataInputStream inputStream) throws IOException {
-        byte[] magicNumber=new byte[Constant.MAGIC_NUMBER.length];
+        byte[] magicNumber = new byte[Constant.MAGIC_NUMBER.length];
         inputStream.readFully(magicNumber);
-        if (!Arrays.equals(Constant.MAGIC_NUMBER,magicNumber)){
+        if (!Arrays.equals(Constant.MAGIC_NUMBER, magicNumber)) {
             throw new DumpFileException("error values dump file.");
         }
         int sizeMap = inputStream.readInt();
