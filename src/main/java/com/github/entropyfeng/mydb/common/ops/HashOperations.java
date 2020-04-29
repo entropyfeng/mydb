@@ -10,19 +10,19 @@ import java.util.Collection;
  */
 public interface HashOperations {
 
-    public TurtleValue get(@NotNull String key, @NotNull TurtleValue tKey);
+    TurtleValue get(@NotNull String key, @NotNull TurtleValue tKey);
 
-    public @NotNull Collection<TurtleValue> get(@NotNull String key);
+    Collection<TurtleValue> get(@NotNull String key);
 
-    public @NotNull Boolean exists(@NotNull String key, @NotNull TurtleValue tKey, TurtleValue tValue);
+    Boolean exists(@NotNull String key, @NotNull TurtleValue tKey, TurtleValue tValue);
 
-    public @NotNull Boolean exists(@NotNull String key);
+    Boolean exists(@NotNull String key);
 
-    public @NotNull Void put(@NotNull String key, @NotNull TurtleValue tKey, @NotNull TurtleValue tValue);
+    void put(@NotNull String key, @NotNull TurtleValue tKey, @NotNull TurtleValue tValue);
 
-    public @NotNull Boolean delete(@NotNull String key);
+    Boolean delete(@NotNull String key);
 
-    public @NotNull Boolean delete(@NotNull String key, @NotNull TurtleValue tKey);
+    Boolean delete(@NotNull String key, @NotNull TurtleValue tKey);
 
-    public @NotNull Integer sizeOf(@NotNull String key);
+    Integer sizeOf(@NotNull String key);
 }

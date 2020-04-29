@@ -3,7 +3,6 @@ package com.github.entropyfeng.mydb.common.ops;
 import com.github.entropyfeng.mydb.core.TurtleValue;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * @author entropyfeng
@@ -18,11 +17,11 @@ public interface OrderSetOperations {
 
     Boolean add(String key, TurtleValue value, Double score);
 
-    Long add(String key, Collection<TurtleValue> values, Collection<Double> doubles);
+    Integer add(String key, Collection<TurtleValue> values, Collection<Double> doubles);
 
     Integer count(String key, Double begin, Double end);
 
-    List<TurtleValue> range(String key, Double begin, Double end);
+    Collection<TurtleValue> range(String key, Double begin, Double end);
 
     Boolean inRange(String key, Double begin, Double end);
 
@@ -33,16 +32,6 @@ public interface OrderSetOperations {
     Boolean delete(String key, TurtleValue value);
 
     Integer delete(String key);
-
-    List<TurtleValue> union(String key, String otherKey);
-
-    List<TurtleValue> unionAndStore(String key, String otherKey);
-
-
-
-
-
-
 
 
 }

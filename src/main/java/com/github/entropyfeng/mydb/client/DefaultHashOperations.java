@@ -1,12 +1,12 @@
 package com.github.entropyfeng.mydb.client;
 
+import com.github.entropyfeng.mydb.client.conn.ClientResHelper;
 import com.github.entropyfeng.mydb.client.ops.ResponseHashOperations;
 import com.github.entropyfeng.mydb.common.ops.HashOperations;
 import com.github.entropyfeng.mydb.common.ops.IHashOperations;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
-import com.github.entropyfeng.mydb.common.protobuf.ProtoExceptionHelper;
-import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
 import com.github.entropyfeng.mydb.core.TurtleValue;
+import com.github.entropyfeng.mydb.core.helper.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -15,48 +15,65 @@ import java.util.Collection;
  * @author entropyfeng
  */
 public class DefaultHashOperations implements HashOperations {
-    
-    private IHashOperations hashOperations=new ResponseHashOperations();
+
+    private IHashOperations hashOperations = new ResponseHashOperations();
+
     @Override
     public TurtleValue get(@NotNull String key, @NotNull TurtleValue tKey) {
 
-        return null;
+        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> pair = hashOperations.get(key, tKey);
+
+        return ClientResHelper.turtleValueRes(pair);
     }
 
     @Override
-    public @NotNull Collection<TurtleValue> get(@NotNull String key) {
+    public Collection<TurtleValue> get(@NotNull String key) {
 
+        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> pair = hashOperations.get(key);
 
-        return null;
+        return ClientResHelper.turtleCollection(pair);
     }
 
     @Override
-    public @NotNull Boolean exists(@NotNull String key, @NotNull TurtleValue tKey, TurtleValue tValue) {
-        return null;
+    public Boolean exists(@NotNull String key, @NotNull TurtleValue tKey, TurtleValue tValue) {
+
+        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> pair = hashOperations.exists(key, tKey, tValue);
+
+        return ClientResHelper.boolRes(pair);
     }
 
     @Override
-    public @NotNull Boolean exists(@NotNull String key) {
-        return null;
+    public Boolean exists(@NotNull String key) {
+        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> pair = hashOperations.exists(key);
+
+        return ClientResHelper.boolRes(pair);
     }
 
     @Override
-    public @NotNull Void put(@NotNull String key, @NotNull TurtleValue tKey, @NotNull TurtleValue tValue) {
-        return null;
+    public void put(@NotNull String key, @NotNull TurtleValue tKey, @NotNull TurtleValue tValue) {
+        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> pair = hashOperations.put(key, tKey, tValue);
+
+        ClientResHelper.voidRes(pair);
     }
 
     @Override
-    public @NotNull Boolean delete(@NotNull String key) {
-        return null;
+    public Boolean delete(@NotNull String key) {
+        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> pair = hashOperations.delete(key);
+
+        return ClientResHelper.boolRes(pair);
     }
 
     @Override
-    public @NotNull Boolean delete(@NotNull String key, @NotNull TurtleValue tKey) {
-        return null;
+    public Boolean delete(@NotNull String key, @NotNull TurtleValue tKey) {
+        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> pair = hashOperations.delete(key, tKey);
+
+        return ClientResHelper.boolRes(pair);
     }
 
     @Override
-    public @NotNull Integer sizeOf(@NotNull String key) {
-        return null;
+    public Integer sizeOf(@NotNull String key) {
+        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> pair = hashOperations.sizeOf(key);
+
+        return ClientResHelper.integerRes(pair);
     }
 }

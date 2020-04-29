@@ -22,6 +22,8 @@ public class ClientExecute {
 
     public static AtomicLong requestIdPool = new AtomicLong(1);
 
+
+
     public static Pair<ResHead, Collection<ResBody>> execute(ClientCommandBuilder commandBuilder){
 
         Channel channel = TurtleClientChannelFactory.getChannel();
