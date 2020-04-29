@@ -176,6 +176,12 @@ public class OrderSetDomain implements IOrderSetOperations {
         return ResServerHelper.emptyRes();
     }
 
+    @Override
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear() {
+        hashMap.clear();
+        return ResServerHelper.emptyRes();
+    }
+
 
     public static void write(OrderSetDomain orderSetDomain, DataOutputStream outputStream) throws IOException {
 
@@ -228,6 +234,7 @@ public class OrderSetDomain implements IOrderSetOperations {
         }
         return orderSetDomain;
     }
+
 
     //----------------getter------------------
 

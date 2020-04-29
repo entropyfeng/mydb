@@ -28,4 +28,5 @@ public interface IHashOperations {
 
     @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> sizeOf(@NotNull String key);
 
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear();
 }

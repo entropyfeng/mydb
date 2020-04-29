@@ -114,10 +114,11 @@ public class ServerDomain {
         orderSetThread.start();
         adminThread.start();
 
+
     }
 
     private void runOrderSet() {
-        logger.info("runOrderSet");
+        logger.info("runOrderSet Thread");
         while (true) {
             ClientCommand orderCommand = orderSetQueue.pollFirst();
             if (orderCommand != null) {
@@ -135,7 +136,7 @@ public class ServerDomain {
 
     private void runHash() {
 
-        logger.info("runHash");
+        logger.info("runHash Thread");
         while (true) {
             ClientCommand hashCommand = hashQueue.pollFirst();
             if (hashCommand != null) {
@@ -151,7 +152,7 @@ public class ServerDomain {
     }
 
     private void runList() {
-        logger.info("runList");
+        logger.info("runList Thread");
         while (true) {
             ClientCommand listCommand = listQueue.pollFirst();
             if (listCommand != null) {
@@ -167,7 +168,7 @@ public class ServerDomain {
     }
 
     private void runValues() {
-        logger.info("runValues");
+        logger.info("runValues Thread");
         while (true) {
             ClientCommand valuesCommand = valuesQueue.pollFirst();
             if (valuesCommand != null) {
@@ -182,8 +183,25 @@ public class ServerDomain {
             }
         }
     }
+    private void runSet() {
+        logger.info("runSet Thread");
+        while (true) {
+            ClientCommand setCommand = setQueue.pollFirst();
+            if (setCommand != null) {
+                execute(setCommand, setDomain);
+            } else {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+
     private void runAdmin() {
-        logger.info("runAdmin");
+        logger.info("runAdmin Thread");
         while (true) {
             ClientCommand adminCommand = valuesQueue.pollFirst();
             if (adminCommand != null) {
@@ -199,21 +217,6 @@ public class ServerDomain {
         }
     }
 
-    private void runSet() {
-        logger.info("runSet");
-        while (true) {
-            ClientCommand setCommand = setQueue.pollFirst();
-            if (setCommand != null) {
-                execute(setCommand, setDomain);
-            } else {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
 
 
     public void execute(ICommand command, Object target) {

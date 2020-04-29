@@ -37,5 +37,6 @@ public interface IOrderSetOperations {
     @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> delete(String key);
 
 
+    @NotNull Pair<ProtoBuf.ResHead,Collection<ProtoBuf.ResBody>> clear();
 
 }

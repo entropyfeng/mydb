@@ -98,6 +98,10 @@ public class ExpireObject {
         }
     }
 
+    public void clearExpireObject(){
+        expireMap.clear();
+        expireQueue.clear();
+    }
     public Map<String, Long> getExpireMap() {
         return expireMap;
     }

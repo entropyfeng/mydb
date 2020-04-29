@@ -138,4 +138,10 @@ public class ResponseValueOperations implements IValueOperations {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "allKeys");
         return ClientExecute.execute(builder);
     }
+
+    @Override
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear() {
+        ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "clear");
+        return ClientExecute.execute(builder);
+    }
 }

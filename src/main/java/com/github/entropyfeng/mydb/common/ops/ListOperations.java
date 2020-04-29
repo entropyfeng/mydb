@@ -46,7 +46,7 @@ public interface ListOperations {
 
     void clear(String key);
 
-    void clearAll();
+    void clear();
 
     Boolean exist(String key);
 

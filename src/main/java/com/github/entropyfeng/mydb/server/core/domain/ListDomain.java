@@ -182,7 +182,7 @@ public class ListDomain implements IListOperations {
     }
 
     @Override
-    public @NotNull  Pair<ResHead, Collection<ResBody>> clearAll() {
+    public @NotNull  Pair<ResHead, Collection<ResBody>> clear() {
         listMap.clear();
         return ResServerHelper.emptyRes();
     }
@@ -250,6 +250,7 @@ public class ListDomain implements IListOperations {
         }
         return listDomain;
     }
+
 
     //------------------getter-------------------
 

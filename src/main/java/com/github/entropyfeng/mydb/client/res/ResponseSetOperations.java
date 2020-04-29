@@ -112,4 +112,11 @@ public class ResponseSetOperations implements ISetOperations {
         builder.addStringPara(key);
         return ClientExecute.execute(builder);
     }
+
+    @Override
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear() {
+        ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "clear");
+        return ClientExecute.execute(builder);
+
+    }
 }

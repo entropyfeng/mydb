@@ -115,7 +115,11 @@ public class SetDomain implements ISetOperations, Serializable {
         }
     }
 
-
+    @Override
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear(){
+        setHashMap.clear();
+        return ResServerHelper.emptyRes();
+    }
     private void createIfNotExists(String key) {
         setHashMap.computeIfAbsent(key, k -> new HashSet<>());
     }
@@ -215,6 +219,9 @@ public class SetDomain implements ISetOperations, Serializable {
         }
         return setDomain;
     }
+
+
+    //--------------------getter---------------
 
     public HashMap<String, HashSet<TurtleValue>> getSetHashMap() {
         return setHashMap;

@@ -1,7 +1,11 @@
 package com.github.entropyfeng.mydb.server;
 
+import com.github.entropyfeng.mydb.common.Pair;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
 
 /**
  * @author entropyfeng
@@ -15,6 +19,17 @@ public class AdminObject {
         this.serverDomain = serverDomain;
     }
 
+
+    Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear(){
+
+        serverDomain.valuesDomain.clear();
+        serverDomain.listDomain.clear();
+        serverDomain.setDomain.clear();
+        serverDomain.orderSetDomain.clear();
+        serverDomain.hashDomain.clear();
+
+        return ResServerHelper.emptyRes();
+    }
 
 
     public void ordinaryDump(){

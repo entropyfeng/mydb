@@ -82,4 +82,6 @@ public interface IValueOperations {
     @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> allEntries();
 
     @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> allKeys();
+
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear();
 }

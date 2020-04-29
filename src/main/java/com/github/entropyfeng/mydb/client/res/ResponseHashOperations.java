@@ -80,4 +80,10 @@ public class ResponseHashOperations implements IHashOperations {
         builder.addStringPara(key);
         return ClientExecute.execute(builder);
     }
+
+    @Override
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear() {
+        ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.HASH, "clear");
+        return ClientExecute.execute(builder);
+    }
 }

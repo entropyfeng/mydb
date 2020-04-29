@@ -22,6 +22,8 @@ public class ResServerHelper {
 
     public static final ProtoBuf.ResHead EMPTY_HEAD = ProtoBuf.ResHead.newBuilder().setSuccess(true).setResSize(0).build();
 
+    public static final Collection<ProtoBuf.ResBody> EMPTY_COLLECTION=new ArrayList<>(0);
+
     public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> boolRes(boolean value) {
 
         ProtoBuf.ResBody.Builder bodyBuilder = ProtoBuf.ResBody.newBuilder();
@@ -34,10 +36,7 @@ public class ResServerHelper {
 
     public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> emptyRes() {
 
-        ProtoBuf.ResBody.Builder bodyBuilder = ProtoBuf.ResBody.newBuilder();
-        ArrayList<ProtoBuf.ResBody> resBodies = new ArrayList<>(0);
-        return new Pair<>(EMPTY_HEAD, resBodies);
-
+        return new Pair<>(EMPTY_HEAD, EMPTY_COLLECTION);
     }
 
     public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> intRes(int intValue) {
@@ -206,4 +205,6 @@ public class ResServerHelper {
         channel.write(resBuilder.build());
         channel.flush();
     }
+
+
 }

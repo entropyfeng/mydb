@@ -150,8 +150,8 @@ public class ResponseListOperations implements IListOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clearAll() {
-        ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.LIST, "clearAll");
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear() {
+        ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.LIST, "clear");
         builder.setModifyAble(true);
         return ClientExecute.execute(builder);
     }

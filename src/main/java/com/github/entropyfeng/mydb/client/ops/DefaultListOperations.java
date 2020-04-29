@@ -112,8 +112,8 @@ public class DefaultListOperations implements ListOperations {
     }
 
     @Override
-    public void clearAll() {
-        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> pair = listOperations.clearAll();
+    public void clear() {
+        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> pair = listOperations.clear();
         ClientResHelper.voidRes(pair);
     }
 

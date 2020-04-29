@@ -227,7 +227,12 @@ public class ValuesDomain extends ExpireObject implements IValueOperations {
 
         return ResServerHelper.turtleRes(turtleValue);
     }
-
+    @Override
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear(){
+        valueMap.clear();
+        super.clearExpireObject();
+        return ResServerHelper.emptyRes();
+    }
 
     public static void write(ValuesDomain valuesDomain, DataOutputStream outputStream) throws IOException {
 
@@ -286,6 +291,7 @@ public class ValuesDomain extends ExpireObject implements IValueOperations {
 
         return valuesDomain;
     }
+
 
 
     //-------------------------getter--------------------------

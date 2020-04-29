@@ -110,6 +110,11 @@ public class HashDomain implements IHashOperations {
         }
     }
 
+    @Override
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear() {
+        hashMap.clear();
+        return ResServerHelper.emptyRes();
+    }
 
 
     private void createIfNotExist(String key){

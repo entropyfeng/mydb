@@ -49,7 +49,7 @@ public interface IListOperations {
 
     @NotNull  Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear(String key);
 
-    @NotNull  Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clearAll();
+    @NotNull  Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear();
 
     @NotNull  Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exist(String key);
 

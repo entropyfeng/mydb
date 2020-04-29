@@ -7,6 +7,7 @@ import com.github.entropyfeng.mydb.common.ops.IOrderSetOperations;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.common.Pair;
+import com.github.entropyfeng.mydb.server.command.ClientCommand;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -131,6 +132,12 @@ public class ResponseOrderSetOperations implements IOrderSetOperations {
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> delete(String key) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.ZSET, "delete");
         builder.addStringPara(key);
+        return ClientExecute.execute(builder);
+    }
+
+    @Override
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear() {
+        ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.ZSET, "clear");
         return ClientExecute.execute(builder);
     }
 }
