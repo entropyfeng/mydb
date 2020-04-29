@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author entropyfeng
@@ -15,12 +16,17 @@ public class AdminObject {
 
     private ServerDomain serverDomain;
 
-    public AdminObject(ServerDomain serverDomain) {
+    private AtomicBoolean runningFlag;
+
+    public AdminObject(ServerDomain serverDomain,AtomicBoolean runningFlag) {
         this.serverDomain = serverDomain;
+        this.runningFlag=runningFlag;
     }
 
 
     Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear(){
+
+
 
         serverDomain.valuesDomain.clear();
         serverDomain.listDomain.clear();

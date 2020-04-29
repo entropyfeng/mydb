@@ -1,24 +1,20 @@
 package com.github.entropyfeng.mydb.server;
 
 import com.github.entropyfeng.mydb.config.ServerStatus;
+import com.github.entropyfeng.mydb.server.consumer.*;
 import com.github.entropyfeng.mydb.server.core.domain.*;
-import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.server.core.zset.OrderSet;
 import com.github.entropyfeng.mydb.server.command.ClientCommand;
 import com.github.entropyfeng.mydb.server.command.ClientRequest;
-import com.github.entropyfeng.mydb.server.command.ICommand;
 import com.github.entropyfeng.mydb.server.factory.*;
 import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.*;
+import static com.github.entropyfeng.mydb.server.command.ServerExecute.constructCommand;
 
 
 /**
@@ -35,9 +31,10 @@ public class ServerDomain {
 
     public static AtomicBoolean interrupted = new AtomicBoolean(false);
 
+    public AtomicBoolean runningFlag=new AtomicBoolean(true);
     public ServerDomain() {
 
-        this.adminObject = new AdminObject(this);
+        this.adminObject = new AdminObject(this,runningFlag);
 
         this.valuesDomain = new ValuesDomain();
         this.listDomain = new ListDomain();
@@ -53,7 +50,7 @@ public class ServerDomain {
 
     public ServerDomain(ValuesDomain valuesDomain, ListDomain listDomain, SetDomain setDomain, HashDomain hashDomain, OrderSetDomain orderSetDomain) {
 
-        this.adminObject = new AdminObject(this);
+        this.adminObject = new AdminObject(this,runningFlag);
 
         this.valuesDomain = valuesDomain;
         this.listDomain = listDomain;
@@ -78,17 +75,18 @@ public class ServerDomain {
 
     protected OrderSetDomain orderSetDomain;
 
-    protected ConcurrentLinkedDeque<ClientCommand> valuesQueue;
 
-    protected ConcurrentLinkedDeque<ClientCommand> listQueue;
+    protected ConcurrentLinkedQueue<ClientCommand> valuesQueue;
 
-    protected ConcurrentLinkedDeque<ClientCommand> setQueue;
+    protected ConcurrentLinkedQueue<ClientCommand> listQueue;
 
-    protected ConcurrentLinkedDeque<ClientCommand> hashQueue;
+    protected ConcurrentLinkedQueue<ClientCommand> setQueue;
 
-    protected ConcurrentLinkedDeque<ClientCommand> orderSetQueue;
+    protected ConcurrentLinkedQueue<ClientCommand> hashQueue;
 
-    protected ConcurrentLinkedDeque<ClientCommand> adminQueue;
+    protected ConcurrentLinkedQueue<ClientCommand> orderSetQueue;
+
+    protected ConcurrentLinkedQueue<ClientCommand> adminQueue;
     protected Thread valueThread;
     protected Thread listThread;
     protected Thread setThread;
@@ -99,13 +97,14 @@ public class ServerDomain {
 
     public void start() {
 
-        valueThread = new ValuesThreadFactory().newThread(this::runValues);
-        listThread = new ListThreadFactory().newThread(this::runList);
-        setThread = new SetThreadFactory().newThread(this::runSet);
-        hashThread = new HashThreadFactory().newThread(this::runHash);
-        orderSetThread = new OrderSetThreadFactory().newThread(this::runOrderSet);
+        valueThread = new ValuesThreadFactory().newThread(new ValuesConsumer(runningFlag,valuesDomain,valuesQueue));
+        listThread = new ListThreadFactory().newThread(new ListConsumer(runningFlag,listDomain,listQueue));
+        setThread = new SetThreadFactory().newThread(new SetConsumer(runningFlag,setDomain,setQueue));
+        hashThread = new HashThreadFactory().newThread(new HashConsumer(runningFlag,hashDomain,hashQueue));
+        orderSetThread = new OrderSetThreadFactory().newThread(new OrderSetConsumer(runningFlag,orderSetDomain,orderSetQueue));
 
         adminThread=new AdminThreadFactory().newThread(this::runAdmin);
+
 
         valueThread.start();
         listThread.start();
@@ -117,179 +116,21 @@ public class ServerDomain {
 
     }
 
-    private void runOrderSet() {
-        logger.info("runOrderSet Thread");
-        while (true) {
-            ClientCommand orderCommand = orderSetQueue.pollFirst();
-            if (orderCommand != null) {
-                execute(orderCommand, orderSetDomain);
-            } else {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
 
-
-    private void runHash() {
-
-        logger.info("runHash Thread");
-        while (true) {
-            ClientCommand hashCommand = hashQueue.pollFirst();
-            if (hashCommand != null) {
-                execute(hashCommand, hashDomain);
-            } else {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    private void runList() {
-        logger.info("runList Thread");
-        while (true) {
-            ClientCommand listCommand = listQueue.pollFirst();
-            if (listCommand != null) {
-                execute(listCommand, listDomain);
-            } else {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    private void runValues() {
-        logger.info("runValues Thread");
-        while (true) {
-            ClientCommand valuesCommand = valuesQueue.pollFirst();
-            if (valuesCommand != null) {
-
-                execute(valuesCommand, valuesDomain);
-            } else {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-    private void runSet() {
-        logger.info("runSet Thread");
-        while (true) {
-            ClientCommand setCommand = setQueue.pollFirst();
-            if (setCommand != null) {
-                execute(setCommand, setDomain);
-            } else {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
 
 
     private void runAdmin() {
         logger.info("runAdmin Thread");
-        while (true) {
-            ClientCommand adminCommand = valuesQueue.pollFirst();
-            if (adminCommand != null) {
 
-                execute(adminCommand, adminObject);
-            } else {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
 
 
-
-    public void execute(ICommand command, Object target) {
-        Object res;
-        try {
-            if (command.getValues().size() == 0) {
-                res = command.getMethod().invoke(target);
-            } else {
-
-                res = command.getMethod().invoke(target, command.getValues().toArray(new Object[0]));
-            }
-        } catch (IllegalAccessException e) {
-            exceptionWrite(command.getChannel(), command.getRequestId(), ExceptionType.IllegalAccessException, "禁止访问" + e.getMessage());
-            return;
-        } catch (InvocationTargetException e) {
-            //调用函数的内部有未捕获的异常
-            exceptionWrite(command.getChannel(), command.getRequestId(), ExceptionType.InvocationTargetException, e.getMessage());
-            return;
-        }
-
-        Pair<ResHead, Collection<ResBody>> pair = ((Pair<ResHead, Collection<ResBody>>) res);
-
-        writeChannel(pair, command.getChannel(), command.getRequestId());
-    }
-
-    private void exceptionWrite(Channel channel, Long requestId, ExceptionType exceptionType, String msg) {
-        ResHead.Builder headBuilder = ResHead.newBuilder();
-        headBuilder.setSuccess(false);
-        headBuilder.setResSize(0);
-        headBuilder.setInnerException(msg);
-        headBuilder.setInnerExceptionType(exceptionType);
-
-        ResponseData.Builder resDataBuilder = ResponseData.newBuilder().setRequestId(requestId).setHeader(headBuilder.build());
-
-        channel.write(resDataBuilder.build());
-        resDataBuilder.clear().setEndAble(true).setRequestId(requestId);
-        channel.write(resDataBuilder.build());
-        channel.flush();
-    }
-
-    private void writeChannel(Pair<ResHead, Collection<ResBody>> pair, Channel channel, Long requestId) {
-
-
-        logger.info("writeChannel requestId ->{} ; ",requestId);
-
-
-        //-----------header-------------------------
-        ResponseData.Builder responseBuilder = ResponseData.newBuilder();
-        responseBuilder.setHeader(pair.getKey());
-        responseBuilder.setBeginAble(true);
-        responseBuilder.setEndAble(false);
-        responseBuilder.setRequestId(requestId);
-        logger.info(pair.getKey().getSuccess()+"");
-        channel.write(responseBuilder.build());
-
-
-        //-----------body---------------------------
-        responseBuilder.clear();
-        responseBuilder.setRequestId(requestId);
-        responseBuilder.setEndAble(false);
-        responseBuilder.setBeginAble(false);
-        logger.info("body size {}",pair.getValue().size());
-        pair.getValue().forEach(resBody -> channel.write(responseBuilder.setBody(resBody).build()));
-
-
-        //---------------end------------------
-        responseBuilder.clear();
-        responseBuilder.setRequestId(requestId);
-        responseBuilder.setEndAble(true);
-        responseBuilder.setBeginAble(false);
-        logger.info(responseBuilder.build().toString());
-        channel.write(responseBuilder.build());
-        channel.flush();
+    private void notifyAllDomain(){
+        this.valueThread.notify();
+        this.setThread.notify();
+        this.hashThread.notify();
+        this.listThread.notify();
+        this.orderSetThread.notify();
     }
 
 
@@ -300,7 +141,7 @@ public class ServerDomain {
                 constructCommand(clientRequest, channel, ValuesDomain.class, valuesQueue);
                 return;
             case ADMIN:
-                constructCommand(clientRequest,channel,AdminObject.class,adminQueue);
+                constructCommand(clientRequest,channel, AdminObject.class,adminQueue);
                 return;
             case LIST:
                 constructCommand(clientRequest, channel, ListDomain.class, listQueue);
@@ -319,35 +160,15 @@ public class ServerDomain {
         }
     }
 
-    private void constructCommand(ClientRequest clientRequest, Channel channel, Class<?> target, ConcurrentLinkedDeque<ClientCommand> queue) {
-        Method method;
-        final String operationName = clientRequest.getOperationName();
-        final Long requestId = clientRequest.getRequestId();
-        final Class<?>[] types = clientRequest.getTypes();
 
-        try {
-            if (types.length == 0) {
-                method = target.getDeclaredMethod(operationName);
-            } else {
-                method = target.getDeclaredMethod(operationName, types);
-            }
-        } catch (NoSuchMethodException e) {
-            logger.info(e.getMessage());
-            exceptionWrite(channel, requestId, ExceptionType.NoSuchMethodException, e.getMessage());
-            return;
-        }
-
-        queue.offer(new ClientCommand(method, clientRequest.getObjects(), channel, requestId));
-
-    }
 
     private void constructQueue() {
-        this.valuesQueue = new ConcurrentLinkedDeque<>();
-        this.listQueue = new ConcurrentLinkedDeque<>();
-        this.setQueue = new ConcurrentLinkedDeque<>();
-        this.hashQueue = new ConcurrentLinkedDeque<>();
-        this.orderSetQueue = new ConcurrentLinkedDeque<>();
+        this.valuesQueue = new ConcurrentLinkedQueue<>();
+        this.listQueue = new ConcurrentLinkedQueue<>();
+        this.setQueue = new ConcurrentLinkedQueue<>();
+        this.hashQueue = new ConcurrentLinkedQueue<>();
+        this.orderSetQueue = new ConcurrentLinkedQueue<>();
 
-        this.adminQueue = new ConcurrentLinkedDeque<>();
+        this.adminQueue = new ConcurrentLinkedQueue<>();
     }
 }
