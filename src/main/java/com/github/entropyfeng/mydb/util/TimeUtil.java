@@ -1,5 +1,7 @@
 package com.github.entropyfeng.mydb.util;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * @author entropyfeng
  * 时间工具类
@@ -10,8 +12,8 @@ public class TimeUtil {
      * @param time 时间戳毫秒单位
      * @return true->已过期； false->未过期
      */
-    public static boolean isExpire(Long time) {
-        return time!=null&&time < EfficientSystemClock.now();
+    public static boolean isExpire(@NotNull Long time) {
+        return time < EfficientSystemClock.now();
     }
 
     /**

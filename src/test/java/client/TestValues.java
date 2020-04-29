@@ -16,16 +16,9 @@ public class TestValues {
     public void testSingle() {
 
         ResponseDataTemplate template = new ResponseDataTemplate();
-        Pair<ResHead, Collection<ResBody>> pair = template.opsForValues().set("10086", new TurtleValue(1008611));
+        Pair<ResHead, Collection<ResBody>> pair = template.opsForValues().set("10086", new TurtleValue(1008611),0L);
 
         Assert.assertTrue(pair.getKey().getSuccess());
-    }
-
-
-    @Test
-    public void testGetCollection() {
-
-
     }
 
 }

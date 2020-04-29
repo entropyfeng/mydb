@@ -16,6 +16,7 @@ public class ProtoExceptionHelper {
         switch (type){
             case NoSuchMethodException:
             case IllegalAccessException:
+                //the program occur the design error
             case TurtleDesignError:
                 throw new Error(msg);
             case NullPointerException:throw new NullPointerException(msg);

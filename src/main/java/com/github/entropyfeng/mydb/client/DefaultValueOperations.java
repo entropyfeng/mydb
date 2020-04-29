@@ -17,6 +17,8 @@ import java.util.NoSuchElementException;
 
 /**
  * @author entropyfeng
+ *
+ * all res type is nullable
  */
 public class DefaultValueOperations implements ValueOperations {
     private IValueOperations valueOperations = new ResponseValueOperations();

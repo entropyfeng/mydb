@@ -21,7 +21,7 @@ public interface IValueOperations {
      * @param key   {@link String}
      * @param value 值{@link TurtleValue}
      * @param time  过期时间
-     * @throws ElementOutOfBoundException
+     * @throws ElementOutOfBoundException when current mapSize>=Integer.MAX will throw this exception
      */
     @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> set(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time);
 

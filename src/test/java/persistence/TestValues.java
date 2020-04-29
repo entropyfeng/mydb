@@ -18,9 +18,8 @@ public class TestValues {
 
         ValuesDomain valuesDomain=new ValuesDomain();
         for (int i = 0; i <1000 ; i++) {
-            valuesDomain.set(i+"",new TurtleValue(i));
+            valuesDomain.set(i+"",new TurtleValue(i),0L);
         }
-
 
         FileOutputStream fileOutputStream = new FileOutputStream("./testValues");
         DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
@@ -42,7 +41,7 @@ public class TestValues {
         int limit=10000000;
         for (int i = 0; i <limit ; i++) {
             if (i%2==0){
-                valuesDomain.set(i+"",new TurtleValue(i));
+                valuesDomain.set(i+"",new TurtleValue(i),0L);
             }else {
                 valuesDomain.set(i+"",new TurtleValue(i),System.currentTimeMillis());
             }
