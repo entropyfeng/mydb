@@ -1,6 +1,6 @@
 package client;
 
-import com.github.entropyfeng.mydb.client.ResponseDataTemplate;
+import com.github.entropyfeng.mydb.client.res.ResponseDataTemplate;
 import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.common.Pair;
 import org.junit.Assert;

@@ -1,4 +1,4 @@
-package com.github.entropyfeng.mydb.client;
+package com.github.entropyfeng.mydb.client.handler;
 
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import io.netty.channel.Channel;

@@ -1,4 +1,4 @@
-package com.github.entropyfeng.mydb.client;
+package com.github.entropyfeng.mydb.client.ops;
 
 import com.github.entropyfeng.mydb.common.ops.*;
 

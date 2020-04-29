@@ -1,7 +1,7 @@
-package com.github.entropyfeng.mydb.client;
+package com.github.entropyfeng.mydb.client.ops;
 
 import com.github.entropyfeng.mydb.client.conn.ClientResHelper;
-import com.github.entropyfeng.mydb.client.ops.ResponseValueOperations;
+import com.github.entropyfeng.mydb.client.res.ResponseValueOperations;
 import com.github.entropyfeng.mydb.common.exception.ElementOutOfBoundException;
 import com.github.entropyfeng.mydb.common.ops.IValueOperations;
 import com.github.entropyfeng.mydb.common.ops.ValueOperations;

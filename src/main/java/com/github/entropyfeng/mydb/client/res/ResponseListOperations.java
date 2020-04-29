@@ -1,4 +1,4 @@
-package com.github.entropyfeng.mydb.client.ops;
+package com.github.entropyfeng.mydb.client.res;
 
 import com.github.entropyfeng.mydb.client.ClientCommandBuilder;
 import com.github.entropyfeng.mydb.client.conn.ClientExecute;

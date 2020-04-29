@@ -1,7 +1,7 @@
-package com.github.entropyfeng.mydb.client;
+package com.github.entropyfeng.mydb.client.ops;
 
 import com.github.entropyfeng.mydb.client.conn.ClientResHelper;
-import com.github.entropyfeng.mydb.client.ops.ResponseHashOperations;
+import com.github.entropyfeng.mydb.client.res.ResponseHashOperations;
 import com.github.entropyfeng.mydb.common.ops.HashOperations;
 import com.github.entropyfeng.mydb.common.ops.IHashOperations;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;

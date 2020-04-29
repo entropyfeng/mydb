@@ -1,7 +1,7 @@
-package com.github.entropyfeng.mydb.client;
+package com.github.entropyfeng.mydb.client.ops;
 
 import com.github.entropyfeng.mydb.client.conn.ClientResHelper;
-import com.github.entropyfeng.mydb.client.ops.ResponseOrderSetOperations;
+import com.github.entropyfeng.mydb.client.res.ResponseOrderSetOperations;
 import com.github.entropyfeng.mydb.common.ops.IOrderSetOperations;
 import com.github.entropyfeng.mydb.common.ops.OrderSetOperations;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
