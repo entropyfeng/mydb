@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.github.entropyfeng.mydb.server.command.ServerExecute.execute;
 
 /**
  * @author entropyfeng
@@ -33,25 +32,7 @@ public class ValuesConsumer implements Runnable {
     @Override
     public void run() {
         logger.info("run values Thread");
-        while (true) {
-            while (runningFlag.get()) {
-                ClientCommand valuesCommand = queue.poll();
-                if (valuesCommand != null) {
-                    execute(valuesCommand, valuesDomain);
-
-                } else {
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        logger.info(e.getMessage());
-                    }
-                }
-            }
-            try {
-                Thread.currentThread().wait();
-            } catch (InterruptedException e) {
-                logger.info(e.getMessage());
-            }
-        }
+        new ConsumerLoop().loop(runningFlag,valuesDomain,queue);
     }
 }
+

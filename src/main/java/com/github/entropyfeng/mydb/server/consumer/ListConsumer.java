@@ -2,7 +2,6 @@ package com.github.entropyfeng.mydb.server.consumer;
 
 import com.github.entropyfeng.mydb.server.command.ClientCommand;
 import com.github.entropyfeng.mydb.server.core.domain.ListDomain;
-import com.github.entropyfeng.mydb.server.core.domain.ValuesDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,9 +13,9 @@ import static com.github.entropyfeng.mydb.server.command.ServerExecute.execute;
 /**
  * @author entropyfeng
  */
-public class ListConsumer implements Runnable  {
+public class ListConsumer implements Runnable {
 
-    private static final Logger logger= LoggerFactory.getLogger(ListConsumer.class);
+    private static final Logger logger = LoggerFactory.getLogger(ListConsumer.class);
     private AtomicBoolean runningFlag;
     private ListDomain domain;
     private ConcurrentLinkedQueue<ClientCommand> queue;
@@ -30,19 +29,6 @@ public class ListConsumer implements Runnable  {
     @Override
     public void run() {
         logger.info("run list Thread");
-        while (true){
-            while (runningFlag.get()){
-                ClientCommand valuesCommand = queue.poll();
-                if (valuesCommand != null) {
-                    execute(valuesCommand, domain);
-                } else {
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
+        new ConsumerLoop().loop(runningFlag,domain,queue);
     }
 }

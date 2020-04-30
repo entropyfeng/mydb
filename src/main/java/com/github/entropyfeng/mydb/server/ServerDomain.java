@@ -31,10 +31,15 @@ public class ServerDomain {
 
     public static AtomicBoolean interrupted = new AtomicBoolean(false);
 
-    public AtomicBoolean runningFlag=new AtomicBoolean(true);
+
+    public AtomicBoolean valuesRunningFlag=new AtomicBoolean(true);
+    public AtomicBoolean listRunningFlag=new AtomicBoolean(true);
+    public AtomicBoolean setRunningFlag=new AtomicBoolean(true);
+    public AtomicBoolean hashRunningFlag=new AtomicBoolean(true);
+    public AtomicBoolean orderSetRunningFlag=new AtomicBoolean(true);
     public ServerDomain() {
 
-        this.adminObject = new AdminObject(this,runningFlag);
+        this.adminObject = new AdminObject(this);
 
         this.valuesDomain = new ValuesDomain();
         this.listDomain = new ListDomain();
@@ -43,14 +48,13 @@ public class ServerDomain {
         this.orderSetDomain = new OrderSetDomain();
 
         constructQueue();
-
         start();
     }
 
 
     public ServerDomain(ValuesDomain valuesDomain, ListDomain listDomain, SetDomain setDomain, HashDomain hashDomain, OrderSetDomain orderSetDomain) {
 
-        this.adminObject = new AdminObject(this,runningFlag);
+        this.adminObject = new AdminObject(this);
 
         this.valuesDomain = valuesDomain;
         this.listDomain = listDomain;
@@ -97,11 +101,11 @@ public class ServerDomain {
 
     public void start() {
 
-        valueThread = new ValuesThreadFactory().newThread(new ValuesConsumer(runningFlag,valuesDomain,valuesQueue));
-        listThread = new ListThreadFactory().newThread(new ListConsumer(runningFlag,listDomain,listQueue));
-        setThread = new SetThreadFactory().newThread(new SetConsumer(runningFlag,setDomain,setQueue));
-        hashThread = new HashThreadFactory().newThread(new HashConsumer(runningFlag,hashDomain,hashQueue));
-        orderSetThread = new OrderSetThreadFactory().newThread(new OrderSetConsumer(runningFlag,orderSetDomain,orderSetQueue));
+        valueThread = new ValuesThreadFactory().newThread(new ValuesConsumer(valuesRunningFlag,valuesDomain,valuesQueue));
+        listThread = new ListThreadFactory().newThread(new ListConsumer(listRunningFlag,listDomain,listQueue));
+        setThread = new SetThreadFactory().newThread(new SetConsumer(setRunningFlag,setDomain,setQueue));
+        hashThread = new HashThreadFactory().newThread(new HashConsumer(hashRunningFlag,hashDomain,hashQueue));
+        orderSetThread = new OrderSetThreadFactory().newThread(new OrderSetConsumer(orderSetRunningFlag,orderSetDomain,orderSetQueue));
 
         adminThread=new AdminThreadFactory().newThread(new AdminConsumer(adminObject,adminQueue));
 
@@ -136,24 +140,39 @@ public class ServerDomain {
         switch (clientRequest.getModel()) {
             case VALUE:
                 constructCommand(clientRequest, channel, ValuesDomain.class, valuesQueue);
+                if (!valuesRunningFlag.get()){
+                    valueThread.notify();
+                }
                 return;
             case ADMIN:
                 constructCommand(clientRequest,channel, AdminObject.class,adminQueue);
                 return;
             case LIST:
                 constructCommand(clientRequest, channel, ListDomain.class, listQueue);
+                if (!listRunningFlag.get()){
+                    listThread.notify();
+                }
                 return;
             case SET:
                 constructCommand(clientRequest, channel, SetDomain.class, setQueue);
+                if (!setRunningFlag.get()){
+                    setThread.notify();
+                }
                 return;
             case HASH:
                 constructCommand(clientRequest, channel, HashDomain.class, hashQueue);
+                if (!hashRunningFlag.get()){
+                    hashThread.notify();;
+                }
                 return;
             case ZSET:
                 constructCommand(clientRequest, channel, OrderSet.class, orderSetQueue);
+                if (!orderSetRunningFlag.get()){
+                    orderSetRunningFlag.get();
+                }
                 return;
             default:
-                throw new UnsupportedOperationException();
+                logger.error("unSupport mode {}",clientRequest.getModel());
         }
     }
 

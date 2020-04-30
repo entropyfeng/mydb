@@ -22,52 +22,44 @@ public class AdminObject {
 
     private ServerDomain serverDomain;
 
-    private AtomicBoolean runningFlag;
 
-    public AdminObject(ServerDomain serverDomain,AtomicBoolean runningFlag) {
+    public AdminObject(ServerDomain serverDomain) {
         this.serverDomain = serverDomain;
-        this.runningFlag=runningFlag;
     }
 
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> lazyClear(){
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> lazyClear() {
         try {
-          Method valuesMethod=  ValuesDomain.class.getMethod("clear");
-          Method listMethod= ListDomain.class.getMethod("clear");
-          Method setMethod=ListDomain.class.getMethod("clear");
-          Method hashMethod=ListDomain.class.getMethod("clear");
-          Method orderSetMethod= OrderSetDomain.class.getMethod("clear");
-            serverDomain.valuesQueue.add(new ClientCommand(valuesMethod,null,null,null));
-            serverDomain.listQueue.add(new ClientCommand(listMethod,null,null,null));
-            serverDomain.setQueue.add(new ClientCommand(setMethod,null,null,null));
-            serverDomain.hashQueue.add(new ClientCommand(hashMethod,null,null,null));
-            serverDomain.orderSetQueue.add(new ClientCommand(orderSetMethod,null,null,null));
+            Method valuesMethod = ValuesDomain.class.getMethod("clear");
+            Method listMethod = ListDomain.class.getMethod("clear");
+            Method setMethod = ListDomain.class.getMethod("clear");
+            Method hashMethod = ListDomain.class.getMethod("clear");
+            Method orderSetMethod = OrderSetDomain.class.getMethod("clear");
+            doAllDomains(valuesMethod, listMethod, setMethod, hashMethod, orderSetMethod);
         } catch (NoSuchMethodException e) {
-            logger.error("not find method->{}",e.getMessage());
+            logger.error("not find method->{}", e.getMessage());
         }
 
         return ResServerHelper.emptyRes();
     }
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> lazyDump(){
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> lazyDump() {
         try {
-            Method valuesMethod=  ValuesDomain.class.getMethod("");
-            Method listMethod= ListDomain.class.getMethod("clear");
-            Method setMethod=ListDomain.class.getMethod("clear");
-            Method hashMethod=ListDomain.class.getMethod("clear");
-            Method orderSetMethod= OrderSetDomain.class.getMethod("clear");
-            serverDomain.valuesQueue.add(new ClientCommand(valuesMethod,null,null,null));
-            serverDomain.listQueue.add(new ClientCommand(listMethod,null,null,null));
-            serverDomain.setQueue.add(new ClientCommand(setMethod,null,null,null));
-            serverDomain.hashQueue.add(new ClientCommand(hashMethod,null,null,null));
-            serverDomain.orderSetQueue.add(new ClientCommand(orderSetMethod,null,null,null));
+            Method valuesMethod = ValuesDomain.class.getMethod("dump");
+            Method listMethod = ListDomain.class.getMethod("dump");
+            Method setMethod = ListDomain.class.getMethod("dump");
+            Method hashMethod = ListDomain.class.getMethod("dump");
+            Method orderSetMethod = OrderSetDomain.class.getMethod("dump");
+            doAllDomains(valuesMethod, listMethod, setMethod, hashMethod, orderSetMethod);
         } catch (NoSuchMethodException e) {
-            logger.error("not find method->{}",e.getMessage());
+            logger.error("not find method->{}", e.getMessage());
         }
 
         return ResServerHelper.emptyRes();
     }
-    Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear(){
+
+    Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear() {
+
 
 
 
@@ -77,16 +69,11 @@ public class AdminObject {
         serverDomain.orderSetDomain.clear();
         serverDomain.hashDomain.clear();
 
+
         return ResServerHelper.emptyRes();
     }
 
-
-    public void ordinaryDump(){
-
-
-    }
-
-    public void dump(){
+    public void dump() {
 
         logger.info("dump begin");
         logger.info("request complete all task in all domains .");
@@ -98,4 +85,12 @@ public class AdminObject {
 
     }
 
+
+    private void doAllDomains(Method valuesMethod, Method listMethod, Method setMethod, Method hashMethod, Method orderSetMethod) {
+        serverDomain.valuesQueue.add(new ClientCommand(valuesMethod, null, null, null));
+        serverDomain.listQueue.add(new ClientCommand(listMethod, null, null, null));
+        serverDomain.setQueue.add(new ClientCommand(setMethod, null, null, null));
+        serverDomain.hashQueue.add(new ClientCommand(hashMethod, null, null, null));
+        serverDomain.orderSetQueue.add(new ClientCommand(orderSetMethod, null, null, null));
+    }
 }

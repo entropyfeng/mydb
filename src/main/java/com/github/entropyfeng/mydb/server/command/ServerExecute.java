@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -32,7 +31,7 @@ public class ServerExecute {
                 method = target.getDeclaredMethod(operationName, types);
             }
         } catch (NoSuchMethodException e) {
-            logger.info(e.getMessage());
+            logger.error(e.getMessage());
             exceptionWrite(channel, requestId, ProtoBuf.ExceptionType.NoSuchMethodException, e.getMessage());
             return;
         }
@@ -78,6 +77,7 @@ public class ServerExecute {
 
 
 
+    @SuppressWarnings("unchecked")
     public static void  execute(ICommand command, Object target) {
         Object res;
         try {
