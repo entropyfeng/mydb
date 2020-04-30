@@ -1,7 +1,9 @@
 package com.github.entropyfeng.mydb.server;
 
-import com.github.entropyfeng.mydb.config.CommonConfig;
-import com.github.entropyfeng.mydb.config.Constant;
+import com.github.entropyfeng.mydb.common.Pair;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
+import com.github.entropyfeng.mydb.server.config.ServerConfig;
+import com.github.entropyfeng.mydb.server.config.Constant;
 import com.github.entropyfeng.mydb.server.core.domain.*;
 import com.github.entropyfeng.mydb.server.persistence.*;
 import org.jetbrains.annotations.NotNull;
@@ -10,10 +12,10 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.Collection;
 import java.util.concurrent.*;
 import java.util.regex.Pattern;
 
-import static com.github.entropyfeng.mydb.config.Constant.BACK_UP_PATH_NAME;
 import static java.util.regex.Pattern.compile;
 
 /**
@@ -25,23 +27,16 @@ public class PersistenceHelper {
 
     public static void dumpAll(ServerDomain serverDomain) {
 
-        String filePath = CommonConfig.getProperties().getProperty(BACK_UP_PATH_NAME);
-        String prefix = filePath + System.currentTimeMillis();
+        Long timeStamp=System.currentTimeMillis();
+
         CountDownLatch countDownLatch = new CountDownLatch(5);
         ExecutorService service = new ThreadPoolExecutor(2, 5, 10, TimeUnit.SECONDS, new LinkedBlockingDeque<>(), new DumpFactory());
 
-        File file = new File(filePath);
-        if (!file.exists()) {
-            //不存在且未创建成功,则返回。
-            if (!file.mkdir()) {
-                return;
-            }
-        }
-        Future<Boolean> valuesFuture = service.submit(new ValuesDumpTask(countDownLatch, serverDomain.valuesDomain, prefix));
-        Future<Boolean> listFuture = service.submit(new ListDumpTask(countDownLatch, serverDomain.listDomain, prefix));
-        Future<Boolean> setFuture = service.submit(new SetDumpTask(countDownLatch, serverDomain.setDomain, prefix));
-        Future<Boolean> hashFuture = service.submit(new HashDumpTask(countDownLatch, serverDomain.hashDomain, prefix));
-        Future<Boolean> orderSetFuture = service.submit(new OrderSetDumpTask(countDownLatch, serverDomain.orderSetDomain, prefix));
+        Future<Boolean> valuesFuture = service.submit(new ValuesDumpTask(countDownLatch, serverDomain.valuesDomain, timeStamp));
+        Future<Boolean> listFuture = service.submit(new ListDumpTask(countDownLatch, serverDomain.listDomain, timeStamp));
+        Future<Boolean> setFuture = service.submit(new SetDumpTask(countDownLatch, serverDomain.setDomain, timeStamp));
+        Future<Boolean> hashFuture = service.submit(new HashDumpTask(countDownLatch, serverDomain.hashDomain, timeStamp));
+        Future<Boolean> orderSetFuture = service.submit(new OrderSetDumpTask(countDownLatch, serverDomain.orderSetDomain, timeStamp));
 
         try {
             countDownLatch.await();
@@ -93,7 +88,7 @@ public class PersistenceHelper {
     }
 
     public static  @NotNull ServerDomain load() {
-        String path = CommonConfig.getProperties().getProperty(Constant.BACK_UP_PATH_NAME);
+        String path = ServerConfig.getProperties().getProperty(Constant.BACK_UP_PATH_NAME);
         Pattern backupPattern = compile("^[1-9]+(-hash.dump|-list.dump|-orderSet.dump|-set.dump|-values.dump)$");
 
         FilenameFilter filter = (dir, name) -> backupPattern.matcher(name).matches();
@@ -175,5 +170,16 @@ public class PersistenceHelper {
         return new ServerDomain(valuesDomain, listDomain, setDomain, hashDomain, orderSetDomain);
     }
 
+
+    public static  @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> singleDump(Callable<Boolean> callable) {
+
+        boolean res=false;
+        try {
+            res= callable.call();
+        } catch (Exception e) {
+            logger.info(e.getMessage());
+        }
+        return ResServerHelper.boolRes(res);
+    }
 
 }

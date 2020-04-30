@@ -81,7 +81,7 @@ public class ServerExecute {
     public static void  execute(ICommand command, Object target) {
         Object res;
         try {
-            if (command.getValues().size() == 0) {
+            if (command.getValues()==null||command.getValues().size() == 0) {
                 res = command.getMethod().invoke(target);
             } else {
 
@@ -96,6 +96,10 @@ public class ServerExecute {
             return;
         }
 
+        //it represent the command is requested by the server itself
+        if (command.getChannel()==null){
+            return;
+        }
         Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> pair = ((Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>>) res);
 
         writeChannel(pair, command.getChannel(), command.getRequestId());

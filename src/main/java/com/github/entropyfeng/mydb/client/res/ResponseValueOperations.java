@@ -142,6 +142,16 @@ public class ResponseValueOperations implements IValueOperations {
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear() {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "clear");
+
+        builder.setModifyAble(true);
+        return ClientExecute.execute(builder);
+    }
+
+    @Override
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> dump() {
+        ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "dump");
+
+        builder.setModifyAble(true);
         return ClientExecute.execute(builder);
     }
 }

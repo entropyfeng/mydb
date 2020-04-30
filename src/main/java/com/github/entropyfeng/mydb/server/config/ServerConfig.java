@@ -1,4 +1,4 @@
-package com.github.entropyfeng.mydb.config;
+package com.github.entropyfeng.mydb.server.config;
 
 import com.github.entropyfeng.mydb.util.ConfigUtil;
 
@@ -8,7 +8,7 @@ import java.util.Properties;
  * @author entropyfeng
  * @date 2020/3/5 14:25
  */
-public class CommonConfig {
+public class ServerConfig {
     private static volatile Properties properties;
 
     /**
@@ -19,7 +19,7 @@ public class CommonConfig {
      */
     public static Properties getProperties() {
         if (properties==null){
-            synchronized (CommonConfig.class){
+            synchronized (ServerConfig.class){
                 if(properties==null){
                     properties=ConfigUtil.readProperties(Constant.CONFIG_FILE_NAME);
                     ConfigUtil.checkProperties(properties);
@@ -28,4 +28,13 @@ public class CommonConfig {
         }
         return properties;
     }
+
+    public static String serverHost=getProperties().getProperty(Constant.HOST);
+
+    public static Integer port=ConfigUtil.getIntegerProperty(getProperties(),Constant.PORT);
+
+    public static String dumpPath=getProperties().getProperty(Constant.BACK_UP_PATH_NAME);
+
+    public static Integer precision= ConfigUtil.getIntegerProperty(ServerConfig.getProperties(),Constant.SYSTEM_CLOCK_REFRESH);
+
 }

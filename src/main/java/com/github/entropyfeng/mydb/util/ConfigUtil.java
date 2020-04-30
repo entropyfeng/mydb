@@ -1,6 +1,6 @@
 package com.github.entropyfeng.mydb.util;
 
-import com.github.entropyfeng.mydb.config.Constant;
+import com.github.entropyfeng.mydb.server.config.Constant;
 import io.netty.util.internal.StringUtil;
 import org.jetbrains.annotations.NotNull;
 

@@ -2,12 +2,14 @@ package com.github.entropyfeng.mydb.server.core.domain;
 
 import com.github.entropyfeng.mydb.common.exception.DumpFileException;
 import com.github.entropyfeng.mydb.common.ops.IHashOperations;
+import com.github.entropyfeng.mydb.server.PersistenceHelper;
 import com.github.entropyfeng.mydb.server.ResServerHelper;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
-import com.github.entropyfeng.mydb.config.Constant;
+import com.github.entropyfeng.mydb.server.config.Constant;
 import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.server.core.dict.ElasticMap;
 import com.github.entropyfeng.mydb.common.Pair;
+import com.github.entropyfeng.mydb.server.persistence.HashDumpTask;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInputStream;
@@ -17,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * @author entropyfeng
@@ -114,6 +117,11 @@ public class HashDomain implements IHashOperations {
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear() {
         hashMap.clear();
         return ResServerHelper.emptyRes();
+    }
+
+    @Override
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> dump() {
+        return PersistenceHelper.singleDump(new HashDumpTask(new CountDownLatch(1),this,System.currentTimeMillis()));
     }
 
 

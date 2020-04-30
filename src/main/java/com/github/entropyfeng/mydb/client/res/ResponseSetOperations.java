@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 
 /**
+ * @// TODO: 2020/4/30 xxxxxxxx
  * @author entropyfeng
  */
 public class ResponseSetOperations implements ISetOperations {
@@ -116,7 +117,15 @@ public class ResponseSetOperations implements ISetOperations {
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear() {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "clear");
+        builder.setModifyAble(true);
         return ClientExecute.execute(builder);
 
+    }
+
+    @Override
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> dump() {
+        ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "dump");
+        builder.setModifyAble(true);
+        return ClientExecute.execute(builder);
     }
 }

@@ -1,6 +1,6 @@
 package persistence;
 
-import com.github.entropyfeng.mydb.config.Constant;
+import com.github.entropyfeng.mydb.server.config.Constant;
 import org.junit.Assert;
 import org.junit.Test;
 

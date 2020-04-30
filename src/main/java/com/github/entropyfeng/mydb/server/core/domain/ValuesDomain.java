@@ -5,10 +5,12 @@ import com.github.entropyfeng.mydb.common.exception.DumpFileException;
 import com.github.entropyfeng.mydb.common.exception.TurtleValueElementOutBoundsException;
 import com.github.entropyfeng.mydb.common.ops.IValueOperations;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
-import com.github.entropyfeng.mydb.config.Constant;
+import com.github.entropyfeng.mydb.server.config.Constant;
 import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.common.Pair;
+import com.github.entropyfeng.mydb.server.PersistenceHelper;
 import com.github.entropyfeng.mydb.server.ResServerHelper;
+import com.github.entropyfeng.mydb.server.persistence.ValuesDumpTask;
 import com.github.entropyfeng.mydb.util.TimeUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,6 +20,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * @author entropyfeng
@@ -232,6 +235,12 @@ public class ValuesDomain extends ExpireObject implements IValueOperations {
         valueMap.clear();
         super.clearExpireObject();
         return ResServerHelper.emptyRes();
+    }
+
+    @Override
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> dump() {
+
+        return PersistenceHelper.singleDump(new ValuesDumpTask(new CountDownLatch(1),this,System.currentTimeMillis()));
     }
 
     public static void write(ValuesDomain valuesDomain, DataOutputStream outputStream) throws IOException {

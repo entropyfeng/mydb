@@ -1,6 +1,7 @@
 package com.github.entropyfeng.mydb.server.persistence;
 
-import com.github.entropyfeng.mydb.config.Constant;
+import com.github.entropyfeng.mydb.server.config.ServerConfig;
+import com.github.entropyfeng.mydb.server.config.Constant;
 import com.github.entropyfeng.mydb.server.core.domain.ValuesDomain;
 
 import java.io.DataOutputStream;
@@ -13,21 +14,21 @@ import java.util.concurrent.CountDownLatch;
  */
 public class ValuesDumpTask implements Callable<Boolean> {
 
-    private String path;
+    private Long timeStamp;
     private CountDownLatch countDownLatch;
     private ValuesDomain valuesDomain;
 
-    public ValuesDumpTask(CountDownLatch countDownLatch, ValuesDomain domain, String path) {
+    public ValuesDumpTask(CountDownLatch countDownLatch, ValuesDomain domain, Long timeStamp) {
         this.countDownLatch = countDownLatch;
         this.valuesDomain = domain;
-        this.path = path;
+        this.timeStamp=timeStamp;
 
     }
 
     @Override
     public Boolean call() throws Exception {
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream(path + Constant.VALUES_SUFFIX);
+            FileOutputStream fileOutputStream = new FileOutputStream(ServerConfig.dumpPath +timeStamp + Constant.VALUES_SUFFIX);
             DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
             ValuesDomain.write(valuesDomain, dataOutputStream);
             return true;

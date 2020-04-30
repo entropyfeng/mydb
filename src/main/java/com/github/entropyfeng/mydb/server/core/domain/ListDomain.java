@@ -4,16 +4,19 @@ import com.github.entropyfeng.mydb.common.exception.DumpFileException;
 import com.github.entropyfeng.mydb.common.ops.IListOperations;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResBody;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResHead;
+import com.github.entropyfeng.mydb.server.PersistenceHelper;
 import com.github.entropyfeng.mydb.server.ResServerHelper;
-import com.github.entropyfeng.mydb.config.Constant;
+import com.github.entropyfeng.mydb.server.config.Constant;
 import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.common.Pair;
+import com.github.entropyfeng.mydb.server.persistence.ListDumpTask;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 
 
 /**
@@ -197,6 +200,11 @@ public class ListDomain implements IListOperations {
         LinkedList<TurtleValue> list = listMap.get(key);
         boolean res = list != null && list.contains(value);
         return ResServerHelper.boolRes(res);
+    }
+
+    @Override
+    public @NotNull Pair<ResHead, Collection<ResBody>> dump() {
+        return PersistenceHelper.singleDump(new ListDumpTask(new CountDownLatch(1),this,System.currentTimeMillis()));
     }
 
     private void createIfNotExist(String key) {

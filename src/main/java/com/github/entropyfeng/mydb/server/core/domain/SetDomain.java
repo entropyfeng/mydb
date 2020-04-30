@@ -2,11 +2,13 @@ package com.github.entropyfeng.mydb.server.core.domain;
 
 import com.github.entropyfeng.mydb.common.exception.DumpFileException;
 import com.github.entropyfeng.mydb.common.ops.ISetOperations;
+import com.github.entropyfeng.mydb.server.PersistenceHelper;
 import com.github.entropyfeng.mydb.server.ResServerHelper;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
-import com.github.entropyfeng.mydb.config.Constant;
+import com.github.entropyfeng.mydb.server.config.Constant;
 import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.common.Pair;
+import com.github.entropyfeng.mydb.server.persistence.SetDumpTask;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInputStream;
@@ -14,6 +16,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * @author entropyfeng
@@ -120,6 +123,13 @@ public class SetDomain implements ISetOperations, Serializable {
         setHashMap.clear();
         return ResServerHelper.emptyRes();
     }
+
+    @Override
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> dump() {
+
+        return PersistenceHelper.singleDump(new SetDumpTask(new CountDownLatch(1),this,System.currentTimeMillis()));
+    }
+
     private void createIfNotExists(String key) {
         setHashMap.computeIfAbsent(key, k -> new HashSet<>());
     }

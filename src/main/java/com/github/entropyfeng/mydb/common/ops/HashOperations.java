@@ -25,4 +25,5 @@ public interface HashOperations {
     Boolean delete(@NotNull String key, @NotNull TurtleValue tKey);
 
     Integer sizeOf(@NotNull String key);
+
 }

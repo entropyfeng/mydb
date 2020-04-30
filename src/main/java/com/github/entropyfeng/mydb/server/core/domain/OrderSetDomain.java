@@ -2,18 +2,21 @@ package com.github.entropyfeng.mydb.server.core.domain;
 
 import com.github.entropyfeng.mydb.common.exception.DumpFileException;
 import com.github.entropyfeng.mydb.common.ops.IOrderSetOperations;
+import com.github.entropyfeng.mydb.server.PersistenceHelper;
 import com.github.entropyfeng.mydb.server.ResServerHelper;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
-import com.github.entropyfeng.mydb.config.Constant;
+import com.github.entropyfeng.mydb.server.config.Constant;
 import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.server.core.zset.OrderSet;
+import com.github.entropyfeng.mydb.server.persistence.OrderSetDumpTask;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * @author entropyfeng
@@ -180,6 +183,11 @@ public class OrderSetDomain implements IOrderSetOperations {
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear() {
         hashMap.clear();
         return ResServerHelper.emptyRes();
+    }
+
+    @Override
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> dump() {
+        return PersistenceHelper.singleDump(new OrderSetDumpTask(new CountDownLatch(1),this,System.currentTimeMillis()));
     }
 
 

@@ -39,4 +39,6 @@ public interface IOrderSetOperations {
 
     @NotNull Pair<ProtoBuf.ResHead,Collection<ProtoBuf.ResBody>> clear();
 
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> dump();
+
 }

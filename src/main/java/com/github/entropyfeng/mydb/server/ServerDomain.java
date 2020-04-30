@@ -1,6 +1,6 @@
 package com.github.entropyfeng.mydb.server;
 
-import com.github.entropyfeng.mydb.config.ServerStatus;
+import com.github.entropyfeng.mydb.server.config.ServerStatus;
 import com.github.entropyfeng.mydb.server.consumer.*;
 import com.github.entropyfeng.mydb.server.core.domain.*;
 import com.github.entropyfeng.mydb.server.core.zset.OrderSet;
@@ -103,7 +103,7 @@ public class ServerDomain {
         hashThread = new HashThreadFactory().newThread(new HashConsumer(runningFlag,hashDomain,hashQueue));
         orderSetThread = new OrderSetThreadFactory().newThread(new OrderSetConsumer(runningFlag,orderSetDomain,orderSetQueue));
 
-        adminThread=new AdminThreadFactory().newThread(this::runAdmin);
+        adminThread=new AdminThreadFactory().newThread(new AdminConsumer(adminObject,adminQueue));
 
 
         valueThread.start();
@@ -111,6 +111,7 @@ public class ServerDomain {
         setThread.start();
         hashThread.start();
         orderSetThread.start();
+
         adminThread.start();
 
 
@@ -119,10 +120,6 @@ public class ServerDomain {
 
 
 
-    private void runAdmin() {
-        logger.info("runAdmin Thread");
-
-    }
 
 
     private void notifyAllDomain(){

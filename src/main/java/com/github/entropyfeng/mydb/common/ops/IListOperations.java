@@ -54,4 +54,6 @@ public interface IListOperations {
     @NotNull  Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exist(String key);
 
     @NotNull  Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exist(String key, TurtleValue value);
+
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> dump();
 }

@@ -171,4 +171,12 @@ public class ResponseListOperations implements IListOperations {
         builder.addTurtlePara(value);
         return ClientExecute.execute(builder);
     }
+
+
+    @Override
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> dump() {
+        ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.LIST, "dump");
+        builder.setModifyAble(true);
+        return ClientExecute.execute(builder);
+    }
 }

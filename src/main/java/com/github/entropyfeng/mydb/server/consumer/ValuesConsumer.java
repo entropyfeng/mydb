@@ -13,9 +13,9 @@ import static com.github.entropyfeng.mydb.server.command.ServerExecute.execute;
 /**
  * @author entropyfeng
  */
-public class ValuesConsumer implements Runnable  {
+public class ValuesConsumer implements Runnable {
 
-    private static final Logger logger= LoggerFactory.getLogger(ValuesConsumer.class);
+    private static final Logger logger = LoggerFactory.getLogger(ValuesConsumer.class);
 
     /**
      * read only
@@ -33,8 +33,8 @@ public class ValuesConsumer implements Runnable  {
     @Override
     public void run() {
         logger.info("run values Thread");
-        while (true){
-            while (runningFlag.get()){
+        while (true) {
+            while (runningFlag.get()) {
                 ClientCommand valuesCommand = queue.poll();
                 if (valuesCommand != null) {
                     execute(valuesCommand, valuesDomain);
@@ -43,11 +43,15 @@ public class ValuesConsumer implements Runnable  {
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        logger.info(e.getMessage());
                     }
                 }
             }
-           
+            try {
+                Thread.currentThread().wait();
+            } catch (InterruptedException e) {
+                logger.info(e.getMessage());
+            }
         }
     }
 }

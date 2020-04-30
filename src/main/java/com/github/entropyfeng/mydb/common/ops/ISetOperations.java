@@ -44,4 +44,6 @@ public interface ISetOperations {
     @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> entries(String key);
 
     @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear();
+
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> dump();
 }

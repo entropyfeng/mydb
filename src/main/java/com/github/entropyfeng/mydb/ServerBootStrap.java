@@ -1,9 +1,11 @@
 package com.github.entropyfeng.mydb;
 
-import com.github.entropyfeng.mydb.config.CommonConfig;
-import com.github.entropyfeng.mydb.config.Constant;
+import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import com.github.entropyfeng.mydb.server.TurtleServer;
-import com.github.entropyfeng.mydb.util.ConfigUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
 
 /**
  * @author entropyfeng
@@ -11,10 +13,28 @@ import com.github.entropyfeng.mydb.util.ConfigUtil;
  */
 public class ServerBootStrap {
 
+    private static final Logger logger=LoggerFactory.getLogger(ServerBootStrap.class);
+
+    /**
+     *  create dumpFile directory.
+     * @return true->the directory already exist or create the new directory in current.
+     * false->the directory not exist in previous,and create new directory error this time.
+     */
+    private static boolean createDumpFolder(){
+        File file = new File(ServerConfig.dumpPath);
+        if (!file.exists()) {
+            return file.mkdir();
+        }
+        return true;
+    }
 
     public static void main(String[] args) throws Exception {
-        String host = (String) CommonConfig.getProperties().get(Constant.HOST);
-        Integer port= ConfigUtil.getIntegerProperty(CommonConfig.getProperties(),Constant.PORT);
+
+        if (!createDumpFolder()){
+            logger.error("create dump directory error !");
+        }
+        String host = ServerConfig.serverHost;
+        Integer port= ServerConfig.port;
         new TurtleServer(host, port).start();
     }
 }

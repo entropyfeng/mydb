@@ -1,8 +1,5 @@
 package com.github.entropyfeng.mydb.util;
 
-import com.google.common.base.Charsets;
-import com.google.common.hash.Hashing;
-
 import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -26,22 +23,6 @@ public class CommonUtil {
             res++;
         }
         return res;
-    }
-
-    public static int hashing(Object o){
-        if (o instanceof String){
-            return Hashing.murmur3_32().hashString((String) o, Charsets.UTF_8).asInt();
-        }else if(o instanceof Integer){
-            return Hashing.murmur3_32().hashInt((Integer) o).asInt();
-        }else if (o instanceof Double){
-            return Hashing.murmur3_32().newHasher().putDouble((Double)o).hash().asInt();
-        }else if(o instanceof Float){
-            return Hashing.murmur3_32().newHasher().putFloat((Float) o).hash().asInt();
-        }else if(o instanceof Long){
-            return Hashing.murmur3_32().hashLong((Long)o).asInt();
-        }else {
-            return o.hashCode();
-        }
     }
 
     public static <T> T[]merge(T[] first,T[] second){
@@ -69,14 +50,6 @@ public class CommonUtil {
         }
         return res;
 
-    }
-
-    public static String builderLongString(long length){
-        StringBuilder stringBuilder=new StringBuilder();
-        for (int i=0;i<length;i++){
-            stringBuilder.append('一');
-        }
-        return stringBuilder.toString();
     }
 
 }

@@ -1,7 +1,6 @@
 package com.github.entropyfeng.mydb.util;
 
-import com.github.entropyfeng.mydb.config.CommonConfig;
-import com.github.entropyfeng.mydb.config.Constant;
+import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,9 +23,7 @@ public class EfficientSystemClock {
      */
     private static class EfficientSystemClockHolder{
 
-        final static long CONFIG_PRECISION =ConfigUtil.getIntegerProperty(CommonConfig.getProperties(),Constant.SYSTEM_CLOCK_REFRESH);
-
-        private static final EfficientSystemClock INSTANCE =new EfficientSystemClock(CONFIG_PRECISION);
+        private static final EfficientSystemClock INSTANCE =new EfficientSystemClock(ServerConfig.precision);
     }
 
     public static long now(){

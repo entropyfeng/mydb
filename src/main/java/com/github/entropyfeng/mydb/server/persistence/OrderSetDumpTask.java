@@ -1,6 +1,7 @@
 package com.github.entropyfeng.mydb.server.persistence;
 
-import com.github.entropyfeng.mydb.config.Constant;
+import com.github.entropyfeng.mydb.server.config.ServerConfig;
+import com.github.entropyfeng.mydb.server.config.Constant;
 import com.github.entropyfeng.mydb.server.core.domain.OrderSetDomain;
 
 import java.io.DataOutputStream;
@@ -14,18 +15,18 @@ import java.util.concurrent.CountDownLatch;
 public class OrderSetDumpTask implements Callable<Boolean> {
     private CountDownLatch countDownLatch;
     private OrderSetDomain orderSetDomain;
-    private String path;
+    private Long timeStamp;
 
-    public OrderSetDumpTask(CountDownLatch countDownLatch, OrderSetDomain domain, String path) {
+    public OrderSetDumpTask(CountDownLatch countDownLatch, OrderSetDomain domain, Long timeStamp) {
         this.countDownLatch = countDownLatch;
         this.orderSetDomain = domain;
-        this.path = path;
+        this.timeStamp = timeStamp;
     }
 
     @Override
     public Boolean call() throws Exception {
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream(path + Constant.ORDER_SET_SUFFIX);
+            FileOutputStream fileOutputStream = new FileOutputStream(ServerConfig.dumpPath + timeStamp + Constant.ORDER_SET_SUFFIX);
             DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
             OrderSetDomain.write(orderSetDomain, dataOutputStream);
             return true;

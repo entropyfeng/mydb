@@ -1,4 +1,4 @@
-package com.github.entropyfeng.mydb.config;
+package com.github.entropyfeng.mydb.server.config;
 
 /**
  * @author entropyfeng
