@@ -1,4 +1,4 @@
-package com.github.entropyfeng.mydb.server.core.domain;
+package com.github.entropyfeng.mydb.server.domain;
 
 import com.github.entropyfeng.mydb.common.exception.DumpFileException;
 import com.github.entropyfeng.mydb.common.ops.IHashOperations;

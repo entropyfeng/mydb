@@ -1,7 +1,7 @@
 package persistence;
 
 import com.github.entropyfeng.mydb.common.TurtleValue;
-import com.github.entropyfeng.mydb.server.core.domain.ListDomain;
+import com.github.entropyfeng.mydb.server.domain.ListDomain;
 import org.junit.Assert;
 import org.junit.Test;
 

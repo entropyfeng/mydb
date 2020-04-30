@@ -1,14 +1,12 @@
 package com.github.entropyfeng.mydb.server.consumer;
 
 import com.github.entropyfeng.mydb.server.command.ClientCommand;
-import com.github.entropyfeng.mydb.server.core.domain.ListDomain;
+import com.github.entropyfeng.mydb.server.domain.ListDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import static com.github.entropyfeng.mydb.server.command.ServerExecute.execute;
 
 /**
  * @author entropyfeng

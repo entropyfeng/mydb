@@ -4,7 +4,7 @@ import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import com.github.entropyfeng.mydb.server.config.Constant;
-import com.github.entropyfeng.mydb.server.core.domain.*;
+import com.github.entropyfeng.mydb.server.domain.*;
 import com.github.entropyfeng.mydb.server.persistence.*;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;

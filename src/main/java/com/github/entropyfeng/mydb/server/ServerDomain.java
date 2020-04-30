@@ -2,7 +2,7 @@ package com.github.entropyfeng.mydb.server;
 
 import com.github.entropyfeng.mydb.server.config.ServerStatus;
 import com.github.entropyfeng.mydb.server.consumer.*;
-import com.github.entropyfeng.mydb.server.core.domain.*;
+import com.github.entropyfeng.mydb.server.domain.*;
 import com.github.entropyfeng.mydb.server.core.zset.OrderSet;
 import com.github.entropyfeng.mydb.server.command.ClientCommand;
 import com.github.entropyfeng.mydb.server.command.ClientRequest;
