@@ -2,7 +2,7 @@ package com.github.entropyfeng.mydb.server.persistence;
 
 import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import com.github.entropyfeng.mydb.server.config.Constant;
-import com.github.entropyfeng.mydb.server.core.domain.OrderSetDomain;
+import com.github.entropyfeng.mydb.server.domain.OrderSetDomain;
 
 import java.io.DataOutputStream;
 import java.io.FileOutputStream;

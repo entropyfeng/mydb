@@ -2,7 +2,7 @@ package persistence;
 
 import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.server.core.dict.ElasticMap;
-import com.github.entropyfeng.mydb.server.core.domain.HashDomain;
+import com.github.entropyfeng.mydb.server.domain.HashDomain;
 import org.junit.Assert;
 import org.junit.Test;
 

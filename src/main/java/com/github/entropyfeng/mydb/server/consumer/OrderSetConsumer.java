@@ -1,7 +1,7 @@
 package com.github.entropyfeng.mydb.server.consumer;
 
 import com.github.entropyfeng.mydb.server.command.ClientCommand;
-import com.github.entropyfeng.mydb.server.core.domain.OrderSetDomain;
+import com.github.entropyfeng.mydb.server.domain.OrderSetDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

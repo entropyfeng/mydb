@@ -3,16 +3,15 @@ package com.github.entropyfeng.mydb.server;
 import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.server.command.ClientCommand;
-import com.github.entropyfeng.mydb.server.core.domain.ListDomain;
-import com.github.entropyfeng.mydb.server.core.domain.OrderSetDomain;
-import com.github.entropyfeng.mydb.server.core.domain.ValuesDomain;
+import com.github.entropyfeng.mydb.server.domain.ListDomain;
+import com.github.entropyfeng.mydb.server.domain.OrderSetDomain;
+import com.github.entropyfeng.mydb.server.domain.ValuesDomain;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author entropyfeng
