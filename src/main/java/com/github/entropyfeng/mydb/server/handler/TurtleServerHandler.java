@@ -5,6 +5,7 @@ import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.server.ResServerHelper;
 import com.github.entropyfeng.mydb.server.ServerDomain;
 import com.github.entropyfeng.mydb.server.command.ClientRequest;
+import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelId;
@@ -13,8 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * @author entropyfeng
@@ -22,16 +22,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.ClientCommand> {
     private static final Logger logger = LoggerFactory.getLogger(TurtleServerHandler.class);
 
-    private final ServerDomain serverDomain;
-
-
-    private static volatile AtomicBoolean interrupted = new AtomicBoolean(false);
-
     public static ConcurrentHashMap<ChannelId, Channel> clientMap = new ConcurrentHashMap<>();
 
-    public static ConcurrentHashMap<ChannelId, Channel> serverMap = new ConcurrentHashMap<>();
+    private static ConcurrentLinkedQueue<ClientRequest> globalBlockQueue = new ConcurrentLinkedQueue<>();
 
-    private static ConcurrentLinkedDeque<ProtoBuf.ClientCommand> blockingDeque = new ConcurrentLinkedDeque<>();
+    private final ServerDomain serverDomain;
 
     private ConcurrentHashMap<Long, ClientRequest> requestMap = new ConcurrentHashMap<>();
 
@@ -64,25 +59,38 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Cl
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ProtoBuf.ClientCommand msg) {
 
+
+
+        //在这里自定义一个 全局的object 然后 wait
+
         if (msg.getEndAble()) {
             ClientRequest clientRequest = requestMap.remove(msg.getRequestId());
             if (clientRequest != null) {
+                //if this server is master,and this request will modify the database
+                if (clientRequest.getModify() && ServerConfig.masterSlaveFlag.get()) {
+                    globalBlockQueue.add(clientRequest);
+                }
+
+                while (ServerConfig.serverBlocking.get()){
+
+                }
                 serverDomain.accept(clientRequest, ctx.channel());
             }
             return;
         }
+
         if (msg.getBeginAble()) {
             ProtoBuf.RequestHeaderPayload header = msg.getHeader();
-            ClientRequest clientRequest=new ClientRequest(header, msg.getRequestId());
+            ClientRequest clientRequest = new ClientRequest(header, msg.getRequestId());
             requestMap.put(msg.getRequestId(), clientRequest);
         } else {
             ClientRequest clientRequest = requestMap.get(msg.getRequestId());
             if (clientRequest != null) {
                 try {
                     clientRequest.put(msg.getBody());
-                }catch (TurtleValueElementOutBoundsException e){
-                    logger.info("turtleValue length too long at requestId ->{}",msg.getRequestId());
-                    ResServerHelper.writeOuterException(msg.getRequestId(),ctx.channel(), ProtoBuf.ExceptionType.TurtleValueElementOutBoundsException,"");
+                } catch (TurtleValueElementOutBoundsException e) {
+                    logger.info("turtleValue length too long at requestId ->{}", msg.getRequestId());
+                    ResServerHelper.writeOuterException(msg.getRequestId(), ctx.channel(), ProtoBuf.ExceptionType.TurtleValueElementOutBoundsException, "turtleValueElementOutBound");
                     requestMap.remove(msg.getRequestId());
                 }
             }

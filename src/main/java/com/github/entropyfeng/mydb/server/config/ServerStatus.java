@@ -2,25 +2,36 @@ package com.github.entropyfeng.mydb.server.config;
 
 /**
  * @author entropyfeng
+ * this enum describe the status of the server .
  */
-
 public enum ServerStatus {
     /**
-     * 关闭
+     * the server is closed
      */
     CLOSE,
     /**
-     * 正在运行
+     * the server is running normally
      */
     RUNNING,
     /**
-     * 阻塞
+     * dump backup file blocking
      */
-    BLOCKING,
+    DUMP_BLOCKING,
 
     /**
-     * 正在dump文件
+     * the server is Master-slave synchronization
+     * and this server is master node
      */
-    RUNNING_DUMP
+    MASTER_BLOCKING,
+
+    /**
+     * the server is doing master-slave copying
+     */
+    MASTER_RUNNING,
+    /**
+     * the server is slave node
+     */
+    SLAVING
+
 
 }

@@ -1,5 +1,6 @@
 package com.github.entropyfeng.mydb.server;
 
+import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import com.github.entropyfeng.mydb.server.config.ServerStatus;
 import com.github.entropyfeng.mydb.server.consumer.*;
 import com.github.entropyfeng.mydb.server.domain.*;
@@ -24,10 +25,6 @@ public class ServerDomain {
 
     private static final Logger logger = LoggerFactory.getLogger(ServerDomain.class);
 
-    /**
-     * 服务器状态
-     */
-    private volatile ServerStatus serverStatus;
 
     public static AtomicBoolean interrupted = new AtomicBoolean(false);
 
@@ -121,12 +118,7 @@ public class ServerDomain {
 
     }
 
-
-
-
-
-
-    private void notifyAllDomain(){
+    public void notifyAllDomain(){
         this.valueThread.notify();
         this.setThread.notify();
         this.hashThread.notify();
@@ -137,6 +129,10 @@ public class ServerDomain {
 
     public void accept(ClientRequest clientRequest, Channel channel) {
 
+        //blocking
+        while (ServerConfig.serverBlocking.get()){
+
+        }
         switch (clientRequest.getModel()) {
             case VALUE:
                 constructCommand(clientRequest, channel, ValuesDomain.class, valuesQueue);

@@ -3,6 +3,7 @@ package com.github.entropyfeng.mydb.server.config;
 import com.github.entropyfeng.mydb.util.ConfigUtil;
 
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author entropyfeng
@@ -37,4 +38,9 @@ public class ServerConfig {
 
     public static Integer precision= ConfigUtil.getIntegerProperty(ServerConfig.getProperties(),Constant.SYSTEM_CLOCK_REFRESH);
 
+    public static ServerStatus serverStatus=ServerStatus.CLOSE;
+
+    public static AtomicBoolean serverBlocking=new AtomicBoolean(false);
+
+    public static AtomicBoolean masterSlaveFlag=new AtomicBoolean(true);
 }

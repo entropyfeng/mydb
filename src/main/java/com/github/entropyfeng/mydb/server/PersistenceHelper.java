@@ -170,7 +170,6 @@ public class PersistenceHelper {
         return new ServerDomain(valuesDomain, listDomain, setDomain, hashDomain, orderSetDomain);
     }
 
-
     public static  @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> singleDump(Callable<Boolean> callable) {
 
         boolean res=false;
