@@ -1,6 +1,5 @@
 package com.github.entropyfeng.mydb.client.res;
 
-import com.github.entropyfeng.mydb.client.res.*;
 import com.github.entropyfeng.mydb.common.ops.*;
 
 /**

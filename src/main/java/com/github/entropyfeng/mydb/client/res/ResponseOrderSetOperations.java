@@ -146,7 +146,6 @@ public class ResponseOrderSetOperations implements IOrderSetOperations {
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> dump() {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.ZSET, "dump");
-        builder.setModifyAble(true);
         return ClientExecute.execute(builder);
     }
 }

@@ -91,7 +91,6 @@ public class ResponseHashOperations implements IHashOperations {
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> dump() {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.HASH, "dump");
-        builder.setModifyAble(true);
         return ClientExecute.execute(builder);
     }
 }
