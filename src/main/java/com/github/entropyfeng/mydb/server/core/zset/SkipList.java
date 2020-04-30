@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author entropyfeng
@@ -121,7 +122,7 @@ public class SkipList<T extends Comparable<T>> {
     public void insertNode(@NotNull T value, double score) {
 
         SkipListNode<T> tempNode = header;
-        final int currentLevel = CommonUtil.getLevel();
+        final int currentLevel = getLevel();
         SkipListNode<T> newNode = new SkipListNode<>(value, score, currentLevel);
         maxLevel = Math.max(maxLevel, currentLevel);
         size++;
@@ -222,6 +223,20 @@ public class SkipList<T extends Comparable<T>> {
 
     public void  clear(){
         init();
+    }
+
+    /**
+     * 抛硬币法获取层数
+     * @return 1=<int<=32
+     */
+    private static int getLevel() {
+
+        final int maxLevel=32;
+        int res = 1;
+        while (ThreadLocalRandom.current().nextBoolean()&&res<maxLevel) {
+            res++;
+        }
+        return res;
     }
 }
 
