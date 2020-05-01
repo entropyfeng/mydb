@@ -2,6 +2,7 @@ package com.github.entropyfeng.mydb.server.command;
 
 import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
+import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,7 @@ import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
+ *
  * @author entropyfeng
  */
 public class ServerExecute {
@@ -36,7 +38,13 @@ public class ServerExecute {
             return;
         }
 
-        queue.offer(new ClientCommand(method, clientRequest.getObjects(), channel, requestId));
+        ClientCommand clientCommand= new ClientCommand(method, clientRequest.getObjects(), channel, requestId);
+
+        //生产者阻塞
+        while (ServerConfig.serverBlocking.get()){
+
+        }
+        queue.offer(clientCommand);
 
     }
 
@@ -79,6 +87,8 @@ public class ServerExecute {
 
     @SuppressWarnings("unchecked")
     public static void  execute(ICommand command, Object target) {
+
+
         Object res;
         try {
             if (command.getValues()==null||command.getValues().size() == 0) {

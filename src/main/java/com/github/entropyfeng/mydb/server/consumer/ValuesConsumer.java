@@ -16,15 +16,11 @@ public class ValuesConsumer implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(ValuesConsumer.class);
 
-    /**
-     * read only
-     */
-    private AtomicInteger atomicInteger;
+
     private ValuesDomain valuesDomain;
     private ConcurrentLinkedQueue<ClientCommand> queue;
 
-    public ValuesConsumer(AtomicInteger atomicInteger, ValuesDomain valuesDomain, ConcurrentLinkedQueue<ClientCommand> queue) {
-        this.atomicInteger=atomicInteger;
+    public ValuesConsumer( ValuesDomain valuesDomain, ConcurrentLinkedQueue<ClientCommand> queue) {
         this.valuesDomain = valuesDomain;
         this.queue = queue;
     }
@@ -32,7 +28,7 @@ public class ValuesConsumer implements Runnable {
     @Override
     public void run() {
         logger.info("run values Thread");
-        new ConsumerLoop().loop(atomicInteger,valuesDomain,queue);
+        new ConsumerLoop().loop(valuesDomain,queue);
     }
 }
 

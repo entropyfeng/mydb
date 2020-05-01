@@ -95,11 +95,11 @@ public class ServerDomain {
 
     public void start() {
 
-        valueThread = new ValuesThreadFactory().newThread(new ValuesConsumer(blockingDomainNumber,valuesDomain,valuesQueue));
-        listThread = new ListThreadFactory().newThread(new ListConsumer(blockingDomainNumber,listDomain,listQueue));
-        setThread = new SetThreadFactory().newThread(new SetConsumer(blockingDomainNumber,setDomain,setQueue));
-        hashThread = new HashThreadFactory().newThread(new HashConsumer(blockingDomainNumber,hashDomain,hashQueue));
-        orderSetThread = new OrderSetThreadFactory().newThread(new OrderSetConsumer(blockingDomainNumber,orderSetDomain,orderSetQueue));
+        valueThread = new ValuesThreadFactory().newThread(new ValuesConsumer(valuesDomain,valuesQueue));
+        listThread = new ListThreadFactory().newThread(new ListConsumer(listDomain,listQueue));
+        setThread = new SetThreadFactory().newThread(new SetConsumer(setDomain,setQueue));
+        hashThread = new HashThreadFactory().newThread(new HashConsumer(hashDomain,hashQueue));
+        orderSetThread = new OrderSetThreadFactory().newThread(new OrderSetConsumer(orderSetDomain,orderSetQueue));
 
         adminThread=new AdminThreadFactory().newThread(new AdminConsumer(adminObject,adminQueue));
 
@@ -115,21 +115,8 @@ public class ServerDomain {
 
     }
 
-    public void notifyAllDomain(){
-        this.valueThread.notify();
-        this.setThread.notify();
-        this.hashThread.notify();
-        this.listThread.notify();
-        this.orderSetThread.notify();
-    }
-
-
     public void accept(ClientRequest clientRequest, Channel channel) {
 
-        //blocking
-        while (ServerConfig.serverBlocking.get()){
-            //blocking..
-        }
         switch (clientRequest.getModel()) {
             case VALUE:
                 constructCommand(clientRequest, channel, ValuesDomain.class, valuesQueue);

@@ -6,8 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author entropyfeng
@@ -15,12 +13,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class HashConsumer implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(HashConsumer.class);
-    private AtomicInteger atomicInteger;
     private HashDomain hashDomain;
     private ConcurrentLinkedQueue<ClientCommand> queue;
 
-    public HashConsumer(AtomicInteger atomicInteger, HashDomain hashDomain, ConcurrentLinkedQueue<ClientCommand> queue) {
-        this.atomicInteger=atomicInteger;
+    public HashConsumer( HashDomain hashDomain, ConcurrentLinkedQueue<ClientCommand> queue) {
         this.hashDomain = hashDomain;
         this.queue = queue;
     }
@@ -28,6 +24,6 @@ public class HashConsumer implements Runnable {
     @Override
     public void run() {
         logger.info("run hash Thread");
-        new ConsumerLoop().loop(atomicInteger, hashDomain, queue);
+        new ConsumerLoop().loop(hashDomain, queue);
     }
 }

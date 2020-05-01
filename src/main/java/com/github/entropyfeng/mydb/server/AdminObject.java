@@ -83,8 +83,7 @@ public class AdminObject implements IAdminOperations {
 
         ServerConfig.blockingDomainNumber.set(0);
         ServerConfig.serverBlocking.set(false);
-        //notify all consumer thread,make these thread handle the command in the nearly future.
-        serverDomain.notifyAllDomain();
+
 
         return ResServerHelper.emptyRes();
     }
@@ -105,8 +104,7 @@ public class AdminObject implements IAdminOperations {
 
         ServerConfig.blockingDomainNumber.set(0);
         ServerConfig.serverBlocking.set(false);
-        //notify all consumer thread,make these thread handle the command in the nearly future.
-        serverDomain.notifyAllDomain();
+
 
         return ResServerHelper.emptyRes();
     }
