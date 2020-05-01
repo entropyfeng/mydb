@@ -61,8 +61,6 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Cl
 
 
 
-        //在这里自定义一个 全局的object 然后 wait
-
         if (msg.getEndAble()) {
             ClientRequest clientRequest = requestMap.remove(msg.getRequestId());
             if (clientRequest != null) {
