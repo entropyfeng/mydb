@@ -44,7 +44,7 @@ public class ServerConfig {
 
     public static AtomicBoolean serverBlocking=new AtomicBoolean(false);
 
-    public static AtomicBoolean masterSlaveFlag=new AtomicBoolean(true);
+    public static AtomicBoolean masterSlaveFlag=new AtomicBoolean(false);
 
     public static AtomicInteger blockingDomainNumber=new AtomicInteger(0);
 }

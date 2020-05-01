@@ -68,7 +68,6 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Cl
                 if (clientRequest.getModify() && ServerConfig.masterSlaveFlag.get()) {
                     globalBlockQueue.add(clientRequest);
                 }
-
                 serverDomain.accept(clientRequest, ctx.channel());
             }
             return;

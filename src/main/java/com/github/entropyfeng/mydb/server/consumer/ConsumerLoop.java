@@ -18,7 +18,6 @@ import static com.github.entropyfeng.mydb.server.command.ServerExecute.execute;
 public class ConsumerLoop {
 
     private static Logger logger= LoggerFactory.getLogger(ConsumerLoop.class);
-    private AtomicBoolean released=new AtomicBoolean(false);
     public  void loop(AtomicInteger atomicInteger, Object target, ConcurrentLinkedQueue<ClientCommand> queue){
 
         while (true) {
@@ -26,19 +25,19 @@ public class ConsumerLoop {
             if (command != null) {
                 execute(command, target);
             } else {
-                //while the blocking iis null,we  blocking the object,util other thread notify this object
-
-                try {
-                    if (ServerConfig.serverBlocking.get()){
-                        atomicInteger.getAndIncrement();
+                if (ServerConfig.serverBlocking.get()){
+                    atomicInteger.getAndIncrement();
+                    logger.info("{} begin blocking",target.getClass().getSimpleName());
+                    while (ServerConfig.serverBlocking.get()){
                     }
-                    Thread.currentThread().wait();
-                } catch (InterruptedException e) {
-                    //this status will not happened normally
-                    logger.info("track interrupt");
+                    logger.info("{} after blocking",target.getClass().getSimpleName());
+                }else {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
-                //after other thread notify this thread
-
             }
         }
     }

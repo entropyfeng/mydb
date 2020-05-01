@@ -133,36 +133,21 @@ public class ServerDomain {
         switch (clientRequest.getModel()) {
             case VALUE:
                 constructCommand(clientRequest, channel, ValuesDomain.class, valuesQueue);
-                if (!ServerConfig.serverBlocking.get()){
-                    valueThread.notifyAll();
-                }
                 return;
             case ADMIN:
                 constructCommand(clientRequest,channel, AdminObject.class,adminQueue);
                 return;
             case LIST:
                 constructCommand(clientRequest, channel, ListDomain.class, listQueue);
-                if (!ServerConfig.serverBlocking.get()){
-                    listThread.notifyAll();
-                }
                 return;
             case SET:
                 constructCommand(clientRequest, channel, SetDomain.class, setQueue);
-                if (!ServerConfig.serverBlocking.get()){
-                    setThread.notifyAll();
-                }
                 return;
             case HASH:
                 constructCommand(clientRequest, channel, HashDomain.class, hashQueue);
-                if (!ServerConfig.serverBlocking.get()){
-                    hashThread.notifyAll();
-                }
                 return;
             case ZSET:
                 constructCommand(clientRequest, channel, OrderSet.class, orderSetQueue);
-                if (!ServerConfig.serverBlocking.get()){
-                    orderSetThread.notifyAll();
-                }
                 return;
             default:
                 logger.error("unSupport mode {}",clientRequest.getModel());
