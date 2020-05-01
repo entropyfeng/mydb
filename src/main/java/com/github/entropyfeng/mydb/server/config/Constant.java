@@ -21,6 +21,7 @@ public final class Constant {
     public static final String LIST_SUFFIX="-list.dump";
     public static final String ORDER_SET_SUFFIX="-orderSet.dump";
 
+    public static final Integer CONSUMER_THREAD_NUMBER =5;
     /**
      * magic number
      */

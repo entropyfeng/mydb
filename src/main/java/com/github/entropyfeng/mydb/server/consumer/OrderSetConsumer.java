@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author entropyfeng
@@ -14,12 +15,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class OrderSetConsumer implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(OrderSetConsumer.class);
-    private AtomicBoolean runningFlag;
+    private AtomicInteger atomicInteger;
     private OrderSetDomain orderSetDomain;
     private ConcurrentLinkedQueue<ClientCommand> queue;
 
-    public OrderSetConsumer(AtomicBoolean runningFlag, OrderSetDomain orderSetDomain, ConcurrentLinkedQueue<ClientCommand> queue) {
-        this.runningFlag = runningFlag;
+    public OrderSetConsumer(AtomicInteger atomicInteger, OrderSetDomain orderSetDomain, ConcurrentLinkedQueue<ClientCommand> queue) {
+        this.atomicInteger=atomicInteger;
         this.orderSetDomain = orderSetDomain;
         this.queue = queue;
     }
@@ -27,7 +28,7 @@ public class OrderSetConsumer implements Runnable {
     @Override
     public void run() {
         logger.info("run orderSet Thread");
-        new ConsumerLoop().loop(runningFlag, orderSetDomain, queue);
+        new ConsumerLoop().loop(atomicInteger, orderSetDomain, queue);
 
 
     }

@@ -14,6 +14,8 @@ public class ResponseDataTemplate {
         this.setOperations = new ResponseSetOperations();
         this.hashOperations = new ResponseHashOperations();
         this.orderSetOperations=new ResponseOrderSetOperations();
+
+        this.adminOperations=new ResponseAdminOperations();
     }
 
     private IValueOperations valueOperations;
@@ -25,6 +27,8 @@ public class ResponseDataTemplate {
     private IHashOperations hashOperations;
 
     private IOrderSetOperations orderSetOperations;
+
+    private IAdminOperations adminOperations;
 
     public IValueOperations opsForValues() {
         return this.valueOperations;
@@ -44,5 +48,9 @@ public class ResponseDataTemplate {
 
     public IOrderSetOperations opsForOrderSet(){
         return this.orderSetOperations;
+    }
+
+    public IAdminOperations opsForAdmin(){
+        return adminOperations;
     }
 }

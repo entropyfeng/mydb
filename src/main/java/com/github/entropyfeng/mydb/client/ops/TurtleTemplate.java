@@ -14,6 +14,8 @@ public class TurtleTemplate {
         setOperations = new DefaultSetOperations();
         orderSetOperations = new DefaultOrderSetOperations();
         hashOperations = new DefaultHashOperations();
+
+        adminOperations = new DefaultAdminOperations();
     }
 
 
@@ -26,6 +28,8 @@ public class TurtleTemplate {
     private HashOperations hashOperations;
 
     private OrderSetOperations orderSetOperations;
+
+    private AdminOperations adminOperations;
 
     public ValueOperations opsForValues() {
         return this.valueOperations;
@@ -45,6 +49,10 @@ public class TurtleTemplate {
 
     public OrderSetOperations opsForOrderSet() {
         return this.orderSetOperations;
+    }
+
+    public AdminOperations opsForAdmin() {
+        return this.adminOperations;
     }
 
 }

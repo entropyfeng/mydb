@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 /**
@@ -15,12 +15,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class SetConsumer implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(SetConsumer.class);
-    private AtomicBoolean runningFlag;
+    private AtomicInteger atomicInteger;
     private SetDomain setDomain;
     private ConcurrentLinkedQueue<ClientCommand> queue;
 
-    public SetConsumer(AtomicBoolean runningFlag, SetDomain setDomain, ConcurrentLinkedQueue<ClientCommand> queue) {
-        this.runningFlag = runningFlag;
+    public SetConsumer(AtomicInteger atomicInteger, SetDomain setDomain, ConcurrentLinkedQueue<ClientCommand> queue) {
+        this.atomicInteger=atomicInteger;
         this.setDomain = setDomain;
         this.queue = queue;
     }
@@ -28,6 +28,6 @@ public class SetConsumer implements Runnable {
     @Override
     public void run() {
         logger.info("run set Thread");
-        new ConsumerLoop().loop(runningFlag,setDomain,queue);
+        new ConsumerLoop().loop(atomicInteger,setDomain,queue);
     }
 }

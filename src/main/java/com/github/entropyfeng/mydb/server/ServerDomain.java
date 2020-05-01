@@ -13,9 +13,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.github.entropyfeng.mydb.server.command.ServerExecute.constructCommand;
+import static com.github.entropyfeng.mydb.server.config.ServerConfig.blockingDomainNumber;
 
 
 /**
@@ -26,14 +27,8 @@ public class ServerDomain {
     private static final Logger logger = LoggerFactory.getLogger(ServerDomain.class);
 
 
-    public static AtomicBoolean interrupted = new AtomicBoolean(false);
 
 
-    public AtomicBoolean valuesRunningFlag=new AtomicBoolean(true);
-    public AtomicBoolean listRunningFlag=new AtomicBoolean(true);
-    public AtomicBoolean setRunningFlag=new AtomicBoolean(true);
-    public AtomicBoolean hashRunningFlag=new AtomicBoolean(true);
-    public AtomicBoolean orderSetRunningFlag=new AtomicBoolean(true);
     public ServerDomain() {
 
         this.adminObject = new AdminObject(this);
@@ -88,6 +83,8 @@ public class ServerDomain {
     protected ConcurrentLinkedQueue<ClientCommand> orderSetQueue;
 
     protected ConcurrentLinkedQueue<ClientCommand> adminQueue;
+
+
     protected Thread valueThread;
     protected Thread listThread;
     protected Thread setThread;
@@ -98,11 +95,11 @@ public class ServerDomain {
 
     public void start() {
 
-        valueThread = new ValuesThreadFactory().newThread(new ValuesConsumer(valuesRunningFlag,valuesDomain,valuesQueue));
-        listThread = new ListThreadFactory().newThread(new ListConsumer(listRunningFlag,listDomain,listQueue));
-        setThread = new SetThreadFactory().newThread(new SetConsumer(setRunningFlag,setDomain,setQueue));
-        hashThread = new HashThreadFactory().newThread(new HashConsumer(hashRunningFlag,hashDomain,hashQueue));
-        orderSetThread = new OrderSetThreadFactory().newThread(new OrderSetConsumer(orderSetRunningFlag,orderSetDomain,orderSetQueue));
+        valueThread = new ValuesThreadFactory().newThread(new ValuesConsumer(blockingDomainNumber,valuesDomain,valuesQueue));
+        listThread = new ListThreadFactory().newThread(new ListConsumer(blockingDomainNumber,listDomain,listQueue));
+        setThread = new SetThreadFactory().newThread(new SetConsumer(blockingDomainNumber,setDomain,setQueue));
+        hashThread = new HashThreadFactory().newThread(new HashConsumer(blockingDomainNumber,hashDomain,hashQueue));
+        orderSetThread = new OrderSetThreadFactory().newThread(new OrderSetConsumer(blockingDomainNumber,orderSetDomain,orderSetQueue));
 
         adminThread=new AdminThreadFactory().newThread(new AdminConsumer(adminObject,adminQueue));
 
@@ -131,13 +128,13 @@ public class ServerDomain {
 
         //blocking
         while (ServerConfig.serverBlocking.get()){
-
+            //blocking..
         }
         switch (clientRequest.getModel()) {
             case VALUE:
                 constructCommand(clientRequest, channel, ValuesDomain.class, valuesQueue);
-                if (!valuesRunningFlag.get()){
-                    valueThread.notify();
+                if (!ServerConfig.serverBlocking.get()){
+                    valueThread.notifyAll();
                 }
                 return;
             case ADMIN:
@@ -145,26 +142,26 @@ public class ServerDomain {
                 return;
             case LIST:
                 constructCommand(clientRequest, channel, ListDomain.class, listQueue);
-                if (!listRunningFlag.get()){
-                    listThread.notify();
+                if (!ServerConfig.serverBlocking.get()){
+                    listThread.notifyAll();
                 }
                 return;
             case SET:
                 constructCommand(clientRequest, channel, SetDomain.class, setQueue);
-                if (!setRunningFlag.get()){
-                    setThread.notify();
+                if (!ServerConfig.serverBlocking.get()){
+                    setThread.notifyAll();
                 }
                 return;
             case HASH:
                 constructCommand(clientRequest, channel, HashDomain.class, hashQueue);
-                if (!hashRunningFlag.get()){
-                    hashThread.notify();;
+                if (!ServerConfig.serverBlocking.get()){
+                    hashThread.notifyAll();
                 }
                 return;
             case ZSET:
                 constructCommand(clientRequest, channel, OrderSet.class, orderSetQueue);
-                if (!orderSetRunningFlag.get()){
-                    orderSetRunningFlag.get();
+                if (!ServerConfig.serverBlocking.get()){
+                    orderSetThread.notifyAll();
                 }
                 return;
             default:

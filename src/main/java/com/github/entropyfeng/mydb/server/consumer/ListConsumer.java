@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author entropyfeng
@@ -14,12 +15,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ListConsumer implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(ListConsumer.class);
-    private AtomicBoolean runningFlag;
+    private AtomicInteger atomicInteger;
     private ListDomain domain;
     private ConcurrentLinkedQueue<ClientCommand> queue;
 
-    public ListConsumer(AtomicBoolean runningFlag, ListDomain domain, ConcurrentLinkedQueue<ClientCommand> queue) {
-        this.runningFlag = runningFlag;
+    public ListConsumer(AtomicInteger atomicInteger, ListDomain domain, ConcurrentLinkedQueue<ClientCommand> queue) {
+        this.atomicInteger=atomicInteger;
         this.domain = domain;
         this.queue = queue;
     }
@@ -27,6 +28,6 @@ public class ListConsumer implements Runnable {
     @Override
     public void run() {
         logger.info("run list Thread");
-        new ConsumerLoop().loop(runningFlag,domain,queue);
+        new ConsumerLoop().loop(atomicInteger,domain,queue);
     }
 }

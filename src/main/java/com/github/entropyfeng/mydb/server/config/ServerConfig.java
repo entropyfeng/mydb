@@ -4,6 +4,7 @@ import com.github.entropyfeng.mydb.util.ConfigUtil;
 
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author entropyfeng
@@ -11,6 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class ServerConfig {
     private static volatile Properties properties;
+
 
     /**
      * 双重检查锁单例
@@ -43,4 +45,6 @@ public class ServerConfig {
     public static AtomicBoolean serverBlocking=new AtomicBoolean(false);
 
     public static AtomicBoolean masterSlaveFlag=new AtomicBoolean(true);
+
+    public static AtomicInteger blockingDomainNumber=new AtomicInteger(0);
 }

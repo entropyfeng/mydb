@@ -69,9 +69,6 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Cl
                     globalBlockQueue.add(clientRequest);
                 }
 
-                while (ServerConfig.serverBlocking.get()){
-
-                }
                 serverDomain.accept(clientRequest, ctx.channel());
             }
             return;
