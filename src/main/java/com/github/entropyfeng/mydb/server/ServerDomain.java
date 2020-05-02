@@ -18,6 +18,7 @@ public class ServerDomain {
 
     private static final Logger logger = LoggerFactory.getLogger(ServerDomain.class);
 
+    public  static Thread daemonMasterSlaveThread;
 
 
 

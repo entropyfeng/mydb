@@ -1,6 +1,8 @@
 package com.github.entropyfeng.mydb.server;
 
+import com.github.entropyfeng.mydb.client.ClientCommandBuilder;
 import com.github.entropyfeng.mydb.common.Pair;
+import com.github.entropyfeng.mydb.common.TurtleModel;
 import com.github.entropyfeng.mydb.common.ops.IAdminOperations;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.server.command.ClientRequest;
@@ -8,6 +10,8 @@ import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import com.github.entropyfeng.mydb.server.domain.ListDomain;
 import com.github.entropyfeng.mydb.server.domain.OrderSetDomain;
 import com.github.entropyfeng.mydb.server.domain.ValuesDomain;
+import com.github.entropyfeng.mydb.server.factory.MasterSlaveThreadFactory;
+import io.netty.bootstrap.Bootstrap;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +19,8 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @author entropyfeng
@@ -63,6 +69,23 @@ public class AdminObject implements IAdminOperations {
         return ResServerHelper.emptyRes();
     }
 
+    @Override
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> slaveOf(String host, Integer port) {
+
+        ClientCommandBuilder clientCommandBuilder=new ClientCommandBuilder(TurtleModel.ADMIN,"slaveOfServer");
+        clientCommandBuilder.addStringPara(host);
+        clientCommandBuilder.addIntegerValue(port);
+
+        return null;
+    }
+
+
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> slaveOfServer(String host, Integer port) {
+
+
+
+        return null;
+    }
 
     @NotNull
     @Override

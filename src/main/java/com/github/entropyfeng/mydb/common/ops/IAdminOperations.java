@@ -19,4 +19,12 @@ public interface IAdminOperations {
     Pair<ResHead, Collection<ResBody>> dump();
 
     Pair<ResHead, Collection<ResBody>> lazyDump();
+
+    /**
+     * make this server to be the slave server of destination server
+     * @param host the host of the destination server
+     * @param port the port of the destination server
+     * @return {@link Pair}
+     */
+    Pair<ResHead,Collection<ResBody>> slaveOf(String host,Integer port);
 }

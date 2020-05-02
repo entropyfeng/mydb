@@ -1,7 +1,9 @@
 package com.github.entropyfeng.mydb.server.consumer;
 
+import com.github.entropyfeng.mydb.server.TurtleServer;
 import com.github.entropyfeng.mydb.server.command.ClientRequest;
 import com.github.entropyfeng.mydb.server.config.ServerConfig;
+import com.github.entropyfeng.mydb.server.handler.TurtleServerHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +27,9 @@ public class ConsumerLoop {
 
             ClientRequest command = queue.poll();
             if (command != null) {
+                if (command.getModify()&&ServerConfig.masterSlaveFlag.get()){
+                    TurtleServerHandler.masterQueue.add(command);
+                }
                 execute(command, target);
             } else {
                 try {
@@ -39,14 +44,16 @@ public class ConsumerLoop {
     private void handleServerBlocking(Object target) {
         if (ServerConfig.serverBlocking.get()) {
             synchronized (Thread.currentThread()) {
-                try {
-                    ServerConfig.threadCountDown.countDown();
-                    logger.info("{} before blocked", target.getClass().getSimpleName());
-                    Thread.currentThread().wait();
-                    logger.info("{} after blocked", target.getClass().getSimpleName());
-                } catch (InterruptedException e) {
-                    //not except to access it
-                    logger.error(e.getMessage());
+                if (ServerConfig.serverBlocking.get()){
+                    try {
+                        ServerConfig.threadCountDown.countDown();
+                        logger.info("{} before blocked", target.getClass().getSimpleName());
+                        Thread.currentThread().wait();
+                        logger.info("{} after blocked", target.getClass().getSimpleName());
+                    } catch (InterruptedException e) {
+                        //not except to access it
+                        logger.error(e.getMessage());
+                    }
                 }
             }
         }

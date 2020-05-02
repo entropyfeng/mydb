@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 
 /**
@@ -22,6 +23,11 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Cl
     private static final Logger logger = LoggerFactory.getLogger(TurtleServerHandler.class);
 
     public static ConcurrentHashMap<ChannelId, Channel> clientMap = new ConcurrentHashMap<>();
+
+    public static ConcurrentHashMap<ChannelId, Channel> serverMap = new ConcurrentHashMap<>();
+
+    public static ConcurrentLinkedQueue<ClientRequest> masterQueue = new ConcurrentLinkedQueue<>();
+
 
     private final ServerDomain serverDomain;
 
@@ -48,8 +54,8 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Cl
 
 
     /**
-     * netty 可以保证同一个客户端的请求顺序发送
-     *
+     * requests sent by the  same clients ,
+     * netty can assure these command be handled by server orderly
      * @param ctx {@link ChannelHandlerContext}
      * @param msg {@link ProtoBuf.ClientCommand}
      */
