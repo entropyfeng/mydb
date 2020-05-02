@@ -6,18 +6,28 @@ import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoModelHelper;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
 import com.github.entropyfeng.mydb.common.TurtleValue;
+import com.github.entropyfeng.mydb.server.AdminObject;
+import com.github.entropyfeng.mydb.server.domain.*;
+import io.netty.channel.Channel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static com.github.entropyfeng.mydb.server.command.ServerExecute.constructCommand;
+import static com.github.entropyfeng.mydb.server.command.ServerExecute.exceptionWrite;
+
 /**
  * @author entropyfeng
  */
-public class ClientRequest {
+public class ClientRequest implements ICommand{
 
+    private static final Logger logger= LoggerFactory.getLogger(ClientRequest.class);
 
     private final String operationName;
     private final TurtleModel model;
@@ -25,15 +35,18 @@ public class ClientRequest {
     private Class<?>[] types;
     private ArrayList<Object> objects;
     private final Long requestId;
+    private final Channel channel;
     private boolean modify;
 
+    private Method method;
     @SuppressWarnings("all")
-    public ClientRequest(ProtoBuf.RequestHeaderPayload header, Long requestId){
+    public ClientRequest(ProtoBuf.RequestHeaderPayload header, Long requestId,Channel channel){
         this.operationName=header.getOperationName();
         this.typeList=header.getKeysList();
         this.requestId=requestId;
         this.model= ProtoModelHelper.convertToTurtleModel(header.getModel());
         this.modify=header.getModify();
+        this.channel=channel;
 
         final int size=typeList.size();
         types=new Class<?>[size];
@@ -103,6 +116,7 @@ public class ClientRequest {
                 default:throw new UnsupportedOperationException();
             }
         }
+
     }
 
     @SuppressWarnings("unchecked")
@@ -166,8 +180,48 @@ public class ClientRequest {
 
     //------getter--------------
 
+    @Override
     public Long getRequestId() {
         return requestId;
+    }
+
+    @Override
+    public Method getMethod() {
+        return method;
+    }
+
+    @Override
+    public Channel getChannel() {
+        return channel;
+    }
+
+    @Override
+    public List<Object> getValues() {
+        return objects;
+    }
+
+    public ClientRequest build(){
+        Class<?> target;
+        switch (model){
+            case VALUE:target=ValuesDomain.class;break;
+            case LIST:target=ListDomain.class;break;
+            case SET:target=SetDomain.class;break;
+            case HASH:target=HashDomain.class;break;
+            case ZSET:target= OrderSetDomain.class;break;
+            default:target=AdminObject.class;break;
+        }
+        try {
+            if (types.length == 0) {
+                method = target.getDeclaredMethod(operationName);
+            } else {
+                method = target.getDeclaredMethod(operationName, types);
+            }
+            return this;
+        } catch (NoSuchMethodException e) {
+            logger.error(e.getMessage());
+            exceptionWrite(channel, requestId, ProtoBuf.ExceptionType.NoSuchMethodException, e.getMessage());
+            return null;
+        }
     }
 
     public String getOperationName() {

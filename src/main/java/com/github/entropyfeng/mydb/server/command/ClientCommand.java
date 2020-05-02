@@ -20,7 +20,6 @@ public class ClientCommand implements ICommand {
     private final List<Object> values;
     private final Channel channel;
     private final Long requestId;
-    private Long requestSequence;
 
     @Override
     public Long getRequestId() {
@@ -42,8 +41,5 @@ public class ClientCommand implements ICommand {
         return values;
     }
 
-    @Override
-    public Long getRequestSequence() {
-        return null;
-    }
+
 }

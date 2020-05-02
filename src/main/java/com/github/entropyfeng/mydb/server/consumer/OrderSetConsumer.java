@@ -1,6 +1,6 @@
 package com.github.entropyfeng.mydb.server.consumer;
 
-import com.github.entropyfeng.mydb.server.command.ClientCommand;
+import com.github.entropyfeng.mydb.server.command.ClientRequest;
 import com.github.entropyfeng.mydb.server.domain.OrderSetDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,9 +15,9 @@ public class OrderSetConsumer implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(OrderSetConsumer.class);
     private OrderSetDomain orderSetDomain;
-    private ConcurrentLinkedQueue<ClientCommand> queue;
+    private ConcurrentLinkedQueue<ClientRequest> queue;
 
-    public OrderSetConsumer(OrderSetDomain orderSetDomain, ConcurrentLinkedQueue<ClientCommand> queue) {
+    public OrderSetConsumer(OrderSetDomain orderSetDomain, ConcurrentLinkedQueue<ClientRequest> queue) {
         this.orderSetDomain = orderSetDomain;
         this.queue = queue;
     }

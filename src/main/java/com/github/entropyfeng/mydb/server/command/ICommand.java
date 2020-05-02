@@ -10,16 +10,12 @@ import java.util.List;
  */
 public interface ICommand {
 
-    public Long getRequestId();
+    Long getRequestId();
 
-    public Method getMethod();
+    Method getMethod();
 
+    Channel getChannel();
 
-    public Channel getChannel();
-
-
-    public List<Object> getValues();
-
-    public Long getRequestSequence();
+    List<Object> getValues();
 
 }

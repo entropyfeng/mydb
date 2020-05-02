@@ -1,22 +1,14 @@
 package com.github.entropyfeng.mydb.server;
 
-import com.github.entropyfeng.mydb.server.config.ServerConfig;
-import com.github.entropyfeng.mydb.server.config.ServerStatus;
+
 import com.github.entropyfeng.mydb.server.consumer.*;
 import com.github.entropyfeng.mydb.server.domain.*;
-import com.github.entropyfeng.mydb.server.core.zset.OrderSet;
-import com.github.entropyfeng.mydb.server.command.ClientCommand;
 import com.github.entropyfeng.mydb.server.command.ClientRequest;
 import com.github.entropyfeng.mydb.server.factory.*;
-import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static com.github.entropyfeng.mydb.server.command.ServerExecute.constructCommand;
-import static com.github.entropyfeng.mydb.server.config.ServerConfig.blockingDomainNumber;
 
 
 /**
@@ -72,17 +64,17 @@ public class ServerDomain {
     protected OrderSetDomain orderSetDomain;
 
 
-    protected ConcurrentLinkedQueue<ClientCommand> valuesQueue;
+    protected ConcurrentLinkedQueue<ClientRequest> valuesQueue;
 
-    protected ConcurrentLinkedQueue<ClientCommand> listQueue;
+    protected ConcurrentLinkedQueue<ClientRequest> listQueue;
 
-    protected ConcurrentLinkedQueue<ClientCommand> setQueue;
+    protected ConcurrentLinkedQueue<ClientRequest> setQueue;
 
-    protected ConcurrentLinkedQueue<ClientCommand> hashQueue;
+    protected ConcurrentLinkedQueue<ClientRequest> hashQueue;
 
-    protected ConcurrentLinkedQueue<ClientCommand> orderSetQueue;
+    protected ConcurrentLinkedQueue<ClientRequest> orderSetQueue;
 
-    protected ConcurrentLinkedQueue<ClientCommand> adminQueue;
+    protected ConcurrentLinkedQueue<ClientRequest> adminQueue;
 
 
     protected Thread valueThread;
@@ -115,29 +107,15 @@ public class ServerDomain {
 
     }
 
-    public void accept(ClientRequest clientRequest, Channel channel) {
-
-        switch (clientRequest.getModel()) {
-            case VALUE:
-                constructCommand(clientRequest, channel, ValuesDomain.class, valuesQueue);
-                return;
-            case ADMIN:
-                constructCommand(clientRequest,channel, AdminObject.class,adminQueue);
-                return;
-            case LIST:
-                constructCommand(clientRequest, channel, ListDomain.class, listQueue);
-                return;
-            case SET:
-                constructCommand(clientRequest, channel, SetDomain.class, setQueue);
-                return;
-            case HASH:
-                constructCommand(clientRequest, channel, HashDomain.class, hashQueue);
-                return;
-            case ZSET:
-                constructCommand(clientRequest, channel, OrderSet.class, orderSetQueue);
-                return;
-            default:
-                logger.error("unSupport mode {}",clientRequest.getModel());
+    public void accept(ClientRequest clientRequest) {
+        
+        switch (clientRequest.getModel()){
+            case VALUE:valuesQueue.add(clientRequest);break;
+            case ZSET:orderSetQueue.add(clientRequest);break;
+            case LIST:listQueue.add(clientRequest);break;
+            case SET:setQueue.add(clientRequest);break;
+            case HASH:hashQueue.add(clientRequest);break;
+            default:adminQueue.add(clientRequest);break;
         }
     }
 
@@ -149,7 +127,6 @@ public class ServerDomain {
         this.setQueue = new ConcurrentLinkedQueue<>();
         this.hashQueue = new ConcurrentLinkedQueue<>();
         this.orderSetQueue = new ConcurrentLinkedQueue<>();
-
         this.adminQueue = new ConcurrentLinkedQueue<>();
     }
 }

@@ -1,7 +1,7 @@
 package com.github.entropyfeng.mydb.server.consumer;
 
 import com.github.entropyfeng.mydb.server.AdminObject;
-import com.github.entropyfeng.mydb.server.command.ClientCommand;
+import com.github.entropyfeng.mydb.server.command.ClientRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,9 +16,9 @@ public class AdminConsumer implements Runnable  {
 
     private static final Logger logger= LoggerFactory.getLogger(AdminConsumer.class);
     private AdminObject adminObject;
-    private ConcurrentLinkedQueue<ClientCommand> queue;
+    private ConcurrentLinkedQueue<ClientRequest> queue;
 
-    public AdminConsumer( AdminObject adminObject, ConcurrentLinkedQueue<ClientCommand> queue) {
+    public AdminConsumer( AdminObject adminObject, ConcurrentLinkedQueue<ClientRequest> queue) {
         this.adminObject=adminObject;
         this.queue = queue;
     }
@@ -27,7 +27,7 @@ public class AdminConsumer implements Runnable  {
     public void run() {
         logger.info("run hash Thread");
         while (true) {
-            ClientCommand adminCommand = queue.poll();
+            ClientRequest adminCommand = queue.poll();
             if (adminCommand != null) {
                 execute(adminCommand, adminObject);
             } else {

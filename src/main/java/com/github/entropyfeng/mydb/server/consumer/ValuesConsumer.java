@@ -1,6 +1,6 @@
 package com.github.entropyfeng.mydb.server.consumer;
 
-import com.github.entropyfeng.mydb.server.command.ClientCommand;
+import com.github.entropyfeng.mydb.server.command.ClientRequest;
 import com.github.entropyfeng.mydb.server.domain.ValuesDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,9 +18,9 @@ public class ValuesConsumer implements Runnable {
 
 
     private ValuesDomain valuesDomain;
-    private ConcurrentLinkedQueue<ClientCommand> queue;
+    private ConcurrentLinkedQueue<ClientRequest> queue;
 
-    public ValuesConsumer( ValuesDomain valuesDomain, ConcurrentLinkedQueue<ClientCommand> queue) {
+    public ValuesConsumer(ValuesDomain valuesDomain, ConcurrentLinkedQueue<ClientRequest> queue) {
         this.valuesDomain = valuesDomain;
         this.queue = queue;
     }

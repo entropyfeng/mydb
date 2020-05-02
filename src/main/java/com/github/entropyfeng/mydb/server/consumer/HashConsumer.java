@@ -1,6 +1,6 @@
 package com.github.entropyfeng.mydb.server.consumer;
 
-import com.github.entropyfeng.mydb.server.command.ClientCommand;
+import com.github.entropyfeng.mydb.server.command.ClientRequest;
 import com.github.entropyfeng.mydb.server.domain.HashDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,9 +14,9 @@ public class HashConsumer implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(HashConsumer.class);
     private HashDomain hashDomain;
-    private ConcurrentLinkedQueue<ClientCommand> queue;
+    private ConcurrentLinkedQueue<ClientRequest> queue;
 
-    public HashConsumer( HashDomain hashDomain, ConcurrentLinkedQueue<ClientCommand> queue) {
+    public HashConsumer( HashDomain hashDomain, ConcurrentLinkedQueue<ClientRequest> queue) {
         this.hashDomain = hashDomain;
         this.queue = queue;
     }

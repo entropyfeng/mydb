@@ -40,10 +40,6 @@ public class ServerExecute {
 
         ClientCommand clientCommand= new ClientCommand(method, clientRequest.getObjects(), channel, requestId);
 
-        //生产者阻塞
-        while (ServerConfig.serverBlocking.get()){
-
-        }
         queue.offer(clientCommand);
 
     }
@@ -88,7 +84,6 @@ public class ServerExecute {
     @SuppressWarnings("unchecked")
     public static void  execute(ICommand command, Object target) {
 
-
         Object res;
         try {
             if (command.getValues()==null||command.getValues().size() == 0) {
@@ -116,7 +111,7 @@ public class ServerExecute {
     }
 
 
-    private static void exceptionWrite(Channel channel, Long requestId, ProtoBuf.ExceptionType exceptionType, String msg) {
+    public static void exceptionWrite(Channel channel, Long requestId, ProtoBuf.ExceptionType exceptionType, String msg) {
         ProtoBuf.ResHead.Builder headBuilder = ProtoBuf.ResHead.newBuilder();
         headBuilder.setSuccess(false);
         headBuilder.setResSize(0);

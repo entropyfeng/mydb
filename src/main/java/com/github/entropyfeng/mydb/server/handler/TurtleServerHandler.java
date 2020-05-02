@@ -5,7 +5,6 @@ import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.server.ResServerHelper;
 import com.github.entropyfeng.mydb.server.ServerDomain;
 import com.github.entropyfeng.mydb.server.command.ClientRequest;
-import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelId;
@@ -14,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
+
 
 /**
  * @author entropyfeng
@@ -23,8 +22,6 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Cl
     private static final Logger logger = LoggerFactory.getLogger(TurtleServerHandler.class);
 
     public static ConcurrentHashMap<ChannelId, Channel> clientMap = new ConcurrentHashMap<>();
-
-    private static ConcurrentLinkedQueue<ClientRequest> globalBlockQueue = new ConcurrentLinkedQueue<>();
 
     private final ServerDomain serverDomain;
 
@@ -59,24 +56,21 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Cl
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ProtoBuf.ClientCommand msg) {
 
-
-
         if (msg.getEndAble()) {
             ClientRequest clientRequest = requestMap.remove(msg.getRequestId());
             if (clientRequest != null) {
-                //if this server is master,and this request will modify the database
-                if (clientRequest.getModify() && ServerConfig.masterSlaveFlag.get()) {
-                    globalBlockQueue.add(clientRequest);
-                }
 
-                serverDomain.accept(clientRequest, ctx.channel());
+                clientRequest = clientRequest.build();
+                if (clientRequest != null) {
+                    serverDomain.accept(clientRequest);
+                }
             }
             return;
         }
 
         if (msg.getBeginAble()) {
             ProtoBuf.RequestHeaderPayload header = msg.getHeader();
-            ClientRequest clientRequest = new ClientRequest(header, msg.getRequestId());
+            ClientRequest clientRequest = new ClientRequest(header, msg.getRequestId(), ctx.channel());
             requestMap.put(msg.getRequestId(), clientRequest);
         } else {
             ClientRequest clientRequest = requestMap.get(msg.getRequestId());
