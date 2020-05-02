@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 /**
  * @author entropyfeng
  */
-public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.ClientCommand> {
+public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.TurtleData> {
     private static final Logger logger = LoggerFactory.getLogger(TurtleServerHandler.class);
 
     public static ConcurrentHashMap<ChannelId, Channel> clientMap = new ConcurrentHashMap<>();
@@ -57,10 +57,10 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Cl
      * requests sent by the  same clients ,
      * netty can assure these command be handled by server orderly
      * @param ctx {@link ChannelHandlerContext}
-     * @param msg {@link ProtoBuf.ClientCommand}
+     * @param msg {@link ProtoBuf.TurtleData}
      */
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, ProtoBuf.ClientCommand msg) {
+    protected void channelRead0(ChannelHandlerContext ctx, ProtoBuf.TurtleData msg) {
 
         if (msg.getEndAble()) {
             ClientRequest clientRequest = requestMap.remove(msg.getRequestId());
@@ -75,14 +75,14 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Cl
         }
 
         if (msg.getBeginAble()) {
-            ProtoBuf.RequestHeaderPayload header = msg.getHeader();
+            ProtoBuf.ReqHead header = msg.getReqHead();
             ClientRequest clientRequest = new ClientRequest(header, msg.getRequestId(), ctx.channel());
             requestMap.put(msg.getRequestId(), clientRequest);
         } else {
             ClientRequest clientRequest = requestMap.get(msg.getRequestId());
             if (clientRequest != null) {
                 try {
-                    clientRequest.put(msg.getBody());
+                    clientRequest.put(msg.getReqBody());
                 } catch (TurtleValueElementOutBoundsException e) {
                     logger.info("turtleValue length too long at requestId ->{}", msg.getRequestId());
                     ResServerHelper.writeOuterException(msg.getRequestId(), ctx.channel(), ProtoBuf.ExceptionType.TurtleValueElementOutBoundsException, "turtleValueElementOutBound");

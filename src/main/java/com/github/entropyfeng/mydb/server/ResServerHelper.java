@@ -191,11 +191,11 @@ public class ResServerHelper {
         headBuilder.setInnerException(msg);
 
         //-------------writeHead--------------------
-        ProtoBuf.ResponseData.Builder resBuilder = ProtoBuf.ResponseData.newBuilder();
+        ProtoBuf.TurtleData.Builder resBuilder = ProtoBuf.TurtleData.newBuilder();
         resBuilder.setBeginAble(true);
         resBuilder.setRequestId(requestId);
         resBuilder.setEndAble(false);
-        resBuilder.setHeader(headBuilder.build());
+        resBuilder.setResHead(headBuilder.build());
         channel.write(resBuilder.build());
 
         //--------------writeEnd-------------------

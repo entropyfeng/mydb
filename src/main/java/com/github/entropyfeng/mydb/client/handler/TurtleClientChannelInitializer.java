@@ -17,7 +17,7 @@ public class TurtleClientChannelInitializer extends ChannelInitializer<Channel> 
         //入站
         ch.pipeline().addLast("ProtobufVarint32FrameDecoder",new ProtobufVarint32FrameDecoder());
         //入站
-        ch.pipeline().addLast("ProtobufDecoder",new ProtobufDecoder(ProtoBuf.ResponseData.getDefaultInstance()));
+        ch.pipeline().addLast("ProtobufDecoder",new ProtobufDecoder(ProtoBuf.TurtleData.getDefaultInstance()));
         //入站
         ch.pipeline().addLast("TurtleClientHandler", new TurtleClientHandler());
     }

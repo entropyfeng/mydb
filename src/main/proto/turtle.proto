@@ -109,24 +109,14 @@ message ResBody{
     }
 }
 
-message ResponseData{
-    int64 requestId=1;
-    bool beginAble=2;
-    bool endAble=3;
-    oneof Value{
-        ResHead header=4;
-        ResBody body=5;
-    }
-}
-
-message RequestHeaderPayload{
+message ReqHead{
     int64 requestSequence=1;
     TurtleModel model=2;
     string operationName=3;
     repeated TurtleParaType keys=4;
     bool modify=5;
 }
-message RequestBodyPayload{
+message ReqBody{
     int64 requestSequence=1;
     int32 location=2;
     oneof Value{
@@ -139,13 +129,15 @@ message RequestBodyPayload{
         TurtleValue turtleValue=9;
     }
 }
-message ClientCommand{//客户端命令
+message TurtleData{
 
     int64 requestId=1;
     bool beginAble=2;
     bool endAble=3;
     oneof Value{
-          RequestHeaderPayload header=4;
-          RequestBodyPayload body=5;
+          ReqHead reqHead=4;
+          ReqBody reqBody=5;
+          ResHead resHead=6;
+          ResBody resBody=7;
     }
 }

@@ -41,7 +41,7 @@ public class ClientRequest implements ICommand {
     private Method method;
 
     @SuppressWarnings("all")
-    public ClientRequest(@NotNull ProtoBuf.RequestHeaderPayload header, @NotNull Long requestId, @NotNull Channel channel) {
+    public ClientRequest(@NotNull ProtoBuf.ReqHead header, @NotNull Long requestId, @NotNull Channel channel) {
         this.operationName = header.getOperationName();
         this.typeList = header.getKeysList();
         this.requestId = requestId;
@@ -137,7 +137,7 @@ public class ClientRequest implements ICommand {
     }
 
     @SuppressWarnings("unchecked")
-    public void put(ProtoBuf.RequestBodyPayload body) throws TurtleValueElementOutBoundsException {
+    public void put(ProtoBuf.ReqBody body) throws TurtleValueElementOutBoundsException {
 
         int location = body.getLocation();
         switch (typeList.get(location)) {

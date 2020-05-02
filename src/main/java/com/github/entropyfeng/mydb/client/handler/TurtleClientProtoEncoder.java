@@ -11,13 +11,13 @@ import org.slf4j.LoggerFactory;
  * 出站
  * @author entropyfeng
  */
-public class TurtleClientProtoEncoder extends MessageToByteEncoder<ProtoBuf.ClientCommand> {
+public class TurtleClientProtoEncoder extends MessageToByteEncoder<ProtoBuf.TurtleData> {
 
     private static final Logger logger= LoggerFactory.getLogger(TurtleClientProtoEncoder.class);
 
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, ProtoBuf.ClientCommand msg, ByteBuf out)  {
+    protected void encode(ChannelHandlerContext ctx, ProtoBuf.TurtleData msg, ByteBuf out)  {
         int bodyLen = msg.getSerializedSize();
         int headerLen = computeRawVarint32Size(bodyLen);
         out.ensureWritable(headerLen + bodyLen);

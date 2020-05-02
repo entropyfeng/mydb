@@ -19,7 +19,7 @@ import java.util.List;
 public class ClientCommandBuilder {
 
     private ArrayList<Object> objects = new ArrayList<>();
-    private ProtoBuf.RequestHeaderPayload.Builder headBuilder = ProtoBuf.RequestHeaderPayload.newBuilder();
+    private ProtoBuf.ReqHead.Builder headBuilder = ProtoBuf.ReqHead.newBuilder();
 
     public ClientCommandBuilder(TurtleModel turtleModel, String operationName) {
         headBuilder.setModel(ProtoModelHelper.convertToProtoTurtleModel(turtleModel));
@@ -92,18 +92,18 @@ public class ClientCommandBuilder {
 
     public void writeChannel(Channel channel, Long requestId) {
 
-        ProtoBuf.ClientCommand.Builder resBuilder = ProtoBuf.ClientCommand.newBuilder();
+        ProtoBuf.TurtleData.Builder resBuilder = ProtoBuf.TurtleData.newBuilder();
 
         //header
         resBuilder.setBeginAble(true);
-        resBuilder.setHeader(headBuilder.build());
+        resBuilder.setReqHead(headBuilder.build());
         resBuilder.setRequestId(requestId);
         channel.writeAndFlush(resBuilder.build());
 
 
 
         //body,if body is empty ,skip it
-        ProtoBuf.RequestBodyPayload.Builder bodyBuilder = ProtoBuf.RequestBodyPayload.newBuilder();
+        ProtoBuf.ReqBody.Builder bodyBuilder = ProtoBuf.ReqBody.newBuilder();
         List<ProtoBuf.TurtleParaType> list = headBuilder.getKeysList();
 
         for (int i = 0; i < list.size(); i++) {
@@ -121,7 +121,7 @@ public class ClientCommandBuilder {
 
 
     @SuppressWarnings("all")
-    public static void handleSingle(Channel channel, ProtoBuf.TurtleParaType type, Object object, int location, Long requestId, ProtoBuf.RequestBodyPayload.Builder bodyBuilder, ProtoBuf.ClientCommand.Builder resBuilder){
+    public static void handleSingle(Channel channel, ProtoBuf.TurtleParaType type, Object object, int location, Long requestId, ProtoBuf.ReqBody.Builder bodyBuilder, ProtoBuf.TurtleData.Builder resBuilder){
 
         resBuilder.clear();
         resBuilder.setRequestId(requestId);
@@ -133,54 +133,54 @@ public class ClientCommandBuilder {
         switch (type){
             case INTEGER:
                 bodyBuilder.setIntValue((Integer)object);
-                resBuilder.setBody(bodyBuilder.build());
+                resBuilder.setReqBody(bodyBuilder.build());
                 channel.write(resBuilder.build());
                 break;
             case DOUBLE:
                 bodyBuilder.setDoubleValue((Double)object);
-                resBuilder.setBody(bodyBuilder.build());
+                resBuilder.setReqBody(bodyBuilder.build());
                 channel.write(resBuilder.build());
                 break;
             case STRING:
                 bodyBuilder.setStringValue((String)object);
-                resBuilder.setBody(bodyBuilder.build());
+                resBuilder.setReqBody(bodyBuilder.build());
                 channel.write(resBuilder.build());
                 break;
             case LONG:
                 bodyBuilder.setLongValue((Long)object);
-                resBuilder.setBody(bodyBuilder.build());
+                resBuilder.setReqBody(bodyBuilder.build());
                 channel.write(resBuilder.build());
                 break;
             case BOOL:
                 bodyBuilder.setBoolValue((Boolean)object);
-                resBuilder.setBody(bodyBuilder.build());
+                resBuilder.setReqBody(bodyBuilder.build());
                 channel.write(resBuilder.build());
                 break;
             case TURTLE_VALUE:
                 bodyBuilder.setTurtleValue(ProtoTurtleHelper.convertToProto((TurtleValue)object));
-                resBuilder.setBody(bodyBuilder.build());
+                resBuilder.setReqBody(bodyBuilder.build());
                 channel.write(resBuilder.build());
                 break;
             case BYTES:
                 bodyBuilder.setBytesValue(ByteString.copyFrom((byte[])object));
-                resBuilder.setBody(bodyBuilder.build());
+                resBuilder.setReqBody(bodyBuilder.build());
                 channel.write(resBuilder.build());
                 break;
             case NUMBER_INTEGER:
                 bodyBuilder.setStringValue(object.toString());
-                resBuilder.setBody(bodyBuilder.build());
+                resBuilder.setReqBody(bodyBuilder.build());
                 channel.write(resBuilder.build());
                 break;
             case NUMBER_DECIMAL:
                 bodyBuilder.setStringValue(((BigDecimal)object).toPlainString());
-                resBuilder.setBody(bodyBuilder.build());
+                resBuilder.setReqBody(bodyBuilder.build());
                 channel.write(resBuilder.build());
                 break;
             case COLLECTION_DOUBLE:
                 ((Collection<Double>)object).forEach(aDouble -> {
                     bodyBuilder.setDoubleValue(aDouble);
                     bodyBuilder.setLocation(location);
-                    resBuilder.setBody(bodyBuilder.build());
+                    resBuilder.setReqBody(bodyBuilder.build());
                     channel.write(resBuilder.build());
                 });
                 channel.flush();
@@ -189,7 +189,7 @@ public class ClientCommandBuilder {
                 ((Collection<Long>)object).forEach(aLong -> {
                     bodyBuilder.setLongValue(aLong);
                     bodyBuilder.setLocation(location);
-                    resBuilder.setBody(bodyBuilder.build());
+                    resBuilder.setReqBody(bodyBuilder.build());
                     channel.write(resBuilder.build());
                 });
                 channel.flush();
@@ -198,7 +198,7 @@ public class ClientCommandBuilder {
                 ((Collection<Integer>)object).forEach(integer -> {
                     bodyBuilder.setIntValue(integer);
                     bodyBuilder.setLocation(location);
-                    resBuilder.setBody(bodyBuilder.build());
+                    resBuilder.setReqBody(bodyBuilder.build());
                     channel.write(resBuilder.build());
                 });
                 channel.flush();
@@ -207,7 +207,7 @@ public class ClientCommandBuilder {
                 ((Collection<BigDecimal>)object).forEach(bigDecimal -> {
                     bodyBuilder.setStringValue(bigDecimal.toPlainString());
                     bodyBuilder.setLocation(location);
-                    resBuilder.setBody(bodyBuilder.build());
+                    resBuilder.setReqBody(bodyBuilder.build());
                     channel.write(resBuilder.build());
                 });
                 channel.flush();
@@ -217,7 +217,7 @@ public class ClientCommandBuilder {
                 ((Collection<BigInteger>)object).forEach(bigInteger -> {
                     bodyBuilder.setLocation(location);
                     bodyBuilder.setStringValue(bigInteger.toString());
-                    resBuilder.setBody(bodyBuilder.build());
+                    resBuilder.setReqBody(bodyBuilder.build());
                     channel.write(resBuilder.build());
                 });
                 channel.flush();
@@ -226,7 +226,7 @@ public class ClientCommandBuilder {
                 ((Collection<byte[]>)object).forEach(bytes -> {
                     bodyBuilder.setLocation(location);
                     bodyBuilder.setBytesValue(ByteString.copyFrom(bytes));
-                    resBuilder.setBody(bodyBuilder.build());
+                    resBuilder.setReqBody(bodyBuilder.build());
                     channel.write(resBuilder.build());
                 });
                 channel.flush();
@@ -235,7 +235,7 @@ public class ClientCommandBuilder {
                 ((Collection<String>)object).forEach(s -> {
                     bodyBuilder.setLocation(location);
                     bodyBuilder.setStringValue(s);
-                    resBuilder.setBody(bodyBuilder.build());
+                    resBuilder.setReqBody(bodyBuilder.build());
                     channel.write(resBuilder.build());
                 });
                 channel.flush();
@@ -244,7 +244,7 @@ public class ClientCommandBuilder {
                 ((Collection<TurtleValue>)object).forEach(turtleValue -> {
                     bodyBuilder.setLocation(location);
                     bodyBuilder.setTurtleValue(ProtoTurtleHelper.convertToProto(turtleValue));
-                    resBuilder.setBody(bodyBuilder.build());
+                    resBuilder.setReqBody(bodyBuilder.build());
                     channel.write(resBuilder.build());
                 });
                 channel.flush();

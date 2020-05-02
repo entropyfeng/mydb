@@ -2,15 +2,12 @@ package com.github.entropyfeng.mydb.server.command;
 
 import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
-import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  *
@@ -29,8 +26,8 @@ public class ServerExecute {
 
 
         //-----------header-------------------------
-        ProtoBuf.ResponseData.Builder responseBuilder = ProtoBuf.ResponseData.newBuilder();
-        responseBuilder.setHeader(pair.getKey());
+        ProtoBuf.TurtleData.Builder responseBuilder = ProtoBuf.TurtleData.newBuilder();
+        responseBuilder.setResHead(pair.getKey());
         responseBuilder.setBeginAble(true);
         responseBuilder.setEndAble(false);
         responseBuilder.setRequestId(requestId);
@@ -44,7 +41,7 @@ public class ServerExecute {
         responseBuilder.setEndAble(false);
         responseBuilder.setBeginAble(false);
         logger.info("body size {}",pair.getValue().size());
-        pair.getValue().forEach(resBody -> channel.write(responseBuilder.setBody(resBody).build()));
+        pair.getValue().forEach(resBody -> channel.write(responseBuilder.setResBody(resBody).build()));
 
 
         //---------------end------------------
@@ -103,7 +100,7 @@ public class ServerExecute {
         headBuilder.setInnerException(msg);
         headBuilder.setInnerExceptionType(exceptionType);
 
-        ProtoBuf.ResponseData.Builder resDataBuilder = ProtoBuf.ResponseData.newBuilder().setRequestId(requestId).setHeader(headBuilder.build());
+        ProtoBuf.TurtleData.Builder resDataBuilder = ProtoBuf.TurtleData.newBuilder().setRequestId(requestId).setResHead(headBuilder.build());
 
         channel.write(resDataBuilder.build());
         resDataBuilder.clear().setEndAble(true).setRequestId(requestId);

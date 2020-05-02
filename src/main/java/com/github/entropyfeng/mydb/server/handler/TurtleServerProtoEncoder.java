@@ -10,13 +10,13 @@ import org.slf4j.LoggerFactory;
 /**
  * @author entropyfeng
  */
-public class TurtleServerProtoEncoder extends MessageToByteEncoder<ProtoBuf.ResponseData> {
+public class TurtleServerProtoEncoder extends MessageToByteEncoder<ProtoBuf.TurtleData> {
 
     private static final Logger logger= LoggerFactory.getLogger(TurtleServerProtoEncoder.class);
 
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, ProtoBuf.ResponseData msg, ByteBuf out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, ProtoBuf.TurtleData msg, ByteBuf out) throws Exception {
         int bodyLen = msg.getSerializedSize();
         int headerLen = computeRawVarint32Size(bodyLen);
         out.ensureWritable(headerLen + bodyLen);

@@ -17,7 +17,7 @@ import static com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.*;
 /**
  * @author entropyfeng
  */
-public class TurtleClientHandler extends SimpleChannelInboundHandler<ResponseData> {
+public class TurtleClientHandler extends SimpleChannelInboundHandler<TurtleData> {
 
     private static final Logger logger = LoggerFactory.getLogger(TurtleClientHandler.class);
 
@@ -52,7 +52,7 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<ResponseDat
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, ResponseData msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, TurtleData msg) throws Exception {
 
         System.out.println("read");
         System.out.println(msg.toString());
@@ -61,12 +61,12 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<ResponseDat
             return;
         }
         if (msg.getBeginAble()){
-            ResHead head=msg.getHeader();
+            ResHead head=msg.getResHead();
             res.put(msg.getRequestId(),new Pair<>(head,new ArrayList<>(head.getResSize())));
         }else {
             Pair<ResHead,Collection<ResBody>> pair=res.get(msg.getRequestId());
             if (pair!=null){
-                pair.getValue().add(msg.getBody());
+                pair.getValue().add(msg.getResBody());
             }
         }
     }

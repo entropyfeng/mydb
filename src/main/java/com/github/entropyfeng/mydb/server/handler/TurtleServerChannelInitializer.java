@@ -23,7 +23,7 @@ public class TurtleServerChannelInitializer extends ChannelInitializer<Channel> 
         //入站
         ch.pipeline().addLast("protobufVarint32FrameDecoder",new ProtobufVarint32FrameDecoder());
         //入站
-        ch.pipeline().addLast("protobufDecoder",new ProtobufDecoder(ProtoBuf.ClientCommand.getDefaultInstance()));
+        ch.pipeline().addLast("protobufDecoder",new ProtobufDecoder(ProtoBuf.TurtleData.getDefaultInstance()));
         //入站
         ch.pipeline().addLast("turtleServerHandler",new TurtleServerHandler(serverDomain));
         //出站
