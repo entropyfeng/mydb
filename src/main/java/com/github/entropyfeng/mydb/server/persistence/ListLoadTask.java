@@ -22,7 +22,7 @@ public class ListLoadTask implements Callable<ListDomain> {
     private String[] fileNames;
     private String path;
     private CountDownLatch countDownLatch;
-    private final Pattern listPattern = compile("-list.dump$");
+    private final Pattern listPattern = compile("-list\\.dump$");
 
     public ListLoadTask(String[] fileNames, String path, CountDownLatch countDownLatch) {
         this.fileNames = fileNames;
@@ -34,7 +34,7 @@ public class ListLoadTask implements Callable<ListDomain> {
     @Override
     public ListDomain call() throws Exception {
 
-        Optional<String> listFilename = Arrays.stream(fileNames).filter(s -> !listPattern.matcher(s).matches()).max(String::compareTo);
+        Optional<String> listFilename = Arrays.stream(fileNames).filter(s -> listPattern.matcher(s).find()).max(String::compareTo);
         ListDomain listDomain = null;
         try {
             if (listFilename.isPresent()) {

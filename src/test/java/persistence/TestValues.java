@@ -36,6 +36,20 @@ public class TestValues {
     }
 
     @Test
+    public void testEmpty() throws IOException {
+        ValuesDomain valuesDomain=new ValuesDomain();
+        valuesDomain.set("10086",new TurtleValue(10086),0L);
+        FileOutputStream fileOutputStream = new FileOutputStream("./testValues");
+        DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
+        ValuesDomain.write(valuesDomain,dataOutputStream);
+
+        //--------------------------------------
+        FileInputStream fileInputStream = new FileInputStream("./testValues");
+        DataInputStream dataInputStream = new DataInputStream(fileInputStream);
+        ValuesDomain res=ValuesDomain.read(dataInputStream);
+    }
+
+    @Test
     public void testExpire()throws IOException{
         ValuesDomain valuesDomain=new ValuesDomain();
         int limit=10000000;

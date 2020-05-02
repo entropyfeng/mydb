@@ -22,7 +22,7 @@ public class SetLoadTask implements Callable<SetDomain> {
     private String[] fileNames;
     private String path;
     private CountDownLatch countDownLatch;
-    private final Pattern setPattern = compile("-list.dump$");
+    private final Pattern setPattern = compile("-set\\.dump$");
 
     public SetLoadTask(String[] fileNames, String path, CountDownLatch countDownLatch) {
         this.fileNames = fileNames;
@@ -34,13 +34,13 @@ public class SetLoadTask implements Callable<SetDomain> {
     @Override
     public SetDomain call() throws Exception {
 
-        Optional<String> setFilename = Arrays.stream(fileNames).filter(s -> !setPattern.matcher(s).matches()).max(String::compareTo);
+
+        Optional<String> setFilename = Arrays.stream(fileNames).filter(s -> setPattern.matcher(s).find()).max(String::compareTo);
         SetDomain setDomain = null;
         try {
             if (setFilename.isPresent()) {
-                File valuesDump = new File(path + setFilename.get());
-
-                FileInputStream fileInputStream = new FileInputStream(valuesDump);
+                File setDump = new File(path + setFilename.get());
+                FileInputStream fileInputStream = new FileInputStream(setDump);
                 DataInputStream dataInputStream = new DataInputStream(fileInputStream);
                 setDomain = SetDomain.read(dataInputStream);
             }

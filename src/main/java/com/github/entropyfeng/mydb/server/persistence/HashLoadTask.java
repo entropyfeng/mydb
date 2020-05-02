@@ -22,7 +22,7 @@ public class HashLoadTask implements Callable<HashDomain> {
     private String[] fileNames;
     private String path;
     private CountDownLatch countDownLatch;
-    private final Pattern hashPattern = compile("-hash.dump$");
+    private final Pattern hashPattern = compile("-hash\\.dump$");
 
     public HashLoadTask(String[] fileNames, String path, CountDownLatch countDownLatch) {
         this.fileNames = fileNames;
@@ -34,7 +34,7 @@ public class HashLoadTask implements Callable<HashDomain> {
     @Override
     public HashDomain call() throws Exception {
 
-        Optional<String> hashFilename = Arrays.stream(fileNames).filter(s -> !hashPattern.matcher(s).matches()).max(String::compareTo);
+        Optional<String> hashFilename = Arrays.stream(fileNames).filter(s -> hashPattern.matcher(s).find()).max(String::compareTo);
         HashDomain hashDomain = null;
         try {
             if (hashFilename.isPresent()) {

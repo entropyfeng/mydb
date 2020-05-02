@@ -129,6 +129,7 @@ public class PersistenceHelper {
             valuesDomain = valuesDomainFuture.get();
         } catch (InterruptedException | ExecutionException e) {
             logger.info(e.getMessage());
+            e.printStackTrace();
         }
         if (valuesDomain == null) {
             valuesDomain = new ValuesDomain();
@@ -140,6 +141,7 @@ public class PersistenceHelper {
             listDomain = listDomainFuture.get();
         } catch (InterruptedException | ExecutionException e) {
             logger.info(e.getMessage());
+            e.printStackTrace();
         }
         if (listDomain == null) {
             listDomain = new ListDomain();
@@ -150,6 +152,7 @@ public class PersistenceHelper {
             setDomain = setDomainFuture.get();
         } catch (InterruptedException | ExecutionException e) {
             logger.info(e.getMessage());
+            e.printStackTrace();
         }
         if (setDomain == null) {
             setDomain = new SetDomain();

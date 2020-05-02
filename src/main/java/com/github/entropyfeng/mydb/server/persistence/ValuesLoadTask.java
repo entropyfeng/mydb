@@ -22,7 +22,7 @@ public class ValuesLoadTask implements Callable<ValuesDomain> {
     private String[] fileNames;
     private String path;
     private CountDownLatch countDownLatch;
-    private final Pattern valuesPattern = compile("-values.dump$");
+    private final Pattern valuesPattern = compile("-values\\.dump$");
 
     public ValuesLoadTask(String[] fileNames, String path, CountDownLatch countDownLatch) {
         this.fileNames = fileNames;
@@ -34,7 +34,7 @@ public class ValuesLoadTask implements Callable<ValuesDomain> {
     @Override
     public ValuesDomain call() throws Exception {
 
-        Optional<String> valuesFilename = Arrays.stream(fileNames).filter(s -> !valuesPattern.matcher(s).matches()).max(String::compareTo);
+        Optional<String> valuesFilename = Arrays.stream(fileNames).filter(s -> valuesPattern.matcher(s).find()).max(String::compareTo);
         ValuesDomain valuesDomain = null;
         try {
             if (valuesFilename.isPresent()) {

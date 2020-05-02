@@ -22,7 +22,7 @@ public class OrderSetLoadTask implements Callable<OrderSetDomain> {
     private String[] fileNames;
     private String path;
     private CountDownLatch countDownLatch;
-    private final Pattern orderSetPattern = compile("-orderSet.dump$");
+    private final Pattern orderSetPattern = compile("-orderSet\\.dump$");
 
     public OrderSetLoadTask(String[] fileNames, String path, CountDownLatch countDownLatch) {
         this.fileNames = fileNames;
@@ -34,7 +34,7 @@ public class OrderSetLoadTask implements Callable<OrderSetDomain> {
     @Override
     public OrderSetDomain call() throws Exception {
 
-        Optional<String> orderSetFilename = Arrays.stream(fileNames).filter(s -> !orderSetPattern.matcher(s).matches()).max(String::compareTo);
+        Optional<String> orderSetFilename = Arrays.stream(fileNames).filter(s -> orderSetPattern.matcher(s).find()).max(String::compareTo);
         OrderSetDomain orderSetDomain = null;
         try {
             if (orderSetFilename.isPresent()) {

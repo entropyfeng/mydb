@@ -10,6 +10,8 @@ import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.server.persistence.SetDumpTask;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -25,6 +27,7 @@ public class SetDomain implements ISetOperations, Serializable {
 
     private final HashMap<String, HashSet<TurtleValue>> setHashMap;
 
+    private static final Logger logger= LoggerFactory.getLogger(SetDomain.class);
     public SetDomain() {
         this.setHashMap = new HashMap<>();
     }
@@ -184,9 +187,9 @@ public class SetDomain implements ISetOperations, Serializable {
     public static void write(SetDomain setDomain, DataOutputStream outputStream) throws IOException {
         //magic number
         outputStream.write(Constant.MAGIC_NUMBER);
-
         HashMap<String, HashSet<TurtleValue>> map = setDomain.setHashMap;
         outputStream.writeInt(map.size());
+        logger.error("writeMapSize{}",map.size());
         for (Map.Entry<String, HashSet<TurtleValue>> entry : map.entrySet()) {
             String s = entry.getKey();
             byte[] stringBytes = s.getBytes();
@@ -209,8 +212,9 @@ public class SetDomain implements ISetOperations, Serializable {
         }
 
         int mapSize = inputStream.readInt();
-        HashMap<String, HashSet<TurtleValue>> map = new HashMap<>();
+        HashMap<String, HashSet<TurtleValue>> map = new HashMap<>(mapSize);
         SetDomain setDomain = new SetDomain(map);
+        
 
         for (int i = 0; i < mapSize; i++) {
 
