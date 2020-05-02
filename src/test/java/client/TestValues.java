@@ -1,24 +1,43 @@
 package client;
 
-import com.github.entropyfeng.mydb.client.res.ResponseDataTemplate;
+import com.github.entropyfeng.mydb.client.ops.TurtleTemplate;
 import com.github.entropyfeng.mydb.common.TurtleValue;
-import com.github.entropyfeng.mydb.common.Pair;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Collection;
-
-import static com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResBody;
-import static com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResHead;
-
 public class TestValues {
+
+    private TurtleTemplate template=new TurtleTemplate();
     @Test
     public void testSingle() {
 
-        ResponseDataTemplate template = new ResponseDataTemplate();
-        Pair<ResHead, Collection<ResBody>> pair = template.opsForValues().set("10086", new TurtleValue(1008611),0L);
+        TurtleValue request=new TurtleValue("1008611");
+        template.opsForValues().set("10086",request);
 
-        Assert.assertTrue(pair.getKey().getSuccess());
+        TurtleValue response=template.opsForValues().get("10086");
+
+        Assert.assertEquals(request,response);
+
     }
 
+    @Test
+    public void testSave(){
+        TurtleValue request=new TurtleValue("1008611");
+        template.opsForValues().set("10086",request);
+
+        TurtleValue response=template.opsForValues().get("10086");
+
+        Assert.assertEquals(request,response);
+
+        template.opsForAdmin().lazyDump();
+    }
+
+    @Test
+    public void testLoad(){
+        TurtleValue request=new TurtleValue("1008611");
+
+        TurtleValue response=template.opsForValues().get("10086");
+
+        Assert.assertEquals(request,response);
+    }
 }

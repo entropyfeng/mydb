@@ -20,7 +20,7 @@ public class TurtleClient {
     private volatile Channel channel;
     private Bootstrap client;
 
-    public void start() {
+    public void start()throws InterruptedException {
         NioEventLoopGroup eventLoopGroup = new NioEventLoopGroup();
         client = new Bootstrap();
         client.group(eventLoopGroup)

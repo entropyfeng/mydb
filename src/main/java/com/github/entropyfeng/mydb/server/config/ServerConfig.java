@@ -42,10 +42,10 @@ public class ServerConfig {
 
     public static ServerStatus serverStatus=ServerStatus.CLOSE;
 
-    public static AtomicBoolean serverBlocking=new AtomicBoolean(true);
+    public static AtomicBoolean serverBlocking=new AtomicBoolean(false);
 
     public static AtomicBoolean masterSlaveFlag=new AtomicBoolean(false);
 
 
-    public static CountDownLatch threadCountDown=new CountDownLatch(5);
+    public static CountDownLatch threadCountDown=new CountDownLatch(Constant.CONSUMER_THREAD_NUMBER);
 }

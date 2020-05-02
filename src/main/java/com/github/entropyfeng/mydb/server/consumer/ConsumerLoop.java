@@ -1,6 +1,5 @@
 package com.github.entropyfeng.mydb.server.consumer;
 
-import com.github.entropyfeng.mydb.server.TurtleServer;
 import com.github.entropyfeng.mydb.server.command.ClientRequest;
 import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import com.github.entropyfeng.mydb.server.handler.TurtleServerHandler;
@@ -27,7 +26,7 @@ public class ConsumerLoop {
 
             ClientRequest command = queue.poll();
             if (command != null) {
-                if (command.getModify()&&ServerConfig.masterSlaveFlag.get()){
+                if (command.getModify() && ServerConfig.masterSlaveFlag.get()) {
                     TurtleServerHandler.masterQueue.add(command);
                 }
                 execute(command, target);
@@ -44,7 +43,7 @@ public class ConsumerLoop {
     private void handleServerBlocking(Object target) {
         if (ServerConfig.serverBlocking.get()) {
             synchronized (Thread.currentThread()) {
-                if (ServerConfig.serverBlocking.get()){
+                if (ServerConfig.serverBlocking.get()) {
                     try {
                         ServerConfig.threadCountDown.countDown();
                         logger.info("{} before blocked", target.getClass().getSimpleName());

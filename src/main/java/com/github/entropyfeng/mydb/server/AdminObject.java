@@ -7,9 +7,7 @@ import com.github.entropyfeng.mydb.common.ops.IAdminOperations;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.server.command.ClientRequest;
 import com.github.entropyfeng.mydb.server.config.ServerConfig;
-import com.github.entropyfeng.mydb.server.domain.ListDomain;
-import com.github.entropyfeng.mydb.server.domain.OrderSetDomain;
-import com.github.entropyfeng.mydb.server.domain.ValuesDomain;
+import com.github.entropyfeng.mydb.server.domain.*;
 import com.github.entropyfeng.mydb.server.factory.MasterSlaveThreadFactory;
 import io.netty.bootstrap.Bootstrap;
 import org.jetbrains.annotations.NotNull;
@@ -58,8 +56,8 @@ public class AdminObject implements IAdminOperations {
         try {
             Method valuesMethod = ValuesDomain.class.getMethod("dump");
             Method listMethod = ListDomain.class.getMethod("dump");
-            Method setMethod = ListDomain.class.getMethod("dump");
-            Method hashMethod = ListDomain.class.getMethod("dump");
+            Method setMethod = SetDomain.class.getMethod("dump");
+            Method hashMethod = HashDomain.class.getMethod("dump");
             Method orderSetMethod = OrderSetDomain.class.getMethod("dump");
             lazyMethod(valuesMethod, listMethod, setMethod, hashMethod, orderSetMethod);
         } catch (NoSuchMethodException e) {

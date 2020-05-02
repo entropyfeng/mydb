@@ -21,17 +21,12 @@ public class ServerExecute {
 
     private static void writeChannel(Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> pair, Channel channel, Long requestId) {
 
-
-        logger.info("writeChannel requestId ->{} ; ",requestId);
-
-
         //-----------header-------------------------
         ProtoBuf.TurtleData.Builder responseBuilder = ProtoBuf.TurtleData.newBuilder();
         responseBuilder.setResHead(pair.getKey());
         responseBuilder.setBeginAble(true);
         responseBuilder.setEndAble(false);
         responseBuilder.setRequestId(requestId);
-        logger.info(pair.getKey().getSuccess()+"");
         channel.write(responseBuilder.build());
 
 
@@ -40,7 +35,7 @@ public class ServerExecute {
         responseBuilder.setRequestId(requestId);
         responseBuilder.setEndAble(false);
         responseBuilder.setBeginAble(false);
-        logger.info("body size {}",pair.getValue().size());
+
         pair.getValue().forEach(resBody -> channel.write(responseBuilder.setResBody(resBody).build()));
 
 
@@ -49,7 +44,6 @@ public class ServerExecute {
         responseBuilder.setRequestId(requestId);
         responseBuilder.setEndAble(true);
         responseBuilder.setBeginAble(false);
-        logger.info(responseBuilder.build().toString());
         channel.write(responseBuilder.build());
         channel.flush();
     }

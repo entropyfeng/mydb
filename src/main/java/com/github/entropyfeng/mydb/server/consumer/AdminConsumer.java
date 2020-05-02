@@ -23,7 +23,7 @@ public class AdminConsumer implements Runnable  {
     private AdminObject adminObject;
     private ConcurrentLinkedQueue<ClientRequest> queue;
 
-    public AdminConsumer( AdminObject adminObject, ConcurrentLinkedQueue<ClientRequest> queue) {
+    public AdminConsumer(AdminObject adminObject, ConcurrentLinkedQueue<ClientRequest> queue) {
         this.adminObject=adminObject;
         this.queue = queue;
     }

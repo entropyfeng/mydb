@@ -54,8 +54,6 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<TurtleData>
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, TurtleData msg) {
 
-        System.out.println("read");
-        System.out.println(msg.toString());
         if (msg.getEndAble()){
             dispatchRes(msg.getRequestId());
             return;
