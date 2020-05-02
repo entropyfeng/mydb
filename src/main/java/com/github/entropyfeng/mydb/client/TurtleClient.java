@@ -16,11 +16,12 @@ import java.util.concurrent.TimeUnit;
  */
 public class TurtleClient {
 
-    private static Logger logger= LoggerFactory.getLogger(TurtleClient.class);
+    private static Logger logger = LoggerFactory.getLogger(TurtleClient.class);
     private volatile Channel channel;
     private Bootstrap client;
-    public void start() throws InterruptedException {
-       NioEventLoopGroup eventLoopGroup = new NioEventLoopGroup();
+
+    public void start() {
+        NioEventLoopGroup eventLoopGroup = new NioEventLoopGroup();
         client = new Bootstrap();
         client.group(eventLoopGroup)
                 .channel(NioSocketChannel.class)
@@ -29,24 +30,24 @@ public class TurtleClient {
                 .option(ChannelOption.SO_KEEPALIVE, true)
                 .handler(new TurtleClientChannelInitializer());
 
-      doConnect();
+        doConnect();
     }
 
-    private void doConnect(){
+    private void doConnect() {
 
 
-        if (channel!=null&&channel.isActive()){
+        if (channel != null && channel.isActive()) {
             return;
         }
 
-        ChannelFuture connect=client.connect();
+        ChannelFuture connect = client.connect();
         connect.addListener((ChannelFutureListener) future -> {
-            if (future.isSuccess()){
-                this.channel=future.channel();
+            if (future.isSuccess()) {
+                this.channel = future.channel();
                 TurtleClientChannelFactory.setReady(true);
                 TurtleClientChannelFactory.setChannel(channel);
                 System.out.println("success connect...");
-            }else {
+            } else {
                 System.out.println("reConnect...");
                 TurtleClientChannelFactory.setReady(false);
                 TurtleClientChannelFactory.setChannel(null);

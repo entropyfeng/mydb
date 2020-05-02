@@ -262,14 +262,6 @@ public class ClientRequest implements ICommand {
         return model;
     }
 
-    public Class<?>[] getTypes() {
-        return types;
-    }
-
-    public ArrayList<Object> getObjects() {
-        return objects;
-    }
-
     public boolean getModify() {
         return this.modify;
     }

@@ -5,7 +5,6 @@ import com.github.entropyfeng.mydb.util.ConfigUtil;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author entropyfeng
