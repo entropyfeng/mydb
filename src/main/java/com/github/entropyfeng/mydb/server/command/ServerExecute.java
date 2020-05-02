@@ -20,29 +20,7 @@ public class ServerExecute {
 
 
     public static Logger logger= LoggerFactory.getLogger(ServerExecute.class);
-    public static void constructCommand(ClientRequest clientRequest, Channel channel, Class<?> target, ConcurrentLinkedQueue<ClientCommand> queue) {
-        Method method;
-        final String operationName = clientRequest.getOperationName();
-        final Long requestId = clientRequest.getRequestId();
-        final Class<?>[] types = clientRequest.getTypes();
 
-        try {
-            if (types.length == 0) {
-                method = target.getDeclaredMethod(operationName);
-            } else {
-                method = target.getDeclaredMethod(operationName, types);
-            }
-        } catch (NoSuchMethodException e) {
-            logger.error(e.getMessage());
-            exceptionWrite(channel, requestId, ProtoBuf.ExceptionType.NoSuchMethodException, e.getMessage());
-            return;
-        }
-
-        ClientCommand clientCommand= new ClientCommand(method, clientRequest.getObjects(), channel, requestId);
-
-        queue.offer(clientCommand);
-
-    }
 
     private static void writeChannel(Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> pair, Channel channel, Long requestId) {
 
@@ -89,13 +67,20 @@ public class ServerExecute {
             if (command.getValues()==null||command.getValues().size() == 0) {
                 res = command.getMethod().invoke(target);
             } else {
-
                 res = command.getMethod().invoke(target, command.getValues().toArray(new Object[0]));
             }
         } catch (IllegalAccessException e) {
+            if (command.getChannel()==null){
+                logger.error("server request error {}",e.getMessage());
+                return;
+            }
             exceptionWrite(command.getChannel(), command.getRequestId(), ProtoBuf.ExceptionType.IllegalAccessException, "禁止访问" + e.getMessage());
             return;
         } catch (InvocationTargetException e) {
+            if (command.getChannel()==null){
+                logger.error("server request error {}",e.getMessage());
+                return;
+            }
             //调用函数的内部有未捕获的异常
             exceptionWrite(command.getChannel(), command.getRequestId(), ProtoBuf.ExceptionType.InvocationTargetException, e.getMessage());
             return;

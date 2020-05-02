@@ -2,18 +2,27 @@ package com.github.entropyfeng.mydb.server.consumer;
 
 import com.github.entropyfeng.mydb.server.command.ClientRequest;
 import com.github.entropyfeng.mydb.server.config.ServerConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
+
 import static com.github.entropyfeng.mydb.server.command.ServerExecute.execute;
+
 
 /**
  * @author entropyfeng
  */
 public class ConsumerLoop {
 
-    public  void loop(Object target, ConcurrentLinkedQueue<ClientRequest> queue){
+    private static Logger logger = LoggerFactory.getLogger(ConsumerLoop.class);
+
+    public void loop(Object target, ConcurrentLinkedQueue<ClientRequest> queue) {
 
         while (true) {
+
+            handleServerBlocking(target);
+
             ClientRequest command = queue.poll();
             if (command != null) {
                 execute(command, target);
@@ -21,7 +30,23 @@ public class ConsumerLoop {
                 try {
                     Thread.sleep(1);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage());
+                }
+            }
+        }
+    }
+
+    private void handleServerBlocking(Object target) {
+        if (ServerConfig.serverBlocking.get()) {
+            synchronized (Thread.currentThread()) {
+                try {
+                    ServerConfig.threadCountDown.countDown();
+                    logger.info("{} before blocked", target.getClass().getSimpleName());
+                    Thread.currentThread().wait();
+                    logger.info("{} after blocked", target.getClass().getSimpleName());
+                } catch (InterruptedException e) {
+                    //not except to access it
+                    logger.error(e.getMessage());
                 }
             }
         }

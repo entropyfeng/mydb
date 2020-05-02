@@ -4,7 +4,6 @@ import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.common.ops.IAdminOperations;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.server.command.ClientRequest;
-import com.github.entropyfeng.mydb.server.config.Constant;
 import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import com.github.entropyfeng.mydb.server.domain.ListDomain;
 import com.github.entropyfeng.mydb.server.domain.OrderSetDomain;
@@ -15,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * @author entropyfeng
@@ -31,14 +31,14 @@ public class AdminObject implements IAdminOperations {
 
 
     @Override
-   public  @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> lazyClear() {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> lazyClear() {
         try {
             Method valuesMethod = ValuesDomain.class.getMethod("clear");
             Method listMethod = ListDomain.class.getMethod("clear");
             Method setMethod = ListDomain.class.getMethod("clear");
             Method hashMethod = ListDomain.class.getMethod("clear");
             Method orderSetMethod = OrderSetDomain.class.getMethod("clear");
-            //doAllDomains(valuesMethod, listMethod, setMethod, hashMethod, orderSetMethod);
+            lazyMethod(valuesMethod, listMethod, setMethod, hashMethod, orderSetMethod);
         } catch (NoSuchMethodException e) {
             logger.error("not find method->{}", e.getMessage());
         }
@@ -55,7 +55,7 @@ public class AdminObject implements IAdminOperations {
             Method setMethod = ListDomain.class.getMethod("dump");
             Method hashMethod = ListDomain.class.getMethod("dump");
             Method orderSetMethod = OrderSetDomain.class.getMethod("dump");
-           // doAllDomains(valuesMethod, listMethod, setMethod, hashMethod, orderSetMethod);
+            lazyMethod(valuesMethod, listMethod, setMethod, hashMethod, orderSetMethod);
         } catch (NoSuchMethodException e) {
             logger.error("not find method->{}", e.getMessage());
         }
@@ -64,29 +64,59 @@ public class AdminObject implements IAdminOperations {
     }
 
 
-
     @NotNull
     @Override
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear() {
+        logger.info("clear begin");
+        logger.info("all consumer threads will blocking");
+        ServerConfig.serverBlocking.set(true);
 
-        //all blocking queue will not accept new client command util the server is not blocking
+        try {
+            ServerConfig.threadCountDown.await();
+            logger.info("all consumer threads is blocking");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        PersistenceHelper.clearAll(serverDomain);
 
-        //wait util all consumer thread consumer its task
+        ServerConfig.threadCountDown = new CountDownLatch(5);
+        ServerConfig.serverBlocking.set(false);
+        serverDomain.notifyAllValuesThread();
 
-
+        logger.info("clear end");
         return ResServerHelper.emptyRes();
+
     }
 
     @Override
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> dump() {
 
         logger.info("dump begin");
-        logger.info("request complete all task in all domains .");
+        logger.info("all consumer threads will blocking");
+        ServerConfig.serverBlocking.set(true);
 
+        try {
+            ServerConfig.threadCountDown.await();
+            logger.info("all consumer threads is blocking");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        PersistenceHelper.dumpAll(serverDomain);
 
+        ServerConfig.threadCountDown = new CountDownLatch(5);
+        ServerConfig.serverBlocking.set(false);
+        serverDomain.notifyAllValuesThread();
 
+        logger.info("dump end");
         return ResServerHelper.emptyRes();
     }
 
+    public void lazyMethod(Method valuesMethod, Method listMethod, Method setMethod, Method hashMethod, Method orderSetMethod) {
+        serverDomain.valuesQueue.add(new ClientRequest(valuesMethod));
+        serverDomain.listQueue.add(new ClientRequest(listMethod));
+        serverDomain.setQueue.add(new ClientRequest(setMethod));
+        serverDomain.hashQueue.add(new ClientRequest(hashMethod));
+        serverDomain.orderSetQueue.add(new ClientRequest(orderSetMethod));
+    }
 
 }

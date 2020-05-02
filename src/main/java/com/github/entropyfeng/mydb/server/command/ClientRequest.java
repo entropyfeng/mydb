@@ -1,14 +1,15 @@
 package com.github.entropyfeng.mydb.server.command;
 
 import com.github.entropyfeng.mydb.common.TurtleModel;
+import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.common.exception.TurtleValueElementOutBoundsException;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoModelHelper;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
-import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.server.AdminObject;
 import com.github.entropyfeng.mydb.server.domain.*;
 import io.netty.channel.Channel;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,161 +20,178 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static com.github.entropyfeng.mydb.server.command.ServerExecute.constructCommand;
 import static com.github.entropyfeng.mydb.server.command.ServerExecute.exceptionWrite;
 
 /**
  * @author entropyfeng
  */
-public class ClientRequest implements ICommand{
+public class ClientRequest implements ICommand {
 
-    private static final Logger logger= LoggerFactory.getLogger(ClientRequest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ClientRequest.class);
 
     private final String operationName;
     private final TurtleModel model;
-    private List<ProtoBuf.TurtleParaType> typeList;
-    private Class<?>[] types;
-    private ArrayList<Object> objects;
+    private final List<ProtoBuf.TurtleParaType> typeList;
+    private final Class<?>[] types;
+    private final ArrayList<Object> objects;
     private final Long requestId;
     private final Channel channel;
-    private boolean modify;
+    private final boolean modify;
 
     private Method method;
-    @SuppressWarnings("all")
-    public ClientRequest(ProtoBuf.RequestHeaderPayload header, Long requestId,Channel channel){
-        this.operationName=header.getOperationName();
-        this.typeList=header.getKeysList();
-        this.requestId=requestId;
-        this.model= ProtoModelHelper.convertToTurtleModel(header.getModel());
-        this.modify=header.getModify();
-        this.channel=channel;
 
-        final int size=typeList.size();
-        types=new Class<?>[size];
-        objects=new ArrayList<>(size);
+    @SuppressWarnings("all")
+    public ClientRequest(@NotNull ProtoBuf.RequestHeaderPayload header, @NotNull Long requestId, @NotNull Channel channel) {
+        this.operationName = header.getOperationName();
+        this.typeList = header.getKeysList();
+        this.requestId = requestId;
+        this.model = ProtoModelHelper.convertToTurtleModel(header.getModel());
+        this.modify = header.getModify();
+        this.channel = channel;
+
+        final int size = typeList.size();
+        types = new Class<?>[size];
+        objects = new ArrayList<>(size);
+
+        //construct typeList
         for (int i = 0; i < size; i++) {
 
-            switch (typeList.get(i)){
+            switch (typeList.get(i)) {
                 case INTEGER:
-                    types[i]=Integer.class;
+                    types[i] = Integer.class;
                     break;
                 case BOOL:
-                    types[i]=Boolean.class;
+                    types[i] = Boolean.class;
                     break;
                 case LONG:
-                    types[i]=Long.class;
+                    types[i] = Long.class;
                     break;
                 case STRING:
-                    types[i]=String.class;
+                    types[i] = String.class;
                     break;
                 case DOUBLE:
-                    types[i]=Double.class;
+                    types[i] = Double.class;
                     break;
                 case TURTLE_VALUE:
-                    types[i]= TurtleValue.class;
+                    types[i] = TurtleValue.class;
                     break;
                 case BYTES:
-                    types[i]=byte[].class;
+                    types[i] = byte[].class;
                     break;
                 case NUMBER_DECIMAL:
-                    types[i]= BigDecimal.class;
+                    types[i] = BigDecimal.class;
                     break;
                 case NUMBER_INTEGER:
-                    types[i]= BigInteger.class;
+                    types[i] = BigInteger.class;
                     break;
                 case COLLECTION_INTEGER:
-                    objects.add(i,new ArrayList<Integer>());
-                    types[i]= Collection.class;
+                    objects.add(i, new ArrayList<Integer>());
+                    types[i] = Collection.class;
                     break;
                 case COLLECTION_TURTLE_VALUE:
-                    objects.add(i,new ArrayList<TurtleValue>());
-                    types[i]= Collection.class;
+                    objects.add(i, new ArrayList<TurtleValue>());
+                    types[i] = Collection.class;
                     break;
                 case COLLECTION_NUMBER_INTEGER:
-                    objects.add(i,new ArrayList<BigInteger>());
-                    types[i]= Collection.class;
+                    objects.add(i, new ArrayList<BigInteger>());
+                    types[i] = Collection.class;
                     break;
                 case COLLECTION_LONG:
-                    objects.add(i,new ArrayList<Long>());
-                    types[i]= Collection.class;
+                    objects.add(i, new ArrayList<Long>());
+                    types[i] = Collection.class;
                     break;
                 case COLLECTION_DOUBLE:
-                    objects.add(i,new ArrayList<Double>());
-                    types[i]= Collection.class;
+                    objects.add(i, new ArrayList<Double>());
+                    types[i] = Collection.class;
                     break;
                 case COLLECTION_NUMBER_DECIMAL:
-                    objects.add(i,new ArrayList<BigDecimal>());
-                    types[i]=Collection.class;
+                    objects.add(i, new ArrayList<BigDecimal>());
+                    types[i] = Collection.class;
                     break;
                 case COLLECTION_BYTES:
-                    objects.add(i,new ArrayList<byte[]>());
-                    types[i]= Collection.class;
+                    objects.add(i, new ArrayList<byte[]>());
+                    types[i] = Collection.class;
                     break;
                 case COLLECTION_STRING:
-                    objects.add(i,new ArrayList<String>());
-                    types[i]=Collection.class;
+                    objects.add(i, new ArrayList<String>());
+                    types[i] = Collection.class;
                     break;
-                default:throw new UnsupportedOperationException();
+                default:
+                    throw new UnsupportedOperationException();
             }
         }
 
     }
 
-    @SuppressWarnings("unchecked")
-    public void put(ProtoBuf.RequestBodyPayload body)throws TurtleValueElementOutBoundsException {
+    public ClientRequest(@NotNull Method method){
+        this.operationName = null;
+        this.typeList = null;
+        this.types=null;
+        this.requestId =null;
+        this.model = null;
+        this.modify = false;
+        this.channel = null;
+        this.method=method;
+        this.objects=new ArrayList<>(0);
 
-        int location=body.getLocation();
-        switch (typeList.get(location)){
+    }
+
+    @SuppressWarnings("unchecked")
+    public void put(ProtoBuf.RequestBodyPayload body) throws TurtleValueElementOutBoundsException {
+
+        int location = body.getLocation();
+        switch (typeList.get(location)) {
             case DOUBLE:
-                objects.add(location,body.getDoubleValue());
+                objects.add(location, body.getDoubleValue());
                 break;
             case BOOL:
-                objects.add(location,body.getBoolValue());
+                objects.add(location, body.getBoolValue());
                 break;
             case INTEGER:
-                objects.add(location,body.getIntValue());
+                objects.add(location, body.getIntValue());
                 break;
             case LONG:
-                objects.add(location,body.getLongValue());
+                objects.add(location, body.getLongValue());
                 break;
             case STRING:
-                objects.add(location,body.getStringValue());
+                objects.add(location, body.getStringValue());
                 break;
             case BYTES:
-                objects.add(location,body.getBytesValue().toByteArray());
+                objects.add(location, body.getBytesValue().toByteArray());
                 break;
             case NUMBER_INTEGER:
-                objects.add(location,new BigInteger(body.getStringValue()));
+                objects.add(location, new BigInteger(body.getStringValue()));
                 break;
             case NUMBER_DECIMAL:
-                objects.add(location,new BigDecimal(body.getStringValue()));
+                objects.add(location, new BigDecimal(body.getStringValue()));
                 break;
             case TURTLE_VALUE:
                 //turtleValue's byte array length may too long,this method may cause exception
                 objects.add(location, ProtoTurtleHelper.convertToDbTurtle(body.getTurtleValue()));
                 break;
             case COLLECTION_INTEGER:
-                ((ArrayList<Integer>)objects.get(location)).add(body.getIntValue());
+                ((ArrayList<Integer>) objects.get(location)).add(body.getIntValue());
                 break;
             case COLLECTION_LONG:
-                ((ArrayList<Long>)objects.get(location)).add(body.getLongValue());
+                ((ArrayList<Long>) objects.get(location)).add(body.getLongValue());
                 break;
             case COLLECTION_DOUBLE:
-                ((ArrayList<Double>)objects.get(location)).add(body.getDoubleValue());
+                ((ArrayList<Double>) objects.get(location)).add(body.getDoubleValue());
                 break;
             case COLLECTION_BYTES:
-                ((ArrayList<byte[]>)objects.get(location)).add(body.getBytesValue().toByteArray());
+                ((ArrayList<byte[]>) objects.get(location)).add(body.getBytesValue().toByteArray());
                 break;
             case COLLECTION_NUMBER_INTEGER:
-                ((ArrayList<BigInteger>)objects.get(location)).add(new BigInteger(body.getStringValue()));
+                ((ArrayList<BigInteger>) objects.get(location)).add(new BigInteger(body.getStringValue()));
                 break;
             case COLLECTION_NUMBER_DECIMAL:
-                ((ArrayList<BigDecimal>)objects.get(location)).add(new BigDecimal(body.getStringValue()));
+                ((ArrayList<BigDecimal>) objects.get(location)).add(new BigDecimal(body.getStringValue()));
                 break;
             case COLLECTION_TURTLE_VALUE:
-                ((ArrayList<TurtleValue>)objects.get(location)).add(ProtoTurtleHelper.convertToDbTurtle(body.getTurtleValue()));
+                ((ArrayList<TurtleValue>) objects.get(location)).add(ProtoTurtleHelper.convertToDbTurtle(body.getTurtleValue()));
                 break;
-            default:throw  new UnsupportedOperationException();
+            default:
+                throw new UnsupportedOperationException();
 
         }
     }
@@ -200,15 +218,27 @@ public class ClientRequest implements ICommand{
         return objects;
     }
 
-    public ClientRequest build(){
+    public ClientRequest build() {
         Class<?> target;
-        switch (model){
-            case VALUE:target=ValuesDomain.class;break;
-            case LIST:target=ListDomain.class;break;
-            case SET:target=SetDomain.class;break;
-            case HASH:target=HashDomain.class;break;
-            case ZSET:target= OrderSetDomain.class;break;
-            default:target=AdminObject.class;break;
+        switch (model) {
+            case VALUE:
+                target = ValuesDomain.class;
+                break;
+            case LIST:
+                target = ListDomain.class;
+                break;
+            case SET:
+                target = SetDomain.class;
+                break;
+            case HASH:
+                target = HashDomain.class;
+                break;
+            case ZSET:
+                target = OrderSetDomain.class;
+                break;
+            default:
+                target = AdminObject.class;
+                break;
         }
         try {
             if (types.length == 0) {
@@ -240,7 +270,7 @@ public class ClientRequest implements ICommand{
         return objects;
     }
 
-    public boolean getModify(){
+    public boolean getModify() {
         return this.modify;
     }
 }

@@ -2,8 +2,8 @@ package com.github.entropyfeng.mydb.server;
 
 import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
-import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import com.github.entropyfeng.mydb.server.config.Constant;
+import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import com.github.entropyfeng.mydb.server.domain.*;
 import com.github.entropyfeng.mydb.server.persistence.*;
 import org.jetbrains.annotations.NotNull;
@@ -23,11 +23,11 @@ import static java.util.regex.Pattern.compile;
  */
 public class PersistenceHelper {
 
-    private static final Logger logger= LoggerFactory.getLogger(PersistenceHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(PersistenceHelper.class);
 
     public static void dumpAll(ServerDomain serverDomain) {
 
-        Long timeStamp=System.currentTimeMillis();
+        Long timeStamp = System.currentTimeMillis();
 
         CountDownLatch countDownLatch = new CountDownLatch(5);
         ExecutorService service = new ThreadPoolExecutor(2, 5, 10, TimeUnit.SECONDS, new LinkedBlockingDeque<>(), new DumpFactory());
@@ -42,7 +42,7 @@ public class PersistenceHelper {
             countDownLatch.await();
             //一般不会触发中断事件
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
         //------values---------------
@@ -87,7 +87,16 @@ public class PersistenceHelper {
         service.shutdown();
     }
 
-    public static  @NotNull ServerDomain load() {
+    public static void clearAll(ServerDomain serverDomain) {
+
+        serverDomain.valuesDomain.clear();
+        serverDomain.listDomain.clear();
+        serverDomain.setDomain.clear();
+        serverDomain.hashDomain.clear();
+        serverDomain.orderSetDomain.clear();
+    }
+
+    public static @NotNull ServerDomain load() {
         String path = ServerConfig.getProperties().getProperty(Constant.BACK_UP_PATH_NAME);
         Pattern backupPattern = compile("^[1-9]+(-hash.dump|-list.dump|-orderSet.dump|-set.dump|-values.dump)$");
 
@@ -170,11 +179,11 @@ public class PersistenceHelper {
         return new ServerDomain(valuesDomain, listDomain, setDomain, hashDomain, orderSetDomain);
     }
 
-    public static  @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> singleDump(Callable<Boolean> callable) {
+    public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> singleDump(Callable<Boolean> callable) {
 
-        boolean res=false;
+        boolean res = false;
         try {
-            res= callable.call();
+            res = callable.call();
         } catch (Exception e) {
             logger.info(e.getMessage());
         }

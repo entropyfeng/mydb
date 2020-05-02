@@ -129,4 +129,12 @@ public class ServerDomain {
         this.orderSetQueue = new ConcurrentLinkedQueue<>();
         this.adminQueue = new ConcurrentLinkedQueue<>();
     }
+
+    public void notifyAllValuesThread(){
+        this.valueThread.notifyAll();
+        this.listThread.notifyAll();
+        this.setThread.notifyAll();
+        this.hashThread.notifyAll();
+        this.orderSetThread.notifyAll();
+    }
 }

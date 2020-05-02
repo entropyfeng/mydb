@@ -3,6 +3,7 @@ package com.github.entropyfeng.mydb.server.config;
 import com.github.entropyfeng.mydb.util.ConfigUtil;
 
 import java.util.Properties;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -42,9 +43,10 @@ public class ServerConfig {
 
     public static ServerStatus serverStatus=ServerStatus.CLOSE;
 
-    public static AtomicBoolean serverBlocking=new AtomicBoolean(false);
+    public static AtomicBoolean serverBlocking=new AtomicBoolean(true);
 
     public static AtomicBoolean masterSlaveFlag=new AtomicBoolean(false);
 
-    public static AtomicInteger blockingDomainNumber=new AtomicInteger(0);
+
+    public static CountDownLatch threadCountDown=new CountDownLatch(5);
 }
