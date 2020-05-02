@@ -36,23 +36,23 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<TurtleData>
     }
 
     @Override
-    public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
+    public void handlerAdded(ChannelHandlerContext ctx) {
 
     }
 
     @Override
-    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+    public void handlerRemoved(ChannelHandlerContext ctx) {
 
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         TurtleClientChannelFactory.setChannel(null);
         cause.printStackTrace();
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, TurtleData msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, TurtleData msg) {
 
         System.out.println("read");
         System.out.println(msg.toString());
@@ -72,8 +72,7 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<TurtleData>
     }
 
     /**
-     * 将完全接受到的集合转移
-     *
+     * it means a completed response have been handled
      * @param responseId responseId
      */
     private void dispatchRes(Long responseId) {

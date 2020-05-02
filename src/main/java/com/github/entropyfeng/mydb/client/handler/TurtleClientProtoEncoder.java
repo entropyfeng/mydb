@@ -4,16 +4,13 @@ import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 /**
  * 出站
  * @author entropyfeng
  */
 public class TurtleClientProtoEncoder extends MessageToByteEncoder<ProtoBuf.TurtleData> {
-
-    private static final Logger logger= LoggerFactory.getLogger(TurtleClientProtoEncoder.class);
 
 
     @Override

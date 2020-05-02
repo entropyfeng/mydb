@@ -10,6 +10,7 @@ import io.netty.channel.Channel;
 public class TurtleClientChannelFactory {
 
     private static volatile Channel channel;
+
     private static volatile boolean ready=false;
 
     public static void setChannel(Channel channel) {
@@ -44,6 +45,5 @@ public class TurtleClientChannelFactory {
         }
         return channel;
     }
-
 
 }
