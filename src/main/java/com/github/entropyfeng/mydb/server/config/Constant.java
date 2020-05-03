@@ -1,6 +1,10 @@
 package com.github.entropyfeng.mydb.server.config;
 
 
+import java.util.regex.Pattern;
+
+import static java.util.regex.Pattern.compile;
+
 /**
  * @author entropyfeng
  * @date 2020/2/23 10:11
@@ -26,5 +30,10 @@ public final class Constant {
      * magic number
      */
     public static final byte[] MAGIC_NUMBER={'t','u','r','t','l','e'};
+
+    /**
+     * 1M
+     */
+    public static final Integer FILE_CHUCK_SIZE=1024*1024;
 
 }

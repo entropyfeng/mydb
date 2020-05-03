@@ -1,22 +1,27 @@
 package com.github.entropyfeng.mydb.server;
 
 import com.github.entropyfeng.mydb.common.Pair;
-import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
+import com.github.entropyfeng.mydb.server.config.Constant;
+import com.github.entropyfeng.mydb.server.config.RegexConstant;
 import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import com.github.entropyfeng.mydb.server.domain.*;
 import com.github.entropyfeng.mydb.server.persistence.*;
+import com.google.protobuf.ByteString;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FilenameFilter;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.concurrent.*;
-import java.util.regex.Pattern;
 
-import static java.util.regex.Pattern.compile;
+import static com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResBody;
+import static com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResHead;
+
 
 /**
  * @author entropyfeng
@@ -87,7 +92,6 @@ public class PersistenceHelper {
         service.shutdown();
     }
 
-    private static Pattern backupPattern = compile("^[1-9]\\d*?(-hash\\.dump|-list\\.dump|-orderSet\\.dump|-set\\.dump|-values\\.dump)$");
 
     public static void clearAll(ServerDomain serverDomain) {
 
@@ -101,9 +105,9 @@ public class PersistenceHelper {
     public static @NotNull ServerDomain load() {
         String path = ServerConfig.dumpPath;
 
-        FilenameFilter filter = (dir, name) -> backupPattern.matcher(name).matches();
+        FilenameFilter filter = (dir, name) -> RegexConstant.BACK_UP_PATTERN.matcher(name).matches();
         File folder = new File(path);
-        //如果不存在文件夹，则新建一个文件夹。
+        //如果不存在文件夹，则返回emptyDomain
         if (!folder.exists()) {
             logger.info("dump file folder not exists");
             return new ServerDomain();
@@ -183,7 +187,7 @@ public class PersistenceHelper {
         return new ServerDomain(valuesDomain, listDomain, setDomain, hashDomain, orderSetDomain);
     }
 
-    public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> singleDump(Callable<Boolean> callable) {
+    public static @NotNull Pair<ResHead, Collection<ResBody>> singleDump(Callable<Boolean> callable) {
 
         boolean res = false;
         try {
@@ -199,7 +203,7 @@ public class PersistenceHelper {
         logger.info("begin delete dumpFiles");
 
         File folder = new File(ServerConfig.dumpPath);
-        if (folder.exists()&&folder.isDirectory()) {
+        if (folder.exists() && folder.isDirectory()) {
             deleteFile(folder);
         }
     }
@@ -209,7 +213,7 @@ public class PersistenceHelper {
         if (file == null || !file.exists()) {
             return;
         }
-        File[] files=  file.listFiles();
+        File[] files = file.listFiles();
         if (files != null) {
             for (File tempFile : files) {
                 if (tempFile.isDirectory()) {
@@ -221,5 +225,71 @@ public class PersistenceHelper {
         }
     }
 
+
+    public Pair<ResHead, Collection<ResBody>> transDumpFile() {
+
+        ArrayList<ResBody> list = new ArrayList<>();
+        String path = ServerConfig.dumpPath;
+
+        FilenameFilter filter = (dir, name) -> RegexConstant.BACK_UP_PATTERN.matcher(name).matches();
+
+        File file = new File(path);
+
+        String[] fileNames = file.list(filter);
+
+        if (fileNames != null) {
+            Optional<String> valuesFilename = Arrays.stream(fileNames).filter(s -> RegexConstant.VALUES_PATTERN.matcher(s).find()).max(String::compareTo);
+            Optional<String> listFilename = Arrays.stream(fileNames).filter(s -> RegexConstant.LIST_PATTERN.matcher(s).find()).max(String::compareTo);
+            Optional<String> hashFilename = Arrays.stream(fileNames).filter(s -> RegexConstant.HASH_PATTERN.matcher(s).find()).max(String::compareTo);
+            Optional<String> setFilename = Arrays.stream(fileNames).filter(s -> RegexConstant.SET_PATTERN.matcher(s).find()).max(String::compareTo);
+            Optional<String> orderSetFilename = Arrays.stream(fileNames).filter(s -> RegexConstant.ORDER_SET_PATTERN.matcher(s).find()).max(String::compareTo);
+
+        }
+
+        Pair<ResHead, Collection<ResBody>> pair = new Pair<>(null, null);
+        return pair;
+    }
+
+    public static @Nullable ArrayList<ResBody> handleFile(File file) {
+
+        try {
+            ArrayList<ResBody> resBodies = new ArrayList<>();
+            RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r");
+            final long length = randomAccessFile.length();
+            long pos = 0;
+            //每次读1M
+            byte[] cache = new byte[Constant.FILE_CHUCK_SIZE];
+            while (pos + Constant.FILE_CHUCK_SIZE <= length) {
+                randomAccessFile.readFully(cache);
+                resBodies.add(ResBody.newBuilder().setBytesValue(ByteString.copyFrom(cache)).build());
+                pos += Constant.FILE_CHUCK_SIZE;
+                randomAccessFile.seek(pos);
+            }
+            final long other = length - pos;
+            byte[] otherCache = new byte[(int) other];
+            randomAccessFile.readFully(otherCache);
+            resBodies.add(ResBody.newBuilder().setBytesValue(ByteString.copyFrom(otherCache)).build());
+            return resBodies;
+        } catch (IOException e) {
+           logger.error(e.getMessage());
+        }
+        return null;
+    }
+    public static void constructFile(Collection<ResBody> resBodies,String suffix){
+        String path= ServerConfig.dumpPath;
+        File file=new File(path+System.currentTimeMillis()+suffix);
+        FileOutputStream fileOutputStream= null;
+        try {
+            fileOutputStream = new FileOutputStream(file);
+            BufferedOutputStream outputStream=new BufferedOutputStream(fileOutputStream);
+            for(ResBody resBody:resBodies){
+                outputStream.write(resBody.getBytesValue().toByteArray());
+                outputStream.flush();
+            }
+            outputStream.flush();
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+    }
 
 }

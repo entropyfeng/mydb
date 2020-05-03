@@ -16,7 +16,10 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.RandomAccessFile;
 import java.lang.reflect.Method;
+import java.nio.channels.FileChannel;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
 
@@ -93,8 +96,9 @@ public class AdminObject implements IAdminOperations {
     }
 
 
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> slaveOfServer(String host, Integer port) {
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> slaveOfServer() {
 
+        dump();
 
         return null;
     }

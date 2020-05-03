@@ -1,5 +1,6 @@
 package com.github.entropyfeng.mydb.server.persistence;
 
+import com.github.entropyfeng.mydb.server.config.RegexConstant;
 import com.github.entropyfeng.mydb.server.domain.SetDomain;
 
 import java.io.DataInputStream;
@@ -9,9 +10,6 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
-import java.util.regex.Pattern;
-
-import static java.util.regex.Pattern.compile;
 
 /**
  * @author entropyfeng
@@ -22,7 +20,7 @@ public class SetLoadTask implements Callable<SetDomain> {
     private String[] fileNames;
     private String path;
     private CountDownLatch countDownLatch;
-    private final Pattern setPattern = compile("-set\\.dump$");
+
 
     public SetLoadTask(String[] fileNames, String path, CountDownLatch countDownLatch) {
         this.fileNames = fileNames;
@@ -35,7 +33,7 @@ public class SetLoadTask implements Callable<SetDomain> {
     public SetDomain call() throws Exception {
 
 
-        Optional<String> setFilename = Arrays.stream(fileNames).filter(s -> setPattern.matcher(s).find()).max(String::compareTo);
+        Optional<String> setFilename = Arrays.stream(fileNames).filter(s -> RegexConstant.SET_PATTERN.matcher(s).find()).max(String::compareTo);
         SetDomain setDomain = null;
         try {
             if (setFilename.isPresent()) {
