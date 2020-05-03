@@ -21,6 +21,11 @@ public interface IAdminOperations {
     Pair<ResHead, Collection<ResBody>> lazyDump();
 
     /**
+     * delete all dump files
+     * @return
+     */
+    Pair<ResHead,Collection<ResBody>> deleteAllDump();
+    /**
      * make this server to be the slave server of destination server
      * @param host the host of the destination server
      * @param port the port of the destination server

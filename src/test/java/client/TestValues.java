@@ -31,7 +31,25 @@ public class TestValues {
 
         template.opsForAdmin().lazyDump();
     }
+    @Test
+    public void testClear(){
+        template.opsForValues().clear();
+      TurtleValue turtleValue=  template.opsForValues().get("10086");
 
+      Assert.assertNull(turtleValue);
+    }
+    @Test
+    public void multiSave(){
+        for (int i = 0; i < 1000; i++) {
+            template.opsForValues().set(i+"",new TurtleValue(i));
+        }
+        template.opsForAdmin().lazyDump();
+    }
+
+    @Test
+    public void multiLoad(){
+        template.opsForValues().allEntries();
+    }
     @Test
     public void testLoad(){
         TurtleValue request=new TurtleValue("1008611");

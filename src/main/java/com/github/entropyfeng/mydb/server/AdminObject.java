@@ -17,8 +17,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
+
 
 /**
  * @author entropyfeng
@@ -64,6 +63,12 @@ public class AdminObject implements IAdminOperations {
             logger.error("not find method->{}", e.getMessage());
         }
 
+        return ResServerHelper.emptyRes();
+    }
+
+    @Override
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> deleteAllDump() {
+        PersistenceHelper.deleteDumpFiles();
         return ResServerHelper.emptyRes();
     }
 

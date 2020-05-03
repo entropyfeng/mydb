@@ -214,7 +214,7 @@ public class SetDomain implements ISetOperations, Serializable {
         int mapSize = inputStream.readInt();
         HashMap<String, HashSet<TurtleValue>> map = new HashMap<>(mapSize);
         SetDomain setDomain = new SetDomain(map);
-        
+
 
         for (int i = 0; i < mapSize; i++) {
 

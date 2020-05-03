@@ -39,6 +39,12 @@ public class ResponseAdminOperations implements IAdminOperations {
     }
 
     @Override
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> deleteAllDump() {
+        ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.ADMIN, "deleteAllDump");
+        return ClientExecute.execute(builder);
+    }
+
+    @Override
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> slaveOf(String host, Integer port) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.ADMIN, "slaveOf");
         builder.addStringPara(host);

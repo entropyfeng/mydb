@@ -108,4 +108,10 @@ public class DefaultValueOperations implements ValueOperations {
         Pair<ResHead, Collection<ResBody>> pair = valueOperations.allValues();
         return ClientResHelper.stringTurtleCollection(pair);
     }
+
+    @Override
+    public void clear() {
+        Pair<ResHead,Collection<ResBody>> pair=valueOperations.clear();
+        ClientResHelper.voidRes(pair);
+    }
 }

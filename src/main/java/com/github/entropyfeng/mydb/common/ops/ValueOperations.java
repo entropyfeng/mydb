@@ -124,4 +124,6 @@ public interface ValueOperations {
     Collection<String> allKeys();
 
     Collection<Pair<String,TurtleValue>> allEntries();
+
+    void clear();
 }

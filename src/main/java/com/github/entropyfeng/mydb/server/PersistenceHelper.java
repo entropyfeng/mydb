@@ -2,7 +2,6 @@ package com.github.entropyfeng.mydb.server;
 
 import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
-import com.github.entropyfeng.mydb.server.config.Constant;
 import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import com.github.entropyfeng.mydb.server.domain.*;
 import com.github.entropyfeng.mydb.server.persistence.*;
@@ -12,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.*;
 import java.util.regex.Pattern;
@@ -30,7 +30,7 @@ public class PersistenceHelper {
         Long timeStamp = System.currentTimeMillis();
 
         CountDownLatch countDownLatch = new CountDownLatch(5);
-        ExecutorService service = new ThreadPoolExecutor(2, 5, 10, TimeUnit.SECONDS, new LinkedBlockingDeque<>(), new DumpFactory());
+        ExecutorService service = new ThreadPoolExecutor(2, 5, 10, TimeUnit.SECONDS, new LinkedBlockingDeque<>(), new DumpThreadFactory());
 
         Future<Boolean> valuesFuture = service.submit(new ValuesDumpTask(countDownLatch, serverDomain.valuesDomain, timeStamp));
         Future<Boolean> listFuture = service.submit(new ListDumpTask(countDownLatch, serverDomain.listDomain, timeStamp));
@@ -87,6 +87,8 @@ public class PersistenceHelper {
         service.shutdown();
     }
 
+    private static Pattern backupPattern = compile("^[1-9]\\d*?(-hash\\.dump|-list\\.dump|-orderSet\\.dump|-set\\.dump|-values\\.dump)$");
+
     public static void clearAll(ServerDomain serverDomain) {
 
         serverDomain.valuesDomain.clear();
@@ -97,8 +99,7 @@ public class PersistenceHelper {
     }
 
     public static @NotNull ServerDomain load() {
-        String path = ServerConfig.getProperties().getProperty(Constant.BACK_UP_PATH_NAME);
-        Pattern backupPattern = compile("^[1-9]+(-hash.dump|-list.dump|-orderSet.dump|-set.dump|-values.dump)$");
+        String path = ServerConfig.dumpPath;
 
         FilenameFilter filter = (dir, name) -> backupPattern.matcher(name).matches();
         File folder = new File(path);
@@ -109,7 +110,7 @@ public class PersistenceHelper {
         }
         String[] names = folder.list(filter);
         CountDownLatch countDownLatch = new CountDownLatch(5);
-        ExecutorService service = new ThreadPoolExecutor(1, 5, 10, TimeUnit.SECONDS, new LinkedBlockingDeque<>(), new LoadFactory());
+        ExecutorService service = new ThreadPoolExecutor(1, 5, 10, TimeUnit.SECONDS, new LinkedBlockingDeque<>(), new LoadThreadFactory());
         Future<ValuesDomain> valuesDomainFuture = service.submit(new ValuesLoadTask(names, path, countDownLatch));
         Future<ListDomain> listDomainFuture = service.submit(new ListLoadTask(names, path, countDownLatch));
         Future<SetDomain> setDomainFuture = service.submit(new SetLoadTask(names, path, countDownLatch));
@@ -192,5 +193,33 @@ public class PersistenceHelper {
         }
         return ResServerHelper.boolRes(res);
     }
+
+
+    public static void deleteDumpFiles() {
+        logger.info("begin delete dumpFiles");
+
+        File folder = new File(ServerConfig.dumpPath);
+        if (folder.exists()&&folder.isDirectory()) {
+            deleteFile(folder);
+        }
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private static void deleteFile(File file) {
+        if (file == null || !file.exists()) {
+            return;
+        }
+        File[] files=  file.listFiles();
+        if (files != null) {
+            for (File tempFile : files) {
+                if (tempFile.isDirectory()) {
+                    deleteFile(tempFile);
+                } else {
+                    tempFile.delete();
+                }
+            }
+        }
+    }
+
 
 }

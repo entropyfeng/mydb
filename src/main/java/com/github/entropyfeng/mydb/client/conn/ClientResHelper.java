@@ -1,10 +1,9 @@
 package com.github.entropyfeng.mydb.client.conn;
 
-import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
+import com.github.entropyfeng.mydb.common.Pair;
+import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoExceptionHelper;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
-import com.github.entropyfeng.mydb.common.TurtleValue;
-import com.github.entropyfeng.mydb.common.Pair;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -21,17 +20,29 @@ public class ClientResHelper {
     public static @Nullable TurtleValue turtleValueRes(Pair<ResHead, Collection<ResBody>> pair) {
         ResHead resHead = pair.getKey();
         if (resHead.getSuccess()) {
-            ProtoBuf.TurtleValue turtleValue = ((ArrayList<ResBody>) pair.getValue()).get(0).getTurtleValue();
-            return ProtoTurtleHelper.convertToDbTurtle(turtleValue);
+            ArrayList<ResBody> collection = ((ArrayList<ResBody>) pair.getValue());
+            if (collection.isEmpty()) {
+                return null;
+            } else {
+                return ProtoTurtleHelper.convertToDbTurtle(collection.get(0).getTurtleValue());
+            }
+
         } else {
             ProtoExceptionHelper.handler(resHead.getInnerExceptionType(), resHead.getInnerException());
             return null;
         }
     }
+
     public static @Nullable Integer integerRes(Pair<ResHead, Collection<ResBody>> pair) {
         ResHead resHead = pair.getKey();
         if (resHead.getSuccess()) {
-            return ((ArrayList<ResBody>) pair.getValue()).get(0).getIntValue();
+            ArrayList<ResBody> collection = ((ArrayList<ResBody>) pair.getValue());
+            if (collection.isEmpty()){
+                return null;
+            }else {
+                return collection.get(0).getIntValue();
+            }
+
         } else {
             ProtoExceptionHelper.handler(resHead.getInnerExceptionType(), resHead.getInnerException());
             return null;
@@ -42,7 +53,13 @@ public class ClientResHelper {
     public static @Nullable Boolean boolRes(Pair<ResHead, Collection<ResBody>> pair) {
         ResHead resHead = pair.getKey();
         if (resHead.getSuccess()) {
-            return ((ArrayList<ResBody>) pair.getValue()).get(0).getBoolValue();
+            ArrayList<ResBody> collection = ((ArrayList<ResBody>) pair.getValue());
+            if (collection.isEmpty()){
+                return null;
+            }else {
+                return collection.get(0).getBoolValue();
+            }
+
         } else {
             ProtoExceptionHelper.handler(resHead.getInnerExceptionType(), resHead.getInnerException());
             return null;
@@ -94,7 +111,7 @@ public class ClientResHelper {
             pair.getValue().forEach(resBody -> {
                 String key = resBody.getStringValue();
                 TurtleValue value = ProtoTurtleHelper.convertToDbTurtle(resBody.getStringTurtleValueEntry().getValue());
-                 res.add(new Pair<>(key,value));
+                res.add(new Pair<>(key, value));
 
             });
             if (res.size() == resHead.getResSize()) {
