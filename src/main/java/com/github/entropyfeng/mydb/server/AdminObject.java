@@ -1,6 +1,8 @@
 package com.github.entropyfeng.mydb.server;
 
+import com.github.entropyfeng.mydb.ServerBootStrap;
 import com.github.entropyfeng.mydb.client.ClientCommandBuilder;
+import com.github.entropyfeng.mydb.client.TurtleClient;
 import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.common.TurtleModel;
 import com.github.entropyfeng.mydb.common.ops.IAdminOperations;
@@ -78,12 +80,18 @@ public class AdminObject implements IAdminOperations {
         ClientCommandBuilder clientCommandBuilder=new ClientCommandBuilder(TurtleModel.ADMIN,"slaveOfServer");
         clientCommandBuilder.addStringPara(host);
         clientCommandBuilder.addIntegerValue(port);
-
+        TurtleClient turtleClient=  new TurtleClient(host,port);
+        try {
+         turtleClient.start();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
 
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> slaveOfServer(String host, Integer port) {
+
 
 
 

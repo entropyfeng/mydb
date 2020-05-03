@@ -43,4 +43,11 @@ public class DefaultAdminOperations implements AdminOperations {
 
         ClientResHelper.voidRes(pair);
     }
+
+    @Override
+    public void deleteAllDumps() {
+        Pair<ResHead, Collection<ResBody>> pair = adminOperations.deleteAllDump();
+
+        ClientResHelper.voidRes(pair);
+    }
 }

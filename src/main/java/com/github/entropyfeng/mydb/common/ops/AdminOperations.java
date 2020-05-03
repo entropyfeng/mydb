@@ -12,4 +12,6 @@ public interface AdminOperations {
     void dump();
 
     void lazyDump();
+
+    void deleteAllDumps();
 }
