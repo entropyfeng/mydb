@@ -9,7 +9,7 @@ import com.github.entropyfeng.mydb.server.ResServerHelper;
 import com.github.entropyfeng.mydb.server.config.Constant;
 import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.common.Pair;
-import com.github.entropyfeng.mydb.server.persistence.ListDumpTask;
+import com.github.entropyfeng.mydb.server.persistence.dump.ListDumpTask;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInputStream;

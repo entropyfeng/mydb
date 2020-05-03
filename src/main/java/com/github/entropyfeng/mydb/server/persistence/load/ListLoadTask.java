@@ -1,7 +1,7 @@
-package com.github.entropyfeng.mydb.server.persistence;
+package com.github.entropyfeng.mydb.server.persistence.load;
 
 import com.github.entropyfeng.mydb.server.config.RegexConstant;
-import com.github.entropyfeng.mydb.server.domain.ValuesDomain;
+import com.github.entropyfeng.mydb.server.domain.ListDomain;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -15,7 +15,7 @@ import java.util.concurrent.CountDownLatch;
 /**
  * @author entropyfeng
  */
-public class ValuesLoadTask implements Callable<ValuesDomain> {
+public class ListLoadTask implements Callable<ListDomain> {
 
 
     private String[] fileNames;
@@ -23,7 +23,7 @@ public class ValuesLoadTask implements Callable<ValuesDomain> {
     private CountDownLatch countDownLatch;
 
 
-    public ValuesLoadTask(String[] fileNames, String path, CountDownLatch countDownLatch) {
+    public ListLoadTask(String[] fileNames, String path, CountDownLatch countDownLatch) {
         this.fileNames = fileNames;
         this.path = path;
         this.countDownLatch = countDownLatch;
@@ -31,21 +31,21 @@ public class ValuesLoadTask implements Callable<ValuesDomain> {
 
 
     @Override
-    public ValuesDomain call() throws Exception {
+    public ListDomain call() throws Exception {
 
-
-        Optional<String> valuesFilename = Arrays.stream(fileNames).filter(s -> RegexConstant.VALUES_PATTERN.matcher(s).find()).max(String::compareTo);
-        ValuesDomain valuesDomain = null;
+        Optional<String> listFilename = Arrays.stream(fileNames).filter(s -> RegexConstant.LIST_PATTERN.matcher(s).find()).max(String::compareTo);
+        ListDomain listDomain = null;
         try {
-            if (valuesFilename.isPresent()) {
-                File valuesDump = new File(path + valuesFilename.get());
+            if (listFilename.isPresent()) {
+                File valuesDump = new File(path + listFilename.get());
+
                 FileInputStream fileInputStream = new FileInputStream(valuesDump);
                 DataInputStream dataInputStream = new DataInputStream(fileInputStream);
-                valuesDomain = ValuesDomain.read(dataInputStream);
+                listDomain = ListDomain.read(dataInputStream);
             }
         } finally {
             countDownLatch.countDown();
         }
-        return valuesDomain;
+        return listDomain;
     }
 }

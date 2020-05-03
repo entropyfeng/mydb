@@ -9,7 +9,7 @@ import com.github.entropyfeng.mydb.server.config.Constant;
 import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.server.core.zset.OrderSet;
-import com.github.entropyfeng.mydb.server.persistence.OrderSetDumpTask;
+import com.github.entropyfeng.mydb.server.persistence.dump.OrderSetDumpTask;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInputStream;

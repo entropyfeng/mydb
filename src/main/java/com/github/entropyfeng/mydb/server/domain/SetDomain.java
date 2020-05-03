@@ -8,7 +8,7 @@ import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.server.config.Constant;
 import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.common.Pair;
-import com.github.entropyfeng.mydb.server.persistence.SetDumpTask;
+import com.github.entropyfeng.mydb.server.persistence.dump.SetDumpTask;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

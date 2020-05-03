@@ -9,7 +9,7 @@ import com.github.entropyfeng.mydb.server.config.Constant;
 import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.server.core.dict.ElasticMap;
 import com.github.entropyfeng.mydb.common.Pair;
-import com.github.entropyfeng.mydb.server.persistence.HashDumpTask;
+import com.github.entropyfeng.mydb.server.persistence.dump.HashDumpTask;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInputStream;

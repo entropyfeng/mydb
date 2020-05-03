@@ -10,7 +10,7 @@ import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.server.PersistenceHelper;
 import com.github.entropyfeng.mydb.server.ResServerHelper;
-import com.github.entropyfeng.mydb.server.persistence.ValuesDumpTask;
+import com.github.entropyfeng.mydb.server.persistence.dump.ValuesDumpTask;
 import com.github.entropyfeng.mydb.server.util.TimeUtil;
 import org.jetbrains.annotations.NotNull;
 

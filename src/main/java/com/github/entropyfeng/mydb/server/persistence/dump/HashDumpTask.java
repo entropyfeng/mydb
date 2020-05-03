@@ -1,8 +1,8 @@
-package com.github.entropyfeng.mydb.server.persistence;
+package com.github.entropyfeng.mydb.server.persistence.dump;
 
 import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import com.github.entropyfeng.mydb.server.config.Constant;
-import com.github.entropyfeng.mydb.server.domain.OrderSetDomain;
+import com.github.entropyfeng.mydb.server.domain.HashDomain;
 
 import java.io.DataOutputStream;
 import java.io.FileOutputStream;
@@ -12,23 +12,24 @@ import java.util.concurrent.CountDownLatch;
 /**
  * @author entropyfeng
  */
-public class OrderSetDumpTask implements Callable<Boolean> {
+public class HashDumpTask implements Callable<Boolean> {
     private CountDownLatch countDownLatch;
-    private OrderSetDomain orderSetDomain;
+    private HashDomain hashDomain;
     private Long timeStamp;
 
-    public OrderSetDumpTask(CountDownLatch countDownLatch, OrderSetDomain domain, Long timeStamp) {
+    public HashDumpTask(CountDownLatch countDownLatch, HashDomain domain, Long timeStamp) {
         this.countDownLatch = countDownLatch;
-        this.orderSetDomain = domain;
-        this.timeStamp = timeStamp;
+        this.hashDomain = domain;
+        this.timeStamp=timeStamp;
     }
+
 
     @Override
     public Boolean call() throws Exception {
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream(ServerConfig.dumpPath + timeStamp + Constant.ORDER_SET_SUFFIX);
+            FileOutputStream fileOutputStream = new FileOutputStream(ServerConfig.dumpPath+timeStamp+Constant.HASH_SUFFIX);
             DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
-            OrderSetDomain.write(orderSetDomain, dataOutputStream);
+            HashDomain.write(hashDomain, dataOutputStream);
             return true;
         } finally {
             countDownLatch.countDown();

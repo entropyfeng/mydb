@@ -1,4 +1,4 @@
-package com.github.entropyfeng.mydb.server.persistence;
+package com.github.entropyfeng.mydb.server.persistence.load;
 
 import com.github.entropyfeng.mydb.server.config.RegexConstant;
 import com.github.entropyfeng.mydb.server.domain.SetDomain;

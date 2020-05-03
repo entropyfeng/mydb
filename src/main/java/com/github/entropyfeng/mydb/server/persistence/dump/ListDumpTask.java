@@ -1,8 +1,8 @@
-package com.github.entropyfeng.mydb.server.persistence;
+package com.github.entropyfeng.mydb.server.persistence.dump;
 
 import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import com.github.entropyfeng.mydb.server.config.Constant;
-import com.github.entropyfeng.mydb.server.domain.SetDomain;
+import com.github.entropyfeng.mydb.server.domain.ListDomain;
 
 import java.io.DataOutputStream;
 import java.io.FileOutputStream;
@@ -12,24 +12,25 @@ import java.util.concurrent.CountDownLatch;
 /**
  * @author entropyfeng
  */
-public class SetDumpTask implements Callable<Boolean> {
+public class ListDumpTask implements Callable<Boolean> {
+
     private CountDownLatch countDownLatch;
-    private SetDomain setDomain;
+    private ListDomain listDomain;
     private Long timeStamp;
 
-    public SetDumpTask(CountDownLatch countDownLatch, SetDomain domain, Long timeStamp) {
+    public ListDumpTask(CountDownLatch countDownLatch, ListDomain domain, Long timeStamp) {
         this.countDownLatch = countDownLatch;
-        this.setDomain = domain;
-        this.timeStamp=timeStamp;
+        this.listDomain = domain;
+        this.timeStamp = timeStamp;
 
     }
 
     @Override
     public Boolean call() throws Exception {
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream(ServerConfig.dumpPath +timeStamp + Constant.SET_SUFFIX);
+            FileOutputStream fileOutputStream = new FileOutputStream(ServerConfig.dumpPath + timeStamp + Constant.LIST_SUFFIX);
             DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
-            SetDomain.write(setDomain, dataOutputStream);
+            ListDomain.write(listDomain, dataOutputStream);
             return true;
         } finally {
             countDownLatch.countDown();
