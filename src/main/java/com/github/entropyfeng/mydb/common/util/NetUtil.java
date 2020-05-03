@@ -1,4 +1,4 @@
-package com.github.entropyfeng.mydb.util;
+package com.github.entropyfeng.mydb.common.util;
 
 
 /**

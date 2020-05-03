@@ -1,7 +1,6 @@
 package com.github.entropyfeng.mydb.server.core.zset;
 
 import com.github.entropyfeng.mydb.common.Pair;
-import com.github.entropyfeng.mydb.util.CommonUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

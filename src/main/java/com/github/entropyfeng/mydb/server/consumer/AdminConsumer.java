@@ -36,8 +36,11 @@ public class AdminConsumer implements Runnable  {
             if (adminCommand != null) {
                 if ("slaveOfServer".equals(adminCommand.getOperationName())){
                     TurtleServerHandler.serverMap.put(adminCommand.getChannel().id(),adminCommand.getChannel());
+
+                }else {
+                    execute(adminCommand, adminObject);
                 }
-                execute(adminCommand, adminObject);
+
             } else {
                 try {
                     Thread.sleep(100);

@@ -1,6 +1,5 @@
-package com.github.entropyfeng.mydb.util;
+package com.github.entropyfeng.mydb.common.util;
 
-import java.nio.ByteBuffer;
 
 /**
  * 默认大端法

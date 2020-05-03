@@ -2,7 +2,6 @@ package com.github.entropyfeng.mydb.client.handler;
 
 
 import com.github.entropyfeng.mydb.client.conn.ClientExecute;
-import com.github.entropyfeng.mydb.client.conn.TurtleClientChannelFactory;
 import com.github.entropyfeng.mydb.common.Pair;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -21,7 +20,7 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<TurtleData>
 
     private static final Logger logger = LoggerFactory.getLogger(TurtleClientHandler.class);
 
-    private static HashMap<Long, Pair<ResHead,Collection<ResBody>>> res = new HashMap<>();
+    private  HashMap<Long, Pair<ResHead,Collection<ResBody>>> res = new HashMap<>();
 
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
@@ -47,7 +46,6 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<TurtleData>
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        TurtleClientChannelFactory.setChannel(null);
         cause.printStackTrace();
     }
 

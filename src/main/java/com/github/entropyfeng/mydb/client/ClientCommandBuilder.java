@@ -12,6 +12,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author etropyfeng
@@ -20,6 +21,7 @@ public class ClientCommandBuilder {
 
     private ArrayList<Object> objects = new ArrayList<>();
     private ProtoBuf.ReqHead.Builder headBuilder = ProtoBuf.ReqHead.newBuilder();
+
 
     public ClientCommandBuilder(TurtleModel turtleModel, String operationName) {
         headBuilder.setModel(ProtoModelHelper.convertToProtoTurtleModel(turtleModel));
@@ -90,7 +92,8 @@ public class ClientCommandBuilder {
 
 
 
-    public void writeChannel(Channel channel, Long requestId) {
+    public void writeChannel(Channel channel,Long requestId) {
+
 
         ProtoBuf.TurtleData.Builder resBuilder = ProtoBuf.TurtleData.newBuilder();
 

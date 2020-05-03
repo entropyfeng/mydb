@@ -1,17 +1,17 @@
 package com.github.entropyfeng.mydb.server;
 
-import com.github.entropyfeng.mydb.ServerBootStrap;
 import com.github.entropyfeng.mydb.client.ClientCommandBuilder;
 import com.github.entropyfeng.mydb.client.TurtleClient;
+import com.github.entropyfeng.mydb.client.conn.ClientExecute;
 import com.github.entropyfeng.mydb.common.Pair;
+import com.github.entropyfeng.mydb.common.RequestIdPool;
 import com.github.entropyfeng.mydb.common.TurtleModel;
 import com.github.entropyfeng.mydb.common.ops.IAdminOperations;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.server.command.ClientRequest;
 import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import com.github.entropyfeng.mydb.server.domain.*;
-import com.github.entropyfeng.mydb.server.factory.MasterSlaveThreadFactory;
-import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.Channel;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,22 +77,23 @@ public class AdminObject implements IAdminOperations {
     @Override
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> slaveOf(String host, Integer port) {
 
-        ClientCommandBuilder clientCommandBuilder=new ClientCommandBuilder(TurtleModel.ADMIN,"slaveOfServer");
-        clientCommandBuilder.addStringPara(host);
-        clientCommandBuilder.addIntegerValue(port);
-        TurtleClient turtleClient=  new TurtleClient(host,port);
+        ClientCommandBuilder clientCommandBuilder = new ClientCommandBuilder(TurtleModel.ADMIN, "slaveOfServer");
+
+
+        TurtleClient turtleClient = new TurtleClient(host, port);
+
         try {
-         turtleClient.start();
+            turtleClient.start();
+           Channel channel= turtleClient.getChannel();
+           clientCommandBuilder.writeChannel(channel, RequestIdPool.getAndIncrement());
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return null;
+        return ResServerHelper.emptyRes();
     }
 
 
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> slaveOfServer(String host, Integer port) {
-
-
 
 
         return null;

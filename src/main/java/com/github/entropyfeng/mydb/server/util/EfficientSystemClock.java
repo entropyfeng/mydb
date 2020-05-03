@@ -1,4 +1,4 @@
-package com.github.entropyfeng.mydb.util;
+package com.github.entropyfeng.mydb.server.util;
 
 import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import org.slf4j.Logger;

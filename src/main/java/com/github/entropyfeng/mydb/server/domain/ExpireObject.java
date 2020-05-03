@@ -1,6 +1,6 @@
 package com.github.entropyfeng.mydb.server.domain;
 
-import com.github.entropyfeng.mydb.util.TimeUtil;
+import com.github.entropyfeng.mydb.server.util.TimeUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;

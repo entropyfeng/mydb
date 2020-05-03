@@ -2,8 +2,8 @@ package com.github.entropyfeng.mydb.common;
 
 import com.github.entropyfeng.mydb.common.exception.TurtleDesignError;
 import com.github.entropyfeng.mydb.common.exception.TurtleValueElementOutBoundsException;
-import com.github.entropyfeng.mydb.util.BytesUtil;
-import com.github.entropyfeng.mydb.util.CommonUtil;
+import com.github.entropyfeng.mydb.common.util.BytesUtil;
+import com.github.entropyfeng.mydb.common.util.CommonUtil;
 import com.google.common.hash.Hashing;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,7 +15,7 @@ import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
-import static com.github.entropyfeng.mydb.util.BytesUtil.*;
+import static com.github.entropyfeng.mydb.common.util.BytesUtil.*;
 
 
 /**

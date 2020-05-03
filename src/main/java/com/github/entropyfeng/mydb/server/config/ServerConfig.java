@@ -1,6 +1,6 @@
 package com.github.entropyfeng.mydb.server.config;
 
-import com.github.entropyfeng.mydb.util.ConfigUtil;
+import com.github.entropyfeng.mydb.server.util.ConfigUtil;
 
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
