@@ -11,6 +11,7 @@ import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.server.command.ClientRequest;
 import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import com.github.entropyfeng.mydb.server.domain.*;
+import com.github.entropyfeng.mydb.server.persistence.PersistenceDomain;
 import io.netty.channel.Channel;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -99,8 +100,8 @@ public class AdminObject implements IAdminOperations {
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> slaveOfServer() {
 
         dump();
+        return PersistenceHelper.transDumpFile();
 
-        return null;
     }
 
     @NotNull

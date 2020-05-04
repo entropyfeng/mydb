@@ -1,9 +1,7 @@
 package com.github.entropyfeng.mydb.server.persistence;
 
-import sun.text.resources.iw.FormatData_iw_IL;
 
 import java.io.File;
-import java.nio.channels.FileChannel;
 
 /**
  * @author entropyfeng
@@ -16,12 +14,8 @@ public class PersistenceDomain {
     File setDumpFile;
     File orderSetDumpFile;
 
-    public PersistenceDomain(File valuesDumpFile, File listDumpFile, File hashDumpFile, File setDumpFile, File orderSetDumpFile) {
-        this.valuesDumpFile = valuesDumpFile;
-        this.listDumpFile = listDumpFile;
-        this.hashDumpFile = hashDumpFile;
-        this.setDumpFile = setDumpFile;
-        this.orderSetDumpFile = orderSetDumpFile;
+    public PersistenceDomain(){
+
     }
 
 

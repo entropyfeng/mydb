@@ -1,7 +1,7 @@
 package com.github.entropyfeng.mydb.server;
 
 import com.github.entropyfeng.mydb.common.Pair;
-import com.github.entropyfeng.mydb.server.config.Constant;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.server.config.RegexConstant;
 import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import com.github.entropyfeng.mydb.server.domain.*;
@@ -11,9 +11,9 @@ import com.github.entropyfeng.mydb.server.persistence.PersistenceDomain;
 import com.github.entropyfeng.mydb.server.persistence.TransThreadFactory;
 import com.github.entropyfeng.mydb.server.persistence.dump.*;
 import com.github.entropyfeng.mydb.server.persistence.load.*;
-import com.google.protobuf.ByteString;
+import com.github.entropyfeng.mydb.server.persistence.trans.TransTask;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -255,46 +255,51 @@ public class PersistenceHelper {
     }
 
 
-    public Pair<ResHead, Collection<ResBody>> transDumpFile() {
+    @NotNull
+    public static Pair<ResHead, Collection<ResBody>> transDumpFile() {
 
+        ArrayList<ResBody> resBodies = new ArrayList<>();
+        PersistenceDomain domain = getFiles();
 
-        PersistenceDomain domain=getFiles();
-        domain.get
         CountDownLatch countDownLatch = new CountDownLatch(5);
         ExecutorService service = new ThreadPoolExecutor(1, 5, 100, TimeUnit.SECONDS, new ArrayBlockingQueue<>(5), new TransThreadFactory());
+        Future<Collection<ProtoBuf.ResBody>> valuesFuture = service.submit(new TransTask(countDownLatch, domain.getValuesDumpFile()));
+        Future<Collection<ProtoBuf.ResBody>> listFuture = service.submit(new TransTask(countDownLatch, domain.getListDumpFile()));
+
+        Future<Collection<ProtoBuf.ResBody>> setFuture = service.submit(new TransTask(countDownLatch, domain.getSetDumpFile()));
+
+        Future<Collection<ProtoBuf.ResBody>> hashFuture = service.submit(new TransTask(countDownLatch, domain.getHashDumpFile()));
+        Future<Collection<ProtoBuf.ResBody>> orderSetFuture = service.submit(new TransTask(countDownLatch, domain.getOrderSetDumpFile()));
 
 
+        constructPartBody(valuesFuture, resBodies);
+        constructPartBody(listFuture, resBodies);
+        constructPartBody(setFuture, resBodies);
+        constructPartBody(hashFuture, resBodies);
+        constructPartBody(orderSetFuture, resBodies);
 
-        Pair<ResHead, Collection<ResBody>> pair = new Pair<>(null, null);
-        return pair;
+
+        ResHead resHead = ResHead.newBuilder().setSuccess(true).setResSize(resBodies.size()).build();
+
+        return new Pair<>(resHead, resBodies);
     }
 
-
-    public static @Nullable ArrayList<ResBody> handleFile(File file) {
-
+    private static void constructPartBody(@NotNull Future<Collection<ProtoBuf.ResBody>> future, ArrayList<ResBody> resBodies) {
+        Collection<ResBody> collection = null;
         try {
-            ArrayList<ResBody> resBodies = new ArrayList<>();
-            RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r");
-            final long length = randomAccessFile.length();
-            long pos = 0;
-            //每次读1M
-            byte[] cache = new byte[Constant.FILE_CHUCK_SIZE];
-            while (pos + Constant.FILE_CHUCK_SIZE <= length) {
-                randomAccessFile.readFully(cache);
-                resBodies.add(ResBody.newBuilder().setBytesValue(ByteString.copyFrom(cache)).build());
-                pos += Constant.FILE_CHUCK_SIZE;
-                randomAccessFile.seek(pos);
-            }
-            final long other = length - pos;
-            byte[] otherCache = new byte[(int) other];
-            randomAccessFile.readFully(otherCache);
-            resBodies.add(ResBody.newBuilder().setBytesValue(ByteString.copyFrom(otherCache)).build());
-            return resBodies;
-        } catch (IOException e) {
+            collection = future.get();
+        } catch (InterruptedException | ExecutionException e) {
             logger.error(e.getMessage());
         }
-        return null;
+
+        if (collection == null) {
+            resBodies.add(ProtoBuf.ResBody.newBuilder().setIntValue(0).build());
+        } else {
+            resBodies.add(ProtoBuf.ResBody.newBuilder().setIntValue(collection.size()).build());
+            resBodies.addAll(collection);
+        }
     }
+
 
     public static void constructFile(Collection<ResBody> resBodies, String suffix) {
         String path = ServerConfig.dumpPath;

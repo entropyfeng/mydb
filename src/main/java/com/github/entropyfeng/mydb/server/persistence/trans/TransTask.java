@@ -3,7 +3,9 @@ package com.github.entropyfeng.mydb.server.persistence.trans;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.server.config.Constant;
 import com.google.protobuf.ByteString;
+import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,17 +19,20 @@ public class TransTask implements Callable<Collection<ProtoBuf.ResBody>> {
 
     private CountDownLatch countDownLatch;
 
-    private String fileName;
+    private File file;
 
-    public TransTask(CountDownLatch countDownLatch, String fileName) {
+    public TransTask(CountDownLatch countDownLatch, File file) {
         this.countDownLatch = countDownLatch;
-        this.fileName = fileName;
+        this.file=file;
     }
 
     @Override
-    public Collection<ProtoBuf.ResBody> call() throws Exception {
+    public @Nullable Collection<ProtoBuf.ResBody> call() throws Exception {
         try {
-            RandomAccessFile randomAccessFile=new RandomAccessFile(fileName,"r");
+            if (file==null){
+                return new ArrayList<>(0);
+            }
+            RandomAccessFile randomAccessFile=new RandomAccessFile(file,"r");
             ArrayList<ProtoBuf.ResBody> resBodies = new ArrayList<>();
             final long length = randomAccessFile.length();
             long pos = 0;
