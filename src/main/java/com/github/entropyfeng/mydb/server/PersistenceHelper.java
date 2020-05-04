@@ -5,7 +5,10 @@ import com.github.entropyfeng.mydb.server.config.Constant;
 import com.github.entropyfeng.mydb.server.config.RegexConstant;
 import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import com.github.entropyfeng.mydb.server.domain.*;
-import com.github.entropyfeng.mydb.server.persistence.*;
+import com.github.entropyfeng.mydb.server.persistence.DumpThreadFactory;
+import com.github.entropyfeng.mydb.server.persistence.LoadThreadFactory;
+import com.github.entropyfeng.mydb.server.persistence.PersistenceDomain;
+import com.github.entropyfeng.mydb.server.persistence.TransThreadFactory;
 import com.github.entropyfeng.mydb.server.persistence.dump.*;
 import com.github.entropyfeng.mydb.server.persistence.load.*;
 import com.google.protobuf.ByteString;
@@ -15,11 +18,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.*;
+import java.util.regex.Pattern;
 
 import static com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResBody;
 import static com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResHead;
@@ -227,30 +228,47 @@ public class PersistenceHelper {
         }
     }
 
+    @NotNull
+    public static PersistenceDomain getFiles() {
+
+        PersistenceDomain res = new PersistenceDomain();
+        String path = ServerConfig.dumpPath;
+        FilenameFilter filter = (dir, name) -> RegexConstant.BACK_UP_PATTERN.matcher(name).matches();
+        File directory = new File(path);
+
+        if (directory.isDirectory()) {
+            File[] files = directory.listFiles(filter);
+            Optional<File> valuesFile = matchSingleDump(files, RegexConstant.VALUES_PATTERN);
+            Optional<File> listFile = matchSingleDump(files, RegexConstant.LIST_PATTERN);
+            Optional<File> hashFile = matchSingleDump(files, RegexConstant.HASH_PATTERN);
+            Optional<File> setFile = matchSingleDump(files, RegexConstant.SET_PATTERN);
+            Optional<File> orderSetFile = matchSingleDump(files, RegexConstant.ORDER_SET_PATTERN);
+            valuesFile.ifPresent(res::setValuesDumpFile);
+            listFile.ifPresent(res::setListDumpFile);
+            hashFile.ifPresent(res::setHashDumpFile);
+            setFile.ifPresent(res::setSetDumpFile);
+            orderSetFile.ifPresent(res::setOrderSetDumpFile);
+        }
+
+
+        return res;
+    }
+
 
     public Pair<ResHead, Collection<ResBody>> transDumpFile() {
 
-        ArrayList<ResBody> list = new ArrayList<>();
-        String path = ServerConfig.dumpPath;
 
-        FilenameFilter filter = (dir, name) -> RegexConstant.BACK_UP_PATTERN.matcher(name).matches();
+        PersistenceDomain domain=getFiles();
+        domain.get
+        CountDownLatch countDownLatch = new CountDownLatch(5);
+        ExecutorService service = new ThreadPoolExecutor(1, 5, 100, TimeUnit.SECONDS, new ArrayBlockingQueue<>(5), new TransThreadFactory());
 
-        File file = new File(path);
 
-        String[] fileNames = file.list(filter);
-
-        if (fileNames != null) {
-            Optional<String> valuesFilename = Arrays.stream(fileNames).filter(s -> RegexConstant.VALUES_PATTERN.matcher(s).find()).max(String::compareTo);
-            Optional<String> listFilename = Arrays.stream(fileNames).filter(s -> RegexConstant.LIST_PATTERN.matcher(s).find()).max(String::compareTo);
-            Optional<String> hashFilename = Arrays.stream(fileNames).filter(s -> RegexConstant.HASH_PATTERN.matcher(s).find()).max(String::compareTo);
-            Optional<String> setFilename = Arrays.stream(fileNames).filter(s -> RegexConstant.SET_PATTERN.matcher(s).find()).max(String::compareTo);
-            Optional<String> orderSetFilename = Arrays.stream(fileNames).filter(s -> RegexConstant.ORDER_SET_PATTERN.matcher(s).find()).max(String::compareTo);
-
-        }
 
         Pair<ResHead, Collection<ResBody>> pair = new Pair<>(null, null);
         return pair;
     }
+
 
     public static @Nullable ArrayList<ResBody> handleFile(File file) {
 
@@ -273,18 +291,19 @@ public class PersistenceHelper {
             resBodies.add(ResBody.newBuilder().setBytesValue(ByteString.copyFrom(otherCache)).build());
             return resBodies;
         } catch (IOException e) {
-           logger.error(e.getMessage());
+            logger.error(e.getMessage());
         }
         return null;
     }
-    public static void constructFile(Collection<ResBody> resBodies,String suffix){
-        String path= ServerConfig.dumpPath;
-        File file=new File(path+System.currentTimeMillis()+suffix);
-        FileOutputStream fileOutputStream= null;
+
+    public static void constructFile(Collection<ResBody> resBodies, String suffix) {
+        String path = ServerConfig.dumpPath;
+        File file = new File(path + System.currentTimeMillis() + suffix);
+        FileOutputStream fileOutputStream = null;
         try {
             fileOutputStream = new FileOutputStream(file);
-            BufferedOutputStream outputStream=new BufferedOutputStream(fileOutputStream);
-            for(ResBody resBody:resBodies){
+            BufferedOutputStream outputStream = new BufferedOutputStream(fileOutputStream);
+            for (ResBody resBody : resBodies) {
                 outputStream.write(resBody.getBytesValue().toByteArray());
                 outputStream.flush();
             }
@@ -294,4 +313,9 @@ public class PersistenceHelper {
         }
     }
 
+
+    @NotNull
+    private static Optional<File> matchSingleDump(File[] files, Pattern pattern) {
+        return Arrays.stream(files).filter(file -> pattern.matcher(file.getName()).find()).max(Comparator.comparing(File::getName));
+    }
 }
