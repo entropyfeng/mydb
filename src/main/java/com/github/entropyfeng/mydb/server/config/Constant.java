@@ -33,6 +33,7 @@ public final class Constant {
 
     /**
      * 1M
+     * and all dump files at least support 1P memory
      */
     public static final Integer FILE_CHUCK_SIZE=1024*1024;
 

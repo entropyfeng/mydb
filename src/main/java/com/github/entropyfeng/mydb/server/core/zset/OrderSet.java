@@ -15,7 +15,7 @@ public class OrderSet<T extends Comparable<T>> {
 
 
     public OrderSet() {
-        skipList = new SkipList<T>();
+        skipList = new SkipList<>();
         hashMap = new HashMap<>();
     }
 
@@ -39,14 +39,15 @@ public class OrderSet<T extends Comparable<T>> {
         return false;
     }
 
-    public boolean delete(T value){
+    public boolean delete(T value) {
 
-      if (exists(value)){
-          return delete(value,hashMap.get(value));
-      }else {
-          return false;
-      }
+        if (exists(value)) {
+            return delete(value, hashMap.get(value));
+        } else {
+            return false;
+        }
     }
+
     public int delete(double begin, double end) {
 
         List<T> res = range(begin, end);
@@ -93,7 +94,6 @@ public class OrderSet<T extends Comparable<T>> {
     public boolean isEmpty() {
         return hashMap.size() == 0;
     }
-
 
 
     public void clear() {

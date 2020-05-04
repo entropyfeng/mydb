@@ -18,9 +18,6 @@ public class ServerDomain {
 
     private static final Logger logger = LoggerFactory.getLogger(ServerDomain.class);
 
-    public  static Thread daemonMasterSlaveThread;
-
-
 
     public ServerDomain() {
 
@@ -137,5 +134,21 @@ public class ServerDomain {
         this.setThread.notifyAll();
         this.hashThread.notifyAll();
         this.orderSetThread.notifyAll();
+    }
+
+    /**
+     * use null domain to replace the old domains,but all blocking queue will not be changed
+     * @param valuesDomain {@link ValuesDomain}
+     * @param listDomain {@link ListDomain}
+     * @param setDomain {@link SetDomain}
+     * @param hashDomain {@link HashDomain}
+     * @param orderSetDomain {@link OrderSetDomain}
+     */
+    public void replace(ValuesDomain valuesDomain,ListDomain listDomain,SetDomain setDomain ,HashDomain hashDomain,OrderSetDomain orderSetDomain){
+        this.valuesDomain=valuesDomain;
+        this.listDomain=listDomain;
+        this.setDomain=setDomain;
+        this.hashDomain=hashDomain;
+        this.orderSetDomain=orderSetDomain;
     }
 }

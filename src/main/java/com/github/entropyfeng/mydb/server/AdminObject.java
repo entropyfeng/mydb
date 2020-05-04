@@ -100,6 +100,7 @@ public class AdminObject implements IAdminOperations {
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> slaveOfServer() {
 
         dump();
+
         return PersistenceHelper.transDumpFile();
 
     }

@@ -12,7 +12,6 @@ import com.github.entropyfeng.mydb.server.persistence.TransThreadFactory;
 import com.github.entropyfeng.mydb.server.persistence.dump.*;
 import com.github.entropyfeng.mydb.server.persistence.load.*;
 import com.github.entropyfeng.mydb.server.persistence.trans.TransTask;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -228,6 +227,13 @@ public class PersistenceHelper {
         }
     }
 
+    /**
+     * load all dump files from file system,such as values、list、set、hash、orderSet.
+     * these file is the latest dump file.
+     * if one type of file is not exists,the correspond fileDomain is null.
+     *
+     * @return {@link PersistenceDomain}
+     */
     @NotNull
     public static PersistenceDomain getFiles() {
 
@@ -255,6 +261,11 @@ public class PersistenceHelper {
     }
 
 
+    /**
+     * as the order of values->list->set->hash->orderSet dump
+     *
+     * @return {@link Pair} NotNull
+     */
     @NotNull
     public static Pair<ResHead, Collection<ResBody>> transDumpFile() {
 
@@ -282,6 +293,15 @@ public class PersistenceHelper {
         ResHead resHead = ResHead.newBuilder().setSuccess(true).setResSize(resBodies.size()).build();
 
         return new Pair<>(resHead, resBodies);
+    }
+
+    public static PersistenceDomain loadFromPair(Pair<ResHead, Collection<ResBody>> pair) {
+
+
+        ArrayList<ResBody> bodies=new ArrayList<>(pair.getValue());
+
+
+        return null;
     }
 
     private static void constructPartBody(@NotNull Future<Collection<ProtoBuf.ResBody>> future, ArrayList<ResBody> resBodies) {
@@ -319,8 +339,16 @@ public class PersistenceHelper {
     }
 
 
+    /**
+     * find and load the least dump file for single type of dump file.
+     *
+     * @param files   the file list of all correspond dump files
+     * @param pattern the pattern of matched single dump file (for example values.dump or list.dump or ....)
+     * @return {@link Optional<File>}  the file,and the file is likely not present
+     */
     @NotNull
     private static Optional<File> matchSingleDump(File[] files, Pattern pattern) {
         return Arrays.stream(files).filter(file -> pattern.matcher(file.getName()).find()).max(Comparator.comparing(File::getName));
     }
+
 }

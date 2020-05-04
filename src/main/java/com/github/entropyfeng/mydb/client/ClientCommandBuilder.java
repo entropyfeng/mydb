@@ -12,7 +12,6 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author etropyfeng
@@ -124,7 +123,7 @@ public class ClientCommandBuilder {
 
 
     @SuppressWarnings("all")
-    public static void handleSingle(Channel channel, ProtoBuf.TurtleParaType type, Object object, int location, Long requestId, ProtoBuf.ReqBody.Builder bodyBuilder, ProtoBuf.TurtleData.Builder resBuilder){
+    private static void handleSingle(Channel channel, ProtoBuf.TurtleParaType type, Object object, int location, Long requestId, ProtoBuf.ReqBody.Builder bodyBuilder, ProtoBuf.TurtleData.Builder resBuilder){
 
         resBuilder.clear();
         resBuilder.setRequestId(requestId);

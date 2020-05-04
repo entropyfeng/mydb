@@ -18,6 +18,7 @@ public class ConsumerLoop {
 
     private static Logger logger = LoggerFactory.getLogger(ConsumerLoop.class);
 
+    @SuppressWarnings("InfiniteLoopStatement")
     public void loop(Object target, ConcurrentLinkedQueue<ClientRequest> queue) {
 
         while (true) {
