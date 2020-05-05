@@ -1,47 +1,34 @@
 package com.github.entropyfeng.mydb.server.persistence.load;
 
-import com.github.entropyfeng.mydb.server.config.RegexConstant;
 import com.github.entropyfeng.mydb.server.domain.OrderSetDomain;
 
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.Arrays;
-import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
-import java.util.regex.Pattern;
-
-import static java.util.regex.Pattern.compile;
 
 /**
  * @author entropyfeng
  */
 public class OrderSetLoadTask implements Callable<OrderSetDomain> {
 
-
-    private String[] fileNames;
-    private String path;
+    private File file;
     private CountDownLatch countDownLatch;
 
 
-    public OrderSetLoadTask(String[] fileNames, String path, CountDownLatch countDownLatch) {
-        this.fileNames = fileNames;
-        this.path = path;
+    public OrderSetLoadTask(File file, CountDownLatch countDownLatch) {
+        this.file = file;
         this.countDownLatch = countDownLatch;
     }
-
 
     @Override
     public OrderSetDomain call() throws Exception {
 
-        Optional<String> orderSetFilename = Arrays.stream(fileNames).filter(s -> RegexConstant.ORDER_SET_PATTERN.matcher(s).find()).max(String::compareTo);
         OrderSetDomain orderSetDomain = null;
         try {
-            if (orderSetFilename.isPresent()) {
-                File valuesDump = new File(path + orderSetFilename.get());
-
-                FileInputStream fileInputStream = new FileInputStream(valuesDump);
+            if (file!=null&&file.exists()) {
+                FileInputStream fileInputStream = new FileInputStream(file);
                 DataInputStream dataInputStream = new DataInputStream(fileInputStream);
                 orderSetDomain = OrderSetDomain.read(dataInputStream);
             }

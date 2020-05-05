@@ -1,9 +1,6 @@
 package com.github.entropyfeng.mydb.client;
 
-import com.github.entropyfeng.mydb.client.conn.TurtleClientChannelFactory;
 import com.github.entropyfeng.mydb.client.handler.TurtleClientChannelInitializer;
-import com.github.entropyfeng.mydb.server.TurtleServer;
-import com.github.entropyfeng.mydb.server.config.Constant;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -21,19 +18,22 @@ public class TurtleClient {
 
     private static Logger logger = LoggerFactory.getLogger(TurtleClient.class);
     private volatile Channel channel;
-    private Bootstrap client;
+    private volatile Bootstrap client;
     private String host;
     private Integer port;
-    private CountDownLatch countDownLatch;
-    public TurtleClient(String host, Integer port){
-        this.host=host;
-        this.port=port;
+    private volatile CountDownLatch countDownLatch;
+
+    public TurtleClient(String host, Integer port) {
+        this.host = host;
+        this.port = port;
     }
-    public TurtleClient(){
-        host= ClientConstant.HOST;
-        port=ClientConstant.PORT;
+
+    public TurtleClient() {
+        host = ClientConstant.HOST;
+        port = ClientConstant.PORT;
     }
-    public void start()throws InterruptedException {
+
+    public void start() throws InterruptedException {
         NioEventLoopGroup eventLoopGroup = new NioEventLoopGroup();
         client = new Bootstrap();
         client.group(eventLoopGroup)
@@ -51,7 +51,7 @@ public class TurtleClient {
         if (channel != null && channel.isActive()) {
             return;
         }
-        countDownLatch=new CountDownLatch(1);
+        countDownLatch = new CountDownLatch(1);
         ChannelFuture connect = client.connect();
         connect.addListener((ChannelFutureListener) future -> {
             if (future.isSuccess()) {
@@ -67,6 +67,9 @@ public class TurtleClient {
 
     public Channel getChannel() {
         try {
+            if (countDownLatch == null) {
+                start();
+            }
             countDownLatch.await();
         } catch (InterruptedException e) {
             e.printStackTrace();

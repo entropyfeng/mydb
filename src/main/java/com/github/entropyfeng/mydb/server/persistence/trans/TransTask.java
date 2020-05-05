@@ -13,6 +13,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 
 /**
+ * make each file convert to {@link Collection<com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResBody>}
+ * and transport in the network.
  * @author entropyfeng
  */
 public class TransTask implements Callable<Collection<ProtoBuf.ResBody>> {

@@ -105,23 +105,17 @@ public class PersistenceHelper {
     }
 
     public static @NotNull ServerDomain load() {
-        String path = ServerConfig.dumpPath;
 
-        FilenameFilter filter = (dir, name) -> RegexConstant.BACK_UP_PATTERN.matcher(name).matches();
-        File folder = new File(path);
-        //如果不存在文件夹，则返回emptyDomain
-        if (!folder.exists()) {
-            logger.info("dump file folder not exists");
-            return new ServerDomain();
-        }
-        String[] names = folder.list(filter);
+        PersistenceDomain domain = getFiles();
+
+
         CountDownLatch countDownLatch = new CountDownLatch(5);
         ExecutorService service = new ThreadPoolExecutor(1, 5, 10, TimeUnit.SECONDS, new LinkedBlockingDeque<>(), new LoadThreadFactory());
-        Future<ValuesDomain> valuesDomainFuture = service.submit(new ValuesLoadTask(names, path, countDownLatch));
-        Future<ListDomain> listDomainFuture = service.submit(new ListLoadTask(names, path, countDownLatch));
-        Future<SetDomain> setDomainFuture = service.submit(new SetLoadTask(names, path, countDownLatch));
-        Future<HashDomain> hashDomainFuture = service.submit(new HashLoadTask(names, path, countDownLatch));
-        Future<OrderSetDomain> orderSetDomainFuture = service.submit(new OrderSetLoadTask(names, path, countDownLatch));
+        Future<ValuesDomain> valuesDomainFuture = service.submit(new ValuesLoadTask(domain.getValuesDumpFile(), countDownLatch));
+        Future<ListDomain> listDomainFuture = service.submit(new ListLoadTask(domain.getListDumpFile(), countDownLatch));
+        Future<SetDomain> setDomainFuture = service.submit(new SetLoadTask(domain.getSetDumpFile(), countDownLatch));
+        Future<HashDomain> hashDomainFuture = service.submit(new HashLoadTask(domain.getHashDumpFile(), countDownLatch));
+        Future<OrderSetDomain> orderSetDomainFuture = service.submit(new OrderSetLoadTask(domain.getOrderSetDumpFile(), countDownLatch));
 
         try {
             countDownLatch.await();
@@ -280,6 +274,7 @@ public class PersistenceHelper {
         Future<Collection<ProtoBuf.ResBody>> setFuture = service.submit(new TransTask(countDownLatch, domain.getSetDumpFile()));
 
         Future<Collection<ProtoBuf.ResBody>> hashFuture = service.submit(new TransTask(countDownLatch, domain.getHashDumpFile()));
+
         Future<Collection<ProtoBuf.ResBody>> orderSetFuture = service.submit(new TransTask(countDownLatch, domain.getOrderSetDumpFile()));
 
 
@@ -295,10 +290,48 @@ public class PersistenceHelper {
         return new Pair<>(resHead, resBodies);
     }
 
-    public static PersistenceDomain loadFromPair(Pair<ResHead, Collection<ResBody>> pair) {
+    /**
+     * as the order of values->list->set->hash->orderSet dump
+     *
+     * @param pair the res pair
+     * @return {@link PersistenceDomain}
+     */
+    public static PersistenceDomain dumpFromPair(@NotNull Pair<ResHead, Collection<ResBody>> pair) {
 
 
-        ArrayList<ResBody> bodies=new ArrayList<>(pair.getValue());
+        ArrayList<ResBody> bodies = new ArrayList<>(pair.getValue());
+        int currentPos = 0;
+
+        //[from,end)
+        //-----------values-------------------
+        int valuesSize = bodies.get(currentPos).getIntValue();
+        List<ResBody> valuesBody = bodies.subList(currentPos + 1, currentPos + 1 + valuesSize);
+        currentPos += valuesSize;
+        currentPos++;
+        //----------list-----------------------
+        int listSize = bodies.get(currentPos).getIntValue();
+        List<ResBody> listBody = bodies.subList(currentPos + 1, currentPos + 1 + listSize);
+        currentPos += listSize;
+        currentPos++;
+
+        //-----------set-------------------
+        int setSize = bodies.get(currentPos).getIntValue();
+
+        List<ResBody> setBody = bodies.subList(currentPos + 1, currentPos + 1 + setSize);
+        currentPos += setSize;
+        currentPos++;
+        //---------hash------------------------
+        int hashSize = bodies.get(currentPos).getIntValue();
+        List<ResBody> hashBody = bodies.subList(currentPos + 1, currentPos + 1 + hashSize);
+        currentPos += hashSize;
+        currentPos++;
+
+        //---------orderSet--------------------
+        int orderSetSize = bodies.get(currentPos).getIntValue();
+        List<ResBody> orderSetBody = bodies.subList(currentPos + 1, currentPos + orderSetSize);
+
+
+        CountDownLatch countDownLatch = new CountDownLatch(5);
 
 
         return null;
@@ -321,21 +354,18 @@ public class PersistenceHelper {
     }
 
 
-    public static void constructFile(Collection<ResBody> resBodies, String suffix) {
-        String path = ServerConfig.dumpPath;
-        File file = new File(path + System.currentTimeMillis() + suffix);
-        FileOutputStream fileOutputStream = null;
-        try {
-            fileOutputStream = new FileOutputStream(file);
-            BufferedOutputStream outputStream = new BufferedOutputStream(fileOutputStream);
-            for (ResBody resBody : resBodies) {
-                outputStream.write(resBody.getBytesValue().toByteArray());
-                outputStream.flush();
-            }
+    public static void constructFile(Collection<ResBody> resBodies, File file) throws IOException {
+
+        FileOutputStream fileOutputStream;
+
+        fileOutputStream = new FileOutputStream(file);
+        BufferedOutputStream outputStream = new BufferedOutputStream(fileOutputStream);
+        for (ResBody resBody : resBodies) {
+            outputStream.write(resBody.getBytesValue().toByteArray());
             outputStream.flush();
-        } catch (IOException e) {
-            logger.error(e.getMessage());
         }
+        outputStream.flush();
+
     }
 
 
