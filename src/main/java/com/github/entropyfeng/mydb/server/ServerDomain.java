@@ -1,10 +1,12 @@
 package com.github.entropyfeng.mydb.server;
 
 
+import com.github.entropyfeng.mydb.server.command.ClientRequest;
 import com.github.entropyfeng.mydb.server.consumer.*;
 import com.github.entropyfeng.mydb.server.domain.*;
-import com.github.entropyfeng.mydb.server.command.ClientRequest;
 import com.github.entropyfeng.mydb.server.factory.*;
+import com.github.entropyfeng.mydb.server.persistence.PersistenceObjectDomain;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,19 +36,17 @@ public class ServerDomain {
     }
 
 
-    public ServerDomain(ValuesDomain valuesDomain, ListDomain listDomain, SetDomain setDomain, HashDomain hashDomain, OrderSetDomain orderSetDomain) {
-
+    public ServerDomain(PersistenceObjectDomain domain) {
         this.adminObject = new AdminObject(this);
 
-        this.valuesDomain = valuesDomain;
-        this.listDomain = listDomain;
-        this.setDomain = setDomain;
-        this.hashDomain = hashDomain;
-        this.orderSetDomain = orderSetDomain;
+        this.valuesDomain = domain.getValuesDomain();
+        this.listDomain = domain.getListDomain();
+        this.setDomain = domain.getSetDomain();
+        this.hashDomain = domain.getHashDomain();
+        this.orderSetDomain = domain.getOrderSetDomain();
 
         constructQueue();
         start();
-
     }
 
     protected AdminObject adminObject;
@@ -85,13 +85,13 @@ public class ServerDomain {
 
     public void start() {
 
-        valueThread = new ValuesThreadFactory().newThread(new ValuesConsumer(valuesDomain,valuesQueue));
-        listThread = new ListThreadFactory().newThread(new ListConsumer(listDomain,listQueue));
-        setThread = new SetThreadFactory().newThread(new SetConsumer(setDomain,setQueue));
-        hashThread = new HashThreadFactory().newThread(new HashConsumer(hashDomain,hashQueue));
-        orderSetThread = new OrderSetThreadFactory().newThread(new OrderSetConsumer(orderSetDomain,orderSetQueue));
+        valueThread = new ValuesThreadFactory().newThread(new ValuesConsumer(valuesDomain, valuesQueue));
+        listThread = new ListThreadFactory().newThread(new ListConsumer(listDomain, listQueue));
+        setThread = new SetThreadFactory().newThread(new SetConsumer(setDomain, setQueue));
+        hashThread = new HashThreadFactory().newThread(new HashConsumer(hashDomain, hashQueue));
+        orderSetThread = new OrderSetThreadFactory().newThread(new OrderSetConsumer(orderSetDomain, orderSetQueue));
 
-        adminThread=new AdminThreadFactory().newThread(new AdminConsumer(adminObject,adminQueue));
+        adminThread = new AdminThreadFactory().newThread(new AdminConsumer(adminObject, adminQueue));
 
 
         valueThread.start();
@@ -106,17 +106,28 @@ public class ServerDomain {
     }
 
     public void accept(ClientRequest clientRequest) {
-        
-        switch (clientRequest.getModel()){
-            case VALUE:valuesQueue.add(clientRequest);break;
-            case ZSET:orderSetQueue.add(clientRequest);break;
-            case LIST:listQueue.add(clientRequest);break;
-            case SET:setQueue.add(clientRequest);break;
-            case HASH:hashQueue.add(clientRequest);break;
-            default:adminQueue.add(clientRequest);break;
+
+        switch (clientRequest.getModel()) {
+            case VALUE:
+                valuesQueue.add(clientRequest);
+                break;
+            case ZSET:
+                orderSetQueue.add(clientRequest);
+                break;
+            case LIST:
+                listQueue.add(clientRequest);
+                break;
+            case SET:
+                setQueue.add(clientRequest);
+                break;
+            case HASH:
+                hashQueue.add(clientRequest);
+                break;
+            default:
+                adminQueue.add(clientRequest);
+                break;
         }
     }
-
 
 
     private void constructQueue() {
@@ -128,7 +139,7 @@ public class ServerDomain {
         this.adminQueue = new ConcurrentLinkedQueue<>();
     }
 
-    public void notifyAllValuesThread(){
+    public void notifyAllValuesThread() {
         this.valueThread.notifyAll();
         this.listThread.notifyAll();
         this.setThread.notifyAll();
@@ -138,17 +149,18 @@ public class ServerDomain {
 
     /**
      * use null domain to replace the old domains,but all blocking queue will not be changed
-     * @param valuesDomain {@link ValuesDomain}
-     * @param listDomain {@link ListDomain}
-     * @param setDomain {@link SetDomain}
-     * @param hashDomain {@link HashDomain}
+     *
+     * @param valuesDomain   {@link ValuesDomain}
+     * @param listDomain     {@link ListDomain}
+     * @param setDomain      {@link SetDomain}
+     * @param hashDomain     {@link HashDomain}
      * @param orderSetDomain {@link OrderSetDomain}
      */
-    public void replace(ValuesDomain valuesDomain,ListDomain listDomain,SetDomain setDomain ,HashDomain hashDomain,OrderSetDomain orderSetDomain){
-        this.valuesDomain=valuesDomain;
-        this.listDomain=listDomain;
-        this.setDomain=setDomain;
-        this.hashDomain=hashDomain;
-        this.orderSetDomain=orderSetDomain;
+    public void replace(@NotNull ValuesDomain valuesDomain,@NotNull ListDomain listDomain, @NotNull SetDomain setDomain, @NotNull HashDomain hashDomain, @NotNull OrderSetDomain orderSetDomain) {
+        this.valuesDomain = valuesDomain;
+        this.listDomain = listDomain;
+        this.setDomain = setDomain;
+        this.hashDomain = hashDomain;
+        this.orderSetDomain = orderSetDomain;
     }
 }

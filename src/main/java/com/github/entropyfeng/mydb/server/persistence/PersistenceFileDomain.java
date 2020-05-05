@@ -6,7 +6,7 @@ import java.io.File;
 /**
  * @author entropyfeng
  */
-public class PersistenceDomain {
+public class PersistenceFileDomain {
 
     File valuesDumpFile;
     File listDumpFile;
@@ -14,7 +14,7 @@ public class PersistenceDomain {
     File setDumpFile;
     File orderSetDumpFile;
 
-    public PersistenceDomain(){
+    public PersistenceFileDomain(){
 
     }
 

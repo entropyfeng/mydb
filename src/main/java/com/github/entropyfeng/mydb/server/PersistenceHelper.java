@@ -2,16 +2,14 @@ package com.github.entropyfeng.mydb.server;
 
 import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
+import com.github.entropyfeng.mydb.server.config.Constant;
 import com.github.entropyfeng.mydb.server.config.RegexConstant;
 import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import com.github.entropyfeng.mydb.server.domain.*;
-import com.github.entropyfeng.mydb.server.persistence.DumpThreadFactory;
-import com.github.entropyfeng.mydb.server.persistence.LoadThreadFactory;
-import com.github.entropyfeng.mydb.server.persistence.PersistenceDomain;
-import com.github.entropyfeng.mydb.server.persistence.TransThreadFactory;
+import com.github.entropyfeng.mydb.server.persistence.*;
 import com.github.entropyfeng.mydb.server.persistence.dump.*;
 import com.github.entropyfeng.mydb.server.persistence.load.*;
-import com.github.entropyfeng.mydb.server.persistence.trans.TransTask;
+import com.github.entropyfeng.mydb.server.persistence.trans.*;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,7 +104,7 @@ public class PersistenceHelper {
 
     public static @NotNull ServerDomain load() {
 
-        PersistenceDomain domain = getFiles();
+        PersistenceFileDomain domain = getFiles();
 
 
         CountDownLatch countDownLatch = new CountDownLatch(5);
@@ -124,63 +122,10 @@ public class PersistenceHelper {
             logger.info(e.getMessage());
         }
 
-        //---------------Values------------------
-        ValuesDomain valuesDomain = null;
-        try {
-            valuesDomain = valuesDomainFuture.get();
-        } catch (InterruptedException | ExecutionException e) {
-            logger.info(e.getMessage());
-            e.printStackTrace();
-        }
-        if (valuesDomain == null) {
-            valuesDomain = new ValuesDomain();
-        }
-        //-----------list------------------------
 
-        ListDomain listDomain = null;
-        try {
-            listDomain = listDomainFuture.get();
-        } catch (InterruptedException | ExecutionException e) {
-            logger.info(e.getMessage());
-            e.printStackTrace();
-        }
-        if (listDomain == null) {
-            listDomain = new ListDomain();
-        }
-        //-----------set------------------------
-        SetDomain setDomain = null;
-        try {
-            setDomain = setDomainFuture.get();
-        } catch (InterruptedException | ExecutionException e) {
-            logger.info(e.getMessage());
-            e.printStackTrace();
-        }
-        if (setDomain == null) {
-            setDomain = new SetDomain();
-        }
-        //--------hash------------------------
-        HashDomain hashDomain = null;
-        try {
-            hashDomain = hashDomainFuture.get();
-        } catch (InterruptedException | ExecutionException e) {
-            logger.info(e.getMessage());
-
-        }
-        if (hashDomain == null) {
-            hashDomain = new HashDomain();
-        }
-        //--------orderSet----------------------
-        OrderSetDomain orderSetDomain = null;
-        try {
-            orderSetDomain = orderSetDomainFuture.get();
-        } catch (InterruptedException | ExecutionException e) {
-            logger.info(e.getMessage());
-        }
-        if (orderSetDomain == null) {
-            orderSetDomain = new OrderSetDomain();
-        }
+        PersistenceObjectDomain persistenceObjectDomain=  constructPersistenceDomain(valuesDomainFuture,listDomainFuture,setDomainFuture,hashDomainFuture,orderSetDomainFuture);
         service.shutdown();
-        return new ServerDomain(valuesDomain, listDomain, setDomain, hashDomain, orderSetDomain);
+        return new ServerDomain(persistenceObjectDomain);
     }
 
     public static @NotNull Pair<ResHead, Collection<ResBody>> singleDump(Callable<Boolean> callable) {
@@ -226,12 +171,12 @@ public class PersistenceHelper {
      * these file is the latest dump file.
      * if one type of file is not exists,the correspond fileDomain is null.
      *
-     * @return {@link PersistenceDomain}
+     * @return {@link PersistenceFileDomain}
      */
     @NotNull
-    public static PersistenceDomain getFiles() {
+    public static PersistenceFileDomain getFiles() {
 
-        PersistenceDomain res = new PersistenceDomain();
+        PersistenceFileDomain res = new PersistenceFileDomain();
         String path = ServerConfig.dumpPath;
         FilenameFilter filter = (dir, name) -> RegexConstant.BACK_UP_PATTERN.matcher(name).matches();
         File directory = new File(path);
@@ -264,7 +209,7 @@ public class PersistenceHelper {
     public static Pair<ResHead, Collection<ResBody>> transDumpFile() {
 
         ArrayList<ResBody> resBodies = new ArrayList<>();
-        PersistenceDomain domain = getFiles();
+        PersistenceFileDomain domain = getFiles();
 
         CountDownLatch countDownLatch = new CountDownLatch(5);
         ExecutorService service = new ThreadPoolExecutor(1, 5, 100, TimeUnit.SECONDS, new ArrayBlockingQueue<>(5), new TransThreadFactory());
@@ -294,12 +239,17 @@ public class PersistenceHelper {
      * as the order of values->list->set->hash->orderSet dump
      *
      * @param pair the res pair
-     * @return {@link PersistenceDomain}
+     * @return {@link PersistenceFileDomain}
      */
-    public static PersistenceDomain dumpFromPair(@NotNull Pair<ResHead, Collection<ResBody>> pair) {
+    public static PersistenceObjectDomain dumpFromPair(@NotNull Pair<ResHead, Collection<ResBody>> pair) {
 
 
+        String prefix=ServerConfig.dumpPath+System.currentTimeMillis();
+        ExecutorService service=new ThreadPoolExecutor(1,5,10,TimeUnit.SECONDS,new ArrayBlockingQueue<>(5),new AcceptTransThreadFactory());
+
+        CountDownLatch countDownLatch = new CountDownLatch(5);
         ArrayList<ResBody> bodies = new ArrayList<>(pair.getValue());
+
         int currentPos = 0;
 
         //[from,end)
@@ -308,11 +258,16 @@ public class PersistenceHelper {
         List<ResBody> valuesBody = bodies.subList(currentPos + 1, currentPos + 1 + valuesSize);
         currentPos += valuesSize;
         currentPos++;
+
+       Future<ValuesDomain> valuesDomainFuture= service.submit(new ValuesTransTask(countDownLatch,valuesBody,new File(prefix+ Constant.VALUES_SUFFIX)));
+
         //----------list-----------------------
         int listSize = bodies.get(currentPos).getIntValue();
         List<ResBody> listBody = bodies.subList(currentPos + 1, currentPos + 1 + listSize);
         currentPos += listSize;
         currentPos++;
+
+        Future<ListDomain> listDomainFuture=service.submit(new ListTransTask(countDownLatch,listBody,new File(prefix+Constant.LIST_SUFFIX)));
 
         //-----------set-------------------
         int setSize = bodies.get(currentPos).getIntValue();
@@ -320,21 +275,30 @@ public class PersistenceHelper {
         List<ResBody> setBody = bodies.subList(currentPos + 1, currentPos + 1 + setSize);
         currentPos += setSize;
         currentPos++;
+
+        Future<SetDomain> setDomainFuture=service.submit(new SetTransTask(countDownLatch,setBody,new File(prefix+Constant.SET_SUFFIX)));
+
         //---------hash------------------------
         int hashSize = bodies.get(currentPos).getIntValue();
         List<ResBody> hashBody = bodies.subList(currentPos + 1, currentPos + 1 + hashSize);
         currentPos += hashSize;
         currentPos++;
 
+        Future<HashDomain> hashDomainFuture=service.submit(new HashTransTask(countDownLatch,hashBody,new File(prefix+Constant.HASH_SUFFIX)));
         //---------orderSet--------------------
         int orderSetSize = bodies.get(currentPos).getIntValue();
         List<ResBody> orderSetBody = bodies.subList(currentPos + 1, currentPos + orderSetSize);
 
+        Future<OrderSetDomain> orderSetDomainFuture=service.submit(new OrderSetTransTask(countDownLatch,orderSetBody,new File(prefix+Constant.ORDER_SET_SUFFIX)));
 
-        CountDownLatch countDownLatch = new CountDownLatch(5);
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
 
-        return null;
+        return constructPersistenceDomain(valuesDomainFuture,listDomainFuture,setDomainFuture,hashDomainFuture,orderSetDomainFuture);
     }
 
     private static void constructPartBody(@NotNull Future<Collection<ProtoBuf.ResBody>> future, ArrayList<ResBody> resBodies) {
@@ -381,4 +345,67 @@ public class PersistenceHelper {
         return Arrays.stream(files).filter(file -> pattern.matcher(file.getName()).find()).max(Comparator.comparing(File::getName));
     }
 
+    private static PersistenceObjectDomain constructPersistenceDomain(Future<ValuesDomain> valuesDomainFuture, Future<ListDomain> listDomainFuture, Future<SetDomain> setDomainFuture, Future<HashDomain> hashDomainFuture, Future<OrderSetDomain> orderSetDomainFuture){
+
+        //---------------Values------------------
+        ValuesDomain valuesDomain = null;
+        try {
+            valuesDomain = valuesDomainFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            logger.info(e.getMessage());
+            e.printStackTrace();
+        }
+        if (valuesDomain==null){
+            valuesDomain=new ValuesDomain();
+        }
+
+        //-----------list------------------------
+
+        ListDomain listDomain = null;
+        try {
+            listDomain = listDomainFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            logger.info(e.getMessage());
+            e.printStackTrace();
+        }
+
+        if (listDomain==null){
+            listDomain=new ListDomain();
+        }
+        //-----------set------------------------
+        SetDomain setDomain = null;
+        try {
+            setDomain = setDomainFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            logger.info(e.getMessage());
+            e.printStackTrace();
+        }
+        if (setDomain==null){
+            setDomain=new SetDomain();
+        }
+
+        //--------hash------------------------
+        HashDomain hashDomain = null;
+        try {
+            hashDomain = hashDomainFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            logger.info(e.getMessage());
+        }
+
+        if (hashDomain==null){
+            hashDomain=new HashDomain();
+        }
+        //--------orderSet----------------------
+        OrderSetDomain orderSetDomain = null;
+        try {
+            orderSetDomain = orderSetDomainFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            logger.info(e.getMessage());
+        }
+        if (orderSetDomain == null) {
+            orderSetDomain = new OrderSetDomain();
+        }
+
+        return new PersistenceObjectDomain(valuesDomain,listDomain,setDomain,hashDomain,orderSetDomain);
+    }
 }
