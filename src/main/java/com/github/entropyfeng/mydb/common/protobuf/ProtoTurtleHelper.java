@@ -59,7 +59,7 @@ public class ProtoTurtleHelper {
                 break;
         }
 
-        return new TurtleValue(values, type);
+        return TurtleValue.fromDisk(type,values);
     }
 
     public static ProtoBuf.TurtleValue convertToProto(TurtleValue turtleValue) {
