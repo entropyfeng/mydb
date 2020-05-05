@@ -98,10 +98,10 @@ public class ClientCommandBuilder {
 
         //header
         resBuilder.setBeginAble(true);
+
         resBuilder.setReqHead(headBuilder.build());
         resBuilder.setRequestId(requestId);
         channel.writeAndFlush(resBuilder.build());
-
 
 
         //body,if body is empty ,skip it

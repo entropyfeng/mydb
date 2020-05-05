@@ -83,8 +83,9 @@ public class AdminObject implements IAdminOperations {
 
         try {
             turtleClient.start();
-           Channel channel= turtleClient.getChannel();
-           clientCommandBuilder.writeChannel(channel, RequestIdPool.getAndIncrement());
+
+            Channel channel = turtleClient.getChannel();
+            clientCommandBuilder.writeChannel(channel, RequestIdPool.getAndIncrement());
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -93,7 +94,6 @@ public class AdminObject implements IAdminOperations {
 
 
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> slaveOfServer() {
-
         dump();
 
         return PersistenceHelper.transDumpFile();

@@ -61,6 +61,8 @@ public class ListDomain implements IListOperations {
     public @NotNull  Pair<ResHead, Collection<ResBody>> leftPushAll(String key, Collection<TurtleValue> values) {
         createIfNotExist(key);
         listMap.get(key).addAll(0, values);
+        System.out.println(key);
+        System.out.println(values.size());
         return ResServerHelper.emptyRes();
     }
 

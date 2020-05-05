@@ -10,7 +10,5 @@ public class TestValues {
     @Test
     public void test(){
 
-
-
     }
 }

@@ -34,6 +34,7 @@ public class TurtleClient {
     }
 
     public void start() throws InterruptedException {
+        countDownLatch=new CountDownLatch(1);
         NioEventLoopGroup eventLoopGroup = new NioEventLoopGroup();
         client = new Bootstrap();
         client.group(eventLoopGroup)
@@ -43,7 +44,14 @@ public class TurtleClient {
                 .option(ChannelOption.SO_KEEPALIVE, true)
                 .handler(new TurtleClientChannelInitializer());
 
-        doConnect();
+        ChannelFuture channelFuture = client.connect().sync();
+
+        System.out.println("do");
+        countDownLatch.countDown();
+        channel = channelFuture.channel();
+        System.out.println("sds");
+        channel.closeFuture().sync();
+        //doConnect();
     }
 
     private void doConnect() {
@@ -66,10 +74,8 @@ public class TurtleClient {
     }
 
     public Channel getChannel() {
+
         try {
-            if (countDownLatch == null) {
-                start();
-            }
             countDownLatch.await();
         } catch (InterruptedException e) {
             e.printStackTrace();

@@ -22,6 +22,7 @@ public class TurtleClientChannelFactory {
                 if (channel==null){
                     TurtleClient client=new TurtleClient();
                     try {
+
                         client.start();
                         channel=client.getChannel();
                     }catch (InterruptedException e){

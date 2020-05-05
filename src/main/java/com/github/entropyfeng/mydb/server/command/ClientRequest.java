@@ -53,6 +53,7 @@ public class ClientRequest implements ICommand {
         types = new Class<?>[size];
         objects = new ArrayList<>(size);
 
+        System.out.println(size);
         //construct typeList
         for (int i = 0; i < size; i++) {
 
@@ -89,31 +90,31 @@ public class ClientRequest implements ICommand {
                     types[i] = Collection.class;
                     break;
                 case COLLECTION_TURTLE_VALUE:
-                    objects.add(i, new ArrayList<TurtleValue>());
+                    objects.add(new ArrayList<TurtleValue>());
                     types[i] = Collection.class;
                     break;
                 case COLLECTION_NUMBER_INTEGER:
-                    objects.add(i, new ArrayList<BigInteger>());
+                    objects.add(new ArrayList<BigInteger>());
                     types[i] = Collection.class;
                     break;
                 case COLLECTION_LONG:
-                    objects.add(i, new ArrayList<Long>());
+                    objects.add(new ArrayList<Long>());
                     types[i] = Collection.class;
                     break;
                 case COLLECTION_DOUBLE:
-                    objects.add(i, new ArrayList<Double>());
+                    objects.add(new ArrayList<Double>());
                     types[i] = Collection.class;
                     break;
                 case COLLECTION_NUMBER_DECIMAL:
-                    objects.add(i, new ArrayList<BigDecimal>());
+                    objects.add(new ArrayList<BigDecimal>());
                     types[i] = Collection.class;
                     break;
                 case COLLECTION_BYTES:
-                    objects.add(i, new ArrayList<byte[]>());
+                    objects.add(new ArrayList<byte[]>());
                     types[i] = Collection.class;
                     break;
                 case COLLECTION_STRING:
-                    objects.add(i, new ArrayList<String>());
+                    objects.add(new ArrayList<String>());
                     types[i] = Collection.class;
                     break;
                 default:
