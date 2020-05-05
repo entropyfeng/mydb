@@ -26,7 +26,7 @@ public class ResponseListOperations implements IListOperations {
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> sizeOf(String key) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.LIST, "sizeOf");
-
+        builder.addStringPara(key);
         return ClientExecute.execute(builder);
     }
 

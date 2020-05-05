@@ -19,15 +19,11 @@ import static com.github.entropyfeng.mydb.common.util.BytesUtil.concat;
  */
 public class TurtleValue implements Comparable<TurtleValue> {
 
-    /**
-     * 8个字节
-     */
+
     private TurtleValueType type;
 
-    /**
-     * 8个字节
-     */
     private Object value;
+
 
     public TurtleValue(Double doubleValue) {
         this.type = TurtleValueType.DOUBLE;
@@ -169,6 +165,7 @@ public class TurtleValue implements Comparable<TurtleValue> {
         }
     }
 
+    @SuppressWarnings("redundant")
     public void increment(Double doubleValue) throws UnsupportedOperationException {
         switch (type) {
             case DOUBLE:
@@ -348,7 +345,7 @@ public class TurtleValue implements Comparable<TurtleValue> {
         int length = inputStream.readInt();
         byte[] values = new byte[length];
         inputStream.readFully(values);
-        return new TurtleValue(values, TurtleValueType.construct(type));
+        return TurtleValue.fromDisk(TurtleValueType.construct(type),values);
     }
 
 }

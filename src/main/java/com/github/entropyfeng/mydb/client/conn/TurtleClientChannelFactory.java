@@ -13,21 +13,26 @@ public class TurtleClientChannelFactory {
 
     /**
      * 双重检查锁单例模式
+     *
      * @return {@link Channel}
      */
     public static Channel getChannel() {
 
-        if (channel==null){
-            synchronized (TurtleClientChannelFactory.class){
-                if (channel==null){
-                    TurtleClient client=new TurtleClient();
-                    try {
+        if (channel == null) {
+            synchronized (TurtleClientChannelFactory.class) {
+                if (channel == null) {
+                    TurtleClient client = new TurtleClient();
 
-                        client.start();
-                        channel=client.getChannel();
-                    }catch (InterruptedException e){
-                        e.printStackTrace();
-                    }
+                    Thread clientThread = new ClientThreadFactory().newThread(() -> {
+                        try {
+                            client.start();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                    clientThread.start();
+
+                    channel = client.getChannel();
                 }
             }
         }

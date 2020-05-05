@@ -21,7 +21,7 @@ public class TurtleClient {
     private volatile Bootstrap client;
     private String host;
     private Integer port;
-    private volatile CountDownLatch countDownLatch;
+    private volatile CountDownLatch countDownLatch=new CountDownLatch(1);
 
     public TurtleClient(String host, Integer port) {
         this.host = host;
@@ -34,7 +34,6 @@ public class TurtleClient {
     }
 
     public void start() throws InterruptedException {
-        countDownLatch=new CountDownLatch(1);
         NioEventLoopGroup eventLoopGroup = new NioEventLoopGroup();
         client = new Bootstrap();
         client.group(eventLoopGroup)
@@ -44,12 +43,10 @@ public class TurtleClient {
                 .option(ChannelOption.SO_KEEPALIVE, true)
                 .handler(new TurtleClientChannelInitializer());
 
-        ChannelFuture channelFuture = client.connect().sync();
 
-        System.out.println("do");
+        ChannelFuture channelFuture = client.connect().sync();
         countDownLatch.countDown();
         channel = channelFuture.channel();
-        System.out.println("sds");
         channel.closeFuture().sync();
         //doConnect();
     }

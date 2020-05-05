@@ -67,6 +67,7 @@ public class BytesUtil {
     @NotNull
     public static byte[] doubleToBytes(double doubleValue) {
 
+
         return longToBytes(Double.doubleToLongBits(doubleValue));
     }
 

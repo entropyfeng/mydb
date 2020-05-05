@@ -53,7 +53,6 @@ public class ClientRequest implements ICommand {
         types = new Class<?>[size];
         objects = new ArrayList<>(size);
 
-        System.out.println(size);
         //construct typeList
         for (int i = 0; i < size; i++) {
 

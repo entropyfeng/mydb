@@ -42,7 +42,6 @@ public class DefaultListOperations implements ListOperations {
     public void leftPushAll(String key, Collection<TurtleValue> values) {
         Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> pair = listOperations.leftPushAll(key, values);
         ClientResHelper.voidRes(pair);
-
     }
 
     @Override
