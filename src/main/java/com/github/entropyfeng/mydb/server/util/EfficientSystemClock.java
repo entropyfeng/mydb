@@ -4,13 +4,16 @@ import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.*;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author entropyfeng
  */
 public class EfficientSystemClock {
+
 
     private static final Logger logger = LoggerFactory.getLogger(EfficientSystemClock.class);
 
@@ -22,8 +25,7 @@ public class EfficientSystemClock {
      * 内部类延迟初始化
      */
     private static class EfficientSystemClockHolder{
-
-        private static final EfficientSystemClock INSTANCE =new EfficientSystemClock(1);
+        private static final EfficientSystemClock INSTANCE =new EfficientSystemClock(ServerConfig.precision);
     }
 
     public static long now(){
