@@ -23,7 +23,7 @@ public class EfficientSystemClock {
      */
     private static class EfficientSystemClockHolder{
 
-        private static final EfficientSystemClock INSTANCE =new EfficientSystemClock(ServerConfig.precision);
+        private static final EfficientSystemClock INSTANCE =new EfficientSystemClock(1);
     }
 
     public static long now(){
