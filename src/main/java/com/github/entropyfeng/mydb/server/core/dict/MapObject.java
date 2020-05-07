@@ -105,7 +105,7 @@ class MapObject<K, V> {
         V resValue = null;
         //如果当前槽为空,则创建新节点
         if (tempNode == null) {
-            table[pos] = new Node<K, V>(key, value, null);
+            table[pos] = new Node<>(key, value, null);
             used++;
         } else {
 
@@ -118,7 +118,7 @@ class MapObject<K, V> {
             }
             //即尾结点
             if (tempNode.next == null) {
-                tempNode.next = new Node<K, V>(key, value, null);
+                tempNode.next = new Node<>(key, value, null);
                 used++;
             } else {
                 resValue = tempNode.value;
@@ -182,7 +182,7 @@ class MapObject<K, V> {
         for (int i = 0; i < size; i++) {
             tempNode = table[i];
             while (tempNode != null) {
-                set.add(new Pair<K, V>(tempNode.key, tempNode.value));
+                set.add(new Pair<>(tempNode.key, tempNode.value));
                 tempNode = tempNode.next;
             }
         }
