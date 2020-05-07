@@ -45,7 +45,7 @@ public class ClientCommandBuilder {
 
     }
 
-    public void addIntegerValue(Integer integer) {
+    public void addIntegerPara(Integer integer) {
         headBuilder.addKeys(ProtoBuf.TurtleParaType.INTEGER);
         objects.add(integer);
     }

@@ -2,6 +2,8 @@ package com.github.entropyfeng.mydb.server;
 
 import com.github.entropyfeng.mydb.client.ClientCommandBuilder;
 import com.github.entropyfeng.mydb.client.TurtleClient;
+import com.github.entropyfeng.mydb.client.conn.ClientExecute;
+import com.github.entropyfeng.mydb.client.conn.ClientThreadFactory;
 import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.common.RequestIdPool;
 import com.github.entropyfeng.mydb.common.TurtleModel;
@@ -10,6 +12,7 @@ import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.server.command.ClientRequest;
 import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import com.github.entropyfeng.mydb.server.domain.*;
+import com.github.entropyfeng.mydb.server.persistence.PersistenceObjectDomain;
 import io.netty.channel.Channel;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -17,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 
 
@@ -73,33 +77,69 @@ public class AdminObject implements IAdminOperations {
         return ResServerHelper.emptyRes();
     }
 
+    /**
+     * appear at salve server
+     * 从服务器向主服务器发送请求
+     * @param host the host of the destination server
+     * @param port the port of the destination server
+     * @return {@link Pair}
+     */
     @Override
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> slaveOf(String host, Integer port) {
 
         ClientCommandBuilder clientCommandBuilder = new ClientCommandBuilder(TurtleModel.ADMIN, "slaveOfServer");
-
+        clientCommandBuilder.addStringPara(ServerConfig.serverHost);
+        clientCommandBuilder.addIntegerPara(ServerConfig.port);
 
         TurtleClient turtleClient = new TurtleClient(host, port);
 
-        try {
-            turtleClient.start();
 
-            Channel channel = turtleClient.getChannel();
-            clientCommandBuilder.writeChannel(channel, RequestIdPool.getAndIncrement());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        new ClientThreadFactory().newThread(() -> {
+
+            try {
+                turtleClient.start();
+            } catch (InterruptedException e) {
+                logger.error(e.getCause().toString());
+            }
+
+        });
+        Channel channel = turtleClient.getChannel();
+        Long requestId=RequestIdPool.getAndIncrement();
+        clientCommandBuilder.writeChannel(channel, requestId);
+        ConcurrentHashMap<Long, Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>>> resMap=ClientExecute.resMap;
+        while (!resMap.containsKey(requestId)) {
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> pair= resMap.get(requestId);
+
+        PersistenceObjectDomain domain= PersistenceHelper.dumpAndReLoadFromPair(pair);
+
+        serverDomain.replace(domain.getValuesDomain(),domain.getListDomain(),domain.getSetDomain(),domain.getHashDomain(),domain.getOrderSetDomain());
+        //-------
+        ClientCommandBuilder commandBuilder=new ClientCommandBuilder(TurtleModel.ADMIN,"exceptAcceptData");
+        clientCommandBuilder.addStringPara(ServerConfig.serverHost);
+        clientCommandBuilder.addIntegerPara(ServerConfig.port);
+        commandBuilder.writeChannel(channel,RequestIdPool.getAndIncrement());
         return ResServerHelper.emptyRes();
     }
 
 
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> slaveOfServer() {
-        dump();
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> slaveOfServer(String host,Integer port) {
 
+        MasterSlaveHelper.registerSlave(host, port);
+        dump();
         return PersistenceHelper.transDumpFile();
 
     }
 
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exceptAcceptData(String host,Integer port){
+
+        return ResServerHelper.emptyRes();
+    }
     @NotNull
     @Override
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear() {

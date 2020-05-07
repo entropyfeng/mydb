@@ -48,7 +48,7 @@ public class ResponseAdminOperations implements IAdminOperations {
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> slaveOf(String host, Integer port) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.ADMIN, "slaveOf");
         builder.addStringPara(host);
-        builder.addIntegerValue(port);
+        builder.addIntegerPara(port);
         return ClientExecute.execute(builder);
 
     }

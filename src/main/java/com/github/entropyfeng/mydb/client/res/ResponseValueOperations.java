@@ -65,7 +65,7 @@ public class ResponseValueOperations implements IValueOperations {
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> increment(@NotNull String key, @NotNull Integer intValue) throws UnsupportedOperationException, NoSuchElementException {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "increment");
         builder.addStringPara(key);
-        builder.addIntegerValue(intValue);
+        builder.addIntegerPara(intValue);
         builder.setModifyAble(true);
         return ClientExecute.execute(builder);
     }

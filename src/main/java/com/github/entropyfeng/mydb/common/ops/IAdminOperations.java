@@ -32,4 +32,5 @@ public interface IAdminOperations {
      * @return {@link Pair}
      */
     Pair<ResHead,Collection<ResBody>> slaveOf(String host,Integer port);
+
 }

@@ -28,13 +28,19 @@ public class ServerBootStrap {
         return true;
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args)  {
 
-        if (!createDumpFolder()){
-            logger.error("create dump directory error !");
+
+        try {
+            if (!createDumpFolder()){
+                logger.error("create dump directory error !");
+            }
+            String host = ServerConfig.serverHost;
+            Integer port= ServerConfig.port;
+            new TurtleServer(host, port).start();
+        }catch (Exception e){
+            logger.error(e.getMessage());
         }
-        String host = ServerConfig.serverHost;
-        Integer port= ServerConfig.port;
-        new TurtleServer(host, port).start();
+
     }
 }

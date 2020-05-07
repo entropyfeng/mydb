@@ -241,7 +241,7 @@ public class PersistenceHelper {
      * @param pair the res pair
      * @return {@link PersistenceFileDomain}
      */
-    public static PersistenceObjectDomain dumpFromPair(@NotNull Pair<ResHead, Collection<ResBody>> pair) {
+    public static PersistenceObjectDomain dumpAndReLoadFromPair(@NotNull Pair<ResHead, Collection<ResBody>> pair) {
 
 
         String prefix=ServerConfig.dumpPath+System.currentTimeMillis();
