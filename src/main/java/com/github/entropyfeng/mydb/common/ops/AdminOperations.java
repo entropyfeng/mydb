@@ -14,4 +14,6 @@ public interface AdminOperations {
     void lazyDump();
 
     void deleteAllDumps();
+
+    void slaveOf(String host,Integer port);
 }

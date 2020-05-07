@@ -229,7 +229,6 @@ public class SkipList<T extends Comparable<T>> {
      * @return 1=<int<=32
      */
     private static int getLevel() {
-
         final int maxLevel=32;
         int res = 1;
         while (ThreadLocalRandom.current().nextBoolean()&&res<maxLevel) {

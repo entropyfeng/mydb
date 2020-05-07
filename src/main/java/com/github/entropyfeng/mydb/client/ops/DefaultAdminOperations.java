@@ -50,4 +50,10 @@ public class DefaultAdminOperations implements AdminOperations {
 
         ClientResHelper.voidRes(pair);
     }
+    @Override
+    public void slaveOf(String host, Integer port){
+
+        Pair<ResHead, Collection<ResBody>> pair= adminOperations.slaveOf(host, port);
+        ClientResHelper.voidRes(pair);
+    }
 }
