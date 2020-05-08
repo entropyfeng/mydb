@@ -49,7 +49,7 @@ public class ServerDomain {
         start();
     }
 
-    protected AdminObject adminObject;
+   public AdminObject adminObject;
 
     protected ValuesDomain valuesDomain;
 

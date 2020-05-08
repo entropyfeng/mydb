@@ -18,6 +18,7 @@ public final class Constant {
     public static final String BACK_UP_PATH_NAME="backupPath";
     public static final String DB_NAME="Turtle";
     public static final String SYSTEM_CLOCK_REFRESH="systemClockRefresh";
+    public static final String SYSTEM_DUMP_CIRCLE="systemDumpCircle";
 
     public static final String VALUES_SUFFIX="-values.dump";
     public static final String HASH_SUFFIX="-hash.dump";

@@ -40,6 +40,8 @@ public class ServerConfig {
 
     public static Integer precision= ConfigUtil.getIntegerProperty(ServerConfig.getProperties(),Constant.SYSTEM_CLOCK_REFRESH);
 
+    public static Integer dumpCircle=ConfigUtil.getIntegerProperty(ServerConfig.getProperties(),Constant.SYSTEM_DUMP_CIRCLE);
+
     public static ServerStatus serverStatus=ServerStatus.CLOSE;
 
     public static AtomicBoolean serverBlocking=new AtomicBoolean(false);

@@ -1,12 +1,16 @@
 package com.github.entropyfeng.mydb.server;
 
+import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import com.github.entropyfeng.mydb.server.handler.TurtleServerChannelInitializer;
+import com.github.entropyfeng.mydb.server.persistence.dump.CircleDumpTask;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author entropyfeng
@@ -18,6 +22,7 @@ public class TurtleServer {
     private final int port;
     private final String host;
     private ServerDomain serverDomain;
+    private final Integer dumpCircle= ServerConfig.dumpCircle;
 
     /**
      * assume the param is correct
@@ -48,9 +53,13 @@ public class TurtleServer {
         serverDomain=PersistenceHelper.load();
         logger.info("complete load dump file");
 
+
+
         NioEventLoopGroup boss = new NioEventLoopGroup(1);
+        boss.scheduleAtFixedRate(new CircleDumpTask(serverDomain),dumpCircle,dumpCircle, TimeUnit.SECONDS);
         //IO密集型 2n+1
         NioEventLoopGroup worker = new NioEventLoopGroup(2*Runtime.getRuntime().availableProcessors()+1);
+
         try {
             ServerBootstrap serverBootstrap = new ServerBootstrap();
             serverBootstrap.group(boss, worker)
