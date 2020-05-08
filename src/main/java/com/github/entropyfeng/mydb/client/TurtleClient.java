@@ -1,5 +1,6 @@
 package com.github.entropyfeng.mydb.client;
 
+import com.github.entropyfeng.mydb.client.conn.ClientThreadFactory;
 import com.github.entropyfeng.mydb.client.handler.TurtleClientChannelInitializer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
@@ -26,14 +27,27 @@ public class TurtleClient {
     public TurtleClient(String host, Integer port) {
         this.host = host;
         this.port = port;
+        run();
     }
 
     public TurtleClient() {
         host = ClientConstant.HOST;
         port = ClientConstant.PORT;
+
+        run();
     }
 
+    private void run(){
+        new ClientThreadFactory().newThread(() -> {
+            try {
+                start();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
     public void start() throws InterruptedException {
+        logger.info("client start at host-> {}, port->{}",host,port);
         NioEventLoopGroup eventLoopGroup = new NioEventLoopGroup();
         client = new Bootstrap();
         client.group(eventLoopGroup)
@@ -45,8 +59,8 @@ public class TurtleClient {
 
 
         ChannelFuture channelFuture = client.connect().sync();
-        countDownLatch.countDown();
         channel = channelFuture.channel();
+        countDownLatch.countDown();
         channel.closeFuture().sync();
         //doConnect();
     }

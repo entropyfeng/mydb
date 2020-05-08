@@ -10,6 +10,7 @@ import com.github.entropyfeng.mydb.server.AdminObject;
 import com.github.entropyfeng.mydb.server.domain.*;
 import io.netty.channel.Channel;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -218,7 +219,7 @@ public class ClientRequest implements ICommand {
         return objects;
     }
 
-    public ClientRequest build() {
+    public @Nullable ClientRequest build() {
         Class<?> target;
         switch (model) {
             case VALUE:

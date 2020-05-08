@@ -65,7 +65,6 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Tu
         if (msg.getEndAble()) {
             ClientRequest clientRequest = requestMap.remove(msg.getRequestId());
             if (clientRequest != null) {
-
                 clientRequest = clientRequest.build();
                 if (clientRequest != null) {
                     serverDomain.accept(clientRequest);

@@ -47,7 +47,7 @@ public class ResServerHelper {
         resBodies.add(bodyBuilder.build());
         return new Pair<>(SUCCESS_SINGLE_HEAD, resBodies);
     }
-
+    
     public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> longRes(long longValue) {
 
         ProtoBuf.ResBody.Builder bodyBuilder = ProtoBuf.ResBody.newBuilder();
