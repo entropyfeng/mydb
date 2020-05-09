@@ -44,7 +44,7 @@ public class ElasticMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
     public ElasticMap(int initialCapacity, float loadFactor) {
         first = new MapObject<>(initialCapacity, loadFactor);
     }
-@SuppressWarnings("unused")
+    @SuppressWarnings("unused")
     public ElasticMap(int initialCapacity) {
         first = new MapObject<>(initialCapacity);
     }
@@ -102,7 +102,7 @@ public class ElasticMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
                 resValue = resValue1;
             }
             moveEntry();
-        } else if (first.isCorrespondingEnlargeSize()) {
+        } else if (first.isCorrespondingEnlargeSize()||first.isCorrespondingNarrowSize()) {
             isRehashing = true;
             second = new MapObject<>(first.used);
             //resValue always null

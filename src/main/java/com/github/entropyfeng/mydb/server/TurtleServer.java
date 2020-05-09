@@ -56,6 +56,7 @@ public class TurtleServer {
 
 
         NioEventLoopGroup boss = new NioEventLoopGroup(1);
+        //设置定时转储周期
         boss.scheduleAtFixedRate(new CircleDumpTask(serverDomain),dumpCircle,dumpCircle, TimeUnit.SECONDS);
         //IO密集型 2n+1
         NioEventLoopGroup worker = new NioEventLoopGroup(2*Runtime.getRuntime().availableProcessors()+1);
