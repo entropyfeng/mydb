@@ -79,13 +79,14 @@ public class AdminObject implements IAdminOperations {
 
     /**
      * appear at salve server
-     * 从服务器向主服务器发送请求
+     * 从服务器向主服务器发送请求，连接由从服务器主动创建
      * @param host the host of the destination server
      * @param port the port of the destination server
      * @return {@link Pair}
      */
     @Override
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> slaveOf(String host, Integer port) {
+
 
         ClientCommandBuilder clientCommandBuilder = new ClientCommandBuilder(TurtleModel.ADMIN, "slaveOfServer");
         clientCommandBuilder.addStringPara(ServerConfig.serverHost);
