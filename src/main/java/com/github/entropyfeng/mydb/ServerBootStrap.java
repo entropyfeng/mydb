@@ -33,7 +33,7 @@ public class ServerBootStrap {
 
         try {
             if (!createDumpFolder()){
-                
+
                 logger.error("create dump directory error !");
             }
             String host = ServerConfig.serverHost;

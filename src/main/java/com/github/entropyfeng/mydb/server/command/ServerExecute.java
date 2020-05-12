@@ -18,7 +18,6 @@ public class ServerExecute {
 
     public static Logger logger= LoggerFactory.getLogger(ServerExecute.class);
 
-
     private static void writeChannel(Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> pair, Channel channel, Long requestId) {
 
         //-----------header-------------------------

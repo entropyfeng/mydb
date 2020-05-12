@@ -95,8 +95,8 @@ public class AdminObject implements IAdminOperations {
         TurtleClient turtleClient = new TurtleClient(host, port);
 
 
+        //从服务器开启新客户端连接主服务器
         new ClientThreadFactory().newThread(() -> {
-
             try {
                 turtleClient.start();
             } catch (InterruptedException e) {

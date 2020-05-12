@@ -3,6 +3,7 @@ package com.github.entropyfeng.mydb.server.persistence.dump;
 import com.github.entropyfeng.mydb.server.ServerDomain;
 
 /**
+ * 数据库定期转储
  * @author entropyfeng
  */
 public class CircleDumpTask implements Runnable {
