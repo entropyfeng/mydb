@@ -22,90 +22,90 @@ public class ResServerHelper {
 
     public static final ProtoBuf.ResHead EMPTY_HEAD = ProtoBuf.ResHead.newBuilder().setSuccess(true).setResSize(0).build();
 
-    public static final Collection<ProtoBuf.ResBody> EMPTY_COLLECTION=new ArrayList<>(0);
+    public static final Collection<ProtoBuf.DataBody> EMPTY_COLLECTION=new ArrayList<>(0);
 
-    public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> boolRes(boolean value) {
+    public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> boolRes(boolean value) {
 
-        ProtoBuf.ResBody.Builder bodyBuilder = ProtoBuf.ResBody.newBuilder();
+        ProtoBuf.DataBody.Builder bodyBuilder = ProtoBuf.DataBody.newBuilder();
         bodyBuilder.setBoolValue(value);
-        ArrayList<ProtoBuf.ResBody> resBodies = new ArrayList<>(1);
+        ArrayList<ProtoBuf.DataBody> resBodies = new ArrayList<>(1);
         resBodies.add(bodyBuilder.build());
         return new Pair<>(SUCCESS_SINGLE_HEAD, resBodies);
 
     }
 
-    public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> emptyRes() {
+    public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> emptyRes() {
 
         return new Pair<>(EMPTY_HEAD, EMPTY_COLLECTION);
     }
 
-    public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> intRes(int intValue) {
+    public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> intRes(int intValue) {
 
-        ProtoBuf.ResBody.Builder bodyBuilder = ProtoBuf.ResBody.newBuilder();
+        ProtoBuf.DataBody.Builder bodyBuilder = ProtoBuf.DataBody.newBuilder();
         bodyBuilder.setIntValue(intValue);
-        ArrayList<ProtoBuf.ResBody> resBodies = new ArrayList<>(1);
+        ArrayList<ProtoBuf.DataBody> resBodies = new ArrayList<>(1);
         resBodies.add(bodyBuilder.build());
         return new Pair<>(SUCCESS_SINGLE_HEAD, resBodies);
     }
     
-    public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> longRes(long longValue) {
+    public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> longRes(long longValue) {
 
-        ProtoBuf.ResBody.Builder bodyBuilder = ProtoBuf.ResBody.newBuilder();
+        ProtoBuf.DataBody.Builder bodyBuilder = ProtoBuf.DataBody.newBuilder();
         bodyBuilder.setLongValue(longValue);
-        ArrayList<ProtoBuf.ResBody> resBodies = new ArrayList<>(1);
+        ArrayList<ProtoBuf.DataBody> resBodies = new ArrayList<>(1);
         resBodies.add(bodyBuilder.build());
         return new Pair<>(SUCCESS_SINGLE_HEAD, resBodies);
     }
 
-    public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> stringRes(String string) {
+    public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> stringRes(String string) {
 
-        ProtoBuf.ResBody.Builder bodyBuilder = ProtoBuf.ResBody.newBuilder();
+        ProtoBuf.DataBody.Builder bodyBuilder = ProtoBuf.DataBody.newBuilder();
         bodyBuilder.setStringValue(string);
-        ArrayList<ProtoBuf.ResBody> resBodies = new ArrayList<>(1);
+        ArrayList<ProtoBuf.DataBody> resBodies = new ArrayList<>(1);
         resBodies.add(bodyBuilder.build());
         return new Pair<>(SUCCESS_SINGLE_HEAD, resBodies);
     }
 
-    public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> turtleRes(TurtleValue turtleValue) {
+    public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> turtleRes(TurtleValue turtleValue) {
 
-        ProtoBuf.ResBody.Builder bodyBuilder = ProtoBuf.ResBody.newBuilder();
+        ProtoBuf.DataBody.Builder bodyBuilder = ProtoBuf.DataBody.newBuilder();
         bodyBuilder.setTurtleValue(ProtoTurtleHelper.convertToProto(turtleValue));
-        ArrayList<ProtoBuf.ResBody> resBodies = new ArrayList<>(1);
+        ArrayList<ProtoBuf.DataBody> resBodies = new ArrayList<>(1);
         resBodies.add(bodyBuilder.build());
         return new Pair<>(SUCCESS_SINGLE_HEAD, resBodies);
     }
 
-    public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> turtleCollectionRes(Collection<TurtleValue> turtleValues) {
+    public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> turtleCollectionRes(Collection<TurtleValue> turtleValues) {
 
         ProtoBuf.ResHead head = ProtoBuf.ResHead.newBuilder().setResSize(turtleValues.size()).setSuccess(true).build();
 
-        ProtoBuf.ResBody.Builder bodyBuilder = ProtoBuf.ResBody.newBuilder();
+        ProtoBuf.DataBody.Builder bodyBuilder = ProtoBuf.DataBody.newBuilder();
 
-        ArrayList<ProtoBuf.ResBody> resBodies = new ArrayList<>(turtleValues.size());
+        ArrayList<ProtoBuf.DataBody> resBodies = new ArrayList<>(turtleValues.size());
         turtleValues.forEach(turtleValue -> resBodies.add(bodyBuilder.setTurtleValue(ProtoTurtleHelper.convertToProto(turtleValue)).build()));
 
         return new Pair<>(head, resBodies);
     }
 
-    public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> stringCollectionRes(Collection<String> strings) {
+    public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> stringCollectionRes(Collection<String> strings) {
 
         ProtoBuf.ResHead head = ProtoBuf.ResHead.newBuilder().setResSize(strings.size()).setSuccess(true).build();
 
-        ProtoBuf.ResBody.Builder bodyBuilder = ProtoBuf.ResBody.newBuilder();
+        ProtoBuf.DataBody.Builder bodyBuilder = ProtoBuf.DataBody.newBuilder();
 
-        ArrayList<ProtoBuf.ResBody> resBodies = new ArrayList<>(strings.size());
+        ArrayList<ProtoBuf.DataBody> resBodies = new ArrayList<>(strings.size());
         strings.forEach(string -> resBodies.add(bodyBuilder.setStringValue(string).build()));
 
         return new Pair<>(head, resBodies);
     }
 
-    public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> stringTurtleCollectionRes(Set<Map.Entry<String, TurtleValue>> entrySet) {
+    public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> stringTurtleCollectionRes(Set<Map.Entry<String, TurtleValue>> entrySet) {
 
         ProtoBuf.ResHead head = ProtoBuf.ResHead.newBuilder().setResSize(entrySet.size()).setSuccess(true).build();
 
-        ProtoBuf.ResBody.Builder bodyBuilder = ProtoBuf.ResBody.newBuilder();
+        ProtoBuf.DataBody.Builder bodyBuilder = ProtoBuf.DataBody.newBuilder();
 
-        ArrayList<ProtoBuf.ResBody> resBodies = new ArrayList<>(entrySet.size());
+        ArrayList<ProtoBuf.DataBody> resBodies = new ArrayList<>(entrySet.size());
         ProtoBuf.StringTurtleValueEntry.Builder entryBuilder = ProtoBuf.StringTurtleValueEntry.newBuilder();
         entrySet.forEach(entry -> {
             entryBuilder.setKey(entry.getKey());
@@ -116,13 +116,13 @@ public class ResServerHelper {
         return new Pair<>(head, resBodies);
     }
 
-    public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> turtleTurtleCollectionRes(Set<Map.Entry<TurtleValue, TurtleValue>> entries) {
+    public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> turtleTurtleCollectionRes(Set<Map.Entry<TurtleValue, TurtleValue>> entries) {
 
         ProtoBuf.ResHead head = ProtoBuf.ResHead.newBuilder().setResSize(entries.size()).setSuccess(true).build();
 
-        ProtoBuf.ResBody.Builder bodyBuilder = ProtoBuf.ResBody.newBuilder();
+        ProtoBuf.DataBody.Builder bodyBuilder = ProtoBuf.DataBody.newBuilder();
 
-        ArrayList<ProtoBuf.ResBody> resBodies = new ArrayList<>(entries.size());
+        ArrayList<ProtoBuf.DataBody> resBodies = new ArrayList<>(entries.size());
         ProtoBuf.TurtleTurtleValueEntry.Builder entryBuilder = ProtoBuf.TurtleTurtleValueEntry.newBuilder();
         entries.forEach(entry -> {
             entryBuilder.setKey(ProtoTurtleHelper.convertToProto(entry.getKey()));
@@ -135,51 +135,51 @@ public class ResServerHelper {
 
 
     //--------------------exception---------------
-    public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> elementOutOfBoundException(String exception) {
+    public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> elementOutOfBoundException(String exception) {
 
         ProtoBuf.ResHead.Builder headBuilder = ProtoBuf.ResHead.newBuilder();
         headBuilder.setSuccess(false);
         headBuilder.setInnerException(exception);
         headBuilder.setInnerExceptionType(ProtoBuf.ExceptionType.ElementOutOfBoundException);
 
-        ArrayList<ProtoBuf.ResBody> resBodies = new ArrayList<>(0);
+        ArrayList<ProtoBuf.DataBody> resBodies = new ArrayList<>(0);
         return new Pair<>(headBuilder.build(), resBodies);
     }
 
 
-    public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> unsupportedOperationException(String exception) {
+    public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> unsupportedOperationException(String exception) {
 
         ProtoBuf.ResHead.Builder headBuilder = ProtoBuf.ResHead.newBuilder();
         headBuilder.setSuccess(false);
         headBuilder.setInnerException(exception);
         headBuilder.setInnerExceptionType(ProtoBuf.ExceptionType.UnsupportedOperationException);
 
-        ArrayList<ProtoBuf.ResBody> resBodies = new ArrayList<>(0);
+        ArrayList<ProtoBuf.DataBody> resBodies = new ArrayList<>(0);
         return new Pair<>(headBuilder.build(), resBodies);
     }
 
 
-    public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> illegalArgumentException(String exception) {
+    public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> illegalArgumentException(String exception) {
 
         ProtoBuf.ResHead.Builder headBuilder = ProtoBuf.ResHead.newBuilder();
         headBuilder.setSuccess(false);
         headBuilder.setInnerException(exception);
         headBuilder.setInnerExceptionType(ProtoBuf.ExceptionType.IllegalArgumentException);
 
-        ArrayList<ProtoBuf.ResBody> resBodies = new ArrayList<>(0);
+        ArrayList<ProtoBuf.DataBody> resBodies = new ArrayList<>(0);
         return new Pair<>(headBuilder.build(), resBodies);
     }
 
 
 
-    public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> turtleValueElementOutBoundsException(String exception) {
+    public static @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> turtleValueElementOutBoundsException(String exception) {
 
         ProtoBuf.ResHead.Builder headBuilder = ProtoBuf.ResHead.newBuilder();
         headBuilder.setSuccess(false);
         headBuilder.setInnerException(exception);
         headBuilder.setInnerExceptionType(ProtoBuf.ExceptionType.TurtleValueElementOutBoundsException);
 
-        ArrayList<ProtoBuf.ResBody> resBodies = new ArrayList<>(0);
+        ArrayList<ProtoBuf.DataBody> resBodies = new ArrayList<>(0);
         return new Pair<>(headBuilder.build(), resBodies);
     }
 

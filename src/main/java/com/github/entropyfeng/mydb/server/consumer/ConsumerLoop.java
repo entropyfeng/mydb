@@ -24,7 +24,6 @@ public class ConsumerLoop {
         while (true) {
 
             handleServerBlocking(target);
-
             ClientRequest command = queue.poll();
             if (command != null) {
                 if (command.getModify() && ServerConfig.masterSlaveFlag.get()) {
@@ -41,6 +40,10 @@ public class ConsumerLoop {
         }
     }
 
+    /**
+     *  when adminThread notify consumer thread blocking
+     * @param target domain
+     */
     private void handleServerBlocking(Object target) {
         if (ServerConfig.serverBlocking.get()) {
             synchronized (Thread.currentThread()) {

@@ -4,7 +4,7 @@ import com.github.entropyfeng.mydb.client.ClientCommandBuilder;
 import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.common.RequestIdPool;
 import com.github.entropyfeng.mydb.common.exception.TurtleTimeOutException;
-import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResBody;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.DataBody;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResHead;
 import io.netty.channel.Channel;
 
@@ -17,14 +17,14 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ClientExecute {
 
-    public static ConcurrentHashMap<Long, Pair<ResHead, Collection<ResBody>>> resMap = new ConcurrentHashMap<>();
+    public static ConcurrentHashMap<Long, Pair<ResHead, Collection<DataBody>>> resMap = new ConcurrentHashMap<>();
 
 
-    public static Pair<ResHead, Collection<ResBody>> execute(ClientCommandBuilder commandBuilder) {
+    public static Pair<ResHead, Collection<DataBody>> execute(ClientCommandBuilder commandBuilder) {
 
         Channel channel = TurtleClientChannelFactory.getChannel();
         if (channel != null) {
-            Pair<ResHead, Collection<ResBody>> responseData;
+            Pair<ResHead, Collection<DataBody>> responseData;
             Long requestId = RequestIdPool.getAndIncrement();
             commandBuilder.writeChannel(channel, requestId);
 

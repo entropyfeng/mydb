@@ -20,7 +20,7 @@ import java.util.NoSuchElementException;
 public class ResponseValueOperations implements IValueOperations {
     @NotNull
     @Override
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> set(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time) {
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> set(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time) {
 
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "set");
         builder.addStringPara(key);
@@ -32,7 +32,7 @@ public class ResponseValueOperations implements IValueOperations {
 
     @NotNull
     @Override
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> setIfAbsent(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time) {
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> setIfAbsent(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "setIfAbsent");
         builder.addStringPara(key);
         builder.addTurtlePara(value);
@@ -43,7 +43,7 @@ public class ResponseValueOperations implements IValueOperations {
 
     @NotNull
     @Override
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> setIfPresent(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time) {
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> setIfPresent(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "setIfPresent");
         builder.addStringPara(key);
         builder.addTurtlePara(value);
@@ -54,7 +54,7 @@ public class ResponseValueOperations implements IValueOperations {
 
     @NotNull
     @Override
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> get(@NotNull String key) {
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> get(@NotNull String key) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "get");
         builder.addStringPara(key);
         return ClientExecute.execute(builder);
@@ -62,7 +62,7 @@ public class ResponseValueOperations implements IValueOperations {
 
     @NotNull
     @Override
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> increment(@NotNull String key, @NotNull Integer intValue) throws UnsupportedOperationException, NoSuchElementException {
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> increment(@NotNull String key, @NotNull Integer intValue) throws UnsupportedOperationException, NoSuchElementException {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "increment");
         builder.addStringPara(key);
         builder.addIntegerPara(intValue);
@@ -72,7 +72,7 @@ public class ResponseValueOperations implements IValueOperations {
 
     @NotNull
     @Override
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> increment(@NotNull String key, @NotNull Long longValue) throws UnsupportedOperationException, NoSuchElementException {
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> increment(@NotNull String key, @NotNull Long longValue) throws UnsupportedOperationException, NoSuchElementException {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "increment");
         builder.addStringPara(key);
         builder.addLongPara(longValue);
@@ -82,7 +82,7 @@ public class ResponseValueOperations implements IValueOperations {
 
     @NotNull
     @Override
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> increment(@NotNull String key, @NotNull Double doubleValue) throws UnsupportedOperationException, NoSuchElementException {
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> increment(@NotNull String key, @NotNull Double doubleValue) throws UnsupportedOperationException, NoSuchElementException {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "increment");
         builder.addStringPara(key);
         builder.addDoublePara(doubleValue);
@@ -92,7 +92,7 @@ public class ResponseValueOperations implements IValueOperations {
 
     @NotNull
     @Override
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> increment(@NotNull String key, @NotNull BigInteger bigInteger) throws UnsupportedOperationException, NoSuchElementException {
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> increment(@NotNull String key, @NotNull BigInteger bigInteger) throws UnsupportedOperationException, NoSuchElementException {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "increment");
         builder.addStringPara(key);
         builder.addBigIntegerPara(bigInteger);
@@ -102,7 +102,7 @@ public class ResponseValueOperations implements IValueOperations {
 
     @NotNull
     @Override
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> increment(@NotNull String key, @NotNull BigDecimal bigDecimal) throws UnsupportedOperationException, NoSuchElementException {
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> increment(@NotNull String key, @NotNull BigDecimal bigDecimal) throws UnsupportedOperationException, NoSuchElementException {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "increment");
         builder.addStringPara(key);
         builder.addBigDecimalPara(bigDecimal);
@@ -112,7 +112,7 @@ public class ResponseValueOperations implements IValueOperations {
 
     @NotNull
     @Override
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> append(@NotNull String key, @NotNull String appendValue) throws UnsupportedOperationException, NoSuchElementException {
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> append(@NotNull String key, @NotNull String appendValue) throws UnsupportedOperationException, NoSuchElementException {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "append");
         builder.addStringPara(key);
         builder.addStringPara(appendValue);
@@ -122,32 +122,32 @@ public class ResponseValueOperations implements IValueOperations {
 
     @NotNull
     @Override
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> allValues() {
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> allValues() {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "allValues");
         return ClientExecute.execute(builder);
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> allEntries() {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> allEntries() {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "allEntries");
         return ClientExecute.execute(builder);
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> allKeys() {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> allKeys() {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "allKeys");
         return ClientExecute.execute(builder);
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear() {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> clear() {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "clear");
         builder.setModifyAble(true);
         return ClientExecute.execute(builder);
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> dump() {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> dump() {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "dump");
 
         return ClientExecute.execute(builder);

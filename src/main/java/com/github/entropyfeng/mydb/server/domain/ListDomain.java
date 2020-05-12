@@ -2,7 +2,7 @@ package com.github.entropyfeng.mydb.server.domain;
 
 import com.github.entropyfeng.mydb.common.exception.DumpFileException;
 import com.github.entropyfeng.mydb.common.ops.IListOperations;
-import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResBody;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.DataBody;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResHead;
 import com.github.entropyfeng.mydb.server.PersistenceHelper;
 import com.github.entropyfeng.mydb.server.ResServerHelper;
@@ -36,12 +36,12 @@ public class ListDomain implements IListOperations {
     }
    
     @Override
-    public @NotNull  Pair<ResHead, Collection<ResBody>> size() {
+    public @NotNull  Pair<ResHead, Collection<DataBody>> size() {
         return ResServerHelper.intRes(listMap.size());
     }
 
     @Override
-    public @NotNull  Pair<ResHead, Collection<ResBody>> sizeOf(String key) {
+    public @NotNull  Pair<ResHead, Collection<DataBody>> sizeOf(String key) {
 
         LinkedList<TurtleValue> list = listMap.get(key);
 
@@ -50,7 +50,7 @@ public class ListDomain implements IListOperations {
     }
 
     @Override
-    public @NotNull  Pair<ResHead, Collection<ResBody>> leftPush(String key, TurtleValue value) {
+    public @NotNull  Pair<ResHead, Collection<DataBody>> leftPush(String key, TurtleValue value) {
         createIfNotExist(key);
         listMap.get(key).addFirst(value);
 
@@ -59,14 +59,14 @@ public class ListDomain implements IListOperations {
 
 
     @Override
-    public @NotNull  Pair<ResHead, Collection<ResBody>> leftPushAll(String key, Collection<TurtleValue> values) {
+    public @NotNull  Pair<ResHead, Collection<DataBody>> leftPushAll(String key, Collection<TurtleValue> values) {
         createIfNotExist(key);
         listMap.get(key).addAll(0, values);
         return ResServerHelper.emptyRes();
     }
 
     @Override
-    public @NotNull  Pair<ResHead, Collection<ResBody>> leftPushIfPresent(String key, TurtleValue value) {
+    public @NotNull  Pair<ResHead, Collection<DataBody>> leftPushIfPresent(String key, TurtleValue value) {
         boolean res = false;
 
         if (listMap.containsKey(key)) {
@@ -77,7 +77,7 @@ public class ListDomain implements IListOperations {
     }
 
     @Override
-    public @NotNull  Pair<ResHead, Collection<ResBody>> leftPushIfAbsent(String key, TurtleValue value) {
+    public @NotNull  Pair<ResHead, Collection<DataBody>> leftPushIfAbsent(String key, TurtleValue value) {
         boolean res = false;
         if (!listMap.containsKey(key)) {
             listMap.put(key, new LinkedList<>());
@@ -88,21 +88,21 @@ public class ListDomain implements IListOperations {
     }
 
     @Override
-    public @NotNull  Pair<ResHead, Collection<ResBody>> rightPush(String key, TurtleValue value) {
+    public @NotNull  Pair<ResHead, Collection<DataBody>> rightPush(String key, TurtleValue value) {
         createIfNotExist(key);
         listMap.get(key).addLast(value);
         return ResServerHelper.emptyRes();
     }
 
     @Override
-    public @NotNull  Pair<ResHead, Collection<ResBody>> rightPushAll(String key, Collection<TurtleValue> values) {
+    public @NotNull  Pair<ResHead, Collection<DataBody>> rightPushAll(String key, Collection<TurtleValue> values) {
         createIfNotExist(key);
         listMap.get(key).addAll(values);
         return ResServerHelper.emptyRes();
     }
 
     @Override
-    public @NotNull  Pair<ResHead, Collection<ResBody>> rightPushIfPresent(String key, TurtleValue value) {
+    public @NotNull  Pair<ResHead, Collection<DataBody>> rightPushIfPresent(String key, TurtleValue value) {
         boolean res = false;
 
         if (listMap.containsKey(key)) {
@@ -114,7 +114,7 @@ public class ListDomain implements IListOperations {
     }
 
     @Override
-    public @NotNull  Pair<ResHead, Collection<ResBody>> rightPushIfAbsent(String key, TurtleValue value) {
+    public @NotNull  Pair<ResHead, Collection<DataBody>> rightPushIfAbsent(String key, TurtleValue value) {
         boolean res = false;
         if (!listMap.containsKey(key)) {
             listMap.put(key, new LinkedList<>());
@@ -125,7 +125,7 @@ public class ListDomain implements IListOperations {
     }
 
     @Override
-    public @NotNull  Pair<ResHead, Collection<ResBody>> leftPop(String key) {
+    public @NotNull  Pair<ResHead, Collection<DataBody>> leftPop(String key) {
 
         TurtleValue res = null;
         if (listMap.containsKey(key)) {
@@ -140,7 +140,7 @@ public class ListDomain implements IListOperations {
     }
 
     @Override
-    public @NotNull  Pair<ResHead, Collection<ResBody>> left(String key) {
+    public @NotNull  Pair<ResHead, Collection<DataBody>> left(String key) {
         TurtleValue res = null;
         if (listMap.containsKey(key)) {
             res = listMap.get(key).peekFirst();
@@ -153,7 +153,7 @@ public class ListDomain implements IListOperations {
     }
 
     @Override
-    public @NotNull  Pair<ResHead, Collection<ResBody>> rightPop(String key) {
+    public @NotNull  Pair<ResHead, Collection<DataBody>> rightPop(String key) {
         TurtleValue res = null;
         if (listMap.containsKey(key)) {
             res = listMap.get(key).pollLast();
@@ -167,7 +167,7 @@ public class ListDomain implements IListOperations {
     }
 
     @Override
-    public @NotNull  Pair<ResHead, Collection<ResBody>> right(String key) {
+    public @NotNull  Pair<ResHead, Collection<DataBody>> right(String key) {
         TurtleValue res = null;
         if (listMap.containsKey(key)) {
             res = listMap.get(key).peekLast();
@@ -180,31 +180,31 @@ public class ListDomain implements IListOperations {
     }
 
     @Override
-    public @NotNull  Pair<ResHead, Collection<ResBody>> clear(String key) {
+    public @NotNull  Pair<ResHead, Collection<DataBody>> clear(String key) {
         listMap.remove(key);
         return ResServerHelper.emptyRes();
     }
 
     @Override
-    public @NotNull  Pair<ResHead, Collection<ResBody>> clear() {
+    public @NotNull  Pair<ResHead, Collection<DataBody>> clear() {
         listMap.clear();
         return ResServerHelper.emptyRes();
     }
 
     @Override
-    public @NotNull  Pair<ResHead, Collection<ResBody>> exist(String key) {
+    public @NotNull  Pair<ResHead, Collection<DataBody>> exist(String key) {
         return ResServerHelper.boolRes(listMap.get(key) != null);
     }
 
     @Override
-    public @NotNull  Pair<ResHead, Collection<ResBody>> exist(String key, TurtleValue value) {
+    public @NotNull  Pair<ResHead, Collection<DataBody>> exist(String key, TurtleValue value) {
         LinkedList<TurtleValue> list = listMap.get(key);
         boolean res = list != null && list.contains(value);
         return ResServerHelper.boolRes(res);
     }
 
     @Override
-    public @NotNull Pair<ResHead, Collection<ResBody>> dump() {
+    public @NotNull Pair<ResHead, Collection<DataBody>> dump() {
         return PersistenceHelper.singleDump(new ListDumpTask(new CountDownLatch(1),this,System.currentTimeMillis()));
     }
 

@@ -47,7 +47,7 @@ public class OrderSetDomain implements IOrderSetOperations {
 
     @NotNull
     @Override
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exists(String key, TurtleValue value, Double score) {
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> exists(String key, TurtleValue value, Double score) {
         OrderSet<TurtleValue> orderSet = hashMap.get(key);
         boolean res = false;
         if (orderSet != null) {
@@ -58,7 +58,7 @@ public class OrderSetDomain implements IOrderSetOperations {
 
     @NotNull
     @Override
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exists(String key, TurtleValue value) {
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> exists(String key, TurtleValue value) {
         OrderSet<TurtleValue> orderSet = hashMap.get(key);
         boolean res = false;
         if (orderSet != null) {
@@ -69,13 +69,13 @@ public class OrderSetDomain implements IOrderSetOperations {
 
     @NotNull
     @Override
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exists(String key) {
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> exists(String key) {
         return ResServerHelper.boolRes(hashMap.containsKey(key));
     }
 
     @NotNull
     @Override
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> add(String key, TurtleValue value, Double score) {
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> add(String key, TurtleValue value, Double score) {
         createIfNotExists(key);
 
         return ResServerHelper.boolRes(hashMap.get(key).add(value, score));
@@ -83,7 +83,7 @@ public class OrderSetDomain implements IOrderSetOperations {
 
     @NotNull
     @Override
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> add(String key, Collection<TurtleValue> values, Collection<Double> doubles) {
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> add(String key, Collection<TurtleValue> values, Collection<Double> doubles) {
 
         if (values.size() != doubles.size()) {
             return ResServerHelper.illegalArgumentException("para not consistence");
@@ -102,7 +102,7 @@ public class OrderSetDomain implements IOrderSetOperations {
 
     @NotNull
     @Override
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> count(String key, Double begin, Double end) {
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> count(String key, Double begin, Double end) {
         int res = 0;
         OrderSet<TurtleValue> set = hashMap.get(key);
         if (set != null) {
@@ -113,7 +113,7 @@ public class OrderSetDomain implements IOrderSetOperations {
 
     @NotNull
     @Override
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> range(String key, Double begin, Double end) {
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> range(String key, Double begin, Double end) {
         OrderSet<TurtleValue> set = hashMap.get(key);
         List<TurtleValue> res = null;
         if (set != null) {
@@ -128,7 +128,7 @@ public class OrderSetDomain implements IOrderSetOperations {
 
     @NotNull
     @Override
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> inRange(String key, Double begin, Double end) {
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> inRange(String key, Double begin, Double end) {
         OrderSet<TurtleValue> set = hashMap.get(key);
         int res = set.count(begin, end);
 
@@ -137,7 +137,7 @@ public class OrderSetDomain implements IOrderSetOperations {
 
     @NotNull
     @Override
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> delete(String key, TurtleValue value, Double score) {
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> delete(String key, TurtleValue value, Double score) {
         OrderSet<TurtleValue> set = hashMap.get(key);
         boolean res = false;
         if (set != null) {
@@ -148,7 +148,7 @@ public class OrderSetDomain implements IOrderSetOperations {
 
     @NotNull
     @Override
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> delete(String key, Double begin, Double end) {
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> delete(String key, Double begin, Double end) {
         OrderSet<TurtleValue> set = hashMap.get(key);
         int res = 0;
         if (set != null) {
@@ -161,7 +161,7 @@ public class OrderSetDomain implements IOrderSetOperations {
 
     @NotNull
     @Override
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> delete(String key, TurtleValue value) {
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> delete(String key, TurtleValue value) {
         OrderSet<TurtleValue> set = hashMap.get(key);
         boolean res = false;
         if (set != null) {
@@ -173,20 +173,20 @@ public class OrderSetDomain implements IOrderSetOperations {
 
     @NotNull
     @Override
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> delete(String key) {
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> delete(String key) {
 
         hashMap.remove(key);
         return ResServerHelper.emptyRes();
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear() {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> clear() {
         hashMap.clear();
         return ResServerHelper.emptyRes();
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> dump() {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> dump() {
         return PersistenceHelper.singleDump(new OrderSetDumpTask(new CountDownLatch(1),this,System.currentTimeMillis()));
     }
 

@@ -49,7 +49,7 @@ public class ServerDomain {
         start();
     }
 
-   public AdminObject adminObject;
+    public AdminObject adminObject;
 
     protected ValuesDomain valuesDomain;
 
@@ -148,7 +148,7 @@ public class ServerDomain {
     }
 
     /**
-     * use null domain to replace the old domains,but all blocking queue will not be changed
+     * use empty domain to replace the old domains, all blocking queue will remain
      *
      * @param valuesDomain   {@link ValuesDomain}
      * @param listDomain     {@link ListDomain}

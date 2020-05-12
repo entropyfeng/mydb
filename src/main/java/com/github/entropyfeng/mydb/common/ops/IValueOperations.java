@@ -23,7 +23,7 @@ public interface IValueOperations {
      * @param time  过期时间
      * @throws ElementOutOfBoundException when current mapSize>=Integer.MAX will throw this exception
      */
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> set(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> set(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time);
 
     /**
      * 如果存在key所对应的值啧用新值替换旧值
@@ -34,7 +34,7 @@ public interface IValueOperations {
      * true->设置成功
      * false->设置失败
      */
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> setIfAbsent(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> setIfAbsent(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time);
 
 
     /**
@@ -47,10 +47,10 @@ public interface IValueOperations {
      * true->设置成功
      * false->设置失败
      */
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> setIfPresent(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> setIfPresent(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time);
 
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> get(@NotNull String key);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> get(@NotNull String key);
 
 
     /**
@@ -60,30 +60,30 @@ public interface IValueOperations {
      * @throws UnsupportedOperationException 不支持该操作
      * @throws NoSuchElementException        数据库中不含该key
      */
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> increment(@NotNull String key, @NotNull Integer intValue) throws UnsupportedOperationException;
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> increment(@NotNull String key, @NotNull Integer intValue) throws UnsupportedOperationException;
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> increment(@NotNull String key, @NotNull Long longValue) throws UnsupportedOperationException;
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> increment(@NotNull String key, @NotNull Long longValue) throws UnsupportedOperationException;
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> increment(@NotNull String key, @NotNull Double doubleValue) throws UnsupportedOperationException;
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> increment(@NotNull String key, @NotNull Double doubleValue) throws UnsupportedOperationException;
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> increment(@NotNull String key, @NotNull BigInteger bigInteger) throws UnsupportedOperationException;
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> increment(@NotNull String key, @NotNull BigInteger bigInteger) throws UnsupportedOperationException;
 
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> increment(@NotNull String key, @NotNull BigDecimal bigDecimal) throws UnsupportedOperationException;
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> increment(@NotNull String key, @NotNull BigDecimal bigDecimal) throws UnsupportedOperationException;
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> append(@NotNull String key, @NotNull String appendValue) throws UnsupportedOperationException;
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> append(@NotNull String key, @NotNull String appendValue) throws UnsupportedOperationException;
 
     /**
      * 返回所有的values(不包含key)
      * @return res collection
      */
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> allValues();
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> allValues();
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> allEntries();
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> allEntries();
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> allKeys();
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> allKeys();
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear();
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> clear();
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> dump();
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> dump();
 }

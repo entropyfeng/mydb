@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResBody;
+import static com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.DataBody;
 import static com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResHead;
 
 /**
@@ -17,10 +17,10 @@ import static com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResHead;
  */
 public class ClientResHelper {
 
-    public static @Nullable TurtleValue turtleValueRes(Pair<ResHead, Collection<ResBody>> pair) {
+    public static @Nullable TurtleValue turtleValueRes(Pair<ResHead, Collection<DataBody>> pair) {
         ResHead resHead = pair.getKey();
         if (resHead.getSuccess()) {
-            ArrayList<ResBody> collection = ((ArrayList<ResBody>) pair.getValue());
+            ArrayList<DataBody> collection = ((ArrayList<DataBody>) pair.getValue());
             if (collection.isEmpty()) {
                 return null;
             } else {
@@ -33,10 +33,10 @@ public class ClientResHelper {
         }
     }
 
-    public static @Nullable Integer integerRes(Pair<ResHead, Collection<ResBody>> pair) {
+    public static @Nullable Integer integerRes(Pair<ResHead, Collection<DataBody>> pair) {
         ResHead resHead = pair.getKey();
         if (resHead.getSuccess()) {
-            ArrayList<ResBody> collection = ((ArrayList<ResBody>) pair.getValue());
+            ArrayList<DataBody> collection = ((ArrayList<DataBody>) pair.getValue());
             if (collection.isEmpty()){
                 return null;
             }else {
@@ -50,10 +50,10 @@ public class ClientResHelper {
     }
 
 
-    public static @Nullable Boolean boolRes(Pair<ResHead, Collection<ResBody>> pair) {
+    public static @Nullable Boolean boolRes(Pair<ResHead, Collection<DataBody>> pair) {
         ResHead resHead = pair.getKey();
         if (resHead.getSuccess()) {
-            ArrayList<ResBody> collection = ((ArrayList<ResBody>) pair.getValue());
+            ArrayList<DataBody> collection = ((ArrayList<DataBody>) pair.getValue());
             if (collection.isEmpty()){
                 return null;
             }else {
@@ -66,14 +66,14 @@ public class ClientResHelper {
         }
     }
 
-    public static void voidRes(Pair<ResHead, Collection<ResBody>> pair) {
+    public static void voidRes(Pair<ResHead, Collection<DataBody>> pair) {
         ResHead resHead = pair.getKey();
         if (!resHead.getSuccess()) {
             ProtoExceptionHelper.handler(resHead.getInnerExceptionType(), resHead.getInnerException());
         }
     }
 
-    public static @Nullable Collection<TurtleValue> turtleCollection(Pair<ResHead, Collection<ResBody>> pair) {
+    public static @Nullable Collection<TurtleValue> turtleCollection(Pair<ResHead, Collection<DataBody>> pair) {
 
         ResHead resHead = pair.getKey();
         if (resHead.getSuccess()) {
@@ -88,7 +88,7 @@ public class ClientResHelper {
         return null;
     }
 
-    public static @Nullable Collection<String> stringCollection(Pair<ResHead, Collection<ResBody>> pair) {
+    public static @Nullable Collection<String> stringCollection(Pair<ResHead, Collection<DataBody>> pair) {
 
         ResHead resHead = pair.getKey();
         if (resHead.getSuccess()) {
@@ -103,7 +103,7 @@ public class ClientResHelper {
         return null;
     }
 
-    public static @Nullable Collection<Pair<String, TurtleValue>> stringTurtleCollection(Pair<ResHead, Collection<ResBody>> pair) {
+    public static @Nullable Collection<Pair<String, TurtleValue>> stringTurtleCollection(Pair<ResHead, Collection<DataBody>> pair) {
 
         ResHead resHead = pair.getKey();
         if (resHead.getSuccess()) {

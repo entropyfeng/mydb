@@ -12,11 +12,11 @@ import java.util.Collection;
  */
 public interface ISetOperations {
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exist(String key);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> exist(String key);
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exist(String key, TurtleValue value);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> exist(String key, TurtleValue value);
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> add(String key, TurtleValue value);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> add(String key, TurtleValue value);
 
     /**
      * 只做并操作不返回值
@@ -25,25 +25,25 @@ public interface ISetOperations {
      * @param otherKey other key
      * @return responseData
      */
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> union(String key, String otherKey);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> union(String key, String otherKey);
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> union(String key, Collection<TurtleValue> turtleValues);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> union(String key, Collection<TurtleValue> turtleValues);
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> unionAndGet(String key, String otherKey);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> unionAndGet(String key, String otherKey);
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> unionAndGet(String key, Collection<TurtleValue> turtleValues);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> unionAndGet(String key, Collection<TurtleValue> turtleValues);
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> intersect(String key, String otherKey);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> intersect(String key, String otherKey);
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> intersect(String key, Collection<TurtleValue> turtleValues);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> intersect(String key, Collection<TurtleValue> turtleValues);
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> difference(String key, String otherKey);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> difference(String key, String otherKey);
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> difference(String key, Collection<TurtleValue> turtleValues);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> difference(String key, Collection<TurtleValue> turtleValues);
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> entries(String key);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> entries(String key);
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear();
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> clear();
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> dump();
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> dump();
 }

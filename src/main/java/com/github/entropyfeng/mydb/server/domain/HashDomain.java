@@ -36,7 +36,7 @@ public class HashDomain implements IHashOperations {
     private HashMap<String, ElasticMap<TurtleValue, TurtleValue>> hashMap;
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> get(@NotNull String key, @NotNull TurtleValue tKey) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> get(@NotNull String key, @NotNull TurtleValue tKey) {
 
         ElasticMap<TurtleValue, TurtleValue> map = hashMap.get(key);
         TurtleValue res = null;
@@ -52,7 +52,7 @@ public class HashDomain implements IHashOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> get(@NotNull String key) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> get(@NotNull String key) {
 
         ElasticMap<TurtleValue, TurtleValue> res = hashMap.get(key);
 
@@ -64,7 +64,7 @@ public class HashDomain implements IHashOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exists(@NotNull String key, @NotNull TurtleValue tKey, TurtleValue tValue) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> exists(@NotNull String key, @NotNull TurtleValue tKey, TurtleValue tValue) {
         ElasticMap<TurtleValue, TurtleValue> map = hashMap.get(key);
 
         boolean res = false;
@@ -75,13 +75,13 @@ public class HashDomain implements IHashOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exists(@NotNull String key) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> exists(@NotNull String key) {
 
         return ResServerHelper.boolRes(hashMap.containsKey(key));
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> put(@NotNull String key, @NotNull TurtleValue tKey, @NotNull TurtleValue tValue) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> put(@NotNull String key, @NotNull TurtleValue tKey, @NotNull TurtleValue tValue) {
 
         createIfNotExist(key);
         hashMap.get(key).put(tKey,tValue);
@@ -89,13 +89,13 @@ public class HashDomain implements IHashOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> delete(@NotNull String key) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> delete(@NotNull String key) {
         hashMap.remove(key);
         return ResServerHelper.emptyRes();
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> delete(@NotNull String key, @NotNull TurtleValue tKey) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> delete(@NotNull String key, @NotNull TurtleValue tKey) {
        ElasticMap<TurtleValue,TurtleValue> map= hashMap.get(key);
        if (map!=null){
            map.remove(tKey);
@@ -104,7 +104,7 @@ public class HashDomain implements IHashOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> sizeOf(@NotNull String key) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> sizeOf(@NotNull String key) {
         ElasticMap<TurtleValue,TurtleValue> map= hashMap.get(key);
         if (map!=null){
             return ResServerHelper.intRes(map.size());
@@ -114,13 +114,13 @@ public class HashDomain implements IHashOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear() {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> clear() {
         hashMap.clear();
         return ResServerHelper.emptyRes();
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> dump() {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> dump() {
         return PersistenceHelper.singleDump(new HashDumpTask(new CountDownLatch(1),this,System.currentTimeMillis()));
     }
 

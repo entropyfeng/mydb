@@ -19,14 +19,14 @@ public class ResponseSetOperations implements ISetOperations {
 
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exist(String key) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> exist(String key) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "exist");
         builder.addStringPara(key);
         return ClientExecute.execute(builder);
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exist(String key, TurtleValue value) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> exist(String key, TurtleValue value) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "exist");
         builder.addStringPara(key);
         builder.addTurtlePara(value);
@@ -34,7 +34,7 @@ public class ResponseSetOperations implements ISetOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> add(String key, TurtleValue value) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> add(String key, TurtleValue value) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "add");
         builder.addStringPara(key);
         builder.addTurtlePara(value);
@@ -43,7 +43,7 @@ public class ResponseSetOperations implements ISetOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> union(String key, String otherKey) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> union(String key, String otherKey) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "union");
         builder.addStringPara(key);
         builder.addStringPara(otherKey);
@@ -52,17 +52,17 @@ public class ResponseSetOperations implements ISetOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> unionAndGet(String key, String otherKey) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> unionAndGet(String key, String otherKey) {
         return null;
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> unionAndGet(String key, Collection<TurtleValue> turtleValues) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> unionAndGet(String key, Collection<TurtleValue> turtleValues) {
         return null;
     }
 
   @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> union(String key, Collection<TurtleValue> turtleValues) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> union(String key, Collection<TurtleValue> turtleValues) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "union");
         builder.addStringPara(key);
         builder.addTurtleCollectionPara(turtleValues);
@@ -71,7 +71,7 @@ public class ResponseSetOperations implements ISetOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> intersect(String key, String otherKey) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> intersect(String key, String otherKey) {
 
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "intersect");
         builder.addStringPara(key);
@@ -81,7 +81,7 @@ public class ResponseSetOperations implements ISetOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> intersect(String key, Collection<TurtleValue> turtleValues) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> intersect(String key, Collection<TurtleValue> turtleValues) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "intersect");
         builder.addStringPara(key);
         builder.addTurtleCollectionPara(turtleValues);
@@ -90,7 +90,7 @@ public class ResponseSetOperations implements ISetOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> difference(String key, String otherKey) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> difference(String key, String otherKey) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "difference");
         builder.addStringPara(key);
         builder.addStringPara(otherKey);
@@ -99,7 +99,7 @@ public class ResponseSetOperations implements ISetOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> difference(String key, Collection<TurtleValue> turtleValues) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> difference(String key, Collection<TurtleValue> turtleValues) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "difference");
         builder.addStringPara(key);
         builder.addTurtleCollectionPara(turtleValues);
@@ -108,14 +108,14 @@ public class ResponseSetOperations implements ISetOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> entries(String key) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> entries(String key) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "entries");
         builder.addStringPara(key);
         return ClientExecute.execute(builder);
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear() {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> clear() {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "clear");
         builder.setModifyAble(true);
         return ClientExecute.execute(builder);
@@ -123,7 +123,7 @@ public class ResponseSetOperations implements ISetOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> dump() {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> dump() {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "dump");
         return ClientExecute.execute(builder);
     }

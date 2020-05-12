@@ -12,33 +12,33 @@ import java.util.Collection;
  */
 public interface IOrderSetOperations {
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exists(String key, TurtleValue value, Double score);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> exists(String key, TurtleValue value, Double score);
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exists(String key, TurtleValue value);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> exists(String key, TurtleValue value);
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exists(String key);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> exists(String key);
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> add(String key, TurtleValue value, Double score);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> add(String key, TurtleValue value, Double score);
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> add(String key, Collection<TurtleValue> values, Collection<Double> doubles);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> add(String key, Collection<TurtleValue> values, Collection<Double> doubles);
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> count(String key, Double begin, Double end);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> count(String key, Double begin, Double end);
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> range(String key, Double begin, Double end);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> range(String key, Double begin, Double end);
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> inRange(String key, Double begin, Double end);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> inRange(String key, Double begin, Double end);
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> delete(String key, TurtleValue value, Double score);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> delete(String key, TurtleValue value, Double score);
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> delete(String key, Double begin, Double end);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> delete(String key, Double begin, Double end);
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> delete(String key, TurtleValue value);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> delete(String key, TurtleValue value);
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> delete(String key);
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> delete(String key);
 
 
-    @NotNull Pair<ProtoBuf.ResHead,Collection<ProtoBuf.ResBody>> clear();
+    @NotNull Pair<ProtoBuf.ResHead,Collection<ProtoBuf.DataBody>> clear();
 
-    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> dump();
+    @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> dump();
 
 }

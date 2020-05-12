@@ -18,7 +18,7 @@ public class ServerExecute {
 
     public static Logger logger= LoggerFactory.getLogger(ServerExecute.class);
 
-    private static void writeChannel(Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> pair, Channel channel, Long requestId) {
+    private static void writeChannel(Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> pair, Channel channel, Long requestId) {
 
         //-----------header-------------------------
         ProtoBuf.TurtleData.Builder responseBuilder = ProtoBuf.TurtleData.newBuilder();
@@ -35,7 +35,7 @@ public class ServerExecute {
         responseBuilder.setEndAble(false);
         responseBuilder.setBeginAble(false);
 
-        pair.getValue().forEach(resBody -> channel.write(responseBuilder.setResBody(resBody).build()));
+        pair.getValue().forEach(resBody -> channel.write(responseBuilder.setDataBody(resBody).build()));
 
 
         //---------------end------------------
@@ -80,7 +80,7 @@ public class ServerExecute {
         if (command.getChannel()==null){
             return;
         }
-        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> pair = ((Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>>) res);
+        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> pair = ((Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>>) res);
 
         writeChannel(pair, command.getChannel(), command.getRequestId());
     }

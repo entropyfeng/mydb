@@ -20,7 +20,7 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<TurtleData>
 
     private static final Logger logger = LoggerFactory.getLogger(TurtleClientHandler.class);
 
-    private  HashMap<Long, Pair<ResHead,Collection<ResBody>>> res = new HashMap<>();
+    private  HashMap<Long, Pair<ResHead,Collection<DataBody>>> res = new HashMap<>();
 
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
@@ -60,9 +60,9 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<TurtleData>
             ResHead head=msg.getResHead();
             res.put(msg.getRequestId(),new Pair<>(head,new ArrayList<>(head.getResSize())));
         }else {
-            Pair<ResHead,Collection<ResBody>> pair=res.get(msg.getRequestId());
+            Pair<ResHead,Collection<DataBody>> pair=res.get(msg.getRequestId());
             if (pair!=null){
-                pair.getValue().add(msg.getResBody());
+                pair.getValue().add(msg.getDataBody());
             }
         }
     }
@@ -73,7 +73,7 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<TurtleData>
      */
     private void dispatchRes(Long responseId) {
 
-        Pair<ResHead,Collection<ResBody>> pair=res.remove(responseId);
+        Pair<ResHead,Collection<DataBody>> pair=res.remove(responseId);
         if (pair!=null){
             ClientExecute.resMap.put(responseId, pair);
         }

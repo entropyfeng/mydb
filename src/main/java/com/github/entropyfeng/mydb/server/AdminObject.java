@@ -39,7 +39,7 @@ public class AdminObject implements IAdminOperations {
 
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> lazyClear() {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> lazyClear() {
         try {
             Method valuesMethod = ValuesDomain.class.getMethod("clear");
             Method listMethod = ListDomain.class.getMethod("clear");
@@ -56,7 +56,7 @@ public class AdminObject implements IAdminOperations {
 
     @Override
     @NotNull
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> lazyDump() {
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> lazyDump() {
         try {
             Method valuesMethod = ValuesDomain.class.getMethod("dump");
             Method listMethod = ListDomain.class.getMethod("dump");
@@ -72,7 +72,7 @@ public class AdminObject implements IAdminOperations {
     }
 
     @Override
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> deleteAllDump() {
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> deleteAllDump() {
         PersistenceHelper.deleteDumpFiles();
         return ResServerHelper.emptyRes();
     }
@@ -85,7 +85,7 @@ public class AdminObject implements IAdminOperations {
      * @return {@link Pair}
      */
     @Override
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> slaveOf(String host, Integer port) {
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> slaveOf(String host, Integer port) {
 
 
         ClientCommandBuilder clientCommandBuilder = new ClientCommandBuilder(TurtleModel.ADMIN, "slaveOfServer");
@@ -107,7 +107,7 @@ public class AdminObject implements IAdminOperations {
         Channel channel = turtleClient.getChannel();
         Long requestId=RequestIdPool.getAndIncrement();
         clientCommandBuilder.writeChannel(channel, requestId);
-        ConcurrentHashMap<Long, Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>>> resMap=ClientExecute.resMap;
+        ConcurrentHashMap<Long, Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>>> resMap=ClientExecute.resMap;
         while (!resMap.containsKey(requestId)) {
             try {
                 Thread.sleep(1);
@@ -115,7 +115,7 @@ public class AdminObject implements IAdminOperations {
                 e.printStackTrace();
             }
         }
-        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> pair= resMap.get(requestId);
+        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> pair= resMap.get(requestId);
 
         PersistenceObjectDomain domain= PersistenceHelper.dumpAndReLoadFromPair(pair);
 
@@ -129,7 +129,7 @@ public class AdminObject implements IAdminOperations {
     }
 
 
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> slaveOfServer(String host,Integer port) {
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> slaveOfServer(String host,Integer port) {
 
         MasterSlaveHelper.registerSlave(host, port);
         dump();
@@ -137,13 +137,13 @@ public class AdminObject implements IAdminOperations {
 
     }
 
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exceptAcceptData(String host,Integer port){
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> exceptAcceptData(String host,Integer port){
 
         return ResServerHelper.emptyRes();
     }
     @NotNull
     @Override
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear() {
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> clear() {
         logger.info("clear begin");
         logger.info("all consumer threads will blocking");
         ServerConfig.serverBlocking.set(true);
@@ -166,7 +166,7 @@ public class AdminObject implements IAdminOperations {
     }
 
     @Override
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> dump() {
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> dump() {
 
         logger.info("dump begin");
         logger.info("all consumer threads will blocking");

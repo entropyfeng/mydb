@@ -19,7 +19,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.regex.Pattern;
 
-import static com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResBody;
+import static com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.DataBody;
 import static com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResHead;
 
 
@@ -128,7 +128,7 @@ public class PersistenceHelper {
         return new ServerDomain(persistenceObjectDomain);
     }
 
-    public static @NotNull Pair<ResHead, Collection<ResBody>> singleDump(Callable<Boolean> callable) {
+    public static @NotNull Pair<ResHead, Collection<DataBody>> singleDump(Callable<Boolean> callable) {
 
         boolean res = false;
         try {
@@ -206,21 +206,21 @@ public class PersistenceHelper {
      * @return {@link Pair} NotNull
      */
     @NotNull
-    public static Pair<ResHead, Collection<ResBody>> transDumpFile() {
+    public static Pair<ResHead, Collection<DataBody>> transDumpFile() {
 
-        ArrayList<ResBody> resBodies = new ArrayList<>();
+        ArrayList<DataBody> resBodies = new ArrayList<>();
         PersistenceFileDomain domain = getFiles();
 
         CountDownLatch countDownLatch = new CountDownLatch(5);
         ExecutorService service = new ThreadPoolExecutor(1, 5, 100, TimeUnit.SECONDS, new ArrayBlockingQueue<>(5), new TransThreadFactory());
-        Future<Collection<ProtoBuf.ResBody>> valuesFuture = service.submit(new TransTask(countDownLatch, domain.getValuesDumpFile()));
-        Future<Collection<ProtoBuf.ResBody>> listFuture = service.submit(new TransTask(countDownLatch, domain.getListDumpFile()));
+        Future<Collection<ProtoBuf.DataBody>> valuesFuture = service.submit(new TransTask(countDownLatch, domain.getValuesDumpFile()));
+        Future<Collection<ProtoBuf.DataBody>> listFuture = service.submit(new TransTask(countDownLatch, domain.getListDumpFile()));
 
-        Future<Collection<ProtoBuf.ResBody>> setFuture = service.submit(new TransTask(countDownLatch, domain.getSetDumpFile()));
+        Future<Collection<ProtoBuf.DataBody>> setFuture = service.submit(new TransTask(countDownLatch, domain.getSetDumpFile()));
 
-        Future<Collection<ProtoBuf.ResBody>> hashFuture = service.submit(new TransTask(countDownLatch, domain.getHashDumpFile()));
+        Future<Collection<ProtoBuf.DataBody>> hashFuture = service.submit(new TransTask(countDownLatch, domain.getHashDumpFile()));
 
-        Future<Collection<ProtoBuf.ResBody>> orderSetFuture = service.submit(new TransTask(countDownLatch, domain.getOrderSetDumpFile()));
+        Future<Collection<ProtoBuf.DataBody>> orderSetFuture = service.submit(new TransTask(countDownLatch, domain.getOrderSetDumpFile()));
 
 
         constructPartBody(valuesFuture, resBodies);
@@ -241,21 +241,21 @@ public class PersistenceHelper {
      * @param pair the res pair
      * @return {@link PersistenceFileDomain}
      */
-    public static PersistenceObjectDomain dumpAndReLoadFromPair(@NotNull Pair<ResHead, Collection<ResBody>> pair) {
+    public static PersistenceObjectDomain dumpAndReLoadFromPair(@NotNull Pair<ResHead, Collection<DataBody>> pair) {
 
 
         String prefix=ServerConfig.dumpPath+System.currentTimeMillis();
         ExecutorService service=new ThreadPoolExecutor(1,5,10,TimeUnit.SECONDS,new ArrayBlockingQueue<>(5),new AcceptTransThreadFactory());
 
         CountDownLatch countDownLatch = new CountDownLatch(5);
-        ArrayList<ResBody> bodies = new ArrayList<>(pair.getValue());
+        ArrayList<DataBody> bodies = new ArrayList<>(pair.getValue());
 
         int currentPos = 0;
 
         //[from,end)
         //-----------values-------------------
         int valuesSize = bodies.get(currentPos).getIntValue();
-        List<ResBody> valuesBody = bodies.subList(currentPos + 1, currentPos + 1 + valuesSize);
+        List<DataBody> valuesBody = bodies.subList(currentPos + 1, currentPos + 1 + valuesSize);
         currentPos += valuesSize;
         currentPos++;
 
@@ -263,7 +263,7 @@ public class PersistenceHelper {
 
         //----------list-----------------------
         int listSize = bodies.get(currentPos).getIntValue();
-        List<ResBody> listBody = bodies.subList(currentPos + 1, currentPos + 1 + listSize);
+        List<DataBody> listBody = bodies.subList(currentPos + 1, currentPos + 1 + listSize);
         currentPos += listSize;
         currentPos++;
 
@@ -272,7 +272,7 @@ public class PersistenceHelper {
         //-----------set-------------------
         int setSize = bodies.get(currentPos).getIntValue();
 
-        List<ResBody> setBody = bodies.subList(currentPos + 1, currentPos + 1 + setSize);
+        List<DataBody> setBody = bodies.subList(currentPos + 1, currentPos + 1 + setSize);
         currentPos += setSize;
         currentPos++;
 
@@ -280,14 +280,14 @@ public class PersistenceHelper {
 
         //---------hash------------------------
         int hashSize = bodies.get(currentPos).getIntValue();
-        List<ResBody> hashBody = bodies.subList(currentPos + 1, currentPos + 1 + hashSize);
+        List<DataBody> hashBody = bodies.subList(currentPos + 1, currentPos + 1 + hashSize);
         currentPos += hashSize;
         currentPos++;
 
         Future<HashDomain> hashDomainFuture=service.submit(new HashTransTask(countDownLatch,hashBody,new File(prefix+Constant.HASH_SUFFIX)));
         //---------orderSet--------------------
         int orderSetSize = bodies.get(currentPos).getIntValue();
-        List<ResBody> orderSetBody = bodies.subList(currentPos + 1, currentPos + orderSetSize);
+        List<DataBody> orderSetBody = bodies.subList(currentPos + 1, currentPos + orderSetSize);
 
         Future<OrderSetDomain> orderSetDomainFuture=service.submit(new OrderSetTransTask(countDownLatch,orderSetBody,new File(prefix+Constant.ORDER_SET_SUFFIX)));
 
@@ -301,8 +301,8 @@ public class PersistenceHelper {
         return constructPersistenceDomain(valuesDomainFuture,listDomainFuture,setDomainFuture,hashDomainFuture,orderSetDomainFuture);
     }
 
-    private static void constructPartBody(@NotNull Future<Collection<ProtoBuf.ResBody>> future, ArrayList<ResBody> resBodies) {
-        Collection<ResBody> collection = null;
+    private static void constructPartBody(@NotNull Future<Collection<ProtoBuf.DataBody>> future, ArrayList<DataBody> resBodies) {
+        Collection<DataBody> collection = null;
         try {
             collection = future.get();
         } catch (InterruptedException | ExecutionException e) {
@@ -310,21 +310,21 @@ public class PersistenceHelper {
         }
 
         if (collection == null) {
-            resBodies.add(ProtoBuf.ResBody.newBuilder().setIntValue(0).build());
+            resBodies.add(ProtoBuf.DataBody.newBuilder().setIntValue(0).build());
         } else {
-            resBodies.add(ProtoBuf.ResBody.newBuilder().setIntValue(collection.size()).build());
+            resBodies.add(ProtoBuf.DataBody.newBuilder().setIntValue(collection.size()).build());
             resBodies.addAll(collection);
         }
     }
 
 
-    public static void constructFile(Collection<ResBody> resBodies, File file) throws IOException {
+    public static void constructFile(Collection<DataBody> resBodies, File file) throws IOException {
 
         FileOutputStream fileOutputStream;
 
         fileOutputStream = new FileOutputStream(file);
         BufferedOutputStream outputStream = new BufferedOutputStream(fileOutputStream);
-        for (ResBody resBody : resBodies) {
+        for (DataBody resBody : resBodies) {
             outputStream.write(resBody.getBytesValue().toByteArray());
             outputStream.flush();
         }

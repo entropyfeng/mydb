@@ -18,7 +18,7 @@ public class ResponseOrderSetOperations implements IOrderSetOperations {
 
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exists(String key, TurtleValue value, Double score) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> exists(String key, TurtleValue value, Double score) {
 
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.ZSET, "exists");
         builder.addStringPara(key);
@@ -30,7 +30,7 @@ public class ResponseOrderSetOperations implements IOrderSetOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exists(String key, TurtleValue value) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> exists(String key, TurtleValue value) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.ZSET, "exists");
         builder.addStringPara(key);
         builder.addTurtlePara(value);
@@ -40,7 +40,7 @@ public class ResponseOrderSetOperations implements IOrderSetOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> exists(String key) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> exists(String key) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.ZSET, "exists");
         builder.addStringPara(key);
 
@@ -48,7 +48,7 @@ public class ResponseOrderSetOperations implements IOrderSetOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> add(String key, TurtleValue value, Double score) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> add(String key, TurtleValue value, Double score) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.ZSET, "add");
         builder.addStringPara(key);
         builder.addTurtlePara(value);
@@ -58,7 +58,7 @@ public class ResponseOrderSetOperations implements IOrderSetOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> add(String key, Collection<TurtleValue> values, Collection<Double> doubles) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> add(String key, Collection<TurtleValue> values, Collection<Double> doubles) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.ZSET, "add");
         builder.addStringPara(key);
         builder.addTurtleCollectionPara(values);
@@ -68,7 +68,7 @@ public class ResponseOrderSetOperations implements IOrderSetOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> count(String key, Double begin, Double end) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> count(String key, Double begin, Double end) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.ZSET, "count");
         builder.addStringPara(key);
         builder.addDoublePara(begin);
@@ -78,7 +78,7 @@ public class ResponseOrderSetOperations implements IOrderSetOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> range(String key, Double begin, Double end) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> range(String key, Double begin, Double end) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.ZSET, "range");
         builder.addStringPara(key);
         builder.addDoublePara(begin);
@@ -88,7 +88,7 @@ public class ResponseOrderSetOperations implements IOrderSetOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> inRange(String key, Double begin, Double end) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> inRange(String key, Double begin, Double end) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.ZSET, "inRange");
         builder.addStringPara(key);
         builder.addDoublePara(begin);
@@ -98,7 +98,7 @@ public class ResponseOrderSetOperations implements IOrderSetOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> delete(String key, TurtleValue value, Double score) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> delete(String key, TurtleValue value, Double score) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.ZSET, "delete");
         builder.addStringPara(key);
         builder.addTurtlePara(value);
@@ -108,7 +108,7 @@ public class ResponseOrderSetOperations implements IOrderSetOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> delete(String key, Double begin, Double end) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> delete(String key, Double begin, Double end) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.ZSET, "delete");
         builder.addStringPara(key);
         builder.addDoublePara(begin);
@@ -118,7 +118,7 @@ public class ResponseOrderSetOperations implements IOrderSetOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> delete(String key, TurtleValue value) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> delete(String key, TurtleValue value) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.ZSET, "delete");
         builder.addStringPara(key);
         builder.addTurtlePara(value);
@@ -128,21 +128,21 @@ public class ResponseOrderSetOperations implements IOrderSetOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> delete(String key) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> delete(String key) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.ZSET, "delete");
         builder.addStringPara(key);
         return ClientExecute.execute(builder);
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear() {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> clear() {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.ZSET, "clear");
         builder.setModifyAble(true);
         return ClientExecute.execute(builder);
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> dump() {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> dump() {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.ZSET, "dump");
         return ClientExecute.execute(builder);
     }

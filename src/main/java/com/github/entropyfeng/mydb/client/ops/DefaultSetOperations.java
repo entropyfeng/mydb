@@ -19,66 +19,66 @@ public class DefaultSetOperations implements SetOperations {
 
     @Override
     public Boolean exist(String key) {
-        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> pair = setOperations.exist(key);
+        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> pair = setOperations.exist(key);
         return ClientResHelper.boolRes(pair);
 
     }
 
     @Override
     public Boolean exist(String key, TurtleValue value) {
-        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> pair = setOperations.exist(key,value);
+        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> pair = setOperations.exist(key,value);
         return ClientResHelper.boolRes(pair);
     }
 
     @Override
     public void add(String key, TurtleValue value) {
-        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> pair = setOperations.add(key,value);
+        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> pair = setOperations.add(key,value);
       ClientResHelper.voidRes(pair);
     }
 
     @Override
     public Collection<TurtleValue> union(String key, String otherKey) {
-        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> pair = setOperations.union(key,otherKey);
+        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> pair = setOperations.union(key,otherKey);
       return ClientResHelper.turtleCollection(pair);
     }
 
     @Override
     public Collection<TurtleValue> union(String key, Collection<TurtleValue> turtleValues) {
-        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> pair = setOperations.union(key,turtleValues);
+        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> pair = setOperations.union(key,turtleValues);
 
         return ClientResHelper.turtleCollection(pair);
     }
 
     @Override
     public Collection<TurtleValue> intersect(String key, String otherKey) {
-        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> pair = setOperations.intersect(key,otherKey);
+        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> pair = setOperations.intersect(key,otherKey);
 
         return ClientResHelper.turtleCollection(pair);
     }
 
     @Override
     public Collection<TurtleValue> intersect(String key, Collection<TurtleValue> turtleValues) {
-        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> pair = setOperations.intersect(key,turtleValues);
+        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> pair = setOperations.intersect(key,turtleValues);
         return ClientResHelper.turtleCollection(pair);
     }
 
     @Override
     public Collection<TurtleValue> difference(String key, String otherKey) {
-        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> pair = setOperations.difference(key,otherKey);
+        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> pair = setOperations.difference(key,otherKey);
 
         return ClientResHelper.turtleCollection(pair);
     }
 
     @Override
     public Collection<TurtleValue> difference(String key, Collection<TurtleValue> turtleValues) {
-        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> pair = setOperations.difference(key,turtleValues);
+        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> pair = setOperations.difference(key,turtleValues);
 
         return ClientResHelper.turtleCollection(pair);
     }
 
     @Override
     public Collection<TurtleValue> entries(String key) {
-        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> pair = setOperations.entries(key);
+        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> pair = setOperations.entries(key);
 
         return ClientResHelper.turtleCollection(pair);
     }

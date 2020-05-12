@@ -138,7 +138,7 @@ public class ClientRequest implements ICommand {
     }
 
     @SuppressWarnings("unchecked")
-    public void put(ProtoBuf.ReqBody body) throws TurtleValueElementOutBoundsException {
+    public void put(ProtoBuf.DataBody body) throws TurtleValueElementOutBoundsException {
 
         int location = body.getLocation();
         switch (typeList.get(location)) {

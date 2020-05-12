@@ -18,11 +18,11 @@ public class OrderSetTransTask implements Callable<OrderSetDomain> {
 
     private CountDownLatch countDownLatch;
 
-    private Collection<ProtoBuf.ResBody> resBodies;
+    private Collection<ProtoBuf.DataBody> resBodies;
 
     private File file;
 
-    public OrderSetTransTask(CountDownLatch countDownLatch, Collection<ProtoBuf.ResBody> resBodies, File file) {
+    public OrderSetTransTask(CountDownLatch countDownLatch, Collection<ProtoBuf.DataBody> resBodies, File file) {
         this.countDownLatch = countDownLatch;
         this.resBodies = resBodies;
         this.file = file;

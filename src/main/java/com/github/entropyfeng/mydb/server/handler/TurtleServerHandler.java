@@ -81,7 +81,7 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Tu
             ClientRequest clientRequest = requestMap.get(msg.getRequestId());
             if (clientRequest != null) {
                 try {
-                    clientRequest.put(msg.getReqBody());
+                    clientRequest.put(msg.getDataBody());
                 } catch (TurtleValueElementOutBoundsException e) {
                     logger.info("turtleValue length too long at requestId ->{}", msg.getRequestId());
                     ResServerHelper.writeOuterException(msg.getRequestId(), ctx.channel(), ProtoBuf.ExceptionType.TurtleValueElementOutBoundsException, "turtleValueElementOutBound");

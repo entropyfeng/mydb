@@ -93,21 +93,6 @@ message ResHead{
     string innerException=5;
 
 }
-message ResBody{
-
-    int64 requestSequence=1;
-    oneof Value{
-        string stringValue=7;
-        int32 intValue=8;
-        int64 longValue=9;
-        double doubleValue=10;
-        bool boolValue=11;
-        bytes bytesValue=12;
-        TurtleValue turtleValue=13;
-        StringTurtleValueEntry stringTurtleValueEntry=14;
-        TurtleTurtleValueEntry turtleTurtleValueEntry=15;
-    }
-}
 
 message ReqHead{
     int64 requestSequence=1;
@@ -116,7 +101,7 @@ message ReqHead{
     repeated TurtleParaType keys=4;
     bool modify=5;
 }
-message ReqBody{
+message DataBody{
     int64 requestSequence=1;
     int32 location=2;
     oneof Value{
@@ -127,6 +112,8 @@ message ReqBody{
         bool boolValue=7;
         bytes bytesValue=8;
         TurtleValue turtleValue=9;
+        StringTurtleValueEntry stringTurtleValueEntry=10;
+        TurtleTurtleValueEntry turtleTurtleValueEntry=11;
     }
 }
 message TurtleData{
@@ -136,8 +123,7 @@ message TurtleData{
     bool endAble=3;
     oneof Value{
           ReqHead reqHead=4;
-          ReqBody reqBody=5;
+          DataBody dataBody=5;
           ResHead resHead=6;
-          ResBody resBody=7;
     }
 }

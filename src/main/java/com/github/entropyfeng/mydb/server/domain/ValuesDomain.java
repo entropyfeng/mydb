@@ -41,7 +41,7 @@ public class ValuesDomain extends ExpireObject implements IValueOperations {
 
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> set(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> set(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time) {
         //如果过期
         if (isExpire(key)) {
             //删除过期字典条目
@@ -59,7 +59,7 @@ public class ValuesDomain extends ExpireObject implements IValueOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> setIfAbsent(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> setIfAbsent(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time) {
         boolean res = false;
         handleExpire(key);
         if (!valueMap.containsKey(key)) {
@@ -73,7 +73,7 @@ public class ValuesDomain extends ExpireObject implements IValueOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> setIfPresent(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> setIfPresent(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time) {
         boolean res = false;
         if (isExpire(key)) {
             deleteExpireTime(key);
@@ -90,7 +90,7 @@ public class ValuesDomain extends ExpireObject implements IValueOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> get(@NotNull String key) {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> get(@NotNull String key) {
         handleExpire(key);
 
         TurtleValue turtleValue = valueMap.get(key);
@@ -102,7 +102,7 @@ public class ValuesDomain extends ExpireObject implements IValueOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> increment(@NotNull String key, @NotNull Integer intValue) throws UnsupportedOperationException, NoSuchElementException {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> increment(@NotNull String key, @NotNull Integer intValue) throws UnsupportedOperationException, NoSuchElementException {
 
 
         return modifyHelper(key, TurtleValueType.INTEGER, intValue);
@@ -110,45 +110,45 @@ public class ValuesDomain extends ExpireObject implements IValueOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> increment(@NotNull String key, @NotNull Long longValue) throws UnsupportedOperationException, NoSuchElementException {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> increment(@NotNull String key, @NotNull Long longValue) throws UnsupportedOperationException, NoSuchElementException {
 
         return modifyHelper(key, TurtleValueType.LONG, longValue);
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> increment(@NotNull String key, @NotNull Double doubleValue) throws UnsupportedOperationException, NoSuchElementException {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> increment(@NotNull String key, @NotNull Double doubleValue) throws UnsupportedOperationException, NoSuchElementException {
 
         return modifyHelper(key, TurtleValueType.DOUBLE, doubleValue);
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> increment(@NotNull String key, @NotNull BigInteger bigInteger) throws UnsupportedOperationException, NoSuchElementException {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> increment(@NotNull String key, @NotNull BigInteger bigInteger) throws UnsupportedOperationException, NoSuchElementException {
         return modifyHelper(key, TurtleValueType.NUMBER_INTEGER, bigInteger);
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> increment(@NotNull String key, @NotNull BigDecimal bigDecimal) throws UnsupportedOperationException, NoSuchElementException {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> increment(@NotNull String key, @NotNull BigDecimal bigDecimal) throws UnsupportedOperationException, NoSuchElementException {
         return modifyHelper(key, TurtleValueType.NUMBER_DECIMAL, bigDecimal);
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> append(@NotNull String key, @NotNull String appendValue) throws UnsupportedOperationException, NoSuchElementException {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> append(@NotNull String key, @NotNull String appendValue) throws UnsupportedOperationException, NoSuchElementException {
         return modifyHelper(key, TurtleValueType.BYTES, appendValue);
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> allValues() {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> allValues() {
         return ResServerHelper.turtleCollectionRes(valueMap.values());
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> allEntries() {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> allEntries() {
 
         return ResServerHelper.stringTurtleCollectionRes(valueMap.entrySet());
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> allKeys() {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> allKeys() {
         return ResServerHelper.stringCollectionRes(valueMap.keySet());
     }
 
@@ -166,7 +166,7 @@ public class ValuesDomain extends ExpireObject implements IValueOperations {
     }
 
 
-    private @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> modifyHelper(String key, TurtleValueType type, Object value) {
+    private @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> modifyHelper(String key, TurtleValueType type, Object value) {
         handleExpire(key);
         TurtleValue turtleValue = valueMap.get(key);
         //if not exists key previously,set the default value
@@ -231,14 +231,14 @@ public class ValuesDomain extends ExpireObject implements IValueOperations {
         return ResServerHelper.turtleRes(turtleValue);
     }
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> clear(){
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> clear(){
         valueMap.clear();
         super.clearExpireObject();
         return ResServerHelper.emptyRes();
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.ResBody>> dump() {
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> dump() {
 
         return PersistenceHelper.singleDump(new ValuesDumpTask(new CountDownLatch(1),this,System.currentTimeMillis()));
     }
