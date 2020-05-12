@@ -33,13 +33,17 @@ public class ClientRequest implements ICommand {
     private final String operationName;
     private final TurtleModel model;
     private final List<ProtoBuf.TurtleParaType> typeList;
-    private final Class<?>[] types;
+
+    private final ArrayList<Class<?>> types;
     private final ArrayList<Object> objects;
     private final Long requestId;
     private final Channel channel;
     private final boolean modify;
-
     private Method method;
+    private ArrayList<ProtoBuf.DataBody> dataBodies;
+
+    private final ProtoBuf.ReqHead reqHead;
+
 
     @SuppressWarnings("all")
     public ClientRequest(@NotNull ProtoBuf.ReqHead header, @NotNull Long requestId, @NotNull Channel channel) {
@@ -51,71 +55,72 @@ public class ClientRequest implements ICommand {
         this.channel = channel;
 
         final int size = typeList.size();
-        types = new Class<?>[size];
-        objects = new ArrayList<>(size);
-
+        this.types = new ArrayList<>(size);
+        this.objects = new ArrayList<>(size);
+        this.dataBodies=new ArrayList<>(size);
+        this.reqHead=header;
         //construct typeList
         for (int i = 0; i < size; i++) {
 
             switch (typeList.get(i)) {
                 case INTEGER:
-                    types[i] = Integer.class;
+                    types.add(Integer.class);
                     break;
                 case BOOL:
-                    types[i] = Boolean.class;
+                  types.add(Boolean.class);
                     break;
                 case LONG:
-                    types[i] = Long.class;
+                  types.add(Long.class);
                     break;
                 case STRING:
-                    types[i] = String.class;
+                    types.add(String.class);
                     break;
                 case DOUBLE:
-                    types[i] = Double.class;
+                    types.add(Double.class);
                     break;
                 case TURTLE_VALUE:
-                    types[i] = TurtleValue.class;
+                    types.add(TurtleValue.class);
                     break;
                 case BYTES:
-                    types[i] = byte[].class;
+                    types.add(byte[].class);
                     break;
                 case NUMBER_DECIMAL:
-                    types[i] = BigDecimal.class;
+                   types.add(BigDecimal.class);
                     break;
                 case NUMBER_INTEGER:
-                    types[i] = BigInteger.class;
+                  types.add(BigInteger.class);
                     break;
                 case COLLECTION_INTEGER:
                     objects.add(i, new ArrayList<Integer>());
-                    types[i] = Collection.class;
+                    types.add(Collection.class);
                     break;
                 case COLLECTION_TURTLE_VALUE:
                     objects.add(new ArrayList<TurtleValue>());
-                    types[i] = Collection.class;
+                    types.add(Collection.class);
                     break;
                 case COLLECTION_NUMBER_INTEGER:
                     objects.add(new ArrayList<BigInteger>());
-                    types[i] = Collection.class;
+                    types.add(Collection.class);
                     break;
                 case COLLECTION_LONG:
                     objects.add(new ArrayList<Long>());
-                    types[i] = Collection.class;
+                    types.add(Collection.class);
                     break;
                 case COLLECTION_DOUBLE:
                     objects.add(new ArrayList<Double>());
-                    types[i] = Collection.class;
+                    types.add(Collection.class);
                     break;
                 case COLLECTION_NUMBER_DECIMAL:
                     objects.add(new ArrayList<BigDecimal>());
-                    types[i] = Collection.class;
+                    types.add(Collection.class);
                     break;
                 case COLLECTION_BYTES:
                     objects.add(new ArrayList<byte[]>());
-                    types[i] = Collection.class;
+                    types.add(Collection.class);
                     break;
                 case COLLECTION_STRING:
                     objects.add(new ArrayList<String>());
-                    types[i] = Collection.class;
+                    types.add(Collection.class);
                     break;
                 default:
                     throw new UnsupportedOperationException();
@@ -132,6 +137,7 @@ public class ClientRequest implements ICommand {
         this.model = null;
         this.modify = false;
         this.channel = null;
+        this.reqHead=null;
         this.method=method;
         this.objects=new ArrayList<>(0);
 
@@ -140,6 +146,7 @@ public class ClientRequest implements ICommand {
     @SuppressWarnings("unchecked")
     public void put(ProtoBuf.DataBody body) throws TurtleValueElementOutBoundsException {
 
+        dataBodies.add(body);
         int location = body.getLocation();
         switch (typeList.get(location)) {
             case DOUBLE:
@@ -242,10 +249,10 @@ public class ClientRequest implements ICommand {
                 break;
         }
         try {
-            if (types.length == 0) {
+            if (types.size() == 0) {
                 method = target.getDeclaredMethod(operationName);
             } else {
-                method = target.getDeclaredMethod(operationName, types);
+                method = target.getDeclaredMethod(operationName, types.toArray(new Class<?>[0]));
             }
             return this;
         } catch (NoSuchMethodException e) {
@@ -266,4 +273,6 @@ public class ClientRequest implements ICommand {
     public boolean getModify() {
         return this.modify;
     }
+
+
 }

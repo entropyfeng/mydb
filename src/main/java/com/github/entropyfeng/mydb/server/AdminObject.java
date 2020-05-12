@@ -12,6 +12,7 @@ import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.server.command.ClientRequest;
 import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import com.github.entropyfeng.mydb.server.domain.*;
+import com.github.entropyfeng.mydb.server.factory.MasterSlaveThreadFactory;
 import com.github.entropyfeng.mydb.server.persistence.PersistenceObjectDomain;
 import io.netty.channel.Channel;
 import org.jetbrains.annotations.NotNull;
@@ -32,6 +33,7 @@ public class AdminObject implements IAdminOperations {
 
     private ServerDomain serverDomain;
 
+    private Thread masterSlaveThread;
 
     public AdminObject(ServerDomain serverDomain) {
         this.serverDomain = serverDomain;
@@ -194,6 +196,13 @@ public class AdminObject implements IAdminOperations {
         serverDomain.setQueue.add(new ClientRequest(setMethod));
         serverDomain.hashQueue.add(new ClientRequest(hashMethod));
         serverDomain.orderSetQueue.add(new ClientRequest(orderSetMethod));
+    }
+
+    private void newMasterThread(){
+
+        if(masterSlaveThread==null){
+            masterSlaveThread=new MasterSlaveThreadFactory().newThread(()->{});
+        }
     }
 
 }

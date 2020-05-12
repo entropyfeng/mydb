@@ -46,8 +46,8 @@ public class ServerConfig {
 
     public static AtomicBoolean serverBlocking=new AtomicBoolean(false);
 
-    public static AtomicBoolean masterSlaveFlag=new AtomicBoolean(false);
+    public static  AtomicBoolean masterSlaveFlag=new AtomicBoolean(false);
 
 
-    public static CountDownLatch threadCountDown=new CountDownLatch(Constant.CONSUMER_THREAD_NUMBER);
+    public static volatile CountDownLatch threadCountDown=new CountDownLatch(Constant.CONSUMER_THREAD_NUMBER);
 }

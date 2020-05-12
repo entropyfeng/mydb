@@ -20,7 +20,7 @@ public class ClientCommandBuilder {
 
     private ArrayList<Object> objects = new ArrayList<>();
     private ProtoBuf.ReqHead.Builder headBuilder = ProtoBuf.ReqHead.newBuilder();
-
+    private ArrayList<Class<?>> classesTypes=new ArrayList<>();
 
     public ClientCommandBuilder(TurtleModel turtleModel, String operationName) {
         headBuilder.setModel(ProtoModelHelper.convertToProtoTurtleModel(turtleModel));
@@ -31,57 +31,67 @@ public class ClientCommandBuilder {
     public void addStringPara(String string) {
 
         headBuilder.addKeys(ProtoBuf.TurtleParaType.STRING);
+        classesTypes.add(String.class);
         objects.add(string);
     }
 
     public void addLongPara(Long longValue) {
         headBuilder.addKeys(ProtoBuf.TurtleParaType.LONG);
+        classesTypes.add(Long.class);
         objects.add(longValue);
     }
 
     public void addDoublePara(Double doubleValue) {
         headBuilder.addKeys(ProtoBuf.TurtleParaType.DOUBLE);
+        classesTypes.add(Double.class);
         objects.add(doubleValue);
 
     }
 
     public void addIntegerPara(Integer integer) {
         headBuilder.addKeys(ProtoBuf.TurtleParaType.INTEGER);
+        classesTypes.add(Integer.class);
         objects.add(integer);
     }
 
     public void addTurtlePara(TurtleValue turtleValue) {
 
         headBuilder.addKeys(ProtoBuf.TurtleParaType.TURTLE_VALUE);
+        classesTypes.add(TurtleValue.class);
         objects.add(turtleValue);
     }
 
     public void addBigIntegerPara(BigInteger bigInteger) {
         headBuilder.addKeys(ProtoBuf.TurtleParaType.NUMBER_INTEGER);
         objects.add(bigInteger);
+        classesTypes.add(BigInteger.class);
 
     }
 
     public void addBigDecimalPara(BigDecimal bigDecimal) {
         headBuilder.addKeys(ProtoBuf.TurtleParaType.NUMBER_DECIMAL);
         objects.add(bigDecimal);
+        classesTypes.add(BigDecimal.class);
     }
 
     public void addTurtleCollectionPara(Collection<TurtleValue> turtleValues) {
 
         headBuilder.addKeys(ProtoBuf.TurtleParaType.COLLECTION_TURTLE_VALUE);
         objects.add(turtleValues);
+        classesTypes.add(Collection.class);
     }
 
     public void addDoubleCollectionPara(Collection<Double> doubles) {
         headBuilder.addKeys(ProtoBuf.TurtleParaType.COLLECTION_DOUBLE);
         objects.add(doubles);
+        classesTypes.add(Collection.class);
     }
 
     @SuppressWarnings("unused")
     public void addStringCollectionPara(Collection<String> strings){
         headBuilder.addKeys(ProtoBuf.TurtleParaType.COLLECTION_STRING);
         objects.add(strings);
+        classesTypes.add(Collection.class);
     }
 
     public void setModifyAble(boolean modifyAble) {
