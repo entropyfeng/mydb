@@ -53,8 +53,4 @@ public class ResponseAdminOperations implements IAdminOperations {
 
     }
 
-    @Override
-    public void closeClient() {
-
-    }
 }

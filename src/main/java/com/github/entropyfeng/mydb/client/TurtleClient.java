@@ -23,56 +23,52 @@ public class TurtleClient {
     private volatile Bootstrap client;
     private String host;
     private Integer port;
-    private volatile CountDownLatch countDownLatch=new CountDownLatch(1);
+    private volatile CountDownLatch countDownLatch;
 
     public TurtleClient(String host, Integer port) {
         this.host = host;
         this.port = port;
-        run();
     }
 
     public TurtleClient() {
         host = ClientConstant.HOST;
         port = ClientConstant.PORT;
-
-        run();
     }
 
+
+    /**
+     * create a new thread as a daemon thread to handle client command
+     */
     private void run(){
         new ClientThreadFactory().newThread(() -> {
-            try {
-                start();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            logger.info("client start at host-> {}, port->{}",host,port);
+            NioEventLoopGroup eventLoopGroup = new NioEventLoopGroup();
+            client = new Bootstrap();
+            client.group(eventLoopGroup)
+                    .channel(NioSocketChannel.class)
+                    .remoteAddress(host, port)
+                    .option(ChannelOption.RCVBUF_ALLOCATOR, new AdaptiveRecvByteBufAllocator(1 << 10, 1 << 20, 1 << 30))
+                    .option(ChannelOption.SO_KEEPALIVE, true)
+                    .handler(new TurtleClientChannelInitializer());
+
+
+            doConnect();
         }).start();
     }
-    public void start() throws InterruptedException {
-        logger.info("client start at host-> {}, port->{}",host,port);
-        NioEventLoopGroup eventLoopGroup = new NioEventLoopGroup();
-        client = new Bootstrap();
-        client.group(eventLoopGroup)
-                .channel(NioSocketChannel.class)
-                .remoteAddress(host, port)
-                .option(ChannelOption.RCVBUF_ALLOCATOR, new AdaptiveRecvByteBufAllocator(1 << 10, 1 << 20, 1 << 30))
-                .option(ChannelOption.SO_KEEPALIVE, true)
-                .handler(new TurtleClientChannelInitializer());
 
-        doConnect();
-    }
 
     private void doConnect() {
-
+        countDownLatch = new CountDownLatch(1);
         if (channel != null && channel.isActive()) {
             return;
         }
-        countDownLatch = new CountDownLatch(1);
         ChannelFuture connect = client.connect();
         connect.addListener((ChannelFutureListener) future -> {
             if (future.isSuccess()) {
                 this.channel = future.channel();
                 countDownLatch.countDown();
                 logger.info("success connected...");
+                //it call may throw exception
                 future.channel().closeFuture().sync();
                 logger.info("client closed");
             } else {
@@ -84,6 +80,7 @@ public class TurtleClient {
 
     public Channel getChannel() {
 
+        run();
         try {
             countDownLatch.await();
         } catch (InterruptedException e) {
