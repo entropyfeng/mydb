@@ -5,7 +5,7 @@ import com.github.entropyfeng.mydb.common.ops.IOrderSetOperations;
 import com.github.entropyfeng.mydb.server.PersistenceHelper;
 import com.github.entropyfeng.mydb.server.ResServerHelper;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
-import com.github.entropyfeng.mydb.server.config.Constant;
+import com.github.entropyfeng.mydb.server.config.ServerConstant;
 import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.server.core.zset.OrderSet;
@@ -193,7 +193,7 @@ public class OrderSetDomain implements IOrderSetOperations {
 
     public static void write(OrderSetDomain orderSetDomain, DataOutputStream outputStream) throws IOException {
 
-        outputStream.write(Constant.MAGIC_NUMBER);
+        outputStream.write(ServerConstant.MAGIC_NUMBER);
 
         HashMap<String, OrderSet<TurtleValue>> map = orderSetDomain.hashMap;
         outputStream.writeInt(map.size());
@@ -216,9 +216,9 @@ public class OrderSetDomain implements IOrderSetOperations {
     }
 
     public static OrderSetDomain read(DataInputStream inputStream) throws IOException {
-        byte[] magicNumber = new byte[Constant.MAGIC_NUMBER.length];
+        byte[] magicNumber = new byte[ServerConstant.MAGIC_NUMBER.length];
         inputStream.readFully(magicNumber);
-        if (!Arrays.equals(Constant.MAGIC_NUMBER, magicNumber)) {
+        if (!Arrays.equals(ServerConstant.MAGIC_NUMBER, magicNumber)) {
             throw new DumpFileException("error order set dump file.");
         }
 

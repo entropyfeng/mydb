@@ -1,7 +1,7 @@
 package com.github.entropyfeng.mydb.server.persistence.dump;
 
 import com.github.entropyfeng.mydb.server.config.ServerConfig;
-import com.github.entropyfeng.mydb.server.config.Constant;
+import com.github.entropyfeng.mydb.server.config.ServerConstant;
 import com.github.entropyfeng.mydb.server.domain.HashDomain;
 
 import java.io.DataOutputStream;
@@ -27,7 +27,7 @@ public class HashDumpTask implements Callable<Boolean> {
     @Override
     public Boolean call() throws Exception {
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream(ServerConfig.dumpPath+timeStamp+Constant.HASH_SUFFIX);
+            FileOutputStream fileOutputStream = new FileOutputStream(ServerConfig.dumpPath+timeStamp+ ServerConstant.HASH_SUFFIX);
             DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
             HashDomain.write(hashDomain, dataOutputStream);
             return true;

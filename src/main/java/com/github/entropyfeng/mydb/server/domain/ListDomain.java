@@ -6,7 +6,7 @@ import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.DataBody;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResHead;
 import com.github.entropyfeng.mydb.server.PersistenceHelper;
 import com.github.entropyfeng.mydb.server.ResServerHelper;
-import com.github.entropyfeng.mydb.server.config.Constant;
+import com.github.entropyfeng.mydb.server.config.ServerConstant;
 import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.server.persistence.dump.ListDumpTask;
@@ -215,7 +215,7 @@ public class ListDomain implements IListOperations {
 
     public static void write(ListDomain listDomain, DataOutputStream outputStream) throws IOException {
 
-        outputStream.write(Constant.MAGIC_NUMBER);
+        outputStream.write(ServerConstant.MAGIC_NUMBER);
 
         outputStream.writeInt(listDomain.listMap.size());
         for (Map.Entry<String, LinkedList<TurtleValue>> entry : listDomain.listMap.entrySet()) {
@@ -233,9 +233,9 @@ public class ListDomain implements IListOperations {
     }
 
     public static ListDomain read(DataInputStream inputStream) throws IOException {
-        byte[] magicNumber=new byte[Constant.MAGIC_NUMBER.length];
+        byte[] magicNumber=new byte[ServerConstant.MAGIC_NUMBER.length];
         inputStream.readFully(magicNumber);
-        if (!Arrays.equals(Constant.MAGIC_NUMBER,magicNumber)){
+        if (!Arrays.equals(ServerConstant.MAGIC_NUMBER,magicNumber)){
             throw new DumpFileException("error list dump file.");
         }
 

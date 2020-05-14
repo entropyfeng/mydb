@@ -1,7 +1,7 @@
 package com.github.entropyfeng.mydb.server.persistence.trans;
 
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
-import com.github.entropyfeng.mydb.server.config.Constant;
+import com.github.entropyfeng.mydb.server.config.ServerConstant;
 import com.google.protobuf.ByteString;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,11 +39,11 @@ public class TransTask implements Callable<Collection<ProtoBuf.DataBody>> {
             final long length = randomAccessFile.length();
             long pos = 0;
             //每次读1M
-            byte[] cache = new byte[Constant.FILE_CHUCK_SIZE];
-            while (pos + Constant.FILE_CHUCK_SIZE <= length) {
+            byte[] cache = new byte[ServerConstant.FILE_CHUCK_SIZE];
+            while (pos + ServerConstant.FILE_CHUCK_SIZE <= length) {
                 randomAccessFile.readFully(cache);
                 resBodies.add(ProtoBuf.DataBody.newBuilder().setBytesValue(ByteString.copyFrom(cache)).build());
-                pos += Constant.FILE_CHUCK_SIZE;
+                pos += ServerConstant.FILE_CHUCK_SIZE;
                 randomAccessFile.seek(pos);
             }
             final long other = length - pos;

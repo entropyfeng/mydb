@@ -5,7 +5,7 @@ import com.github.entropyfeng.mydb.common.ops.ISetOperations;
 import com.github.entropyfeng.mydb.server.PersistenceHelper;
 import com.github.entropyfeng.mydb.server.ResServerHelper;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
-import com.github.entropyfeng.mydb.server.config.Constant;
+import com.github.entropyfeng.mydb.server.config.ServerConstant;
 import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.server.persistence.dump.SetDumpTask;
@@ -186,7 +186,7 @@ public class SetDomain implements ISetOperations, Serializable {
 
     public static void write(SetDomain setDomain, DataOutputStream outputStream) throws IOException {
         //magic number
-        outputStream.write(Constant.MAGIC_NUMBER);
+        outputStream.write(ServerConstant.MAGIC_NUMBER);
         HashMap<String, HashSet<TurtleValue>> map = setDomain.setHashMap;
         outputStream.writeInt(map.size());
         logger.error("writeMapSize{}",map.size());
@@ -205,9 +205,9 @@ public class SetDomain implements ISetOperations, Serializable {
     }
 
     public static SetDomain read(DataInputStream inputStream) throws IOException {
-        byte[] magicNumber=new byte[Constant.MAGIC_NUMBER.length];
+        byte[] magicNumber=new byte[ServerConstant.MAGIC_NUMBER.length];
         inputStream.readFully(magicNumber);
-        if (!Arrays.equals(Constant.MAGIC_NUMBER,magicNumber)){
+        if (!Arrays.equals(ServerConstant.MAGIC_NUMBER,magicNumber)){
             throw new DumpFileException("error set dump file.");
         }
 

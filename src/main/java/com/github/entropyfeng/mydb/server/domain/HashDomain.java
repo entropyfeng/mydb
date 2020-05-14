@@ -5,7 +5,7 @@ import com.github.entropyfeng.mydb.common.ops.IHashOperations;
 import com.github.entropyfeng.mydb.server.PersistenceHelper;
 import com.github.entropyfeng.mydb.server.ResServerHelper;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
-import com.github.entropyfeng.mydb.server.config.Constant;
+import com.github.entropyfeng.mydb.server.config.ServerConstant;
 import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.server.core.dict.ElasticMap;
 import com.github.entropyfeng.mydb.common.Pair;
@@ -131,7 +131,7 @@ public class HashDomain implements IHashOperations {
         }
     }
     public static void write(HashDomain hashDomain,DataOutputStream outputStream)throws IOException {
-        outputStream.write(Constant.MAGIC_NUMBER);
+        outputStream.write(ServerConstant.MAGIC_NUMBER);
 
         HashMap<String, ElasticMap<TurtleValue, TurtleValue>> hashMap=  hashDomain.hashMap;
         outputStream.writeInt(hashMap.size());
@@ -153,9 +153,9 @@ public class HashDomain implements IHashOperations {
         }
     }
     public static HashDomain read(DataInputStream inputStream) throws IOException {
-        byte[] magicNumber=new byte[Constant.MAGIC_NUMBER.length];
+        byte[] magicNumber=new byte[ServerConstant.MAGIC_NUMBER.length];
         inputStream.readFully(magicNumber);
-        if (!Arrays.equals(Constant.MAGIC_NUMBER,magicNumber)){
+        if (!Arrays.equals(ServerConstant.MAGIC_NUMBER,magicNumber)){
             throw new DumpFileException("error hash dump file.");
         }
 

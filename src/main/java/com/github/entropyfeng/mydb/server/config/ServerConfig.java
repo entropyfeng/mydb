@@ -1,6 +1,7 @@
 package com.github.entropyfeng.mydb.server.config;
 
-import com.github.entropyfeng.mydb.server.util.ConfigUtil;
+import com.github.entropyfeng.mydb.common.util.CommonUtil;
+import com.github.entropyfeng.mydb.server.util.ServerUtil;
 
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
@@ -24,23 +25,23 @@ public class ServerConfig {
         if (properties==null){
             synchronized (ServerConfig.class){
                 if(properties==null){
-                    properties=ConfigUtil.readProperties(Constant.CONFIG_FILE_NAME);
-                    ConfigUtil.checkProperties(properties);
+                    properties= CommonUtil.readProperties(ServerConstant.CONFIG_FILE_NAME);
+                    ServerUtil.checkProperties(properties);
                 }
             }
         }
         return properties;
     }
 
-    public static String serverHost=getProperties().getProperty(Constant.HOST);
+    public static String serverHost=getProperties().getProperty(ServerConstant.HOST);
 
-    public static Integer port=ConfigUtil.getIntegerProperty(getProperties(),Constant.PORT);
+    public static Integer port= CommonUtil.getIntegerProperty(getProperties(), ServerConstant.PORT);
 
-    public static String dumpPath=getProperties().getProperty(Constant.BACK_UP_PATH_NAME);
+    public static String dumpPath=getProperties().getProperty(ServerConstant.BACK_UP_PATH_NAME);
 
-    public static Integer precision= ConfigUtil.getIntegerProperty(ServerConfig.getProperties(),Constant.SYSTEM_CLOCK_REFRESH);
+    public static Integer precision= CommonUtil.getIntegerProperty(ServerConfig.getProperties(), ServerConstant.SYSTEM_CLOCK_REFRESH);
 
-    public static Integer dumpCircle=ConfigUtil.getIntegerProperty(ServerConfig.getProperties(),Constant.SYSTEM_DUMP_CIRCLE);
+    public static Integer dumpCircle= CommonUtil.getIntegerProperty(ServerConfig.getProperties(), ServerConstant.SYSTEM_DUMP_CIRCLE);
 
     public static ServerStatus serverStatus=ServerStatus.CLOSE;
 
@@ -49,5 +50,5 @@ public class ServerConfig {
     public static  AtomicBoolean masterSlaveFlag=new AtomicBoolean(false);
 
 
-    public static volatile CountDownLatch threadCountDown=new CountDownLatch(Constant.CONSUMER_THREAD_NUMBER);
+    public static volatile CountDownLatch threadCountDown=new CountDownLatch(ServerConstant.CONSUMER_THREAD_NUMBER);
 }

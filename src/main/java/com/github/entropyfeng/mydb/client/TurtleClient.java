@@ -31,15 +31,15 @@ public class TurtleClient {
     }
 
     public TurtleClient() {
-        host = ClientConstant.HOST;
-        port = ClientConstant.PORT;
+        host = ClientConfig.desHost;
+        port = ClientConfig.desPort;
     }
 
 
     /**
      * create a new thread as a daemon thread to handle client command
      */
-    private void run(){
+    private void start(){
         new ClientThreadFactory().newThread(() -> {
             logger.info("client start at host-> {}, port->{}",host,port);
             NioEventLoopGroup eventLoopGroup = new NioEventLoopGroup();
@@ -50,7 +50,6 @@ public class TurtleClient {
                     .option(ChannelOption.RCVBUF_ALLOCATOR, new AdaptiveRecvByteBufAllocator(1 << 10, 1 << 20, 1 << 30))
                     .option(ChannelOption.SO_KEEPALIVE, true)
                     .handler(new TurtleClientChannelInitializer());
-
 
             doConnect();
         }).start();
@@ -80,7 +79,7 @@ public class TurtleClient {
 
     public Channel getChannel() {
 
-        run();
+        start();
         try {
             countDownLatch.await();
         } catch (InterruptedException e) {

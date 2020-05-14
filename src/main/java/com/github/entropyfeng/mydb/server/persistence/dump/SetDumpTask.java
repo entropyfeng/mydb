@@ -1,7 +1,7 @@
 package com.github.entropyfeng.mydb.server.persistence.dump;
 
 import com.github.entropyfeng.mydb.server.config.ServerConfig;
-import com.github.entropyfeng.mydb.server.config.Constant;
+import com.github.entropyfeng.mydb.server.config.ServerConstant;
 import com.github.entropyfeng.mydb.server.domain.SetDomain;
 
 import java.io.DataOutputStream;
@@ -27,7 +27,7 @@ public class SetDumpTask implements Callable<Boolean> {
     @Override
     public Boolean call() throws Exception {
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream(ServerConfig.dumpPath +timeStamp + Constant.SET_SUFFIX);
+            FileOutputStream fileOutputStream = new FileOutputStream(ServerConfig.dumpPath +timeStamp + ServerConstant.SET_SUFFIX);
             DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
             SetDomain.write(setDomain, dataOutputStream);
             return true;

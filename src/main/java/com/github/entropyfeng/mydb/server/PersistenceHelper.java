@@ -2,7 +2,7 @@ package com.github.entropyfeng.mydb.server;
 
 import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
-import com.github.entropyfeng.mydb.server.config.Constant;
+import com.github.entropyfeng.mydb.server.config.ServerConstant;
 import com.github.entropyfeng.mydb.server.config.RegexConstant;
 import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import com.github.entropyfeng.mydb.server.domain.*;
@@ -259,7 +259,7 @@ public class PersistenceHelper {
         currentPos += valuesSize;
         currentPos++;
 
-       Future<ValuesDomain> valuesDomainFuture= service.submit(new ValuesTransTask(countDownLatch,valuesBody,new File(prefix+ Constant.VALUES_SUFFIX)));
+       Future<ValuesDomain> valuesDomainFuture= service.submit(new ValuesTransTask(countDownLatch,valuesBody,new File(prefix+ ServerConstant.VALUES_SUFFIX)));
 
         //----------list-----------------------
         int listSize = bodies.get(currentPos).getIntValue();
@@ -267,7 +267,7 @@ public class PersistenceHelper {
         currentPos += listSize;
         currentPos++;
 
-        Future<ListDomain> listDomainFuture=service.submit(new ListTransTask(countDownLatch,listBody,new File(prefix+Constant.LIST_SUFFIX)));
+        Future<ListDomain> listDomainFuture=service.submit(new ListTransTask(countDownLatch,listBody,new File(prefix+ ServerConstant.LIST_SUFFIX)));
 
         //-----------set-------------------
         int setSize = bodies.get(currentPos).getIntValue();
@@ -276,7 +276,7 @@ public class PersistenceHelper {
         currentPos += setSize;
         currentPos++;
 
-        Future<SetDomain> setDomainFuture=service.submit(new SetTransTask(countDownLatch,setBody,new File(prefix+Constant.SET_SUFFIX)));
+        Future<SetDomain> setDomainFuture=service.submit(new SetTransTask(countDownLatch,setBody,new File(prefix+ ServerConstant.SET_SUFFIX)));
 
         //---------hash------------------------
         int hashSize = bodies.get(currentPos).getIntValue();
@@ -284,12 +284,12 @@ public class PersistenceHelper {
         currentPos += hashSize;
         currentPos++;
 
-        Future<HashDomain> hashDomainFuture=service.submit(new HashTransTask(countDownLatch,hashBody,new File(prefix+Constant.HASH_SUFFIX)));
+        Future<HashDomain> hashDomainFuture=service.submit(new HashTransTask(countDownLatch,hashBody,new File(prefix+ ServerConstant.HASH_SUFFIX)));
         //---------orderSet--------------------
         int orderSetSize = bodies.get(currentPos).getIntValue();
         List<DataBody> orderSetBody = bodies.subList(currentPos + 1, currentPos + orderSetSize);
 
-        Future<OrderSetDomain> orderSetDomainFuture=service.submit(new OrderSetTransTask(countDownLatch,orderSetBody,new File(prefix+Constant.ORDER_SET_SUFFIX)));
+        Future<OrderSetDomain> orderSetDomainFuture=service.submit(new OrderSetTransTask(countDownLatch,orderSetBody,new File(prefix+ ServerConstant.ORDER_SET_SUFFIX)));
 
         try {
             countDownLatch.await();

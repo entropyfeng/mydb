@@ -9,7 +9,7 @@ import static java.util.regex.Pattern.compile;
  * @author entropyfeng
  * @date 2020/2/23 10:11
  */
-public final class Constant {
+public final class ServerConstant {
     public static final String USER_NAME="username";
     public static final String PASSWORD="password";
     public static final String HOST="host";

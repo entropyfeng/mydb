@@ -14,7 +14,8 @@ public class NetUtil {
      * @return false->端口号合法
      * true->端口号合法
      */
-    public static boolean checkPort(String port) {
+    @SuppressWarnings("all")
+    public static boolean isLegalPort(String port) {
         int tempPort;
         try {
             tempPort = Integer.parseInt(port);
@@ -22,7 +23,7 @@ public class NetUtil {
             return false;
         }
 
-        return checkPort(tempPort);
+        return isLegalPort(tempPort);
     }
 
     /**
@@ -32,7 +33,7 @@ public class NetUtil {
      * @return false->端口号合法
      * true->端口号合法
      */
-    public static boolean checkPort(int port) {
+    public static boolean isLegalPort(int port) {
         return port >= 0 && port <= 0xFFFF;
     }
 
@@ -41,7 +42,8 @@ public class NetUtil {
      * @param host ip地址
      * @return true->合法 false->不合法
      */
-    public static boolean checkHost(String host) {
+    @SuppressWarnings("all")
+    public static boolean isLegalHost(String host) {
 
         return host!=null&&(io.netty.util.NetUtil.isValidIpV4Address(host)||io.netty.util.NetUtil.isValidIpV6Address(host));
 

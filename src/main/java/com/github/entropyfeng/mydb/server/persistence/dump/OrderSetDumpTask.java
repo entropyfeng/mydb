@@ -1,7 +1,7 @@
 package com.github.entropyfeng.mydb.server.persistence.dump;
 
 import com.github.entropyfeng.mydb.server.config.ServerConfig;
-import com.github.entropyfeng.mydb.server.config.Constant;
+import com.github.entropyfeng.mydb.server.config.ServerConstant;
 import com.github.entropyfeng.mydb.server.domain.OrderSetDomain;
 
 import java.io.DataOutputStream;
@@ -26,7 +26,7 @@ public class OrderSetDumpTask implements Callable<Boolean> {
     @Override
     public Boolean call() throws Exception {
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream(ServerConfig.dumpPath + timeStamp + Constant.ORDER_SET_SUFFIX);
+            FileOutputStream fileOutputStream = new FileOutputStream(ServerConfig.dumpPath + timeStamp + ServerConstant.ORDER_SET_SUFFIX);
             DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
             OrderSetDomain.write(orderSetDomain, dataOutputStream);
             return true;
