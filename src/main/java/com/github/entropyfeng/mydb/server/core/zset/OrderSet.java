@@ -91,10 +91,6 @@ public class OrderSet<T extends Comparable<T>> {
     }
 
 
-    public boolean isEmpty() {
-        return hashMap.size() == 0;
-    }
-
 
     public void clear() {
         skipList.clear();

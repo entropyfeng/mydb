@@ -27,4 +27,6 @@ public interface AdminOperations {
      * @param port 主服务器端口
      */
     void slaveOf(String host,Integer port);
+
+    Boolean closeClient();
 }

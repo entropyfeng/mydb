@@ -21,8 +21,6 @@ public class TurtleServer {
     private static final Logger logger = LoggerFactory.getLogger(TurtleServer.class);
     private final int port;
     private final String host;
-    private ServerDomain serverDomain;
-    private final Integer dumpCircle= ServerConfig.dumpCircle;
 
     /**
      * assume the param is correct
@@ -50,14 +48,12 @@ public class TurtleServer {
 
         //从dump加载实例
         logger.info("begin load dump file.");
-        serverDomain=PersistenceHelper.load();
+        ServerDomain serverDomain = PersistenceHelper.load();
         logger.info("complete load dump file");
-
-
 
         NioEventLoopGroup boss = new NioEventLoopGroup(1);
         //设置定时转储周期
-        boss.scheduleAtFixedRate(new CircleDumpTask(serverDomain),dumpCircle,dumpCircle, TimeUnit.SECONDS);
+        boss.scheduleAtFixedRate(new CircleDumpTask(serverDomain),ServerConfig.dumpCircle,ServerConfig.dumpCircle, TimeUnit.SECONDS);
         //IO密集型 2n+1
         NioEventLoopGroup worker = new NioEventLoopGroup(2*Runtime.getRuntime().availableProcessors()+1);
 

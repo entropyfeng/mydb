@@ -13,6 +13,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * {@link TurtleClient}的生命周期与调用它的程序的线程一致
  * @author entropyfeng
  */
 public class TurtleClient {
@@ -57,12 +58,7 @@ public class TurtleClient {
                 .option(ChannelOption.SO_KEEPALIVE, true)
                 .handler(new TurtleClientChannelInitializer());
 
-
-        ChannelFuture channelFuture = client.connect().sync();
-        channel = channelFuture.channel();
-        countDownLatch.countDown();
-        channel.closeFuture().sync();
-        //doConnect();
+        doConnect();
     }
 
     private void doConnect() {
@@ -76,9 +72,11 @@ public class TurtleClient {
             if (future.isSuccess()) {
                 this.channel = future.channel();
                 countDownLatch.countDown();
-                System.out.println("success connect...");
+                logger.info("success connected...");
+                future.channel().closeFuture().sync();
+                logger.info("client closed");
             } else {
-                System.out.println("reConnect...");
+                logger.info("reConnect....");
                 future.channel().eventLoop().schedule(this::doConnect, 3, TimeUnit.SECONDS);
             }
         });

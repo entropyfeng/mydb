@@ -14,7 +14,6 @@ public class TurtleTemplate {
         setOperations = new DefaultSetOperations();
         orderSetOperations = new DefaultOrderSetOperations();
         hashOperations = new DefaultHashOperations();
-
         adminOperations = new DefaultAdminOperations();
     }
 

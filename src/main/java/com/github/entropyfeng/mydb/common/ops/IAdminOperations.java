@@ -33,4 +33,7 @@ public interface IAdminOperations {
      */
     Pair<ResHead,Collection<DataBody>> slaveOf(String host,Integer port);
 
+    default void closeClient(){
+
+    }
 }

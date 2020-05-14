@@ -52,4 +52,9 @@ public class ResponseAdminOperations implements IAdminOperations {
         return ClientExecute.execute(builder);
 
     }
+
+    @Override
+    public void closeClient() {
+
+    }
 }

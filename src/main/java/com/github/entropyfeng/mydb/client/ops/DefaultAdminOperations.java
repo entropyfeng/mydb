@@ -1,5 +1,6 @@
 package com.github.entropyfeng.mydb.client.ops;
 
+import com.github.entropyfeng.mydb.client.conn.ClientExecute;
 import com.github.entropyfeng.mydb.client.conn.ClientResHelper;
 import com.github.entropyfeng.mydb.client.res.ResponseAdminOperations;
 import com.github.entropyfeng.mydb.common.Pair;
@@ -54,5 +55,10 @@ public class DefaultAdminOperations implements AdminOperations {
     public void slaveOf(String host, Integer port){
         Pair<ResHead, Collection<DataBody>> pair= adminOperations.slaveOf(host, port);
         ClientResHelper.voidRes(pair);
+    }
+
+    @Override
+    public Boolean closeClient() {
+      return  ClientExecute.closeClient();
     }
 }
