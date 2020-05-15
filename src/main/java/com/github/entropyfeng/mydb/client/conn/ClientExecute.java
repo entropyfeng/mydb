@@ -1,8 +1,8 @@
 package com.github.entropyfeng.mydb.client.conn;
 
 import com.github.entropyfeng.mydb.client.ClientCommandBuilder;
+import com.github.entropyfeng.mydb.client.TurtleClient;
 import com.github.entropyfeng.mydb.common.Pair;
-import com.github.entropyfeng.mydb.common.RequestIdPool;
 import com.github.entropyfeng.mydb.common.exception.TurtleTimeOutException;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.DataBody;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResHead;
@@ -12,44 +12,54 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 
 /**
  * @author entropyfeng
  */
 public class ClientExecute {
+    public ClientExecute(String host,Integer port) {
+       globalMap = new ConcurrentHashMap<>();
+       turtleClient=new TurtleClient(host,port,globalMap);
+       channel= turtleClient.getChannel();
+    }
 
-    public static ConcurrentHashMap<Long, Pair<ResHead, Collection<DataBody>>> resMap = new ConcurrentHashMap<>();
-
+    private AtomicLong idPool=new AtomicLong(1);
+    private TurtleClient turtleClient;
+    private Channel channel ;
     private static final Logger logger= LoggerFactory.getLogger(ClientExecute.class);
 
-    public static Pair<ResHead, Collection<DataBody>> execute(ClientCommandBuilder commandBuilder) {
+    private  ConcurrentHashMap<Long, Pair<ResHead, Collection<DataBody>>> globalMap ;
 
-        Channel channel = TurtleClientChannelFactory.getChannel();
+
+    public  Pair<ResHead, Collection<DataBody>> execute(ClientCommandBuilder commandBuilder) {
+
         if (channel != null) {
             Pair<ResHead, Collection<DataBody>> responseData;
-            Long requestId = RequestIdPool.getAndIncrement();
+            Long requestId = idPool.getAndIncrement();
             commandBuilder.writeChannel(channel, requestId);
 
             //blocking....
-            while (!resMap.containsKey(requestId)) {
-                try {
+            while (!globalMap.containsKey(requestId)) {
+        /*    try {
                     Thread.sleep(1);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                }
+                }*/
 
             }
-            responseData = resMap.get(requestId);
-            resMap.remove(requestId);
+
+            responseData = globalMap.get(requestId);
+            globalMap.remove(requestId);
             return responseData;
         } else {
             throw new TurtleTimeOutException();
         }
     }
 
-    public static boolean closeClient(){
-        Channel channel = TurtleClientChannelFactory.getChannel();
+    public  boolean closeClient(){
+        Channel channel = turtleClient.getChannel();
         try {
             channel.close().sync();
         } catch (InterruptedException e) {

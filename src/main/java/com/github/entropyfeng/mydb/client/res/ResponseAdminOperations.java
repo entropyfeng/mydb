@@ -14,34 +14,40 @@ import java.util.Collection;
  */
 public class ResponseAdminOperations implements IAdminOperations {
 
+    private ClientExecute clientExecute;
+
+    public ResponseAdminOperations(ClientExecute clientExecute) {
+        this.clientExecute = clientExecute;
+    }
+
     @Override
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> clear() {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.ADMIN, "clear");
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> lazyClear() {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.ADMIN, "lazyClear");
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> dump() {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.ADMIN, "dump");
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> lazyDump() {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.ADMIN, "lazyDump");
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> deleteAllDump() {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.ADMIN, "deleteAllDump");
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
@@ -49,7 +55,7 @@ public class ResponseAdminOperations implements IAdminOperations {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.ADMIN, "slaveOf");
         builder.addStringPara(host);
         builder.addIntegerPara(port);
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
 
     }
 

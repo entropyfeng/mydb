@@ -1,12 +1,13 @@
 package com.github.entropyfeng.mydb.client.ops;
 
+import com.github.entropyfeng.mydb.client.conn.ClientExecute;
 import com.github.entropyfeng.mydb.client.conn.ClientResHelper;
 import com.github.entropyfeng.mydb.client.res.ResponseHashOperations;
+import com.github.entropyfeng.mydb.common.Pair;
+import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.common.ops.HashOperations;
 import com.github.entropyfeng.mydb.common.ops.IHashOperations;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
-import com.github.entropyfeng.mydb.common.TurtleValue;
-import com.github.entropyfeng.mydb.common.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -15,8 +16,11 @@ import java.util.Collection;
  * @author entropyfeng
  */
 public class DefaultHashOperations implements HashOperations {
+    public DefaultHashOperations(ClientExecute clientExecute) {
+        this.hashOperations = new ResponseHashOperations(clientExecute);
+    }
 
-    private IHashOperations hashOperations = new ResponseHashOperations();
+    private IHashOperations hashOperations;
 
     @Override
     public TurtleValue get(@NotNull String key, @NotNull TurtleValue tKey) {

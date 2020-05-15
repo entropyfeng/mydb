@@ -16,6 +16,11 @@ import java.util.Collection;
  */
 public class ResponseOrderSetOperations implements IOrderSetOperations {
 
+    public ResponseOrderSetOperations(ClientExecute clientExecute) {
+        this.clientExecute = clientExecute;
+    }
+
+    private ClientExecute clientExecute;
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> exists(String key, TurtleValue value, Double score) {
@@ -25,7 +30,7 @@ public class ResponseOrderSetOperations implements IOrderSetOperations {
         builder.addTurtlePara(value);
         builder.addDoublePara(score);
 
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
 
     }
 
@@ -36,7 +41,7 @@ public class ResponseOrderSetOperations implements IOrderSetOperations {
         builder.addTurtlePara(value);
 
 
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
@@ -44,7 +49,7 @@ public class ResponseOrderSetOperations implements IOrderSetOperations {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.ZSET, "exists");
         builder.addStringPara(key);
 
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
@@ -54,7 +59,7 @@ public class ResponseOrderSetOperations implements IOrderSetOperations {
         builder.addTurtlePara(value);
         builder.addDoublePara(score);
 
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
@@ -64,7 +69,7 @@ public class ResponseOrderSetOperations implements IOrderSetOperations {
         builder.addTurtleCollectionPara(values);
         builder.addDoubleCollectionPara(doubles);
 
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
@@ -74,7 +79,7 @@ public class ResponseOrderSetOperations implements IOrderSetOperations {
         builder.addDoublePara(begin);
         builder.addDoublePara(end);
 
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
@@ -84,7 +89,7 @@ public class ResponseOrderSetOperations implements IOrderSetOperations {
         builder.addDoublePara(begin);
         builder.addDoublePara(end);
 
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
@@ -94,7 +99,7 @@ public class ResponseOrderSetOperations implements IOrderSetOperations {
         builder.addDoublePara(begin);
         builder.addDoublePara(end);
 
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
@@ -104,7 +109,7 @@ public class ResponseOrderSetOperations implements IOrderSetOperations {
         builder.addTurtlePara(value);
         builder.addDoublePara(score);
 
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
@@ -114,7 +119,7 @@ public class ResponseOrderSetOperations implements IOrderSetOperations {
         builder.addDoublePara(begin);
         builder.addDoublePara(end);
 
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
@@ -124,26 +129,26 @@ public class ResponseOrderSetOperations implements IOrderSetOperations {
         builder.addTurtlePara(value);
 
 
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> delete(String key) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.ZSET, "delete");
         builder.addStringPara(key);
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> clear() {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.ZSET, "clear");
         builder.setModifyAble(true);
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> dump() {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.ZSET, "dump");
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 }

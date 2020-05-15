@@ -17,12 +17,16 @@ import java.util.Collection;
  */
 public class ResponseSetOperations implements ISetOperations {
 
+    public ResponseSetOperations(ClientExecute clientExecute) {
+        this.clientExecute = clientExecute;
+    }
 
+    private ClientExecute clientExecute;
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> exist(String key) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "exist");
         builder.addStringPara(key);
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
@@ -30,7 +34,7 @@ public class ResponseSetOperations implements ISetOperations {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "exist");
         builder.addStringPara(key);
         builder.addTurtlePara(value);
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
@@ -39,7 +43,7 @@ public class ResponseSetOperations implements ISetOperations {
         builder.addStringPara(key);
         builder.addTurtlePara(value);
         builder.setModifyAble(true);
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
@@ -48,7 +52,7 @@ public class ResponseSetOperations implements ISetOperations {
         builder.addStringPara(key);
         builder.addStringPara(otherKey);
         builder.setModifyAble(true);
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
@@ -67,7 +71,7 @@ public class ResponseSetOperations implements ISetOperations {
         builder.addStringPara(key);
         builder.addTurtleCollectionPara(turtleValues);
         builder.setModifyAble(true);
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
@@ -77,7 +81,7 @@ public class ResponseSetOperations implements ISetOperations {
         builder.addStringPara(key);
         builder.addStringPara(otherKey);
         builder.setModifyAble(true);
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
@@ -86,7 +90,7 @@ public class ResponseSetOperations implements ISetOperations {
         builder.addStringPara(key);
         builder.addTurtleCollectionPara(turtleValues);
         builder.setModifyAble(true);
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
@@ -95,7 +99,7 @@ public class ResponseSetOperations implements ISetOperations {
         builder.addStringPara(key);
         builder.addStringPara(otherKey);
         builder.setModifyAble(true);
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
@@ -104,27 +108,27 @@ public class ResponseSetOperations implements ISetOperations {
         builder.addStringPara(key);
         builder.addTurtleCollectionPara(turtleValues);
         builder.setModifyAble(true);
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> entries(String key) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "entries");
         builder.addStringPara(key);
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> clear() {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "clear");
         builder.setModifyAble(true);
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
 
     }
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> dump() {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.SET, "dump");
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 }

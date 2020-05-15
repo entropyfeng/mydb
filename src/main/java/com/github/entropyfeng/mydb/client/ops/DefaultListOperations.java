@@ -1,13 +1,13 @@
 package com.github.entropyfeng.mydb.client.ops;
 
+import com.github.entropyfeng.mydb.client.conn.ClientExecute;
 import com.github.entropyfeng.mydb.client.conn.ClientResHelper;
 import com.github.entropyfeng.mydb.client.res.ResponseListOperations;
+import com.github.entropyfeng.mydb.common.Pair;
+import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.common.ops.IListOperations;
 import com.github.entropyfeng.mydb.common.ops.ListOperations;
-
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
-import com.github.entropyfeng.mydb.common.TurtleValue;
-import com.github.entropyfeng.mydb.common.Pair;
 
 import java.util.Collection;
 
@@ -15,8 +15,11 @@ import java.util.Collection;
  * @author entropyfeng
  */
 public class DefaultListOperations implements ListOperations {
+    public DefaultListOperations(ClientExecute clientExecute) {
+        this.listOperations = new ResponseListOperations(clientExecute);
+    }
 
-    private IListOperations listOperations = new ResponseListOperations();
+    private IListOperations listOperations;
 
 
     @Override
@@ -35,7 +38,7 @@ public class DefaultListOperations implements ListOperations {
     @Override
     public void leftPush(String key, TurtleValue value) {
         Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> pair = listOperations.leftPush(key, value);
-         ClientResHelper.voidRes(pair);
+        ClientResHelper.voidRes(pair);
     }
 
     @Override
@@ -107,7 +110,7 @@ public class DefaultListOperations implements ListOperations {
     @Override
     public void clear(String key) {
         Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> pair = listOperations.clear(key);
-         ClientResHelper.voidRes(pair);
+        ClientResHelper.voidRes(pair);
     }
 
     @Override
@@ -124,7 +127,7 @@ public class DefaultListOperations implements ListOperations {
 
     @Override
     public Boolean exist(String key, TurtleValue value) {
-        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> pair = listOperations.exist(key,value);
+        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> pair = listOperations.exist(key, value);
         return ClientResHelper.boolRes(pair);
     }
 }

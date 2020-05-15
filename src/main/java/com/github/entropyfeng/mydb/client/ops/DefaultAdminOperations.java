@@ -15,7 +15,15 @@ import java.util.Collection;
  * @author entropyfeng
  */
 public class DefaultAdminOperations implements AdminOperations {
-    private IAdminOperations adminOperations = new ResponseAdminOperations();
+    private ClientExecute clientExecute;
+
+    public DefaultAdminOperations(ClientExecute clientExecute) {
+        this.clientExecute = clientExecute;
+
+        adminOperations = new ResponseAdminOperations(clientExecute);
+    }
+
+    private IAdminOperations adminOperations;
 
     @Override
     public void clear() {
@@ -51,14 +59,15 @@ public class DefaultAdminOperations implements AdminOperations {
 
         ClientResHelper.voidRes(pair);
     }
+
     @Override
-    public void slaveOf(String host, Integer port){
-        Pair<ResHead, Collection<DataBody>> pair= adminOperations.slaveOf(host, port);
+    public void slaveOf(String host, Integer port) {
+        Pair<ResHead, Collection<DataBody>> pair = adminOperations.slaveOf(host, port);
         ClientResHelper.voidRes(pair);
     }
 
     @Override
     public Boolean closeClient() {
-      return  ClientExecute.closeClient();
+        return clientExecute.closeClient();
     }
 }

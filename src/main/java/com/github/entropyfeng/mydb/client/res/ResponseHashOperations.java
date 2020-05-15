@@ -17,11 +17,17 @@ import java.util.Collection;
 public class ResponseHashOperations implements IHashOperations {
 
 
+    private ClientExecute clientExecute;
+
+    public ResponseHashOperations(ClientExecute clientExecute) {
+        this.clientExecute = clientExecute;
+    }
+
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> get(@NotNull String key, @NotNull TurtleValue tKey) {
 
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.HASH, "get");
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
 
     }
 
@@ -29,7 +35,7 @@ public class ResponseHashOperations implements IHashOperations {
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> get(@NotNull String key) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.HASH, "get");
         builder.addStringPara(key);
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
 
     }
 
@@ -39,7 +45,7 @@ public class ResponseHashOperations implements IHashOperations {
         builder.addStringPara(key);
         builder.addTurtlePara(tKey);
         builder.addTurtlePara(tValue);
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
 
@@ -47,7 +53,7 @@ public class ResponseHashOperations implements IHashOperations {
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> exists(@NotNull String key) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.HASH, "exists");
         builder.addStringPara(key);
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
@@ -56,14 +62,14 @@ public class ResponseHashOperations implements IHashOperations {
         builder.addStringPara(key);
         builder.addTurtlePara(tKey);
         builder.addTurtlePara(tValue);
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> delete(@NotNull String key) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.HASH, "delete");
         builder.addStringPara(key);
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
@@ -71,26 +77,26 @@ public class ResponseHashOperations implements IHashOperations {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.HASH, "delete");
         builder.addStringPara(key);
         builder.addTurtlePara(tKey);
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> sizeOf(@NotNull String key) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.HASH, "sizeOf");
         builder.addStringPara(key);
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> clear() {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.HASH, "clear");
         builder.setModifyAble(true);
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> dump() {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.HASH, "dump");
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 }

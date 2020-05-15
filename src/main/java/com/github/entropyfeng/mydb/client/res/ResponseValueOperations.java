@@ -18,6 +18,13 @@ import java.util.NoSuchElementException;
  * @author entropyfeng
  */
 public class ResponseValueOperations implements IValueOperations {
+    
+    private ClientExecute clientExecute;
+
+    public ResponseValueOperations(ClientExecute clientExecute) {
+        this.clientExecute = clientExecute;
+    }
+
     @NotNull
     @Override
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> set(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time) {
@@ -27,7 +34,7 @@ public class ResponseValueOperations implements IValueOperations {
         builder.addTurtlePara(value);
         builder.addLongPara(time);
         builder.setModifyAble(true);
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @NotNull
@@ -38,7 +45,7 @@ public class ResponseValueOperations implements IValueOperations {
         builder.addTurtlePara(value);
         builder.addLongPara(time);
         builder.setModifyAble(true);
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @NotNull
@@ -49,7 +56,7 @@ public class ResponseValueOperations implements IValueOperations {
         builder.addTurtlePara(value);
         builder.addLongPara(time);
         builder.setModifyAble(true);
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @NotNull
@@ -57,7 +64,7 @@ public class ResponseValueOperations implements IValueOperations {
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> get(@NotNull String key) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "get");
         builder.addStringPara(key);
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @NotNull
@@ -67,7 +74,7 @@ public class ResponseValueOperations implements IValueOperations {
         builder.addStringPara(key);
         builder.addIntegerPara(intValue);
         builder.setModifyAble(true);
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @NotNull
@@ -77,7 +84,7 @@ public class ResponseValueOperations implements IValueOperations {
         builder.addStringPara(key);
         builder.addLongPara(longValue);
         builder.setModifyAble(true);
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @NotNull
@@ -87,7 +94,7 @@ public class ResponseValueOperations implements IValueOperations {
         builder.addStringPara(key);
         builder.addDoublePara(doubleValue);
         builder.setModifyAble(true);
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @NotNull
@@ -97,7 +104,7 @@ public class ResponseValueOperations implements IValueOperations {
         builder.addStringPara(key);
         builder.addBigIntegerPara(bigInteger);
         builder.setModifyAble(true);
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @NotNull
@@ -107,7 +114,7 @@ public class ResponseValueOperations implements IValueOperations {
         builder.addStringPara(key);
         builder.addBigDecimalPara(bigDecimal);
         builder.setModifyAble(true);
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @NotNull
@@ -117,39 +124,39 @@ public class ResponseValueOperations implements IValueOperations {
         builder.addStringPara(key);
         builder.addStringPara(appendValue);
         builder.setModifyAble(true);
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @NotNull
     @Override
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> allValues() {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "allValues");
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> allEntries() {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "allEntries");
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> allKeys() {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "allKeys");
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> clear() {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "clear");
         builder.setModifyAble(true);
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> dump() {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "dump");
 
-        return ClientExecute.execute(builder);
+        return clientExecute.execute(builder);
     }
 }

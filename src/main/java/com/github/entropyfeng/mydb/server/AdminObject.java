@@ -1,11 +1,8 @@
 package com.github.entropyfeng.mydb.server;
 
 import com.github.entropyfeng.mydb.client.ClientCommandBuilder;
-import com.github.entropyfeng.mydb.client.TurtleClient;
 import com.github.entropyfeng.mydb.client.conn.ClientExecute;
-import com.github.entropyfeng.mydb.client.conn.ClientThreadFactory;
 import com.github.entropyfeng.mydb.common.Pair;
-import com.github.entropyfeng.mydb.common.RequestIdPool;
 import com.github.entropyfeng.mydb.common.TurtleModel;
 import com.github.entropyfeng.mydb.common.ops.IAdminOperations;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
@@ -14,14 +11,12 @@ import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import com.github.entropyfeng.mydb.server.domain.*;
 import com.github.entropyfeng.mydb.server.factory.MasterSlaveThreadFactory;
 import com.github.entropyfeng.mydb.server.persistence.PersistenceObjectDomain;
-import io.netty.channel.Channel;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 
 
@@ -82,6 +77,7 @@ public class AdminObject implements IAdminOperations {
     /**
      * appear at salve server
      * 从服务器向主服务器发送请求，连接由从服务器主动创建
+     *
      * @param host the host of the destination server
      * @param port the port of the destination server
      * @return {@link Pair}
@@ -94,36 +90,21 @@ public class AdminObject implements IAdminOperations {
         clientCommandBuilder.addStringPara(ServerConfig.serverHost);
         clientCommandBuilder.addIntegerPara(ServerConfig.port);
 
-        TurtleClient turtleClient = new TurtleClient(host, port);
+        ClientExecute clientExecute = new ClientExecute(host, port);
 
-
-
-        Channel channel = turtleClient.getChannel();
-        Long requestId=RequestIdPool.getAndIncrement();
-        clientCommandBuilder.writeChannel(channel, requestId);
-        ConcurrentHashMap<Long, Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>>> resMap=ClientExecute.resMap;
-        while (!resMap.containsKey(requestId)) {
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> pair= resMap.get(requestId);
-
-        PersistenceObjectDomain domain= PersistenceHelper.dumpAndReLoadFromPair(pair);
-
-        serverDomain.replace(domain.getValuesDomain(),domain.getListDomain(),domain.getSetDomain(),domain.getHashDomain(),domain.getOrderSetDomain());
+        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> pair = clientExecute.execute(clientCommandBuilder);
+        PersistenceObjectDomain domain = PersistenceHelper.dumpAndReLoadFromPair(pair);
+        serverDomain.replace(domain.getValuesDomain(), domain.getListDomain(), domain.getSetDomain(), domain.getHashDomain(), domain.getOrderSetDomain());
         //-------
-        ClientCommandBuilder commandBuilder=new ClientCommandBuilder(TurtleModel.ADMIN,"exceptAcceptData");
+        ClientCommandBuilder commandBuilder = new ClientCommandBuilder(TurtleModel.ADMIN, "exceptAcceptData");
         clientCommandBuilder.addStringPara(ServerConfig.serverHost);
         clientCommandBuilder.addIntegerPara(ServerConfig.port);
-        commandBuilder.writeChannel(channel,RequestIdPool.getAndIncrement());
+        clientExecute.execute(commandBuilder);
         return ResServerHelper.emptyRes();
     }
 
 
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> slaveOfServer(String host,Integer port) {
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> slaveOfServer(String host, Integer port) {
 
         MasterSlaveHelper.registerSlave(host, port);
         dump();
@@ -131,10 +112,11 @@ public class AdminObject implements IAdminOperations {
 
     }
 
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> exceptAcceptData(String host,Integer port){
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> exceptAcceptData(String host, Integer port) {
 
         return ResServerHelper.emptyRes();
     }
+
     @NotNull
     @Override
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> clear() {
@@ -190,10 +172,11 @@ public class AdminObject implements IAdminOperations {
         serverDomain.orderSetQueue.add(new ClientRequest(orderSetMethod));
     }
 
-    private void newMasterThread(){
+    private void newMasterThread() {
 
-        if(masterSlaveThread==null){
-            masterSlaveThread=new MasterSlaveThreadFactory().newThread(()->{});
+        if (masterSlaveThread == null) {
+            masterSlaveThread = new MasterSlaveThreadFactory().newThread(() -> {
+            });
         }
     }
 

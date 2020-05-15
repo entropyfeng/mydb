@@ -1,5 +1,6 @@
 package com.github.entropyfeng.mydb.client.ops;
 
+import com.github.entropyfeng.mydb.client.conn.ClientExecute;
 import com.github.entropyfeng.mydb.common.ops.*;
 
 /**
@@ -7,14 +8,15 @@ import com.github.entropyfeng.mydb.common.ops.*;
  */
 public class TurtleTemplate {
 
-    public TurtleTemplate() {
+    public TurtleTemplate(String host,Integer port) {
 
-        valueOperations = new DefaultValueOperations();
-        listOperations = new DefaultListOperations();
-        setOperations = new DefaultSetOperations();
-        orderSetOperations = new DefaultOrderSetOperations();
-        hashOperations = new DefaultHashOperations();
-        adminOperations = new DefaultAdminOperations();
+        ClientExecute clientExecute=new ClientExecute(host, port);
+        valueOperations = new DefaultValueOperations(clientExecute);
+        listOperations = new DefaultListOperations(clientExecute);
+        setOperations = new DefaultSetOperations(clientExecute);
+        orderSetOperations = new DefaultOrderSetOperations(clientExecute);
+        hashOperations = new DefaultHashOperations(clientExecute);
+        adminOperations = new DefaultAdminOperations(clientExecute);
     }
 
 

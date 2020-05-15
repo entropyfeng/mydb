@@ -1,14 +1,15 @@
 package com.github.entropyfeng.mydb.client.ops;
 
+import com.github.entropyfeng.mydb.client.conn.ClientExecute;
 import com.github.entropyfeng.mydb.client.conn.ClientResHelper;
 import com.github.entropyfeng.mydb.client.res.ResponseValueOperations;
+import com.github.entropyfeng.mydb.common.Pair;
+import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.common.exception.ElementOutOfBoundException;
 import com.github.entropyfeng.mydb.common.ops.IValueOperations;
 import com.github.entropyfeng.mydb.common.ops.ValueOperations;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.DataBody;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResHead;
-import com.github.entropyfeng.mydb.common.TurtleValue;
-import com.github.entropyfeng.mydb.common.Pair;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -17,12 +18,17 @@ import java.util.NoSuchElementException;
 
 /**
  * @author entropyfeng
- *
+ * <p>
  * all res type is nullable
  */
 public class DefaultValueOperations implements ValueOperations {
-    private IValueOperations valueOperations = new ResponseValueOperations();
 
+    public DefaultValueOperations(ClientExecute clientExecute) {
+        this.valueOperations = new ResponseValueOperations(clientExecute);
+    }
+
+
+    private IValueOperations valueOperations;
 
     @Override
     public void set(String key, TurtleValue value, Long time) throws ElementOutOfBoundException {
@@ -30,7 +36,6 @@ public class DefaultValueOperations implements ValueOperations {
         Pair<ResHead, Collection<DataBody>> pair = valueOperations.set(key, value, time);
 
         ClientResHelper.voidRes(pair);
-
 
     }
 
@@ -111,7 +116,7 @@ public class DefaultValueOperations implements ValueOperations {
 
     @Override
     public void clear() {
-        Pair<ResHead,Collection<DataBody>> pair=valueOperations.clear();
+        Pair<ResHead, Collection<DataBody>> pair = valueOperations.clear();
         ClientResHelper.voidRes(pair);
     }
 }
