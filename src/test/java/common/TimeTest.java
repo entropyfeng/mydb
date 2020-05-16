@@ -4,6 +4,7 @@ import com.github.entropyfeng.mydb.server.util.EfficientSystemClock;
 import org.junit.Test;
 
 
+
 public class TimeTest {
 
     final long count = 1L << 34;
@@ -27,5 +28,8 @@ public class TimeTest {
         }
         long end = System.currentTimeMillis();
         System.out.println(end - begin);
+
+
     }
+
 }

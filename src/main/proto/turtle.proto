@@ -1,6 +1,7 @@
 syntax="proto3";
 option java_package = "com.github.entropyfeng.mydb.common.protobuf";
 option java_outer_classname = "ProtoBuf";
+
 enum TurtleModel{ //支持模式
 
     ADMIN=0;
@@ -15,6 +16,7 @@ enum TurtleModel{ //支持模式
 
     LIST=5;
 }
+
 enum TurtleValueType{
     Bytes=0;
     Integer=1;
@@ -23,10 +25,12 @@ enum TurtleValueType{
     NumberInteger=4;
     NumberDecimal=5;
 }
+
 message TurtleValue{ //数据库基本对象
     TurtleValueType turtleValueType=1;
     bytes values=2;
 }
+
 enum TurtleParaType{//所支持的参数类型
     STRING=0;
 
@@ -81,10 +85,12 @@ message StringTurtleValueEntry{
     string key=1;
     TurtleValue value=2;
 }
+
 message  TurtleTurtleValueEntry{
     TurtleValue key=1;
     TurtleValue value=2;
 }
+
 message ResHead{
     int64 responseSequence=1;
     bool success=2;
@@ -101,6 +107,7 @@ message ReqHead{
     repeated TurtleParaType keys=4;
     bool modify=5;
 }
+
 message DataBody{
     int64 requestSequence=1;
     int32 location=2;
@@ -116,6 +123,7 @@ message DataBody{
         TurtleTurtleValueEntry turtleTurtleValueEntry=11;
     }
 }
+
 message TurtleData{
 
     int64 requestId=1;
