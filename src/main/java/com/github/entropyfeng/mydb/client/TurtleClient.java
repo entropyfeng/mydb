@@ -1,20 +1,19 @@
 package com.github.entropyfeng.mydb.client;
 
+import com.github.entropyfeng.mydb.client.conn.ClientExecute;
 import com.github.entropyfeng.mydb.client.conn.ClientThreadFactory;
 import com.github.entropyfeng.mydb.client.handler.TurtleClientChannelInitializer;
-import com.github.entropyfeng.mydb.common.Pair;
-import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.*;
+import io.netty.channel.AdaptiveRecvByteBufAllocator;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 /**
  * {@link TurtleClient}的生命周期与调用它的程序的线程一致
@@ -28,11 +27,11 @@ public class TurtleClient {
     private String host;
     private Integer port;
     private volatile CountDownLatch countDownLatch;
-    private ConcurrentHashMap<Long, Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>>> globalRes;
-    public TurtleClient(String host, Integer port, ConcurrentHashMap<Long, Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>>> globalRes) {
+    private ClientExecute clientExecute;
+    public TurtleClient(String host, Integer port, ClientExecute clientExecute) {
         this.host = host;
         this.port = port;
-        this.globalRes=globalRes;
+        this.clientExecute=clientExecute;
     }
 
 
@@ -53,7 +52,7 @@ public class TurtleClient {
                     .remoteAddress(host, port)
                     .option(ChannelOption.RCVBUF_ALLOCATOR, new AdaptiveRecvByteBufAllocator(1 << 10, 1 << 20, 1 << 30))
                     .option(ChannelOption.SO_KEEPALIVE, true)
-                    .handler(new TurtleClientChannelInitializer(globalRes));
+                    .handler(new TurtleClientChannelInitializer(clientExecute));
 
             doConnect();
         }).start();

@@ -8,7 +8,9 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.*;
@@ -22,9 +24,9 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<TurtleData>
     private static final Logger logger = LoggerFactory.getLogger(TurtleClientHandler.class);
 
     private  HashMap<Long, Pair<ResHead,Collection<DataBody>>> res = new HashMap<>();
-    private ConcurrentHashMap<Long,Pair<ResHead,Collection<DataBody>>> globalRes;
-    public TurtleClientHandler(ConcurrentHashMap<Long, Pair<ResHead,Collection<DataBody>>> globalRes){
-        this.globalRes=globalRes;
+    private ClientExecute clientExecute;
+    public TurtleClientHandler(ClientExecute clientExecute){
+        this.clientExecute=clientExecute;
     }
 
     @Override
@@ -80,7 +82,8 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<TurtleData>
 
         Pair<ResHead,Collection<DataBody>> pair=res.remove(responseId);
         if (pair!=null){
-            globalRes.put(responseId, pair);
+            clientExecute.dispatch(responseId,pair);
+
         }
     }
 

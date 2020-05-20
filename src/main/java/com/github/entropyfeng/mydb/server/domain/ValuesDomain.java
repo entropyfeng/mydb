@@ -264,7 +264,6 @@ public class ValuesDomain extends ExpireObject implements IValueOperations {
                 outputStream.writeBoolean(false);
             }
         }
-
     }
 
     public static ValuesDomain read(DataInputStream inputStream) throws IOException {
