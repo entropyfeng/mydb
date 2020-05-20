@@ -1,7 +1,7 @@
 package com.github.entropyfeng.mydb.client.handler;
 
 
-import com.github.entropyfeng.mydb.client.conn.ClientExecute;
+import com.github.entropyfeng.mydb.client.conn.IClientExecute;
 import com.github.entropyfeng.mydb.common.Pair;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.*;
 
@@ -24,8 +23,8 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<TurtleData>
     private static final Logger logger = LoggerFactory.getLogger(TurtleClientHandler.class);
 
     private  HashMap<Long, Pair<ResHead,Collection<DataBody>>> res = new HashMap<>();
-    private ClientExecute clientExecute;
-    public TurtleClientHandler(ClientExecute clientExecute){
+    private IClientExecute clientExecute;
+    public TurtleClientHandler(IClientExecute clientExecute){
         this.clientExecute=clientExecute;
     }
 

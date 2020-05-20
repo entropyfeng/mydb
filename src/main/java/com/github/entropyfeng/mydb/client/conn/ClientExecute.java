@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * @author entropyfeng
  */
-public class ClientExecute {
+public class ClientExecute implements IClientExecute {
     public ClientExecute(String host,Integer port) {
        globalMap = new ConcurrentHashMap<>();
        turtleClient=new TurtleClient(host,port,this);
@@ -61,6 +61,7 @@ public class ClientExecute {
 
         return true;
     }
+    @Override
     public void dispatch(Long responseId,Pair<ResHead,Collection<DataBody>> pair){
 
         globalMap.put(responseId, pair);

@@ -1,6 +1,7 @@
 package com.github.entropyfeng.mydb.client.handler;
 
 import com.github.entropyfeng.mydb.client.conn.ClientExecute;
+import com.github.entropyfeng.mydb.client.conn.IClientExecute;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -12,11 +13,11 @@ import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
  */
 public class TurtleClientChannelInitializer extends ChannelInitializer<Channel> {
 
-    public TurtleClientChannelInitializer(ClientExecute clientExecute) {
+    public TurtleClientChannelInitializer(IClientExecute clientExecute) {
         this.clientExecute=clientExecute;
     }
 
-    private ClientExecute clientExecute;
+    private IClientExecute clientExecute;
 
 
     @Override

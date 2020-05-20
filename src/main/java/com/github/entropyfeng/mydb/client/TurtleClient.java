@@ -2,6 +2,7 @@ package com.github.entropyfeng.mydb.client;
 
 import com.github.entropyfeng.mydb.client.conn.ClientExecute;
 import com.github.entropyfeng.mydb.client.conn.ClientThreadFactory;
+import com.github.entropyfeng.mydb.client.conn.IClientExecute;
 import com.github.entropyfeng.mydb.client.handler.TurtleClientChannelInitializer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.AdaptiveRecvByteBufAllocator;
@@ -27,8 +28,8 @@ public class TurtleClient {
     private String host;
     private Integer port;
     private volatile CountDownLatch countDownLatch;
-    private ClientExecute clientExecute;
-    public TurtleClient(String host, Integer port, ClientExecute clientExecute) {
+    private IClientExecute clientExecute;
+    public TurtleClient(String host, Integer port, IClientExecute clientExecute) {
         this.host = host;
         this.port = port;
         this.clientExecute=clientExecute;
@@ -69,20 +70,6 @@ public class TurtleClient {
         ChannelFuture connect = client.connect().awaitUninterruptibly();
         channel=connect.channel();
         countDownLatch.countDown();
-     /*   connect.addListener((ChannelFutureListener) future -> {
-            if (future.isSuccess()) {
-                this.channel = future.channel();
-                countDownLatch.countDown();
-                logger.info("success connected...");
-                //it call may throw exception
-                future.channel().closeFuture().sync();
-                logger.info("client closed");
-            } else {
-                logger.info("reConnect....");
-                future.channel().eventLoop().schedule(this::doConnect, 3, TimeUnit.SECONDS);
-            }
-        });*/
-
     }
 
     public Channel getChannel() {
