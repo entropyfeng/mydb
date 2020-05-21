@@ -86,6 +86,7 @@ public class AdminObject implements IAdminOperations {
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> slaveOf(String host, Integer port) {
 
 
+        //从服务器向主服务器请求转储文件
         ClientCommandBuilder clientCommandBuilder = new ClientCommandBuilder(TurtleModel.ADMIN, "slaveOfServer");
         clientCommandBuilder.addStringPara(ServerConfig.serverHost);
         clientCommandBuilder.addIntegerPara(ServerConfig.port);
@@ -102,6 +103,7 @@ public class AdminObject implements IAdminOperations {
         clientExecute.execute(commandBuilder);
         return ResServerHelper.emptyRes();
     }
+
 
 
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> slaveOfServer(String host, Integer port) {

@@ -35,7 +35,7 @@ public class PersistenceHelper {
         Long timeStamp = System.currentTimeMillis();
 
         CountDownLatch countDownLatch = new CountDownLatch(5);
-        ExecutorService service = new ThreadPoolExecutor(2, 5, 10, TimeUnit.SECONDS, new LinkedBlockingDeque<>(), new DumpThreadFactory());
+        ExecutorService service = new ThreadPoolExecutor(5, 5, 10, TimeUnit.SECONDS, new LinkedBlockingDeque<>(), new DumpThreadFactory());
 
         Future<Boolean> valuesFuture = service.submit(new ValuesDumpTask(countDownLatch, serverDomain.valuesDomain, timeStamp));
         Future<Boolean> listFuture = service.submit(new ListDumpTask(countDownLatch, serverDomain.listDomain, timeStamp));
@@ -108,7 +108,7 @@ public class PersistenceHelper {
 
 
         CountDownLatch countDownLatch = new CountDownLatch(5);
-        ExecutorService service = new ThreadPoolExecutor(1, 5, 10, TimeUnit.SECONDS, new LinkedBlockingDeque<>(), new LoadThreadFactory());
+        ExecutorService service = new ThreadPoolExecutor(5, 5, 10, TimeUnit.SECONDS, new LinkedBlockingDeque<>(), new LoadThreadFactory());
         Future<ValuesDomain> valuesDomainFuture = service.submit(new ValuesLoadTask(domain.getValuesDumpFile(), countDownLatch));
         Future<ListDomain> listDomainFuture = service.submit(new ListLoadTask(domain.getListDumpFile(), countDownLatch));
         Future<SetDomain> setDomainFuture = service.submit(new SetLoadTask(domain.getSetDumpFile(), countDownLatch));
@@ -345,6 +345,15 @@ public class PersistenceHelper {
         return Arrays.stream(files).filter(file -> pattern.matcher(file.getName()).find()).max(Comparator.comparing(File::getName));
     }
 
+    /**
+     * 从硬盘中读取所有数据结构
+     * @param valuesDomainFuture {@link ValuesDomain}
+     * @param listDomainFuture {@link ListDomain}
+     * @param setDomainFuture {@link SetDomain}
+     * @param hashDomainFuture {@link HashDomain}
+     * @param orderSetDomainFuture{@link OrderSetDomain}
+     * @return {@link PersistenceObjectDomain}
+     */
     private static PersistenceObjectDomain constructPersistenceDomain(Future<ValuesDomain> valuesDomainFuture, Future<ListDomain> listDomainFuture, Future<SetDomain> setDomainFuture, Future<HashDomain> hashDomainFuture, Future<OrderSetDomain> orderSetDomainFuture){
 
         //---------------Values------------------

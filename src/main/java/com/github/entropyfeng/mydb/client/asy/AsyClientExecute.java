@@ -5,6 +5,7 @@ import com.github.entropyfeng.mydb.client.TurtleClient;
 import com.github.entropyfeng.mydb.client.conn.ClientExecute;
 import com.github.entropyfeng.mydb.client.conn.IClientExecute;
 import com.github.entropyfeng.mydb.common.Pair;
+import com.github.entropyfeng.mydb.common.exception.TurtleTimeOutException;
 import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,10 +39,8 @@ public class AsyClientExecute implements IClientExecute {
         if (channel != null && channel.isActive()) {
             Long requestId = idPool.getAndIncrement();
             commandBuilder.writeChannel(channel, requestId);
-
         }
-
-        return null;
+           throw new TurtleTimeOutException();
 
     }
 
