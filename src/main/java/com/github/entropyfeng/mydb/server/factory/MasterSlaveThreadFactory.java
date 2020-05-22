@@ -21,14 +21,5 @@ public class MasterSlaveThreadFactory implements ThreadFactory {
     *
     *  */
 
-    public static void daemon(){
-        while (ServerConfig.masterSlaveFlag.get()){
-           ClientRequest request= TurtleServerHandler.masterQueue.poll();
-           if (request!=null){
-               TurtleServerHandler.serverMap.forEach((channelId, channel) -> {
-                   channel.write(request);
-               });
-           }
-        }
-    }
+
 }

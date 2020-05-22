@@ -10,13 +10,16 @@ import com.github.entropyfeng.mydb.server.command.ClientRequest;
 import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import com.github.entropyfeng.mydb.server.domain.*;
 import com.github.entropyfeng.mydb.server.factory.MasterSlaveThreadFactory;
+import com.github.entropyfeng.mydb.server.handler.TurtleServerHandler;
 import com.github.entropyfeng.mydb.server.persistence.PersistenceObjectDomain;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
+import java.net.InetSocketAddress;
 import java.util.Collection;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 
 
@@ -106,6 +109,7 @@ public class AdminObject implements IAdminOperations {
 
 
 
+
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> slaveOfServer(String host, Integer port) {
 
         MasterSlaveHelper.registerSlave(host, port);
@@ -116,6 +120,8 @@ public class AdminObject implements IAdminOperations {
 
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> exceptAcceptData(String host, Integer port) {
 
+        TurtleServerHandler.slaveSet.add(new InetSocketAddress(host,port));
+         newMasterThread();
         return ResServerHelper.emptyRes();
     }
 
@@ -158,6 +164,7 @@ public class AdminObject implements IAdminOperations {
         }
         PersistenceHelper.dumpAll(serverDomain);
 
+        //重新设置countDownLatch
         ServerConfig.threadCountDown = new CountDownLatch(5);
         ServerConfig.serverBlocking.set(false);
         serverDomain.notifyAllValuesThread();
@@ -176,8 +183,22 @@ public class AdminObject implements IAdminOperations {
 
     private void newMasterThread() {
 
-        if (masterSlaveThread == null) {
+        if (masterSlaveThread == null){
             masterSlaveThread = new MasterSlaveThreadFactory().newThread(() -> {
+                ConcurrentLinkedQueue<ClientRequest> queue= TurtleServerHandler.masterQueue;
+                while (true){
+                 ClientRequest request=   queue.poll();
+                 if (request!=null){
+                     TurtleServerHandler.slaveSet.forEach(address->{
+                         TurtleServerHandler.clientMap.get(address).write(request.)
+                     });
+
+                 }
+                }
+
+
+
+
             });
         }
     }

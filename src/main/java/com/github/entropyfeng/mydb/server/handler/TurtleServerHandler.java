@@ -9,11 +9,17 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelId;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.unix.DomainSocketAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.util.HashMap;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 
 /**
@@ -22,9 +28,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.TurtleData> {
     private static final Logger logger = LoggerFactory.getLogger(TurtleServerHandler.class);
 
-    public static ConcurrentHashMap<ChannelId, Channel> clientMap = new ConcurrentHashMap<>();
 
-    public static ConcurrentHashMap<ChannelId, Channel> serverMap = new ConcurrentHashMap<>();
+    public static ConcurrentHashMap<InetSocketAddress,Channel> clientMap = new ConcurrentHashMap<>();
+
+    public static Set<InetSocketAddress> slaveSet=ConcurrentHashMap.newKeySet();
 
     public static ConcurrentLinkedQueue<ClientRequest> masterQueue = new ConcurrentLinkedQueue<>();
 
@@ -32,6 +39,7 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Tu
     private final ServerDomain serverDomain;
 
     private ConcurrentHashMap<Long, ClientRequest> requestMap = new ConcurrentHashMap<>();
+
 
     public TurtleServerHandler(ServerDomain serverDomain) {
 
@@ -42,7 +50,8 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Tu
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
         super.channelRegistered(ctx);
         logger.info("channel in {} is register", ctx.channel().remoteAddress());
-        clientMap.put(ctx.channel().id(), ctx.channel());
+        clientMap.put((InetSocketAddress)(ctx.channel().remoteAddress()), ctx.channel());
+
     }
 
 
@@ -106,7 +115,9 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Tu
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
         super.channelUnregistered(ctx);
-        clientMap.remove(ctx.channel().id());
+        InetSocketAddress inetSocketAddress=(InetSocketAddress) (ctx.channel().remoteAddress());
+        clientMap.remove(inetSocketAddress);
+        slaveSet.remove(inetSocketAddress);
         logger.info("channel unRegister");
     }
 
