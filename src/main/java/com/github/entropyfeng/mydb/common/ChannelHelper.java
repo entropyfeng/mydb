@@ -1,13 +1,17 @@
 package com.github.entropyfeng.mydb.common;
 
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.DataBody;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ReqHead;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResHead;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.TurtleData;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
 import com.google.protobuf.ByteString;
 import io.netty.channel.Channel;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -17,7 +21,7 @@ import java.util.List;
 public class ChannelHelper {
 
     public void writeChannel(Channel channel, Long requestId, ReqHead reqHead){
-        ProtoBuf.TurtleData.Builder resBuilder = ProtoBuf.TurtleData.newBuilder();
+        TurtleData.Builder resBuilder = TurtleData.newBuilder();
 
         //header
         resBuilder.setBeginAble(true);
@@ -28,7 +32,7 @@ public class ChannelHelper {
 
 
         //body,if body is empty ,skip it
-        ProtoBuf.DataBody.Builder bodyBuilder = ProtoBuf.DataBody.newBuilder();
+        DataBody.Builder bodyBuilder = DataBody.newBuilder();
         List<ProtoBuf.TurtleParaType> list = reqHead.getKeysList();
 
         for (int i = 0; i < list.size(); i++) {
@@ -42,8 +46,37 @@ public class ChannelHelper {
         channel.writeAndFlush(resBuilder.build());
     }
 
+
+    public static void send(Long requestId,Channel channel, ResHead resHead, ArrayList<DataBody>bodies){
+        TurtleData.Builder resBuilder= TurtleData.newBuilder();
+        resBuilder.setRequestId(requestId);
+        resBuilder.setBeginAble(true);
+        resBuilder.setEndAble(false);
+        resBuilder.setResHead(resHead);
+        channel.write(resBuilder);
+
+
+        bodies.forEach(dataBody -> {
+
+            resBuilder.clear();
+            resBuilder.setRequestId(requestId);
+            resBuilder.setDataBody(dataBody);
+            resBuilder.setBeginAble(false);
+            resBuilder.setEndAble(false);
+            channel.write(resBuilder);
+        });
+
+        resBuilder.clear();
+        resBuilder.setRequestId(requestId);
+        resBuilder.setBeginAble(false);
+        resBuilder.setEndAble(true);
+        channel.writeAndFlush(resBuilder);
+
+    }
+
+
     @SuppressWarnings("all")
-    private static void handleSingle(Channel channel, ProtoBuf.TurtleParaType type, Object object, int location, Long req.uestId, ProtoBuf.DataBody.Builder bodyBuilder, ProtoBuf.TurtleData.Builder resBuilder){
+    private static void handleSingle(Channel channel, ProtoBuf.TurtleParaType type, Object object, int location, Long requestId, DataBody.Builder bodyBuilder, TurtleData.Builder resBuilder){
 
         resBuilder.clear();
         resBuilder.setRequestId(requestId);
