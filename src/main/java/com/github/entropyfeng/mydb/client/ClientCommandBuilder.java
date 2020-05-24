@@ -111,6 +111,7 @@ public class ClientCommandBuilder {
             handleSingle(channel,list.get(i),objects.get(i),i,requestId,bodyBuilder,resBuilder);
         }
 
+        
         //end
         resBuilder.clear();
         resBuilder.setEndAble(true);
