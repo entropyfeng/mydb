@@ -89,6 +89,11 @@ public class ClientCommandBuilder {
     }
 
 
+    public void writeChanelX(Channel channel,Long requestId){
+
+        
+    }
+
 
     public void writeChannel(Channel channel,Long requestId) {
 
