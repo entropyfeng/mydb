@@ -20,39 +20,14 @@ import java.util.List;
  */
 public class ChannelHelper {
 
-    public void writeChannel(Channel channel, Long requestId, ReqHead reqHead){
-        TurtleData.Builder resBuilder = TurtleData.newBuilder();
-
-        //header
-        resBuilder.setBeginAble(true);
-
-        resBuilder.setReqHead(reqHead);
-        resBuilder.setRequestId(requestId);
-        channel.write(resBuilder.build());
 
 
-        //body,if body is empty ,skip it
-        DataBody.Builder bodyBuilder = DataBody.newBuilder();
-        List<ProtoBuf.TurtleParaType> list = reqHead.getKeysList();
-
-        for (int i = 0; i < list.size(); i++) {
-            handleSingle(channel,list.get(i),objects.get(i),i,requestId,bodyBuilder,resBuilder);
-        }
-
-        //end
-        resBuilder.clear();
-        resBuilder.setEndAble(true);
-        resBuilder.setRequestId(requestId);
-        channel.writeAndFlush(resBuilder.build());
-    }
-
-
-    public static void send(Long requestId,Channel channel, ResHead resHead, ArrayList<DataBody>bodies){
+    public static void writeChannel(Long requestId,Channel channel, ReqHead reqHead, ArrayList<DataBody>bodies){
         TurtleData.Builder resBuilder= TurtleData.newBuilder();
         resBuilder.setRequestId(requestId);
         resBuilder.setBeginAble(true);
         resBuilder.setEndAble(false);
-        resBuilder.setResHead(resHead);
+        resBuilder.setReqHead(reqHead);
         channel.write(resBuilder);
 
 

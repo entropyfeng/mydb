@@ -1,7 +1,9 @@
 package com.github.entropyfeng.mydb.client;
 
+import com.github.entropyfeng.mydb.common.ChannelHelper;
 import com.github.entropyfeng.mydb.common.TurtleModel;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.DataBody;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoModelHelper;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
 import com.github.entropyfeng.mydb.common.TurtleValue;
@@ -91,41 +93,134 @@ public class ClientCommandBuilder {
 
     public void writeChanelX(Channel channel,Long requestId){
 
-        
+      ArrayList<DataBody> bodies=  constructBodies();
+      ChannelHelper.writeChannel(requestId,channel,headBuilder.build(),bodies);
+
     }
 
+    public ArrayList<DataBody> constructBodies(){
 
-    public void writeChannel(Channel channel,Long requestId) {
+        ArrayList<DataBody> bodies=new ArrayList<>();
+        if (!objects.isEmpty()){
+            DataBody.Builder bodyBuilder=DataBody.newBuilder();
+            List<ProtoBuf.TurtleParaType> list = headBuilder.getKeysList();
 
+            for (int i = 0; i < objects.size(); i++) {
 
-        ProtoBuf.TurtleData.Builder resBuilder = ProtoBuf.TurtleData.newBuilder();
-
-        //header
-        resBuilder.setBeginAble(true);
-
-        resBuilder.setReqHead(headBuilder.build());
-        resBuilder.setRequestId(requestId);
-        channel.write(resBuilder.build());
-
-
-        //body,if body is empty ,skip it
-        ProtoBuf.DataBody.Builder bodyBuilder = ProtoBuf.DataBody.newBuilder();
-        List<ProtoBuf.TurtleParaType> list = headBuilder.getKeysList();
-
-        for (int i = 0; i < list.size(); i++) {
-            handleSingle(channel,list.get(i),objects.get(i),i,requestId,bodyBuilder,resBuilder);
+                handleSingle(list.get(i),objects.get(i),i,bodyBuilder,bodies);
+            }
         }
+  return bodies;
 
-        
-        //end
-        resBuilder.clear();
-        resBuilder.setEndAble(true);
-        resBuilder.setRequestId(requestId);
-        channel.writeAndFlush(resBuilder.build());
     }
 
 
 
+
+    @SuppressWarnings("all")
+    public static void handleSingle(ProtoBuf.TurtleParaType type, Object object, int location, DataBody.Builder bodyBuilder, ArrayList<DataBody> bodies){
+
+        bodyBuilder.clear();
+        switch (type){
+            case INTEGER:
+                bodyBuilder.setIntValue((Integer)object);
+                bodies.add(bodyBuilder.build());
+                break;
+            case DOUBLE:
+                bodyBuilder.setDoubleValue((Double)object);
+                bodies.add(bodyBuilder.build());
+                break;
+            case STRING:
+                bodyBuilder.setStringValue((String)object);
+                bodies.add(bodyBuilder.build());
+                break;
+            case LONG:
+                bodyBuilder.setLongValue((Long)object);
+                bodies.add(bodyBuilder.build());
+                break;
+            case BOOL:
+                bodyBuilder.setBoolValue((Boolean)object);
+                bodies.add(bodyBuilder.build());
+                break;
+            case TURTLE_VALUE:
+                bodyBuilder.setTurtleValue(ProtoTurtleHelper.convertToProto((TurtleValue)object));
+                bodies.add(bodyBuilder.build());
+                break;
+            case BYTES:
+                bodyBuilder.setBytesValue(ByteString.copyFrom((byte[])object));
+                bodies.add(bodyBuilder.build());
+                break;
+            case NUMBER_INTEGER:
+                bodyBuilder.setStringValue(object.toString());
+                bodies.add(bodyBuilder.build());
+                break;
+            case NUMBER_DECIMAL:
+                bodyBuilder.setStringValue(((BigDecimal)object).toPlainString());
+                bodies.add(bodyBuilder.build());
+                break;
+            case COLLECTION_DOUBLE:
+                ((Collection<Double>)object).forEach(aDouble -> {
+                    bodyBuilder.setDoubleValue(aDouble);
+                    bodyBuilder.setLocation(location);
+                    bodies.add(bodyBuilder.build());
+                });
+                break;
+            case COLLECTION_LONG:
+                ((Collection<Long>)object).forEach(aLong -> {
+                    bodyBuilder.setLongValue(aLong);
+                    bodyBuilder.setLocation(location);
+                    bodies.add(bodyBuilder.build());
+                });
+                break;
+            case COLLECTION_INTEGER:
+
+                ((Collection<Integer>)object).forEach(integer -> {
+                    bodyBuilder.setIntValue(integer);
+                    bodyBuilder.setLocation(location);
+                    bodies.add(bodyBuilder.build());
+                });
+                break;
+            case COLLECTION_NUMBER_DECIMAL:
+                ((Collection<BigDecimal>)object).forEach(bigDecimal -> {
+                    bodyBuilder.setStringValue(bigDecimal.toPlainString());
+                    bodyBuilder.setLocation(location);
+                    bodies.add(bodyBuilder.build());
+                });
+                break;
+
+            case COLLECTION_NUMBER_INTEGER:
+                ((Collection<BigInteger>)object).forEach(bigInteger -> {
+                    bodyBuilder.setLocation(location);
+                    bodyBuilder.setStringValue(bigInteger.toString());
+                    bodies.add(bodyBuilder.build());
+                });
+                break;
+            case COLLECTION_BYTES:
+                ((Collection<byte[]>)object).forEach(bytes -> {
+                    bodyBuilder.setLocation(location);
+                    bodyBuilder.setBytesValue(ByteString.copyFrom(bytes));
+                    bodies.add(bodyBuilder.build());
+                });
+                break;
+            case COLLECTION_STRING:
+                ((Collection<String>)object).forEach(s -> {
+                    bodyBuilder.setLocation(location);
+                    bodyBuilder.setStringValue(s);
+                    bodies.add(bodyBuilder.build());
+                });
+
+                break;
+            case COLLECTION_TURTLE_VALUE:
+                ((Collection<TurtleValue>)object).forEach(turtleValue -> {
+                    bodyBuilder.setLocation(location);
+                    bodyBuilder.setTurtleValue(ProtoTurtleHelper.convertToProto(turtleValue));
+                    bodies.add(bodyBuilder.build());
+                });
+                break;
+            default:throw new UnsupportedOperationException("un support para");
+
+        }
+    }
 
 
 }
