@@ -2,13 +2,14 @@ package com.github.entropyfeng.mydb.client;
 
 import com.github.entropyfeng.mydb.common.ChannelHelper;
 import com.github.entropyfeng.mydb.common.TurtleModel;
+import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.DataBody;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoModelHelper;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
-import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.google.protobuf.ByteString;
 import io.netty.channel.Channel;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -80,7 +81,7 @@ public class ClientCommandBuilder {
     }
 
     @SuppressWarnings("unused")
-    public void addStringCollectionPara(Collection<String> strings){
+    public void addStringCollectionPara(Collection<String> strings) {
         headBuilder.addKeys(ProtoBuf.TurtleParaType.COLLECTION_STRING);
         objects.add(strings);
     }
@@ -91,63 +92,61 @@ public class ClientCommandBuilder {
     }
 
 
-    public void writeChanelX(Channel channel,Long requestId){
+    public void writeChanelX(Channel channel, Long requestId) {
 
-      ArrayList<DataBody> bodies=  constructBodies();
-      ChannelHelper.writeChannel(requestId,channel,headBuilder.build(),bodies);
+        ArrayList<DataBody> bodies = constructBodies();
+        ChannelHelper.writeChannel(requestId, channel, headBuilder.build(), bodies);
 
     }
 
-    public ArrayList<DataBody> constructBodies(){
+    public ArrayList<DataBody> constructBodies() {
 
-        ArrayList<DataBody> bodies=new ArrayList<>();
-        if (!objects.isEmpty()){
-            DataBody.Builder bodyBuilder=DataBody.newBuilder();
+        ArrayList<DataBody> bodies = new ArrayList<>();
+        if (!objects.isEmpty()) {
+            DataBody.Builder bodyBuilder = DataBody.newBuilder();
             List<ProtoBuf.TurtleParaType> list = headBuilder.getKeysList();
 
             for (int i = 0; i < objects.size(); i++) {
 
-                handleSingle(list.get(i),objects.get(i),i,bodyBuilder,bodies);
+                handleSingle(list.get(i), objects.get(i), i, bodyBuilder, bodies);
             }
         }
-  return bodies;
+        return bodies;
 
     }
 
 
-
-
     @SuppressWarnings("all")
-    public static void handleSingle(ProtoBuf.TurtleParaType type, Object object, int location, DataBody.Builder bodyBuilder, ArrayList<DataBody> bodies){
+    public static void handleSingle(ProtoBuf.TurtleParaType type, Object object, int location, DataBody.Builder bodyBuilder, ArrayList<DataBody> bodies) {
 
         bodyBuilder.clear();
-        switch (type){
+        switch (type) {
             case INTEGER:
-                bodyBuilder.setIntValue((Integer)object);
+                bodyBuilder.setIntValue((Integer) object);
                 bodies.add(bodyBuilder.build());
                 break;
             case DOUBLE:
-                bodyBuilder.setDoubleValue((Double)object);
+                bodyBuilder.setDoubleValue((Double) object);
                 bodies.add(bodyBuilder.build());
                 break;
             case STRING:
-                bodyBuilder.setStringValue((String)object);
+                bodyBuilder.setStringValue((String) object);
                 bodies.add(bodyBuilder.build());
                 break;
             case LONG:
-                bodyBuilder.setLongValue((Long)object);
+                bodyBuilder.setLongValue((Long) object);
                 bodies.add(bodyBuilder.build());
                 break;
             case BOOL:
-                bodyBuilder.setBoolValue((Boolean)object);
+                bodyBuilder.setBoolValue((Boolean) object);
                 bodies.add(bodyBuilder.build());
                 break;
             case TURTLE_VALUE:
-                bodyBuilder.setTurtleValue(ProtoTurtleHelper.convertToProto((TurtleValue)object));
+                bodyBuilder.setTurtleValue(ProtoTurtleHelper.convertToProto((TurtleValue) object));
                 bodies.add(bodyBuilder.build());
                 break;
             case BYTES:
-                bodyBuilder.setBytesValue(ByteString.copyFrom((byte[])object));
+                bodyBuilder.setBytesValue(ByteString.copyFrom((byte[]) object));
                 bodies.add(bodyBuilder.build());
                 break;
             case NUMBER_INTEGER:
@@ -155,18 +154,18 @@ public class ClientCommandBuilder {
                 bodies.add(bodyBuilder.build());
                 break;
             case NUMBER_DECIMAL:
-                bodyBuilder.setStringValue(((BigDecimal)object).toPlainString());
+                bodyBuilder.setStringValue(((BigDecimal) object).toPlainString());
                 bodies.add(bodyBuilder.build());
                 break;
             case COLLECTION_DOUBLE:
-                ((Collection<Double>)object).forEach(aDouble -> {
+                ((Collection<Double>) object).forEach(aDouble -> {
                     bodyBuilder.setDoubleValue(aDouble);
                     bodyBuilder.setLocation(location);
                     bodies.add(bodyBuilder.build());
                 });
                 break;
             case COLLECTION_LONG:
-                ((Collection<Long>)object).forEach(aLong -> {
+                ((Collection<Long>) object).forEach(aLong -> {
                     bodyBuilder.setLongValue(aLong);
                     bodyBuilder.setLocation(location);
                     bodies.add(bodyBuilder.build());
@@ -174,14 +173,14 @@ public class ClientCommandBuilder {
                 break;
             case COLLECTION_INTEGER:
 
-                ((Collection<Integer>)object).forEach(integer -> {
+                ((Collection<Integer>) object).forEach(integer -> {
                     bodyBuilder.setIntValue(integer);
                     bodyBuilder.setLocation(location);
                     bodies.add(bodyBuilder.build());
                 });
                 break;
             case COLLECTION_NUMBER_DECIMAL:
-                ((Collection<BigDecimal>)object).forEach(bigDecimal -> {
+                ((Collection<BigDecimal>) object).forEach(bigDecimal -> {
                     bodyBuilder.setStringValue(bigDecimal.toPlainString());
                     bodyBuilder.setLocation(location);
                     bodies.add(bodyBuilder.build());
@@ -189,21 +188,21 @@ public class ClientCommandBuilder {
                 break;
 
             case COLLECTION_NUMBER_INTEGER:
-                ((Collection<BigInteger>)object).forEach(bigInteger -> {
+                ((Collection<BigInteger>) object).forEach(bigInteger -> {
                     bodyBuilder.setLocation(location);
                     bodyBuilder.setStringValue(bigInteger.toString());
                     bodies.add(bodyBuilder.build());
                 });
                 break;
             case COLLECTION_BYTES:
-                ((Collection<byte[]>)object).forEach(bytes -> {
+                ((Collection<byte[]>) object).forEach(bytes -> {
                     bodyBuilder.setLocation(location);
                     bodyBuilder.setBytesValue(ByteString.copyFrom(bytes));
                     bodies.add(bodyBuilder.build());
                 });
                 break;
             case COLLECTION_STRING:
-                ((Collection<String>)object).forEach(s -> {
+                ((Collection<String>) object).forEach(s -> {
                     bodyBuilder.setLocation(location);
                     bodyBuilder.setStringValue(s);
                     bodies.add(bodyBuilder.build());
@@ -211,13 +210,14 @@ public class ClientCommandBuilder {
 
                 break;
             case COLLECTION_TURTLE_VALUE:
-                ((Collection<TurtleValue>)object).forEach(turtleValue -> {
+                ((Collection<TurtleValue>) object).forEach(turtleValue -> {
                     bodyBuilder.setLocation(location);
                     bodyBuilder.setTurtleValue(ProtoTurtleHelper.convertToProto(turtleValue));
                     bodies.add(bodyBuilder.build());
                 });
                 break;
-            default:throw new UnsupportedOperationException("un support para");
+            default:
+                throw new UnsupportedOperationException("un support para");
 
         }
     }
