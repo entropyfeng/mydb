@@ -36,10 +36,6 @@ public class AsyClientExecute implements IClientExecute {
     public Pair<ResHead, Collection<DataBody>> execute(ClientCommandBuilder commandBuilder) {
 
 
-        if (channel != null && channel.isActive()) {
-            Long requestId = idPool.getAndIncrement();
-            commandBuilder.writeChannel(channel, requestId);
-        }
            throw new TurtleTimeOutException();
 
     }

@@ -92,7 +92,7 @@ public class ClientCommandBuilder {
     }
 
 
-    public void writeChanelX(Channel channel, Long requestId) {
+    public void writeChanel(Channel channel, Long requestId) {
 
         ArrayList<DataBody> bodies = constructBodies();
         ChannelHelper.writeChannel(requestId, channel, headBuilder.build(), bodies);

@@ -2,6 +2,7 @@ package com.github.entropyfeng.mydb.server;
 
 import com.github.entropyfeng.mydb.client.ClientCommandBuilder;
 import com.github.entropyfeng.mydb.client.conn.ClientExecute;
+import com.github.entropyfeng.mydb.common.ChannelHelper;
 import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.common.TurtleModel;
 import com.github.entropyfeng.mydb.common.ops.IAdminOperations;
@@ -21,6 +22,7 @@ import java.net.InetSocketAddress;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicLong;
 
 
 /**
@@ -185,13 +187,13 @@ public class AdminObject implements IAdminOperations {
 
         if (masterSlaveThread == null){
             masterSlaveThread = new MasterSlaveThreadFactory().newThread(() -> {
+                AtomicLong requestId=new AtomicLong(1);
                 ConcurrentLinkedQueue<ClientRequest> queue= TurtleServerHandler.masterQueue;
                 while (true){
+
                  ClientRequest request=   queue.poll();
                  if (request!=null){
-                     TurtleServerHandler.slaveSet.forEach(address->{
-                         TurtleServerHandler.clientMap.get(address).write(request.)
-                     });
+                     TurtleServerHandler.slaveSet.forEach(address-> ChannelHelper.writeChannel(requestId.getAndIncrement(),TurtleServerHandler.clientMap.get(address),request.getReqHead(),request.getDataBodies()));
 
                  }
                 }

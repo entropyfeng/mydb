@@ -2,6 +2,7 @@ package com.github.entropyfeng.mydb.client.conn;
 
 import com.github.entropyfeng.mydb.client.ClientCommandBuilder;
 import com.github.entropyfeng.mydb.client.TurtleClient;
+import com.github.entropyfeng.mydb.common.ChannelHelper;
 import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.common.exception.TurtleTimeOutException;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.DataBody;
@@ -39,7 +40,7 @@ public class ClientExecute implements IClientExecute {
         if (channel != null) {
             Pair<ResHead, Collection<DataBody>> responseData;
             Long requestId = idPool.getAndIncrement();
-            commandBuilder.writeChannel(channel, requestId);
+            commandBuilder.writeChanel(channel,requestId);
 
             //blocking....
             while (!globalMap.containsKey(requestId)) {

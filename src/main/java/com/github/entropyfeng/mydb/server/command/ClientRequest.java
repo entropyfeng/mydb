@@ -274,6 +274,11 @@ public class ClientRequest implements ICommand {
         return this.modify;
     }
 
+    public ArrayList<ProtoBuf.DataBody> getDataBodies() {
+        return dataBodies;
+    }
 
-
+    public ProtoBuf.ReqHead getReqHead() {
+        return reqHead;
+    }
 }
