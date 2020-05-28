@@ -3,7 +3,6 @@ package com.github.entropyfeng.mydb.common;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.DataBody;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ReqHead;
-import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResHead;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.TurtleData;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
 import com.google.protobuf.ByteString;
@@ -13,7 +12,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * @author entropyfeng
