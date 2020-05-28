@@ -31,5 +31,9 @@ public class TimeTest {
 
 
     }
+    @Test
+    public void test(){
+        System.out.println((long)1073741824*32);
+    }
 
 }

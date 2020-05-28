@@ -30,12 +30,6 @@ public class ConsumerLoop {
                     TurtleServerHandler.masterQueue.add(command);
                 }
                 execute(command, target);
-            } else {
-            /*    try {
-                    Thread.sleep(1);
-                } catch (InterruptedException e) {
-                    logger.error(e.getMessage());
-                }*/
             }
         }
     }

@@ -1,6 +1,5 @@
 package com.github.entropyfeng.mydb.client;
 
-import com.github.entropyfeng.mydb.client.conn.ClientExecute;
 import com.github.entropyfeng.mydb.client.conn.ClientThreadFactory;
 import com.github.entropyfeng.mydb.client.conn.IClientExecute;
 import com.github.entropyfeng.mydb.client.handler.TurtleClientChannelInitializer;
@@ -58,7 +57,6 @@ public class TurtleClient {
             doConnect();
         }).start();
     }
-
 
     private void doConnect() {
         if (countDownLatch==null){
