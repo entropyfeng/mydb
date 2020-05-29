@@ -5,12 +5,13 @@ import com.github.entropyfeng.mydb.client.TurtleClient;
 import com.github.entropyfeng.mydb.client.conn.ClientExecute;
 import com.github.entropyfeng.mydb.client.conn.IClientExecute;
 import com.github.entropyfeng.mydb.common.Pair;
-import com.github.entropyfeng.mydb.common.exception.TurtleTimeOutException;
 import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.DataBody;
@@ -33,15 +34,28 @@ public class AsyClientExecute implements IClientExecute {
     private Channel channel;
     private static final Logger logger = LoggerFactory.getLogger(ClientExecute.class);
 
-    public Pair<ResHead, Collection<DataBody>> execute(ClientCommandBuilder commandBuilder) {
+    private ConcurrentHashMap<Long,CompletableFuture<Pair<ResHead, Collection<DataBody>>>> futureMap=new ConcurrentHashMap<>();
+    public CompletableFuture<Pair<ResHead, Collection<DataBody>>> execute(ClientCommandBuilder commandBuilder) {
 
-
-           throw new TurtleTimeOutException();
+        Long requestId=idPool.getAndIncrement();
+        commandBuilder.writeChanel(channel,requestId);
+        CompletableFuture<Pair<ResHead, Collection<DataBody>>> future=new CompletableFuture<>();
+        futureMap.put(requestId,future);
+        return future;
 
     }
 
     @Override
     public void dispatch(Long responseId, Pair<ResHead, Collection<DataBody>> pair) {
 
+        CompletableFuture<Pair<ResHead, Collection<DataBody>>> future=  futureMap.remove(responseId);
+        if (future!=null){
+            future.complete(pair);
+        }
+    }
+    public  boolean closeClient(){
+        Channel channel = turtleClient.getChannel();
+        channel.close().syncUninterruptibly();
+        return true;
     }
 }
