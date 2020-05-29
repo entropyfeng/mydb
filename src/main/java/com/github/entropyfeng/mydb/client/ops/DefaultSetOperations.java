@@ -34,6 +34,7 @@ public class DefaultSetOperations implements SetOperations {
         return ClientResHelper.boolRes(pair);
     }
 
+
     @Override
     public void add(String key, TurtleValue value) {
         Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> pair = setOperations.add(key, value);
