@@ -159,7 +159,7 @@ public class ClientRequest implements ICommand {
                 objects.add(location, body.getIntValue());
                 break;
             case LONG:
-                objects.add(location, (Long)body.getLongValue());
+                objects.add(location, body.getLongValue());
                 break;
             case STRING:
                 objects.add(location, body.getStringValue());

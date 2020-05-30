@@ -110,8 +110,6 @@ public class AdminObject implements IAdminOperations {
     }
 
 
-
-
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> slaveOfServer(String host, Integer port) {
 
         MasterSlaveHelper.registerSlave(host, port);
@@ -122,8 +120,8 @@ public class AdminObject implements IAdminOperations {
 
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> exceptAcceptData(String host, Integer port) {
 
-        TurtleServerHandler.slaveSet.add(new InetSocketAddress(host,port));
-         newMasterThread();
+        TurtleServerHandler.slaveSet.add(new InetSocketAddress(host, port));
+        newMasterThread();
         return ResServerHelper.emptyRes();
     }
 
@@ -175,7 +173,7 @@ public class AdminObject implements IAdminOperations {
         return ResServerHelper.emptyRes();
     }
 
-    public void lazyMethod(Method valuesMethod, Method listMethod, Method setMethod, Method hashMethod, Method orderSetMethod) {
+    private void lazyMethod(Method valuesMethod, Method listMethod, Method setMethod, Method hashMethod, Method orderSetMethod) {
         serverDomain.valuesQueue.add(new ClientRequest(valuesMethod));
         serverDomain.listQueue.add(new ClientRequest(listMethod));
         serverDomain.setQueue.add(new ClientRequest(setMethod));
@@ -183,22 +181,20 @@ public class AdminObject implements IAdminOperations {
         serverDomain.orderSetQueue.add(new ClientRequest(orderSetMethod));
     }
 
+    /**
+     * 由于只有一个线程可运行这个函数，则不需要加锁
+     */
     private void newMasterThread() {
-
-        if (masterSlaveThread == null){
+        if (masterSlaveThread == null) {
             masterSlaveThread = new MasterSlaveThreadFactory().newThread(() -> {
-                AtomicLong requestId=new AtomicLong(1);
-                ConcurrentLinkedQueue<ClientRequest> queue= TurtleServerHandler.masterQueue;
-                while (true){
-
-                 ClientRequest request=   queue.poll();
-                 if (request!=null){
-                     TurtleServerHandler.slaveSet.forEach(address-> ChannelHelper.writeChannel(requestId.getAndIncrement(),TurtleServerHandler.clientMap.get(address),request.getReqHead(),request.getDataBodies()));
-
-                 }
+                AtomicLong requestId = new AtomicLong(1);
+                ConcurrentLinkedQueue<ClientRequest> queue = TurtleServerHandler.masterQueue;
+                while (true) {
+                    ClientRequest request = queue.poll();
+                    if (request != null) {
+                        TurtleServerHandler.slaveSet.forEach(address -> ChannelHelper.writeChannel(requestId.getAndIncrement(), TurtleServerHandler.clientMap.get(address), request.getReqHead(), request.getDataBodies()));
+                    }
                 }
-
-
 
 
             });

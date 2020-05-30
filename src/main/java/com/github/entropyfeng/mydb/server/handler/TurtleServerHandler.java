@@ -7,19 +7,14 @@ import com.github.entropyfeng.mydb.server.ServerDomain;
 import com.github.entropyfeng.mydb.server.command.ClientRequest;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelId;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.channel.unix.DomainSocketAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ConcurrentSkipListSet;
 
 
 /**
@@ -29,12 +24,17 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Tu
     private static final Logger logger = LoggerFactory.getLogger(TurtleServerHandler.class);
 
 
-    public static ConcurrentHashMap<InetSocketAddress,Channel> clientMap = new ConcurrentHashMap<>();
+    /**
+     * 所有客户端的集合
+     */
+    public static ConcurrentHashMap<InetSocketAddress, Channel> clientMap = new ConcurrentHashMap<>();
 
-    public static Set<InetSocketAddress> slaveSet=ConcurrentHashMap.newKeySet();
+    public static Set<InetSocketAddress> slaveSet = ConcurrentHashMap.newKeySet();
 
+    /**
+     * 主从同步队列
+     */
     public static ConcurrentLinkedQueue<ClientRequest> masterQueue = new ConcurrentLinkedQueue<>();
-
 
     private final ServerDomain serverDomain;
 
@@ -50,7 +50,7 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Tu
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
         super.channelRegistered(ctx);
         logger.info("channel in {} is register", ctx.channel().remoteAddress());
-        clientMap.put((InetSocketAddress)(ctx.channel().remoteAddress()), ctx.channel());
+        clientMap.put((InetSocketAddress) (ctx.channel().remoteAddress()), ctx.channel());
 
     }
 
@@ -65,6 +65,7 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Tu
     /**
      * requests sent by the  same clients ,
      * netty can assure these command be handled by server orderly
+     *
      * @param ctx {@link ChannelHandlerContext}
      * @param msg {@link ProtoBuf.TurtleData}
      */
@@ -109,22 +110,22 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Tu
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         super.channelInactive(ctx);
-        logger.info("channel InActive");
+        logger.info("channel at {} InActive", ctx.channel().remoteAddress());
     }
 
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
         super.channelUnregistered(ctx);
-        InetSocketAddress inetSocketAddress=(InetSocketAddress) (ctx.channel().remoteAddress());
+        InetSocketAddress inetSocketAddress = (InetSocketAddress) (ctx.channel().remoteAddress());
         clientMap.remove(inetSocketAddress);
         slaveSet.remove(inetSocketAddress);
-        logger.info("channel unRegister");
+        logger.info("channel at {} unRegister", ctx.channel().remoteAddress());
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         super.exceptionCaught(ctx, cause);
         requestMap.clear();
-        logger.info("exceptionCaught");
+        logger.info("channel at  {} exceptionCaught ->{}", ctx.channel().remoteAddress(), cause);
     }
 }

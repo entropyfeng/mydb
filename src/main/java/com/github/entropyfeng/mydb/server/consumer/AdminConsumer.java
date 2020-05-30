@@ -23,6 +23,7 @@ public class AdminConsumer implements Runnable {
         this.queue = queue;
     }
 
+    @SuppressWarnings("InfiniteLoopStatement")
     @Override
     public void run() {
         logger.info("run admin Thread");
@@ -30,14 +31,6 @@ public class AdminConsumer implements Runnable {
             ClientRequest adminCommand = queue.poll();
             if (adminCommand != null) {
                 execute(adminCommand, adminObject);
-
-
-            } else {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
             }
         }
     }
