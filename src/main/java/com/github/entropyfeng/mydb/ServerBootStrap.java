@@ -30,7 +30,6 @@ public class ServerBootStrap {
 
     public static void main(String[] args)  {
 
-
         try {
             if (!createDumpFolder()){
 

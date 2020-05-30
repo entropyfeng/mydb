@@ -2,6 +2,8 @@ package com.github.entropyfeng.mydb.server.command;
 
 import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.DataBody;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResHead;
 import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +19,7 @@ public class ServerExecute {
 
     public static Logger logger = LoggerFactory.getLogger(ServerExecute.class);
 
-    private static void writeChannel(Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> pair, Channel channel, Long requestId) {
+    private static void writeChannel(Pair<ResHead, Collection<DataBody>> pair, Channel channel, Long requestId) {
 
         //-----------header-------------------------
         ProtoBuf.TurtleData.Builder responseBuilder = ProtoBuf.TurtleData.newBuilder();
@@ -42,11 +44,16 @@ public class ServerExecute {
         responseBuilder.setRequestId(requestId);
         responseBuilder.setEndAble(true);
         responseBuilder.setBeginAble(false);
-        channel.write(responseBuilder.build());
-        channel.flush();
+        channel.writeAndFlush(responseBuilder.build());
+
     }
 
 
+    /**
+     * 执行对应的命令
+     * @param command {@link ICommand}
+     * @param target 将要对何种数据结构执行操作
+     */
     @SuppressWarnings("unchecked")
     public static void execute(ICommand command, Object target) {
 
@@ -58,6 +65,7 @@ public class ServerExecute {
                 res = command.getMethod().invoke(target, command.getValues().toArray(new Object[0]));
             }
         } catch (IllegalAccessException e) {
+            //当前channel为空时，不得对其写入
             if (command.getChannel() == null) {
                 logger.error("server request error {}", e.getMessage());
                 return;
@@ -78,14 +86,14 @@ public class ServerExecute {
         if (command.getChannel() == null) {
             return;
         }
-        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> pair = ((Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>>) res);
+        Pair<ResHead, Collection<DataBody>> pair = ((Pair<ResHead, Collection<DataBody>>) res);
 
         writeChannel(pair, command.getChannel(), command.getRequestId());
     }
 
 
     public static void exceptionWrite(Channel channel, Long requestId, ProtoBuf.ExceptionType exceptionType, String msg) {
-        ProtoBuf.ResHead.Builder headBuilder = ProtoBuf.ResHead.newBuilder();
+        ResHead.Builder headBuilder = ResHead.newBuilder();
         headBuilder.setSuccess(false);
         headBuilder.setResSize(0);
         headBuilder.setInnerException(msg);

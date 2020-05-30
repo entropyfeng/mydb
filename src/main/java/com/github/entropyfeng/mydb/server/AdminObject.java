@@ -42,34 +42,15 @@ public class AdminObject implements IAdminOperations {
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> lazyClear() {
-        try {
-            Method valuesMethod = ValuesDomain.class.getMethod("clear");
-            Method listMethod = ListDomain.class.getMethod("clear");
-            Method setMethod = ListDomain.class.getMethod("clear");
-            Method hashMethod = ListDomain.class.getMethod("clear");
-            Method orderSetMethod = OrderSetDomain.class.getMethod("clear");
-            lazyMethod(valuesMethod, listMethod, setMethod, hashMethod, orderSetMethod);
-        } catch (NoSuchMethodException e) {
-            logger.error("not find method->{}", e.getMessage());
-        }
-
+        lazyMethod("clear");
         return ResServerHelper.emptyRes();
     }
 
     @Override
     @NotNull
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> lazyDump() {
-        try {
-            Method valuesMethod = ValuesDomain.class.getMethod("dump");
-            Method listMethod = ListDomain.class.getMethod("dump");
-            Method setMethod = SetDomain.class.getMethod("dump");
-            Method hashMethod = HashDomain.class.getMethod("dump");
-            Method orderSetMethod = OrderSetDomain.class.getMethod("dump");
-            lazyMethod(valuesMethod, listMethod, setMethod, hashMethod, orderSetMethod);
-        } catch (NoSuchMethodException e) {
-            logger.error("not find method->{}", e.getMessage());
-        }
 
+        lazyMethod("dump");
         return ResServerHelper.emptyRes();
     }
 
@@ -173,13 +154,29 @@ public class AdminObject implements IAdminOperations {
         return ResServerHelper.emptyRes();
     }
 
-    private void lazyMethod(Method valuesMethod, Method listMethod, Method setMethod, Method hashMethod, Method orderSetMethod) {
-        serverDomain.valuesQueue.add(new ClientRequest(valuesMethod));
-        serverDomain.listQueue.add(new ClientRequest(listMethod));
-        serverDomain.setQueue.add(new ClientRequest(setMethod));
-        serverDomain.hashQueue.add(new ClientRequest(hashMethod));
-        serverDomain.orderSetQueue.add(new ClientRequest(orderSetMethod));
+    private void lazyMethod(String methodName) {
+
+        try {
+            Method valuesMethod = ValuesDomain.class.getMethod(methodName);
+            Method listMethod = ListDomain.class.getMethod(methodName);
+            Method setMethod = SetDomain.class.getMethod(methodName);
+            Method hashMethod = HashDomain.class.getMethod(methodName);
+            Method orderSetMethod = OrderSetDomain.class.getMethod(methodName);
+
+            //-------------------------------------------------------------------
+            serverDomain.valuesQueue.add(new ClientRequest(valuesMethod));
+            serverDomain.listQueue.add(new ClientRequest(listMethod));
+            serverDomain.setQueue.add(new ClientRequest(setMethod));
+            serverDomain.hashQueue.add(new ClientRequest(hashMethod));
+            serverDomain.orderSetQueue.add(new ClientRequest(orderSetMethod));
+
+        } catch (NoSuchMethodException e) {
+            logger.error("not find method->{}", e.getMessage());
+        }
+
     }
+
+
 
     /**
      * 由于只有一个线程可运行这个函数，则不需要加锁
