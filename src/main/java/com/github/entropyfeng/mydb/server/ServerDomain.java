@@ -6,7 +6,6 @@ import com.github.entropyfeng.mydb.server.consumer.*;
 import com.github.entropyfeng.mydb.server.domain.*;
 import com.github.entropyfeng.mydb.server.factory.*;
 import com.github.entropyfeng.mydb.server.persistence.PersistenceObjectDomain;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -147,20 +146,20 @@ public class ServerDomain {
         this.orderSetThread.notifyAll();
     }
 
+
     /**
-     * use empty domain to replace the old domains, all blocking queue will remain
-     *
-     * @param valuesDomain   {@link ValuesDomain}
-     * @param listDomain     {@link ListDomain}
-     * @param setDomain      {@link SetDomain}
-     * @param hashDomain     {@link HashDomain}
-     * @param orderSetDomain {@link OrderSetDomain}
+     * use masterServer's domain to replace the old domains
+     * and reconstruct all values blocking queue
+     * @param domain {@link PersistenceObjectDomain}
      */
-    public void replace(@NotNull ValuesDomain valuesDomain,@NotNull ListDomain listDomain, @NotNull SetDomain setDomain, @NotNull HashDomain hashDomain, @NotNull OrderSetDomain orderSetDomain) {
-        this.valuesDomain = valuesDomain;
-        this.listDomain = listDomain;
-        this.setDomain = setDomain;
-        this.hashDomain = hashDomain;
-        this.orderSetDomain = orderSetDomain;
+    public void replace(PersistenceObjectDomain domain){
+        this.valuesDomain=domain.getValuesDomain();
+        this.listDomain=domain.getListDomain();
+        this.setDomain=domain.getSetDomain();
+        this.hashDomain=domain.getHashDomain();
+        this.orderSetDomain=domain.getOrderSetDomain();
+
+        constructQueue();
     }
+
 }

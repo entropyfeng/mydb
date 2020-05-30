@@ -1,10 +1,13 @@
 package com.github.entropyfeng.mydb.server.handler;
 
+import com.github.entropyfeng.mydb.client.conn.ClientExecute;
 import com.github.entropyfeng.mydb.common.exception.TurtleValueElementOutBoundsException;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.server.ResServerHelper;
 import com.github.entropyfeng.mydb.server.ServerDomain;
 import com.github.entropyfeng.mydb.server.command.ClientRequest;
+import com.github.entropyfeng.mydb.server.ms.CommandTransFactory;
+import com.github.entropyfeng.mydb.server.ms.CommandTransTask;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -31,6 +34,8 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Tu
 
     public static Set<InetSocketAddress> slaveSet = ConcurrentHashMap.newKeySet();
 
+    private static Thread commandTransThread;
+
     /**
      * 主从同步队列
      */
@@ -40,6 +45,7 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Tu
 
     private ConcurrentHashMap<Long, ClientRequest> requestMap = new ConcurrentHashMap<>();
 
+    private static ConcurrentHashMap<InetSocketAddress, ClientExecute> exeMap=new ConcurrentHashMap<>();
 
     public TurtleServerHandler(ServerDomain serverDomain) {
 
@@ -127,5 +133,16 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Tu
         super.exceptionCaught(ctx, cause);
         requestMap.clear();
         logger.info("channel at  {} exceptionCaught ->{}", ctx.channel().remoteAddress(), cause);
+    }
+
+    public static void registerSlaveServer(String host,Integer port){
+
+        if (commandTransThread==null){
+            CommandTransTask task=new CommandTransTask(exeMap,masterQueue);
+            commandTransThread=new CommandTransFactory().newThread(task);
+        }
+        ClientExecute clientExecute=new ClientExecute(host, port);
+        exeMap.put(new InetSocketAddress(host,port),clientExecute);
+
     }
 }

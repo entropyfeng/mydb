@@ -61,7 +61,7 @@ public class AdminObject implements IAdminOperations {
     }
 
     /**
-     * appear at salve server
+     * appear only at salve server
      * 从服务器向主服务器发送请求，连接由从服务器主动创建
      *
      * @param host the host of the destination server
@@ -73,27 +73,29 @@ public class AdminObject implements IAdminOperations {
 
 
         //从服务器向主服务器请求转储文件
-        ClientCommandBuilder clientCommandBuilder = new ClientCommandBuilder(TurtleModel.ADMIN, "slaveOfServer");
-        clientCommandBuilder.addStringPara(ServerConfig.serverHost);
-        clientCommandBuilder.addIntegerPara(ServerConfig.port);
+        ClientCommandBuilder clientCommandBuilder = new ClientCommandBuilder(TurtleModel.ADMIN, "slaveRequestDump");
 
         ClientExecute clientExecute = new ClientExecute(host, port);
 
         Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> pair = clientExecute.execute(clientCommandBuilder);
         PersistenceObjectDomain domain = PersistenceHelper.dumpAndReLoadFromPair(pair);
-        serverDomain.replace(domain.getValuesDomain(), domain.getListDomain(), domain.getSetDomain(), domain.getHashDomain(), domain.getOrderSetDomain());
-        //-------
+        serverDomain.replace(domain);
+        //-------向主服务器发送从服务器IP与端口
         ClientCommandBuilder commandBuilder = new ClientCommandBuilder(TurtleModel.ADMIN, "exceptAcceptData");
         clientCommandBuilder.addStringPara(ServerConfig.serverHost);
         clientCommandBuilder.addIntegerPara(ServerConfig.port);
         clientExecute.execute(commandBuilder);
+        clientExecute.closeClient();
         return ResServerHelper.emptyRes();
     }
 
 
-    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> slaveOfServer(String host, Integer port) {
+    /**
+     * 从服务器向主服务器请求发送转储文件
+     * @return 向从服务器返回转储文件
+     */
+    public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> slaveRequestDump() {
 
-        MasterSlaveHelper.registerSlave(host, port);
         dump();
         return PersistenceHelper.transDumpFile();
 
@@ -102,30 +104,32 @@ public class AdminObject implements IAdminOperations {
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> exceptAcceptData(String host, Integer port) {
 
         TurtleServerHandler.slaveSet.add(new InetSocketAddress(host, port));
-        newMasterThread();
+
+        TurtleServerHandler.registerSlaveServer(host, port);
         return ResServerHelper.emptyRes();
     }
 
     @NotNull
     @Override
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> clear() {
-        logger.info("clear begin");
-        logger.info("all consumer threads will blocking");
+
+        logger.info("clear begin and all consumer threads will blocking");
         ServerConfig.serverBlocking.set(true);
 
         try {
             ServerConfig.threadCountDown.await();
-            logger.info("all consumer threads is blocking");
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        logger.info("all consumer threads is blocked");
         PersistenceHelper.clearAll(serverDomain);
 
         ServerConfig.threadCountDown = new CountDownLatch(5);
         ServerConfig.serverBlocking.set(false);
         serverDomain.notifyAllValuesThread();
 
-        logger.info("clear end");
+        logger.info("clear en and all consumer thread will resume.");
         return ResServerHelper.emptyRes();
 
     }
@@ -154,6 +158,10 @@ public class AdminObject implements IAdminOperations {
         return ResServerHelper.emptyRes();
     }
 
+    /**
+     * 向各个阻塞队列{如 values list set hash orderSet}中插入相关命令
+     * @param methodName 所有对象都具备的函数名
+     */
     private void lazyMethod(String methodName) {
 
         try {
@@ -177,25 +185,5 @@ public class AdminObject implements IAdminOperations {
     }
 
 
-
-    /**
-     * 由于只有一个线程可运行这个函数，则不需要加锁
-     */
-    private void newMasterThread() {
-        if (masterSlaveThread == null) {
-            masterSlaveThread = new MasterSlaveThreadFactory().newThread(() -> {
-                AtomicLong requestId = new AtomicLong(1);
-                ConcurrentLinkedQueue<ClientRequest> queue = TurtleServerHandler.masterQueue;
-                while (true) {
-                    ClientRequest request = queue.poll();
-                    if (request != null) {
-                        TurtleServerHandler.slaveSet.forEach(address -> ChannelHelper.writeChannel(requestId.getAndIncrement(), TurtleServerHandler.clientMap.get(address), request.getReqHead(), request.getDataBodies()));
-                    }
-                }
-
-
-            });
-        }
-    }
 
 }

@@ -17,4 +17,6 @@ public final class CommonException {
     public static final String NO_SUCH_ELEMENT="java.util.NoSuchElementException";
 
     public static final String NULL_POINTER="java.lang.NullPointerException";
+
+
 }

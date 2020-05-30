@@ -5,8 +5,10 @@ import com.github.entropyfeng.mydb.client.TurtleClient;
 import com.github.entropyfeng.mydb.common.ChannelHelper;
 import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.common.exception.TurtleTimeOutException;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.DataBody;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResHead;
+import com.github.entropyfeng.mydb.server.command.ClientRequest;
 import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,8 +36,11 @@ public class ClientExecute implements IClientExecute {
 
     private  ConcurrentHashMap<Long, Pair<ResHead, Collection<DataBody>>> globalMap ;
 
-    public  Pair<ResHead, Collection<DataBody>> execute(ClientCommandBuilder commandBuilder) {
+    public void commandTrans(ClientRequest request){
 
+    }
+
+    public  Pair<ResHead, Collection<DataBody>> execute(ClientCommandBuilder commandBuilder) {
 
         if (channel != null) {
             Pair<ResHead, Collection<DataBody>> responseData;
@@ -57,7 +62,7 @@ public class ClientExecute implements IClientExecute {
 
     public  boolean closeClient(){
         Channel channel = turtleClient.getChannel();
-
+        channel.flush();
         channel.close().syncUninterruptibly();
 
         return true;
@@ -67,4 +72,5 @@ public class ClientExecute implements IClientExecute {
 
         globalMap.put(responseId, pair);
     }
+
 }
