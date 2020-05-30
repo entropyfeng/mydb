@@ -1,5 +1,6 @@
 package com.github.entropyfeng.mydb.server.domain;
 
+import com.github.entropyfeng.mydb.common.StringLongPair;
 import com.github.entropyfeng.mydb.server.util.TimeUtil;
 import org.jetbrains.annotations.NotNull;
 

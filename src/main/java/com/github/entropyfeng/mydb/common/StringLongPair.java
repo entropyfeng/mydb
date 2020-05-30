@@ -1,4 +1,4 @@
-package com.github.entropyfeng.mydb.server.domain;
+package com.github.entropyfeng.mydb.common;
 
 import org.jetbrains.annotations.NotNull;
 

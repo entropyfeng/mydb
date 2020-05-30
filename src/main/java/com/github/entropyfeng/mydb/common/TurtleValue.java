@@ -87,6 +87,7 @@ public class TurtleValue implements Comparable<TurtleValue> {
 
     }
 
+
     public void increment(Long longValue) throws UnsupportedOperationException {
 
         switch (type) {
