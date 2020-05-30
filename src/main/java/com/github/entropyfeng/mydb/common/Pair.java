@@ -8,10 +8,11 @@ import java.util.Map;
  * @author entropyfeng
  * @date 2020/3/6 17:02
  */
-public class Pair<K,V>implements Map.Entry<K,V> {
+public class Pair<K, V> implements Map.Entry<K, V> {
 
     private K key;
     private V value;
+
     public Pair(K key, V value) {
         this.key = key;
         this.value = value;
@@ -33,17 +34,17 @@ public class Pair<K,V>implements Map.Entry<K,V> {
 
     @Override
     public V setValue(V value) {
-        V old=this.value;
+        V old = this.value;
         this.value = value;
         return old;
     }
 
     @Override
     public boolean equals(Object object) {
-        if (this == object){
+        if (this == object) {
             return true;
         }
-        if (!(object instanceof Pair)){
+        if (!(object instanceof Pair)) {
             return false;
         }
         Pair<?, ?> pair = (Pair<?, ?>) object;

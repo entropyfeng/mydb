@@ -33,6 +33,13 @@ public class CommonUtil {
         }
         return properties;
     }
+
+    /**
+     * 从配置文件中读取整型信息
+     * @param properties {@link Properties}
+     * @param paraName 参数名
+     * @return 参数所对应的值
+     */
     public static Integer getIntegerProperty(Properties properties,String paraName){
         return new Integer(properties.getProperty(paraName));
     }

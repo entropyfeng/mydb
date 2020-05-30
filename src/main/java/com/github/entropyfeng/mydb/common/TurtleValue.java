@@ -3,7 +3,6 @@ package com.github.entropyfeng.mydb.common;
 import com.github.entropyfeng.mydb.common.util.BytesUtil;
 import com.google.common.base.Charsets;
 import com.google.common.hash.Hashing;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInputStream;
@@ -115,13 +114,14 @@ public class TurtleValue implements Comparable<TurtleValue> {
         }
     }
 
+
     public void increment(Integer intValue) throws UnsupportedOperationException {
         switch (type) {
             case INTEGER:
-                this.value = ((Integer) value) + intValue;
+                this.value = (Integer) value + intValue;
                 return;
             case LONG:
-                this.value = ((Long) value) + intValue;
+                this.value = (Long) value + intValue;
                 return;
             case NUMBER_INTEGER:
                 this.value = ((BigInteger) value).add(BigInteger.valueOf(intValue));
@@ -165,7 +165,6 @@ public class TurtleValue implements Comparable<TurtleValue> {
         }
     }
 
-    @SuppressWarnings("redundant")
     public void increment(Double doubleValue) throws UnsupportedOperationException {
         switch (type) {
             case DOUBLE:
@@ -201,6 +200,10 @@ public class TurtleValue implements Comparable<TurtleValue> {
         }
     }
 
+    /**
+     * 将当前类型转换为{@link BigDecimal}类型
+     * 若为bytes则抛出{@link UnsupportedOperationException}
+     */
     private void convertToBigDecimal() {
         switch (type) {
             case DOUBLE:
@@ -322,7 +325,6 @@ public class TurtleValue implements Comparable<TurtleValue> {
     }
 
     @NotNull
-    @Contract("_, _ -> new")
     public static TurtleValue fromDisk(TurtleValueType type, byte[] bytes){
         return new TurtleValue(bytes,type);
     }

@@ -14,7 +14,6 @@ public class NetUtil {
      * @return false->端口号合法
      * true->端口号合法
      */
-    @SuppressWarnings("all")
     public static boolean isLegalPort(String port) {
         int tempPort;
         try {
@@ -42,7 +41,6 @@ public class NetUtil {
      * @param host ip地址
      * @return true->合法 false->不合法
      */
-    @SuppressWarnings("all")
     public static boolean isLegalHost(String host) {
 
         return host!=null&&(io.netty.util.NetUtil.isValidIpV4Address(host)||io.netty.util.NetUtil.isValidIpV6Address(host));
