@@ -81,7 +81,6 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<TurtleData>
 
         Pair<ResHead,Collection<DataBody>> pair=res.remove(responseId);
         if (pair!=null){
-
             clientExecute.dispatch(responseId,pair);
         }
     }

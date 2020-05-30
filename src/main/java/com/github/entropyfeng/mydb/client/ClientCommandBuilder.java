@@ -9,6 +9,8 @@ import com.github.entropyfeng.mydb.common.protobuf.ProtoModelHelper;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoTurtleHelper;
 import com.google.protobuf.ByteString;
 import io.netty.channel.Channel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -24,6 +26,7 @@ public class ClientCommandBuilder {
     private ArrayList<Object> objects = new ArrayList<>();
     private ProtoBuf.ReqHead.Builder headBuilder = ProtoBuf.ReqHead.newBuilder();
 
+    private static final Logger logger= LoggerFactory.getLogger(ClientCommandBuilder.class);
     public ClientCommandBuilder(TurtleModel turtleModel, String operationName) {
         headBuilder.setModel(ProtoModelHelper.convertToProtoTurtleModel(turtleModel));
         headBuilder.setOperationName(operationName);
@@ -111,6 +114,7 @@ public class ClientCommandBuilder {
                 handleSingle(list.get(i), objects.get(i), i, bodyBuilder, bodies);
             }
         }
+
         return bodies;
 
     }
@@ -123,38 +127,47 @@ public class ClientCommandBuilder {
         switch (type) {
             case INTEGER:
                 bodyBuilder.setIntValue((Integer) object);
+                bodyBuilder.setLocation(location);
                 bodies.add(bodyBuilder.build());
                 break;
             case DOUBLE:
                 bodyBuilder.setDoubleValue((Double) object);
+                bodyBuilder.setLocation(location);
                 bodies.add(bodyBuilder.build());
                 break;
             case STRING:
                 bodyBuilder.setStringValue((String) object);
+                bodyBuilder.setLocation(location);
                 bodies.add(bodyBuilder.build());
                 break;
             case LONG:
                 bodyBuilder.setLongValue((Long) object);
+                bodyBuilder.setLocation(location);
                 bodies.add(bodyBuilder.build());
                 break;
             case BOOL:
                 bodyBuilder.setBoolValue((Boolean) object);
+                bodyBuilder.setLocation(location);
                 bodies.add(bodyBuilder.build());
                 break;
             case TURTLE_VALUE:
                 bodyBuilder.setTurtleValue(ProtoTurtleHelper.convertToProto((TurtleValue) object));
+                bodyBuilder.setLocation(location);
                 bodies.add(bodyBuilder.build());
                 break;
             case BYTES:
                 bodyBuilder.setBytesValue(ByteString.copyFrom((byte[]) object));
+                bodyBuilder.setLocation(location);
                 bodies.add(bodyBuilder.build());
                 break;
             case NUMBER_INTEGER:
                 bodyBuilder.setStringValue(object.toString());
+                bodyBuilder.setLocation(location);
                 bodies.add(bodyBuilder.build());
                 break;
             case NUMBER_DECIMAL:
                 bodyBuilder.setStringValue(((BigDecimal) object).toPlainString());
+                bodyBuilder.setLocation(location);
                 bodies.add(bodyBuilder.build());
                 break;
             case COLLECTION_DOUBLE:

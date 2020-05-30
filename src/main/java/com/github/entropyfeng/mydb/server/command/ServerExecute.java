@@ -57,6 +57,9 @@ public class ServerExecute {
             if (command.getValues()==null||command.getValues().size() == 0) {
                 res = command.getMethod().invoke(target);
             } else {
+
+                logger.info(command.getMethod().toString());
+                command.getValues().forEach(o -> logger.info("{},{}",o.getClass().getSimpleName(),o.toString()));
                 res = command.getMethod().invoke(target, command.getValues().toArray(new Object[0]));
             }
         } catch (IllegalAccessException e) {

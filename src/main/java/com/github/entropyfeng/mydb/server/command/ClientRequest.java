@@ -57,8 +57,8 @@ public class ClientRequest implements ICommand {
         final int size = typeList.size();
         this.types = new ArrayList<>(size);
         this.objects = new ArrayList<>(size);
-        this.dataBodies=new ArrayList<>(size);
-        this.reqHead=header;
+        this.dataBodies = new ArrayList<>(size);
+        this.reqHead = header;
         //construct typeList
         for (int i = 0; i < size; i++) {
 
@@ -67,10 +67,10 @@ public class ClientRequest implements ICommand {
                     types.add(Integer.class);
                     break;
                 case BOOL:
-                  types.add(Boolean.class);
+                    types.add(Boolean.class);
                     break;
                 case LONG:
-                  types.add(Long.class);
+                    types.add(Long.class);
                     break;
                 case STRING:
                     types.add(String.class);
@@ -85,10 +85,10 @@ public class ClientRequest implements ICommand {
                     types.add(byte[].class);
                     break;
                 case NUMBER_DECIMAL:
-                   types.add(BigDecimal.class);
+                    types.add(BigDecimal.class);
                     break;
                 case NUMBER_INTEGER:
-                  types.add(BigInteger.class);
+                    types.add(BigInteger.class);
                     break;
                 case COLLECTION_INTEGER:
                     objects.add(i, new ArrayList<Integer>());
@@ -129,17 +129,17 @@ public class ClientRequest implements ICommand {
 
     }
 
-    public ClientRequest(@NotNull Method method){
+    public ClientRequest(@NotNull Method method) {
         this.operationName = null;
         this.typeList = null;
-        this.types=null;
-        this.requestId =null;
+        this.types = null;
+        this.requestId = null;
         this.model = null;
         this.modify = false;
         this.channel = null;
-        this.reqHead=null;
-        this.method=method;
-        this.objects=new ArrayList<>(0);
+        this.reqHead = null;
+        this.method = method;
+        this.objects = new ArrayList<>(0);
 
     }
 
@@ -150,7 +150,7 @@ public class ClientRequest implements ICommand {
         int location = body.getLocation();
         switch (typeList.get(location)) {
             case DOUBLE:
-                objects.add(location, body.getDoubleValue());
+                objects.add(body.getDoubleValue());
                 break;
             case BOOL:
                 objects.add(location, body.getBoolValue());
@@ -159,7 +159,7 @@ public class ClientRequest implements ICommand {
                 objects.add(location, body.getIntValue());
                 break;
             case LONG:
-                objects.add(location, body.getLongValue());
+                objects.add(location, (Long)body.getLongValue());
                 break;
             case STRING:
                 objects.add(location, body.getStringValue());

@@ -25,6 +25,7 @@ public class ConsumerLoop {
 
             handleServerBlocking(target);
             ClientRequest command = queue.poll();
+
             if (command != null) {
                 if (command.getModify() && ServerConfig.masterSlaveFlag.get()) {
                     TurtleServerHandler.masterQueue.add(command);

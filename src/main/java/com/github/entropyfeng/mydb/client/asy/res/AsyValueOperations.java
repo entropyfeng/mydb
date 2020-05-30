@@ -18,10 +18,11 @@ import static com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResHead;
  */
 public class AsyValueOperations {
 
-    public AsyValueOperations(String host,Integer port){
-        execute=new AsyClientExecute(host, port);
+    public AsyValueOperations(String host, Integer port) {
+        execute = new AsyClientExecute(host, port);
     }
-   private AsyClientExecute execute;
+
+    private AsyClientExecute execute;
 
     public CompletableFuture<Pair<ResHead, Collection<DataBody>>> set(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time) {
 
@@ -30,6 +31,12 @@ public class AsyValueOperations {
         builder.addTurtlePara(value);
         builder.addLongPara(time);
         builder.setModifyAble(true);
+        return execute.execute(builder);
+    }
+
+    public CompletableFuture<Pair<ResHead, Collection<DataBody>>> get(@NotNull String key) {
+        ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.VALUE, "get");
+        builder.addStringPara(key);
         return execute.execute(builder);
     }
 }
