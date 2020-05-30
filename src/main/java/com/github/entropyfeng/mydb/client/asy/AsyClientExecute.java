@@ -39,7 +39,6 @@ public class AsyClientExecute implements IClientExecute {
 
         Long requestId=idPool.getAndIncrement();
         commandBuilder.writeChanel(channel,requestId);
-        logger.info("{},{}",channel.isActive(),channel.isWritable());
         CompletableFuture<Pair<ResHead, Collection<DataBody>>> future=new CompletableFuture<>();
         futureMap.put(requestId,future);
         return future;
@@ -49,7 +48,6 @@ public class AsyClientExecute implements IClientExecute {
     @Override
     public void dispatch(Long responseId, Pair<ResHead, Collection<DataBody>> pair) {
 
-        logger.info("accept {}",responseId);
         CompletableFuture<Pair<ResHead, Collection<DataBody>>> future=  futureMap.remove(responseId);
         if (future!=null){
             future.complete(pair);

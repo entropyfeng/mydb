@@ -10,13 +10,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
 /**
- *
  * @author entropyfeng
  */
 public class ServerExecute {
 
 
-    public static Logger logger= LoggerFactory.getLogger(ServerExecute.class);
+    public static Logger logger = LoggerFactory.getLogger(ServerExecute.class);
 
     private static void writeChannel(Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> pair, Channel channel, Long requestId) {
 
@@ -48,30 +47,26 @@ public class ServerExecute {
     }
 
 
-
     @SuppressWarnings("unchecked")
-    public static void  execute(ICommand command, Object target) {
+    public static void execute(ICommand command, Object target) {
 
         Object res;
         try {
-            if (command.getValues()==null||command.getValues().size() == 0) {
+            if (command.getValues() == null || command.getValues().size() == 0) {
                 res = command.getMethod().invoke(target);
             } else {
-
-                logger.info(command.getMethod().toString());
-                command.getValues().forEach(o -> logger.info("{},{}",o.getClass().getSimpleName(),o.toString()));
                 res = command.getMethod().invoke(target, command.getValues().toArray(new Object[0]));
             }
         } catch (IllegalAccessException e) {
-            if (command.getChannel()==null){
-                logger.error("server request error {}",e.getMessage());
+            if (command.getChannel() == null) {
+                logger.error("server request error {}", e.getMessage());
                 return;
             }
             exceptionWrite(command.getChannel(), command.getRequestId(), ProtoBuf.ExceptionType.IllegalAccessException, "禁止访问" + e.getMessage());
             return;
         } catch (InvocationTargetException e) {
-            if (command.getChannel()==null){
-                logger.error("server request error {}",e.getMessage());
+            if (command.getChannel() == null) {
+                logger.error("server request error {}", e.getMessage());
                 return;
             }
             //调用函数的内部有未捕获的异常
@@ -80,7 +75,7 @@ public class ServerExecute {
         }
 
         //it represent the command is requested by the server itself
-        if (command.getChannel()==null){
+        if (command.getChannel() == null) {
             return;
         }
         Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> pair = ((Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>>) res);
