@@ -40,6 +40,10 @@ public class AdminObject implements IAdminOperations {
         return ResServerHelper.emptyRes();
     }
 
+    /**
+     * 向各个阻塞队列中添加dump命令
+     * @return emptyRes
+     */
     @Override
     @NotNull
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> lazyDump() {

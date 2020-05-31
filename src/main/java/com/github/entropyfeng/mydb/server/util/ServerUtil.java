@@ -1,8 +1,11 @@
 package com.github.entropyfeng.mydb.server.util;
 
+import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import com.github.entropyfeng.mydb.server.config.ServerConstant;
 import com.github.entropyfeng.mydb.common.util.NetUtil;
 import io.netty.util.internal.StringUtil;
+
+import java.io.File;
 import java.util.Properties;
 
 /**
@@ -10,10 +13,6 @@ import java.util.Properties;
  * @date 2020/2/23 9:17
  */
 public class ServerUtil {
-
-
-
-
 
     /**
      * 检查 配置文件参数是否合法
@@ -74,6 +73,12 @@ public class ServerUtil {
 
     }
 
-
+    public static boolean createDumpFolder() {
+        File file = new File(ServerConfig.dumpPath);
+        if (!file.exists()) {
+            return file.mkdir();
+        }
+        return true;
+    }
 
 }

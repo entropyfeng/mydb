@@ -13,6 +13,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author entropyfeng
  */
 public class EfficientSystemClock {
+
     private static final Logger logger = LoggerFactory.getLogger(EfficientSystemClock.class);
     private final AtomicLong now;
     private final long precision;

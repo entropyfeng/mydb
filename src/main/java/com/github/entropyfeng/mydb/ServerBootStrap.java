@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
+import static com.github.entropyfeng.mydb.server.util.ServerUtil.createDumpFolder;
+
 /**
  * @author entropyfeng
  * @date 2019/12/27 13:34
@@ -21,13 +23,7 @@ public class ServerBootStrap {
      * @return true->the directory already exist or create the new directory in current.
      * false->the directory not exist in previous,and create new directory error this time.
      */
-    private static boolean createDumpFolder() {
-        File file = new File(ServerConfig.dumpPath);
-        if (!file.exists()) {
-            return file.mkdir();
-        }
-        return true;
-    }
+
 
     public static void main(String[] args) {
 
