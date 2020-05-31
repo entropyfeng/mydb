@@ -1,15 +1,16 @@
 package com.github.entropyfeng.mydb.server.domain;
 
+import com.github.entropyfeng.mydb.common.Pair;
+import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.common.exception.DumpFileException;
 import com.github.entropyfeng.mydb.common.ops.IHashOperations;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.server.PersistenceHelper;
 import com.github.entropyfeng.mydb.server.ResServerHelper;
-import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.server.config.ServerConstant;
-import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.server.core.dict.ElasticMap;
-import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.server.persistence.dump.HashDumpTask;
+import com.google.common.base.Objects;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInputStream;
@@ -30,9 +31,10 @@ public class HashDomain implements IHashOperations {
         this.hashMap = new HashMap<>();
     }
 
-    public HashDomain(HashMap<String, ElasticMap<TurtleValue, TurtleValue>> hashMap){
-        this.hashMap=hashMap;
+    public HashDomain(HashMap<String, ElasticMap<TurtleValue, TurtleValue>> hashMap) {
+        this.hashMap = hashMap;
     }
+
     private HashMap<String, ElasticMap<TurtleValue, TurtleValue>> hashMap;
 
     @Override
@@ -84,7 +86,7 @@ public class HashDomain implements IHashOperations {
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> put(@NotNull String key, @NotNull TurtleValue tKey, @NotNull TurtleValue tValue) {
 
         createIfNotExist(key);
-        hashMap.get(key).put(tKey,tValue);
+        hashMap.get(key).put(tKey, tValue);
         return ResServerHelper.emptyRes();
     }
 
@@ -96,19 +98,19 @@ public class HashDomain implements IHashOperations {
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> delete(@NotNull String key, @NotNull TurtleValue tKey) {
-       ElasticMap<TurtleValue,TurtleValue> map= hashMap.get(key);
-       if (map!=null){
-           map.remove(tKey);
-       }
+        ElasticMap<TurtleValue, TurtleValue> map = hashMap.get(key);
+        if (map != null) {
+            map.remove(tKey);
+        }
         return ResServerHelper.emptyRes();
     }
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> sizeOf(@NotNull String key) {
-        ElasticMap<TurtleValue,TurtleValue> map= hashMap.get(key);
-        if (map!=null){
+        ElasticMap<TurtleValue, TurtleValue> map = hashMap.get(key);
+        if (map != null) {
             return ResServerHelper.intRes(map.size());
-        }else {
+        } else {
             return ResServerHelper.intRes(0);
         }
     }
@@ -121,24 +123,25 @@ public class HashDomain implements IHashOperations {
 
     @Override
     public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> dump() {
-        return PersistenceHelper.singleDump(new HashDumpTask(new CountDownLatch(1),this,System.currentTimeMillis()));
+        return PersistenceHelper.singleDump(new HashDumpTask(new CountDownLatch(1), this, System.currentTimeMillis()));
     }
 
 
-    private void createIfNotExist(String key){
-        if (!hashMap.containsKey(key)){
-            hashMap.put(key,new ElasticMap<>());
+    private void createIfNotExist(String key) {
+        if (!hashMap.containsKey(key)) {
+            hashMap.put(key, new ElasticMap<>());
         }
     }
-    public static void write(HashDomain hashDomain,DataOutputStream outputStream)throws IOException {
+
+    public static void write(HashDomain hashDomain, DataOutputStream outputStream) throws IOException {
         outputStream.write(ServerConstant.MAGIC_NUMBER);
 
-        HashMap<String, ElasticMap<TurtleValue, TurtleValue>> hashMap=  hashDomain.hashMap;
+        HashMap<String, ElasticMap<TurtleValue, TurtleValue>> hashMap = hashDomain.hashMap;
         outputStream.writeInt(hashMap.size());
         for (Map.Entry<String, ElasticMap<TurtleValue, TurtleValue>> entry : hashMap.entrySet()) {
 
             String s = entry.getKey();
-            byte[] stringBytes=s.getBytes();
+            byte[] stringBytes = s.getBytes();
             ElasticMap<TurtleValue, TurtleValue> elasticMap = entry.getValue();
             outputStream.writeInt(elasticMap.size());
             outputStream.writeInt(stringBytes.length);
@@ -147,38 +150,51 @@ public class HashDomain implements IHashOperations {
             for (Map.Entry<TurtleValue, TurtleValue> e : elasticMap.entrySet()) {
                 TurtleValue key = e.getKey();
                 TurtleValue value = e.getValue();
-                TurtleValue.write(key,outputStream);
-                TurtleValue.write(value,outputStream);
+                TurtleValue.write(key, outputStream);
+                TurtleValue.write(value, outputStream);
             }
         }
     }
+
     public static HashDomain read(DataInputStream inputStream) throws IOException {
-        byte[] magicNumber=new byte[ServerConstant.MAGIC_NUMBER.length];
+        byte[] magicNumber = new byte[ServerConstant.MAGIC_NUMBER.length];
         inputStream.readFully(magicNumber);
-        if (!Arrays.equals(ServerConstant.MAGIC_NUMBER,magicNumber)){
+        if (!Arrays.equals(ServerConstant.MAGIC_NUMBER, magicNumber)) {
             throw new DumpFileException("error hash dump file.");
         }
 
-        HashMap<String, ElasticMap<TurtleValue, TurtleValue>> map=new HashMap<>(0);
-        HashDomain hashDomain=new HashDomain(map);
-        int hashSize=inputStream.readInt();
-        for (int i = 0; i <hashSize ; i++) {
-            int elasticSize=inputStream.readInt();
-            int stringSize=inputStream.readInt();
-            byte []stringBytes=new byte[stringSize];
+        HashMap<String, ElasticMap<TurtleValue, TurtleValue>> map = new HashMap<>(0);
+        HashDomain hashDomain = new HashDomain(map);
+        int hashSize = inputStream.readInt();
+        for (int i = 0; i < hashSize; i++) {
+            int elasticSize = inputStream.readInt();
+            int stringSize = inputStream.readInt();
+            byte[] stringBytes = new byte[stringSize];
             inputStream.readFully(stringBytes);
-            String string=new String(stringBytes);
-            ElasticMap<TurtleValue,TurtleValue> elasticMap=new ElasticMap<>();
-            map.put(string,elasticMap);
+            String string = new String(stringBytes);
+            ElasticMap<TurtleValue, TurtleValue> elasticMap = new ElasticMap<>();
+            map.put(string, elasticMap);
             for (int j = 0; j < elasticSize; j++) {
-                elasticMap.put(TurtleValue.read(inputStream),TurtleValue.read(inputStream));
+                elasticMap.put(TurtleValue.read(inputStream), TurtleValue.read(inputStream));
             }
         }
         return hashDomain;
     }
-    //---------------getter---------------
 
-    public HashMap<String, ElasticMap<TurtleValue, TurtleValue>> getHashMap() {
-        return hashMap;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o){
+            return true;
+        }
+        if (!(o instanceof HashDomain)){
+            return false;
+        }
+        HashDomain that = (HashDomain) o;
+        return Objects.equal(hashMap, that.hashMap);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(hashMap);
     }
 }

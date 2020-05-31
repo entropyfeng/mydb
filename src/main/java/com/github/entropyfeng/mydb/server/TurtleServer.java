@@ -56,6 +56,7 @@ public class TurtleServer {
         //从dump加载实例
         logger.info("begin load dump file.");
         ServerDomain serverDomain = PersistenceHelper.load();
+        serverDomain.start();
         logger.info("complete load dump file");
 
         NioEventLoopGroup boss = new NioEventLoopGroup(1);

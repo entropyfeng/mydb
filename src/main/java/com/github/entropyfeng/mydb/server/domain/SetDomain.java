@@ -9,6 +9,7 @@ import com.github.entropyfeng.mydb.server.config.ServerConstant;
 import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.server.persistence.dump.SetDumpTask;
+import com.google.common.base.Objects;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ public class SetDomain implements ISetOperations, Serializable {
 
     private final HashMap<String, HashSet<TurtleValue>> setHashMap;
 
-    private static final Logger logger= LoggerFactory.getLogger(SetDomain.class);
+
     public SetDomain() {
         this.setHashMap = new HashMap<>();
     }
@@ -235,9 +236,20 @@ public class SetDomain implements ISetOperations, Serializable {
     }
 
 
-    //--------------------getter---------------
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof SetDomain)){
+            return false;
+        }
+        SetDomain setDomain = (SetDomain) o;
+        return Objects.equal(setHashMap, setDomain.setHashMap);
+    }
 
-    public HashMap<String, HashSet<TurtleValue>> getSetHashMap() {
-        return setHashMap;
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(setHashMap);
     }
 }

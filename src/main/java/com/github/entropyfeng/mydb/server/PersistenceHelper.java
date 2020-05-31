@@ -10,6 +10,7 @@ import com.github.entropyfeng.mydb.server.persistence.*;
 import com.github.entropyfeng.mydb.server.persistence.dump.*;
 import com.github.entropyfeng.mydb.server.persistence.load.*;
 import com.github.entropyfeng.mydb.server.persistence.trans.*;
+import com.github.entropyfeng.mydb.server.util.ServerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +33,7 @@ public class PersistenceHelper {
 
     public static void dumpAll(ServerDomain serverDomain) {
 
+        ServerUtil.createDumpFolder();
         Long timeStamp = System.currentTimeMillis();
 
         CountDownLatch countDownLatch = new CountDownLatch(5);
@@ -214,6 +216,7 @@ public class PersistenceHelper {
         CountDownLatch countDownLatch = new CountDownLatch(5);
         ExecutorService service = new ThreadPoolExecutor(1, 5, 100, TimeUnit.SECONDS, new ArrayBlockingQueue<>(5), new TransThreadFactory());
         Future<Collection<ProtoBuf.DataBody>> valuesFuture = service.submit(new TransTask(countDownLatch, domain.getValuesDumpFile()));
+
         Future<Collection<ProtoBuf.DataBody>> listFuture = service.submit(new TransTask(countDownLatch, domain.getListDumpFile()));
 
         Future<Collection<ProtoBuf.DataBody>> setFuture = service.submit(new TransTask(countDownLatch, domain.getSetDumpFile()));

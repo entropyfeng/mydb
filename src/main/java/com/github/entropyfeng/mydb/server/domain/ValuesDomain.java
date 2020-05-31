@@ -12,6 +12,7 @@ import com.github.entropyfeng.mydb.server.PersistenceHelper;
 import com.github.entropyfeng.mydb.server.ResServerHelper;
 import com.github.entropyfeng.mydb.server.persistence.dump.ValuesDumpTask;
 import com.github.entropyfeng.mydb.server.util.TimeUtil;
+import com.google.common.base.Objects;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInputStream;
@@ -304,12 +305,25 @@ public class ValuesDomain extends ExpireObject implements IValueOperations {
 
     //-------------------------getter--------------------------
 
-    public HashMap<String, TurtleValue> getValueMap() {
-        return valueMap;
-    }
-
     @Override
     public Map<String, Long> getExpireMap() {
         return super.getExpireMap();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o){
+            return true;
+        }
+        if (!(o instanceof ValuesDomain)){
+            return false;
+        }
+        ValuesDomain that = (ValuesDomain) o;
+        return Objects.equal(valueMap, that.valueMap);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(valueMap);
     }
 }

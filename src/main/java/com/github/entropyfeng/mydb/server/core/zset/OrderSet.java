@@ -1,6 +1,8 @@
 package com.github.entropyfeng.mydb.server.core.zset;
 
 
+import com.google.common.base.Objects;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -95,6 +97,20 @@ public class OrderSet<T extends Comparable<T>> {
     public void clear() {
         skipList.clear();
         hashMap.clear();
+    }
+
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o){
+            return true;
+        }
+        if (!(o instanceof OrderSet)){
+            return false;
+        }
+        OrderSet<?> orderSet = (OrderSet<?>) o;
+        return Objects.equal(hashMap, orderSet.hashMap);
     }
 
     public HashMap<T, Double> getHashMap() {

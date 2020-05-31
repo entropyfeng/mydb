@@ -10,6 +10,7 @@ import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.server.core.zset.OrderSet;
 import com.github.entropyfeng.mydb.server.persistence.dump.OrderSetDumpTask;
+import com.google.common.base.Objects;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInputStream;
@@ -248,5 +249,22 @@ public class OrderSetDomain implements IOrderSetOperations {
 
     public HashMap<String, OrderSet<TurtleValue>> getHashMap() {
         return hashMap;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o){
+            return true;
+        }
+        if (!(o instanceof OrderSetDomain)){
+            return false;
+        }
+        OrderSetDomain that = (OrderSetDomain) o;
+        return Objects.equal(getHashMap(), that.getHashMap());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getHashMap());
     }
 }

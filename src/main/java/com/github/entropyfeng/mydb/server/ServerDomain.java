@@ -29,9 +29,7 @@ public class ServerDomain {
         this.setDomain = new SetDomain();
         this.hashDomain = new HashDomain();
         this.orderSetDomain = new OrderSetDomain();
-
         constructQueue();
-        start();
     }
 
 
@@ -43,9 +41,7 @@ public class ServerDomain {
         this.setDomain = domain.getSetDomain();
         this.hashDomain = domain.getHashDomain();
         this.orderSetDomain = domain.getOrderSetDomain();
-
         constructQueue();
-        start();
     }
 
     public AdminObject adminObject;

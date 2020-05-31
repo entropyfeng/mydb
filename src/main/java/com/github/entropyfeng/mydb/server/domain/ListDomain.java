@@ -10,6 +10,7 @@ import com.github.entropyfeng.mydb.server.config.ServerConstant;
 import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.server.persistence.dump.ListDumpTask;
+import com.google.common.base.Objects;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInputStream;
@@ -261,9 +262,20 @@ public class ListDomain implements IListOperations {
     }
 
 
-    //------------------getter-------------------
+    @Override
+    public boolean equals(Object o) {
+        if (this == o){
+            return true;
+        }
+        if (!(o instanceof ListDomain)){
+            return false;
+        }
+        ListDomain that = (ListDomain) o;
+        return Objects.equal(listMap, that.listMap);
+    }
 
-    public HashMap<String, LinkedList<TurtleValue>> getListMap() {
-        return listMap;
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(listMap);
     }
 }

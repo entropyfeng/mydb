@@ -78,4 +78,30 @@ public class BytesUtil {
         return newBytes;
     }
 
+    /**
+     * 将字节数组按照字典序比较
+     * @param cur this
+     * @param that that
+     * @return  a negative integer, zero, or a positive integer as this object
+     *          is less than, equal to, or greater than the specified object.
+     */
+    public static int compare(byte[] cur,byte[] that){
+
+        int len1 = cur.length;
+        int len2 = that.length;
+        int lim = Math.min(len1, len2);
+
+        int k = 0;
+        while (k < lim) {
+            byte c1 = cur[k];
+            byte c2 = that[k];
+            if (c1 != c2) {
+                return c1 - c2;
+            }
+            k++;
+        }
+        return len1 - len2;
+
+    }
+
 }

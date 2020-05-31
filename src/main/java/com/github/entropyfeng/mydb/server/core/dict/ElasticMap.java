@@ -1,6 +1,7 @@
 package com.github.entropyfeng.mydb.server.core.dict;
 
 import com.github.entropyfeng.mydb.common.exception.ElementOutOfBoundException;
+import com.google.common.base.Objects;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractMap;
@@ -176,4 +177,24 @@ public class ElasticMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
         return resValue;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o){
+            return true;
+        }
+        if (!(o instanceof ElasticMap)){
+            return false;
+        }
+
+
+        ElasticMap<?, ?> that = (ElasticMap<?, ?>) o;
+
+        return entrySet().equals(that.entrySet());
+
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(super.hashCode(), first, second, isRehashing);
+    }
 }

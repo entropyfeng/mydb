@@ -71,18 +71,19 @@ public class AdminObject implements IAdminOperations {
 
 
         //从服务器向主服务器请求转储文件
-        ClientCommandBuilder clientCommandBuilder = new ClientCommandBuilder(TurtleModel.ADMIN, "slaveRequestDump");
+        ClientCommandBuilder commandBuilderOne = new ClientCommandBuilder(TurtleModel.ADMIN, "slaveRequestDump");
 
         ClientExecute clientExecute = new ClientExecute(host, port);
 
-        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> pair = clientExecute.execute(clientCommandBuilder);
+        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> pair = clientExecute.execute(commandBuilderOne);
         PersistenceObjectDomain domain = PersistenceHelper.dumpAndReLoadFromPair(pair);
         serverDomain.replace(domain);
         //-------向主服务器发送从服务器IP与端口
-        ClientCommandBuilder commandBuilder = new ClientCommandBuilder(TurtleModel.ADMIN, "exceptAcceptData");
-        clientCommandBuilder.addStringPara(ServerConfig.serverHost);
-        clientCommandBuilder.addIntegerPara(ServerConfig.port);
-        clientExecute.execute(commandBuilder);
+        ClientCommandBuilder commandBuilderTwo = new ClientCommandBuilder(TurtleModel.ADMIN, "exceptAcceptData");
+        commandBuilderTwo.addStringPara(ServerConfig.serverHost);
+        commandBuilderTwo.addIntegerPara(ServerConfig.port);
+
+        clientExecute.execute(commandBuilderTwo);
         clientExecute.closeClient();
         return ResServerHelper.emptyRes();
     }

@@ -3,6 +3,7 @@ package com.github.entropyfeng.mydb.common;
 import com.github.entropyfeng.mydb.common.util.BytesUtil;
 import com.google.common.base.Charsets;
 import com.google.common.hash.Hashing;
+import com.google.common.primitives.Bytes;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInputStream;
@@ -279,6 +280,12 @@ public class TurtleValue implements Comparable<TurtleValue> {
         }
     }
 
+    /**
+     * 比较器
+     * @param that {@link TurtleValue}
+     * @return  a negative integer, zero, or a positive integer as this object
+     *          is less than, equal to, or greater than the specified object.
+     */
     @Override
     public int compareTo(@NotNull TurtleValue that) {
         if (this.type == that.type) {
@@ -293,10 +300,9 @@ public class TurtleValue implements Comparable<TurtleValue> {
                     return Double.compare((Double) value, (Double) that.value);
                 case INTEGER:
                     return Integer.compare((Integer) value, (Integer) that.value);
-                case BYTES:
-                    return value.toString().compareTo(that.value.toString());
-                default:
-                    return 0;
+
+                default://默认比较字节数组
+                    return BytesUtil.compare((byte[]) value,(byte[])that.value);
             }
         } else {
             if (this.type != TurtleValueType.BYTES && that.type != TurtleValueType.BYTES) {
