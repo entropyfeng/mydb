@@ -138,26 +138,42 @@ public class ServerDomain {
         this.adminQueue = new ConcurrentLinkedQueue<>();
     }
 
+
     public void notifyAllValuesThread() {
-        this.valueThread.notifyAll();
-        this.listThread.notifyAll();
-        this.setThread.notifyAll();
-        this.hashThread.notifyAll();
-        this.orderSetThread.notifyAll();
+
+        synchronized (valueThread) {
+            this.valueThread.notifyAll();
+        }
+        synchronized (listThread) {
+            this.listThread.notifyAll();
+        }
+        synchronized (setThread) {
+            this.setThread.notifyAll();
+        }
+
+        synchronized (hashThread) {
+            this.hashThread.notifyAll();
+        }
+        synchronized (orderSetThread) {
+            this.orderSetThread.notifyAll();
+        }
+
+
     }
 
 
     /**
      * use masterServer's domain to replace the old domains
      * and reconstruct all values blocking queue
+     *
      * @param domain {@link PersistenceObjectDomain}
      */
-    public void replace(PersistenceObjectDomain domain){
-        this.valuesDomain=domain.getValuesDomain();
-        this.listDomain=domain.getListDomain();
-        this.setDomain=domain.getSetDomain();
-        this.hashDomain=domain.getHashDomain();
-        this.orderSetDomain=domain.getOrderSetDomain();
+    public void replace(PersistenceObjectDomain domain) {
+        this.valuesDomain = domain.getValuesDomain();
+        this.listDomain = domain.getListDomain();
+        this.setDomain = domain.getSetDomain();
+        this.hashDomain = domain.getHashDomain();
+        this.orderSetDomain = domain.getOrderSetDomain();
 
         constructQueue();
     }

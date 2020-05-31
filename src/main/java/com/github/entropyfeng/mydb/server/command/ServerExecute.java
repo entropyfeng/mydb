@@ -5,6 +5,7 @@ import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.DataBody;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResHead;
 import io.netty.channel.Channel;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,18 +68,19 @@ public class ServerExecute {
         } catch (IllegalAccessException e) {
             //当前channel为空时，不得对其写入
             if (command.getChannel() == null) {
-                logger.error("server request error {}", e.getMessage());
+                logger.error("server request error {}", e.toString());
                 return;
             }
             exceptionWrite(command.getChannel(), command.getRequestId(), ProtoBuf.ExceptionType.IllegalAccessException, "禁止访问" + e.getMessage());
             return;
         } catch (InvocationTargetException e) {
             if (command.getChannel() == null) {
-                logger.error("server request error {}", e.getMessage());
+                logger.error("server request error {}", e.toString());
                 return;
             }
+            e.printStackTrace();
             //调用函数的内部有未捕获的异常
-            exceptionWrite(command.getChannel(), command.getRequestId(), ProtoBuf.ExceptionType.InvocationTargetException, e.getMessage());
+            exceptionWrite(command.getChannel(), command.getRequestId(), ProtoBuf.ExceptionType.InvocationTargetException, e.toString());
             return;
         }
 
@@ -92,7 +94,7 @@ public class ServerExecute {
     }
 
 
-    public static void exceptionWrite(Channel channel, Long requestId, ProtoBuf.ExceptionType exceptionType, String msg) {
+    public static void exceptionWrite(Channel channel, Long requestId, ProtoBuf.ExceptionType exceptionType,@NotNull String msg) {
         ResHead.Builder headBuilder = ResHead.newBuilder();
         headBuilder.setSuccess(false);
         headBuilder.setResSize(0);

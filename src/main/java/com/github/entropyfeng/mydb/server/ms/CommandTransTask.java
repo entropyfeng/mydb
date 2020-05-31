@@ -23,6 +23,7 @@ public class CommandTransTask implements Runnable {
     @Override
     public void run() {
 
+        //noinspection InfiniteLoopStatement
         while (true){
            ClientRequest request= masterQueue.poll();
            if (request!=null){

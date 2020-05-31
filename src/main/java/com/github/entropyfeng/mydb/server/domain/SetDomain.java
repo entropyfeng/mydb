@@ -189,7 +189,7 @@ public class SetDomain implements ISetOperations, Serializable {
         outputStream.write(ServerConstant.MAGIC_NUMBER);
         HashMap<String, HashSet<TurtleValue>> map = setDomain.setHashMap;
         outputStream.writeInt(map.size());
-        logger.error("writeMapSize{}",map.size());
+
         for (Map.Entry<String, HashSet<TurtleValue>> entry : map.entrySet()) {
             String s = entry.getKey();
             byte[] stringBytes = s.getBytes();

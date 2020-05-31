@@ -1,7 +1,7 @@
 package com.github.entropyfeng.mydb;
 
-import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import com.github.entropyfeng.mydb.server.TurtleServer;
+import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,14 +13,15 @@ import java.io.File;
  */
 public class ServerBootStrap {
 
-    private static final Logger logger=LoggerFactory.getLogger(ServerBootStrap.class);
+    private static final Logger logger = LoggerFactory.getLogger(ServerBootStrap.class);
 
     /**
-     *  create dumpFile directory.
+     * create dumpFile directory.
+     *
      * @return true->the directory already exist or create the new directory in current.
      * false->the directory not exist in previous,and create new directory error this time.
      */
-    private static boolean createDumpFolder(){
+    private static boolean createDumpFolder() {
         File file = new File(ServerConfig.dumpPath);
         if (!file.exists()) {
             return file.mkdir();
@@ -28,17 +29,17 @@ public class ServerBootStrap {
         return true;
     }
 
-    public static void main(String[] args)  {
+    public static void main(String[] args) {
 
         try {
-            if (!createDumpFolder()){
+            if (!createDumpFolder()) {
 
                 logger.error("create dump directory error !");
             }
             String host = ServerConfig.serverHost;
-            Integer port= ServerConfig.port;
+            Integer port = ServerConfig.port;
             new TurtleServer(host, port).start();
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error(e.getMessage());
         }
 

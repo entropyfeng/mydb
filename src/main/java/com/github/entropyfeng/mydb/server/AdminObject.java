@@ -2,7 +2,6 @@ package com.github.entropyfeng.mydb.server;
 
 import com.github.entropyfeng.mydb.client.ClientCommandBuilder;
 import com.github.entropyfeng.mydb.client.conn.ClientExecute;
-import com.github.entropyfeng.mydb.common.ChannelHelper;
 import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.common.TurtleModel;
 import com.github.entropyfeng.mydb.common.ops.IAdminOperations;
@@ -10,7 +9,6 @@ import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.server.command.ClientRequest;
 import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import com.github.entropyfeng.mydb.server.domain.*;
-import com.github.entropyfeng.mydb.server.factory.MasterSlaveThreadFactory;
 import com.github.entropyfeng.mydb.server.handler.TurtleServerHandler;
 import com.github.entropyfeng.mydb.server.persistence.PersistenceObjectDomain;
 import org.jetbrains.annotations.NotNull;
@@ -20,9 +18,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.util.Collection;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicLong;
 
 
 /**
@@ -32,8 +28,6 @@ public class AdminObject implements IAdminOperations {
     private static final Logger logger = LoggerFactory.getLogger(AdminObject.class);
 
     private ServerDomain serverDomain;
-
-    private Thread masterSlaveThread;
 
     public AdminObject(ServerDomain serverDomain) {
         this.serverDomain = serverDomain;
@@ -92,6 +86,7 @@ public class AdminObject implements IAdminOperations {
 
     /**
      * 从服务器向主服务器请求发送转储文件
+     *
      * @return 向从服务器返回转储文件
      */
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> slaveRequestDump() {
@@ -152,7 +147,9 @@ public class AdminObject implements IAdminOperations {
         //重新设置countDownLatch
         ServerConfig.threadCountDown = new CountDownLatch(5);
         ServerConfig.serverBlocking.set(false);
+
         serverDomain.notifyAllValuesThread();
+
 
         logger.info("dump end");
         return ResServerHelper.emptyRes();
@@ -160,6 +157,7 @@ public class AdminObject implements IAdminOperations {
 
     /**
      * 向各个阻塞队列{如 values list set hash orderSet}中插入相关命令
+     *
      * @param methodName 所有对象都具备的函数名
      */
     private void lazyMethod(String methodName) {
@@ -183,7 +181,5 @@ public class AdminObject implements IAdminOperations {
         }
 
     }
-
-
 
 }
