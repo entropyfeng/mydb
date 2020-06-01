@@ -15,6 +15,7 @@ import java.util.Collection;
 public class TestTrans {
 
 
+
     @Test
     public void testSave(){
 
@@ -47,7 +48,7 @@ public class TestTrans {
           orderSetDomain.add(i+"",new TurtleValue(i),i);
         }
 
-       PersistenceObjectDomain persistenceObjectDomain= new PersistenceObjectDomain(valuesDomain,listDomain,setDomain,hashDomain,orderSetDomain);
+        PersistenceObjectDomain persistenceObjectDomain= new PersistenceObjectDomain(valuesDomain,listDomain,setDomain,hashDomain,orderSetDomain);
         ServerDomain serverDomain=new ServerDomain(persistenceObjectDomain);
 
         PersistenceHelper.dumpAll(serverDomain);

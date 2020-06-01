@@ -3,7 +3,6 @@ package com.github.entropyfeng.mydb.common;
 import com.github.entropyfeng.mydb.common.util.BytesUtil;
 import com.google.common.base.Charsets;
 import com.google.common.hash.Hashing;
-import com.google.common.primitives.Bytes;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInputStream;
@@ -41,7 +40,7 @@ public class TurtleValue implements Comparable<TurtleValue> {
     }
 
     public TurtleValue(BigInteger bigInteger) {
-        this.value = TurtleValueType.NUMBER_INTEGER;
+        this.type = TurtleValueType.NUMBER_INTEGER;
         this.value = bigInteger;
     }
 
@@ -51,29 +50,41 @@ public class TurtleValue implements Comparable<TurtleValue> {
     }
 
     public TurtleValue(@NotNull String string) {
-        this.value = TurtleValueType.BYTES;
+        this.type = TurtleValueType.BYTES;
         this.value = string.getBytes();
     }
 
     public TurtleValue(byte[] bytes) {
-        this.value = TurtleValueType.BYTES;
+        this.type = TurtleValueType.BYTES;
         this.value = bytes;
     }
 
-    private TurtleValue(byte[] bytes,TurtleValueType type){
-        this.type=type;
-        switch (type){
-            case LONG:value= BytesUtil.bytesToLong(bytes);break;
-            case DOUBLE:value= BytesUtil.bytesToDouble(bytes);break;
-            case INTEGER:value= BytesUtil.bytesToInt(bytes);break;
-            case NUMBER_DECIMAL:value=new BigDecimal(new String(bytes));break;
-            case NUMBER_INTEGER:value=new BigInteger(bytes);break;
-            default:value=bytes;
+    private TurtleValue(@NotNull byte[] bytes, @NotNull TurtleValueType type) {
+        this.type = type;
+        switch (type) {
+            case LONG:
+                value = BytesUtil.bytesToLong(bytes);
+                break;
+            case DOUBLE:
+                value = BytesUtil.bytesToDouble(bytes);
+                break;
+            case INTEGER:
+                value = BytesUtil.bytesToInt(bytes);
+                break;
+            case NUMBER_DECIMAL:
+                value = new BigDecimal(new String(bytes));
+                break;
+            case NUMBER_INTEGER:
+                value = new BigInteger(bytes);
+                break;
+            default:
+                value = bytes;
         }
     }
+
     public void append(String otherKey) throws UnsupportedOperationException {
         if (type == TurtleValueType.BYTES) {
-           value= concat((byte[]) value,otherKey.getBytes());
+            value = concat((byte[]) value, otherKey.getBytes());
         } else {
             throw new UnsupportedOperationException("currentType:" + this.type);
         }
@@ -81,7 +92,7 @@ public class TurtleValue implements Comparable<TurtleValue> {
 
     public void append(byte[] otherBytes) throws UnsupportedOperationException {
         if (type == TurtleValueType.BYTES) {
-            value= concat((byte[]) value,otherBytes);
+            value = concat((byte[]) value, otherBytes);
         } else {
             throw new UnsupportedOperationException("currentType:" + this.type);
         }
@@ -91,6 +102,7 @@ public class TurtleValue implements Comparable<TurtleValue> {
 
     public void increment(Long longValue) throws UnsupportedOperationException {
 
+        //当前类型
         switch (type) {
 
             case LONG:
@@ -106,6 +118,7 @@ public class TurtleValue implements Comparable<TurtleValue> {
                 return;
             case NUMBER_DECIMAL:
                 this.value = ((BigDecimal) value).add(BigDecimal.valueOf(longValue));
+
                 return;
             case DOUBLE:
                 this.value = BigDecimal.valueOf((Double) value).add(BigDecimal.valueOf(longValue));
@@ -270,6 +283,7 @@ public class TurtleValue implements Comparable<TurtleValue> {
             case LONG:
                 return Hashing.murmur3_32().hashLong((Long) value).asInt();
             case BYTES:
+                return Hashing.murmur3_32().hashBytes((byte[]) value).asInt();
             case DOUBLE:
             case NUMBER_INTEGER:
                 return Hashing.murmur3_32().hashString(value.toString(), Charsets.UTF_8).asInt();
@@ -282,9 +296,10 @@ public class TurtleValue implements Comparable<TurtleValue> {
 
     /**
      * 比较器
+     *
      * @param that {@link TurtleValue}
-     * @return  a negative integer, zero, or a positive integer as this object
-     *          is less than, equal to, or greater than the specified object.
+     * @return a negative integer, zero, or a positive integer as this object
+     * is less than, equal to, or greater than the specified object.
      */
     @Override
     public int compareTo(@NotNull TurtleValue that) {
@@ -302,47 +317,56 @@ public class TurtleValue implements Comparable<TurtleValue> {
                     return Integer.compare((Integer) value, (Integer) that.value);
 
                 default://默认比较字节数组
-                    return BytesUtil.compare((byte[]) value,(byte[])that.value);
+                    return BytesUtil.compare((byte[]) value, (byte[]) that.value);
             }
         } else {
+            //都为数值类型
             if (this.type != TurtleValueType.BYTES && that.type != TurtleValueType.BYTES) {
                 return castToBigDecimal(this.type, this.value).compareTo(castToBigDecimal(that.type, that.value));
             } else {
-                return 0;
+
+                return BytesUtil.compare(this.covertToByte(), that.covertToByte());
             }
         }
     }
 
-    private byte[] covertToByte(){
-        switch (type){
-            case LONG:return BytesUtil.longToBytes((Long)value);
-            case INTEGER:return BytesUtil.intToBytes((Integer)value);
-            case NUMBER_INTEGER:return ((BigInteger)value).toByteArray();
-            case NUMBER_DECIMAL:return ((BigDecimal)value).toPlainString().getBytes();
-            case DOUBLE:return BytesUtil.doubleToBytes((Double)value);
-            default: return (byte[]) value;
+    private byte[] covertToByte() {
+        switch (type) {
+            case LONG:
+                return BytesUtil.longToBytes((Long) value);
+            case INTEGER:
+                return BytesUtil.intToBytes((Integer) value);
+            case NUMBER_INTEGER:
+                return ((BigInteger) value).toByteArray();
+            case NUMBER_DECIMAL:
+                return ((BigDecimal) value).toPlainString().getBytes();
+            case DOUBLE:
+                return BytesUtil.doubleToBytes((Double) value);
+            default:
+                return (byte[]) value;
         }
     }
 
     public TurtleValueType getType() {
         return type;
     }
-    public byte[] getValues(){
+
+    public byte[] getValues() {
         return covertToByte();
     }
 
     @NotNull
-    public static TurtleValue fromDisk(TurtleValueType type, byte[] bytes){
-        return new TurtleValue(bytes,type);
+    public static TurtleValue fromDisk(TurtleValueType type, byte[] bytes) {
+        return new TurtleValue(bytes, type);
     }
 
-    public Object toObject(){
+    public Object toObject() {
         return value;
     }
 
     public static void write(@NotNull TurtleValue turtleValue, @NotNull DataOutputStream outputStream) throws IOException {
 
-        byte[]values=turtleValue.covertToByte();
+        byte[] values = turtleValue.covertToByte();
         outputStream.writeByte(turtleValue.type.getValue());
         outputStream.writeInt(values.length);
         outputStream.write(values);
@@ -354,7 +378,7 @@ public class TurtleValue implements Comparable<TurtleValue> {
         int length = inputStream.readInt();
         byte[] values = new byte[length];
         inputStream.readFully(values);
-        return TurtleValue.fromDisk(TurtleValueType.construct(type),values);
+        return TurtleValue.fromDisk(TurtleValueType.construct(type), values);
     }
 
 }

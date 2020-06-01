@@ -68,9 +68,8 @@ public class ElasticMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
     @Override
     public int size() {
         if (isRehashing) {
-            int res=first.used+second.used;
-            moveEntry();
-            return res;
+
+            return first.used+second.used;
         } else {
             return first.used;
         }

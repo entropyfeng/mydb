@@ -97,7 +97,7 @@ class MapObject<K, V> {
      */
     V put(@NotNull K key, @NotNull V value) {
 
-        final int pos = hashing(key) & sizeMask;
+        final int pos = key.hashCode() & sizeMask;
         assert pos >= 0 && pos < size;
         //tempNode
         Node<K, V> tempNode = table[pos];
@@ -145,7 +145,7 @@ class MapObject<K, V> {
 
     private Node<K, V> getNode(Object key) {
         assert key != null;
-        final int pos = hashing(key) & sizeMask;
+        final int pos = key.hashCode() & sizeMask;
         //tempNode
         Node<K, V> tempNode = table[pos];
         while (tempNode != null && !tempNode.key.equals(key)) {
@@ -197,7 +197,7 @@ class MapObject<K, V> {
      */
     V deleteKey(@NotNull Object key) {
 
-        final int pos = hashing(key) & sizeMask;
+        final int pos = key.hashCode() & sizeMask;
         V resValue = null;
 
         //tempNode
@@ -259,10 +259,5 @@ class MapObject<K, V> {
             return tempNode;
         }
     }
-
-    private int hashing(@NotNull Object o) {
-        return o.hashCode();
-    }
-
 
 }

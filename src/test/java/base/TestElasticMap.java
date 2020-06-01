@@ -21,6 +21,48 @@ public class TestElasticMap {
         Assert.assertEquals(new TurtleValue("12306"),res.get(new TurtleValue("12306")));
     }
 
+    @Test
+    public void testHashCode(){
+        ElasticMap<TurtleValue, TurtleValue> res=new ElasticMap<>();
+        int negCount=0;
+        for (int i = 0; i < 100000; i++) {
+           TurtleValue temp= new TurtleValue(i);
+           if (temp.hashCode()<0){
+               negCount++;
+           }
+            res.put(temp,new TurtleValue(""));
+        }
+        System.out.println(negCount);
+        System.out.println(res.size());
+    }
+
+    @Test
+    public void testStringHashCode(){
+        ElasticMap<String, String> res=new ElasticMap<>();
+        int negCount=0;
+        for (int i = 0; i < 10000000; i++) {
+            String temp=i+"";
+            if (temp.hashCode()<0){
+                negCount++;
+            }
+            res.put(temp,"");
+        }
+        System.out.println(negCount);
+        System.out.println(res.size());
+    }
+    @Test
+    public void testCommon(){
+        ElasticMap<String,String> elasticMap=new ElasticMap<>();
+        for (int i = 0; i < 100000; i++) {
+            elasticMap.put(i+"","10086");
+        }
+        System.out.println(elasticMap.size());
+    }
+
+    @Test
+    public void testTurtleValue(){
+
+    }
 
     @Test
     public void testHashMap(){
