@@ -8,11 +8,11 @@ import java.io.File;
  */
 public class PersistenceFileDomain {
 
-    File valuesDumpFile;
-    File listDumpFile;
-    File hashDumpFile;
-    File setDumpFile;
-    File orderSetDumpFile;
+   private File valuesDumpFile;
+   private File listDumpFile;
+   private File hashDumpFile;
+   private File setDumpFile;
+   private File orderSetDumpFile;
 
     public PersistenceFileDomain(){
 

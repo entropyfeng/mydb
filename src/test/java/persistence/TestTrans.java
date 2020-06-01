@@ -7,6 +7,7 @@ import com.github.entropyfeng.mydb.server.PersistenceHelper;
 import com.github.entropyfeng.mydb.server.ServerDomain;
 import com.github.entropyfeng.mydb.server.domain.*;
 import com.github.entropyfeng.mydb.server.persistence.PersistenceObjectDomain;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Collection;
@@ -46,19 +47,23 @@ public class TestTrans {
           orderSetDomain.add(i+"",new TurtleValue(i),i);
         }
 
-
-        ServerDomain serverDomain=new ServerDomain(new PersistenceObjectDomain(valuesDomain,listDomain,setDomain,hashDomain,orderSetDomain));
+       PersistenceObjectDomain persistenceObjectDomain= new PersistenceObjectDomain(valuesDomain,listDomain,setDomain,hashDomain,orderSetDomain);
+        ServerDomain serverDomain=new ServerDomain(persistenceObjectDomain);
 
         PersistenceHelper.dumpAll(serverDomain);
+        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> pair= PersistenceHelper.transDumpFile();
 
+        PersistenceObjectDomain res= PersistenceHelper.dumpAndReLoadFromPair(pair);
+
+        boolean  b=res.equals(persistenceObjectDomain);
+        Assert.assertTrue(b);
     }
 
     @Test
     public void testLoad(){
-        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> pair= PersistenceHelper.transDumpFile();
 
-       PersistenceObjectDomain res= PersistenceHelper.dumpAndReLoadFromPair(pair);
 
+        PersistenceHelper.load();
 
     }
 }

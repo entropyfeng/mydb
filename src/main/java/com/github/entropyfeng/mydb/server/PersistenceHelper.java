@@ -8,6 +8,10 @@ import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import com.github.entropyfeng.mydb.server.domain.*;
 import com.github.entropyfeng.mydb.server.persistence.*;
 import com.github.entropyfeng.mydb.server.persistence.dump.*;
+import com.github.entropyfeng.mydb.server.persistence.factory.AcceptTransThreadFactory;
+import com.github.entropyfeng.mydb.server.persistence.factory.DumpThreadFactory;
+import com.github.entropyfeng.mydb.server.persistence.factory.LoadThreadFactory;
+import com.github.entropyfeng.mydb.server.persistence.factory.TransThreadFactory;
 import com.github.entropyfeng.mydb.server.persistence.load.*;
 import com.github.entropyfeng.mydb.server.persistence.trans.*;
 import com.github.entropyfeng.mydb.server.util.ServerUtil;
@@ -31,6 +35,10 @@ public class PersistenceHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(PersistenceHelper.class);
 
+    /**
+     * 转储所有数据
+     * @param serverDomain {@link ServerDomain}
+     */
     public static void dumpAll(ServerDomain serverDomain) {
 
         ServerUtil.createDumpFolder();
@@ -46,12 +54,14 @@ public class PersistenceHelper {
         Future<Boolean> orderSetFuture = service.submit(new OrderSetDumpTask(countDownLatch, serverDomain.orderSetDomain, timeStamp));
 
         try {
+            //阻塞获取
             countDownLatch.await();
             //一般不会触发中断事件
         } catch (InterruptedException e) {
             logger.error(e.getMessage());
         }
 
+        //一般来说，不会转储失败；如果失败，则忽略
         //------values---------------
 
         try {
@@ -95,7 +105,12 @@ public class PersistenceHelper {
     }
 
 
-    public static void clearAll(ServerDomain serverDomain) {
+    /**
+     * 注意：该函数只能在消费线程全部阻塞时才可调用
+     * 清除所有数据
+     * @param serverDomain {@link ServerDomain}
+     */
+    public static void clearAll(@NotNull ServerDomain serverDomain) {
 
         serverDomain.valuesDomain.clear();
         serverDomain.listDomain.clear();
@@ -349,7 +364,7 @@ public class PersistenceHelper {
     }
 
     /**
-     * 从硬盘中读取所有数据结构
+     * 从硬盘中所有数据结构的转储文件构造对象
      * @param valuesDomainFuture {@link ValuesDomain}
      * @param listDomainFuture {@link ListDomain}
      * @param setDomainFuture {@link SetDomain}
@@ -402,6 +417,7 @@ public class PersistenceHelper {
             hashDomain = hashDomainFuture.get();
         } catch (InterruptedException | ExecutionException e) {
             logger.info(e.getMessage());
+            e.printStackTrace();
         }
 
         if (hashDomain==null){

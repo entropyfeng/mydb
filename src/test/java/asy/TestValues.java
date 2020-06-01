@@ -4,7 +4,7 @@ import com.github.entropyfeng.mydb.client.asy.res.AsyValueOperations;
 import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.DataBody;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResHead;
-import com.github.entropyfeng.mydb.server.persistence.AcceptTransThreadFactory;
+import com.github.entropyfeng.mydb.server.persistence.factory.AcceptTransThreadFactory;
 import org.junit.Assert;
 import org.junit.Test;
 

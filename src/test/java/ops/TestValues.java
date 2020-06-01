@@ -3,7 +3,7 @@ package ops;
 import com.github.entropyfeng.mydb.client.ops.TurtleTemplate;
 import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.common.ops.ValueOperations;
-import com.github.entropyfeng.mydb.server.persistence.AcceptTransThreadFactory;
+import com.github.entropyfeng.mydb.server.persistence.factory.AcceptTransThreadFactory;
 import org.junit.Assert;
 import org.junit.Test;
 
