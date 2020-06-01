@@ -29,7 +29,7 @@ public class TestOrderSet {
             OrderSet<TurtleValue> orderSet=new OrderSet<>();
             map.put(i+"",orderSet);
             for (int j = 0; j < limit; j++) {
-                orderSet.add(new TurtleValue(j),0);
+                orderSet.add(new TurtleValue(j),j);
             }
         }
         Long timestamp=System.currentTimeMillis();
@@ -45,7 +45,7 @@ public class TestOrderSet {
             OrderSet<TurtleValue> orderSet= res.getHashMap().get(i+"");
             Assert.assertNotNull(orderSet);
             for (int j = 0; j < limit; j++) {
-                Assert.assertTrue(orderSet.exists(new TurtleValue(j),0));
+                Assert.assertTrue(orderSet.exists(new TurtleValue(j),j));
             }
         }
     }

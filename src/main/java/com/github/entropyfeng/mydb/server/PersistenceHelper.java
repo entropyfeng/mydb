@@ -119,10 +119,8 @@ public class PersistenceHelper {
         serverDomain.orderSetDomain.clear();
     }
 
-    public static @NotNull ServerDomain load() {
-
+    public static PersistenceObjectDomain loadDomain(){
         PersistenceFileDomain domain = getFiles();
-
 
         CountDownLatch countDownLatch = new CountDownLatch(5);
         ExecutorService service = new ThreadPoolExecutor(5, 5, 10, TimeUnit.SECONDS, new LinkedBlockingDeque<>(), new LoadThreadFactory());
@@ -142,7 +140,12 @@ public class PersistenceHelper {
 
         PersistenceObjectDomain persistenceObjectDomain=  constructPersistenceDomain(valuesDomainFuture,listDomainFuture,setDomainFuture,hashDomainFuture,orderSetDomainFuture);
         service.shutdown();
-        return new ServerDomain(persistenceObjectDomain);
+        return persistenceObjectDomain;
+    }
+
+    public static @NotNull ServerDomain load() {
+
+        return new ServerDomain(loadDomain());
     }
 
     public static @NotNull Pair<ResHead, Collection<DataBody>> singleDump(Callable<Boolean> callable) {
@@ -429,6 +432,7 @@ public class PersistenceHelper {
             orderSetDomain = orderSetDomainFuture.get();
         } catch (InterruptedException | ExecutionException e) {
             logger.info(e.getMessage());
+            e.printStackTrace();
         }
         if (orderSetDomain == null) {
             orderSetDomain = new OrderSetDomain();
