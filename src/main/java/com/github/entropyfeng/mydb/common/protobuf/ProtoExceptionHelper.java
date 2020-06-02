@@ -30,7 +30,7 @@ public class ProtoExceptionHelper {
             case ElementOutOfBoundException:throw new ElementOutOfBoundException(msg);
             case TurtleTimeOutException:throw new TurtleTimeOutException(msg);
             case TurtleValueElementOutBoundsException:throw new TurtleValueElementOutBoundsException(msg);
-            default:throw new Error("unknown error");
+            default:throw new RuntimeException("unknown exception");
         }
     }
 }

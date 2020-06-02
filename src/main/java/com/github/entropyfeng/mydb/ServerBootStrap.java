@@ -5,8 +5,6 @@ import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-
 import static com.github.entropyfeng.mydb.server.util.ServerUtil.createDumpFolder;
 
 /**

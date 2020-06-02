@@ -22,7 +22,10 @@ public class AsyValueOperations {
         execute = new AsyClientExecute(host, port);
     }
 
-    private AsyClientExecute execute;
+    public AsyValueOperations(AsyClientExecute execute){
+        this.execute=execute;
+    }
+    private final AsyClientExecute execute;
 
     public CompletableFuture<Pair<ResHead, Collection<DataBody>>> set(@NotNull String key, @NotNull TurtleValue value, @NotNull Long time) {
 

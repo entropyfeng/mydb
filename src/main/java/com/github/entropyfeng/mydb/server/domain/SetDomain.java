@@ -1,30 +1,27 @@
 package com.github.entropyfeng.mydb.server.domain;
 
+import com.github.entropyfeng.mydb.common.Pair;
+import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.common.exception.DumpFileException;
 import com.github.entropyfeng.mydb.common.ops.ISetOperations;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.server.PersistenceHelper;
 import com.github.entropyfeng.mydb.server.ResServerHelper;
-import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.server.config.ServerConstant;
-import com.github.entropyfeng.mydb.common.TurtleValue;
-import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.server.persistence.dump.SetDumpTask;
 import com.google.common.base.Objects;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 
 /**
  * @author entropyfeng
  */
-public class SetDomain implements ISetOperations, Serializable {
+public class SetDomain implements ISetOperations {
 
     private final HashMap<String, HashSet<TurtleValue>> setHashMap;
 
@@ -120,6 +117,22 @@ public class SetDomain implements ISetOperations, Serializable {
         } else {
             return ResServerHelper.turtleCollectionRes(res);
         }
+    }
+
+    @Override
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> size() {
+
+        return ResServerHelper.intRes(setHashMap.size());
+    }
+
+    @Override
+    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> sizeOf(String key) {
+        HashSet<TurtleValue> res = setHashMap.get(key);
+        int resData=0;
+        if (res!=null){
+            resData=res.size();
+        }
+        return ResServerHelper.intRes(resData);
     }
 
     @Override
@@ -248,8 +261,4 @@ public class SetDomain implements ISetOperations, Serializable {
         return Objects.equal(setHashMap, setDomain.setHashMap);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(setHashMap);
-    }
 }
