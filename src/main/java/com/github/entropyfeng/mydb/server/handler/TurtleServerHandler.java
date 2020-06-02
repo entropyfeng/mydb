@@ -45,7 +45,7 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Tu
 
     private ConcurrentHashMap<Long, ClientRequest> requestMap = new ConcurrentHashMap<>();
 
-    private static ConcurrentHashMap<InetSocketAddress, ClientExecute> exeMap=new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<InetSocketAddress, ClientExecute> exeMap = new ConcurrentHashMap<>();
 
     public TurtleServerHandler(ServerDomain serverDomain) {
 
@@ -135,13 +135,13 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Tu
         logger.info("channel at  {} exceptionCaught ->{}", ctx.channel().remoteAddress(), cause);
     }
 
-    public static void registerSlaveServer(String host,Integer port){
-
-        if (commandTransThread==null){
-            CommandTransTask task=new CommandTransTask(exeMap,masterQueue);
-            commandTransThread=new CommandTransFactory().newThread(task);
+    public static void registerSlaveServer(String host, Integer port) {
+        slaveSet.add(new InetSocketAddress(host, port));
+        if (commandTransThread == null) {
+            CommandTransTask task = new CommandTransTask(exeMap, masterQueue);
+            commandTransThread = new CommandTransFactory().newThread(task);
         }
-        ClientExecute clientExecute=new ClientExecute(host, port);
-        exeMap.put(new InetSocketAddress(host,port),clientExecute);
+        ClientExecute clientExecute = new ClientExecute(host, port);
+        exeMap.put(new InetSocketAddress(host, port), clientExecute);
     }
 }

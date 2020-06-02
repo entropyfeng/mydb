@@ -17,19 +17,10 @@ public class ServerBootStrap {
 
     private static final Logger logger = LoggerFactory.getLogger(ServerBootStrap.class);
 
-    /**
-     * create dumpFile directory.
-     *
-     * @return true->the directory already exist or create the new directory in current.
-     * false->the directory not exist in previous,and create new directory error this time.
-     */
-
-
     public static void main(String[] args) {
 
         try {
             if (!createDumpFolder()) {
-
                 logger.error("create dump directory error !");
             }
             String host = ServerConfig.serverHost;
@@ -38,6 +29,5 @@ public class ServerBootStrap {
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
-
     }
 }

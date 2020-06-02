@@ -5,7 +5,6 @@ import com.github.entropyfeng.mydb.client.TurtleClient;
 import com.github.entropyfeng.mydb.common.ChannelHelper;
 import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.common.exception.TurtleTimeOutException;
-import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.DataBody;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResHead;
 import com.github.entropyfeng.mydb.server.command.ClientRequest;
@@ -14,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 
@@ -32,12 +31,15 @@ public class ClientExecute implements IClientExecute {
     private AtomicLong idPool=new AtomicLong(1);
     private TurtleClient turtleClient;
     private Channel channel ;
+
     private static final Logger logger= LoggerFactory.getLogger(ClientExecute.class);
 
     private  ConcurrentHashMap<Long, Pair<ResHead, Collection<DataBody>>> globalMap ;
 
     public void commandTrans(ClientRequest request){
 
+        Long requestId=idPool.getAndIncrement();
+        ChannelHelper.writeChannel(requestId,channel,request.getReqHead(),request.getDataBodies());
     }
 
     public  Pair<ResHead, Collection<DataBody>> execute(ClientCommandBuilder commandBuilder) {
@@ -64,7 +66,7 @@ public class ClientExecute implements IClientExecute {
         Channel channel = turtleClient.getChannel();
         channel.flush();
         channel.close().syncUninterruptibly();
-
+        logger.info("close channel !");
         return true;
     }
     @Override

@@ -73,6 +73,12 @@ public class ServerUtil {
 
     }
 
+    /**
+     * create dumpFile directory.
+     *
+     * @return true->the directory already exist or create the new directory in current.
+     * false->the directory not exist in previous,and create new directory error this time.
+     */
     public static boolean createDumpFolder() {
         File file = new File(ServerConfig.dumpPath);
         if (!file.exists()) {

@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
-import java.net.InetSocketAddress;
 import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
 
@@ -91,19 +90,15 @@ public class AdminObject implements IAdminOperations {
 
     /**
      * 从服务器向主服务器请求发送转储文件
-     *
+     * 该函数是一个耗时操作
      * @return 向从服务器返回转储文件
      */
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> slaveRequestDump() {
-
         dump();
         return PersistenceHelper.transDumpFile();
-
     }
 
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> exceptAcceptData(String host, Integer port) {
-
-        TurtleServerHandler.slaveSet.add(new InetSocketAddress(host, port));
 
         TurtleServerHandler.registerSlaveServer(host, port);
         return ResServerHelper.emptyRes();
@@ -184,7 +179,5 @@ public class AdminObject implements IAdminOperations {
         } catch (NoSuchMethodException e) {
             logger.error("not find method->{}", e.getMessage());
         }
-
     }
-
 }

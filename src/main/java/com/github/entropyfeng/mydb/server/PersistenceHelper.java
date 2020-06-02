@@ -46,8 +46,8 @@ public class PersistenceHelper {
         ServerUtil.createDumpFolder();
         Long timeStamp = System.currentTimeMillis();
 
-        CountDownLatch countDownLatch = new CountDownLatch(5);
-        ExecutorService service = new ThreadPoolExecutor(5, 5, 10, TimeUnit.SECONDS, new LinkedBlockingDeque<>(), new DumpThreadFactory());
+        CountDownLatch countDownLatch = new CountDownLatch(ServerConstant.CONSUMER_THREAD_NUMBER);
+        ExecutorService service = new ThreadPoolExecutor(ServerConstant.CONSUMER_THREAD_NUMBER, ServerConstant.CONSUMER_THREAD_NUMBER, 10, TimeUnit.SECONDS, new LinkedBlockingDeque<>(), new DumpThreadFactory());
 
         Future<Boolean> valuesFuture = service.submit(new ValuesDumpTask(countDownLatch, serverDomain.valuesDomain, timeStamp));
         Future<Boolean> listFuture = service.submit(new ListDumpTask(countDownLatch, serverDomain.listDomain, timeStamp));
@@ -122,11 +122,15 @@ public class PersistenceHelper {
         serverDomain.orderSetDomain.clear();
     }
 
+    /**
+     * 从硬盘中加载各种数据结构的转储文件
+     * @return {@link PersistenceObjectDomain}
+     */
     public static PersistenceObjectDomain loadDomain() {
         PersistenceFileDomain domain = getFiles();
 
-        CountDownLatch countDownLatch = new CountDownLatch(5);
-        ExecutorService service = new ThreadPoolExecutor(5, 5, 10, TimeUnit.SECONDS, new LinkedBlockingDeque<>(), new LoadThreadFactory());
+        CountDownLatch countDownLatch = new CountDownLatch(ServerConstant.CONSUMER_THREAD_NUMBER);
+        ExecutorService service = new ThreadPoolExecutor(ServerConstant.CONSUMER_THREAD_NUMBER, ServerConstant.CONSUMER_THREAD_NUMBER, 10, TimeUnit.SECONDS, new LinkedBlockingDeque<>(), new LoadThreadFactory());
         Future<ValuesDomain> valuesDomainFuture = service.submit(new ValuesLoadTask(domain.getValuesDumpFile(), countDownLatch));
         Future<ListDomain> listDomainFuture = service.submit(new ListLoadTask(domain.getListDumpFile(), countDownLatch));
         Future<SetDomain> setDomainFuture = service.submit(new SetLoadTask(domain.getSetDumpFile(), countDownLatch));
@@ -143,6 +147,7 @@ public class PersistenceHelper {
 
         PersistenceObjectDomain persistenceObjectDomain = constructPersistenceDomain(valuesDomainFuture, listDomainFuture, setDomainFuture, hashDomainFuture, orderSetDomainFuture);
         service.shutdown();
+        logger.info("complete load tarns dump File");
         return persistenceObjectDomain;
     }
 
@@ -234,8 +239,8 @@ public class PersistenceHelper {
         ArrayList<DataBody> resBodies = new ArrayList<>();
         PersistenceFileDomain domain = getFiles();
 
-        CountDownLatch countDownLatch = new CountDownLatch(5);
-        ExecutorService service = new ThreadPoolExecutor(1, 5, 100, TimeUnit.SECONDS, new ArrayBlockingQueue<>(5), new TransThreadFactory());
+        CountDownLatch countDownLatch = new CountDownLatch(ServerConstant.CONSUMER_THREAD_NUMBER);
+        ExecutorService service = new ThreadPoolExecutor(1, ServerConstant.CONSUMER_THREAD_NUMBER, 100, TimeUnit.SECONDS, new ArrayBlockingQueue<>(ServerConstant.CONSUMER_THREAD_NUMBER), new TransThreadFactory());
         Future<Collection<ProtoBuf.DataBody>> valuesFuture = service.submit(new TransTask(countDownLatch, domain.getValuesDumpFile()));
 
         Future<Collection<ProtoBuf.DataBody>> listFuture = service.submit(new TransTask(countDownLatch, domain.getListDumpFile()));
@@ -267,11 +272,10 @@ public class PersistenceHelper {
      */
     public static PersistenceObjectDomain dumpAndReLoadFromPair(@NotNull Pair<ResHead, Collection<DataBody>> pair) {
 
-
         String prefix = ServerConfig.dumpPath + System.currentTimeMillis();
-        ExecutorService service = new ThreadPoolExecutor(1, 5, 10, TimeUnit.SECONDS, new ArrayBlockingQueue<>(5), new AcceptTransThreadFactory());
+        ExecutorService service = new ThreadPoolExecutor(1, ServerConstant.CONSUMER_THREAD_NUMBER, 10, TimeUnit.SECONDS, new ArrayBlockingQueue<>(ServerConstant.CONSUMER_THREAD_NUMBER), new AcceptTransThreadFactory());
 
-        CountDownLatch countDownLatch = new CountDownLatch(5);
+        CountDownLatch countDownLatch = new CountDownLatch(ServerConstant.CONSUMER_THREAD_NUMBER);
         ArrayList<DataBody> bodies = new ArrayList<>(pair.getValue());
 
         int currentPos = 0;

@@ -12,8 +12,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @date 2020/3/5 14:25
  */
 public class ServerConfig {
-    private static volatile Properties properties;
 
+    private static volatile Properties properties;
 
     /**
      * 双重检查锁单例
@@ -42,8 +42,6 @@ public class ServerConfig {
     public static Integer precision= CommonUtil.getIntegerProperty(ServerConfig.getProperties(), ServerConstant.SYSTEM_CLOCK_REFRESH);
 
     public static Integer dumpCircle= CommonUtil.getIntegerProperty(ServerConfig.getProperties(), ServerConstant.SYSTEM_DUMP_CIRCLE);
-
-    public static ServerStatus serverStatus=ServerStatus.CLOSE;
 
     public static AtomicBoolean serverBlocking=new AtomicBoolean(false);
 
