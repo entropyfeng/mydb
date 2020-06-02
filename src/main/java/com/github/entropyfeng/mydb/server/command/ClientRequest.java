@@ -250,7 +250,6 @@ public class ClientRequest implements ICommand {
         }
         try {
             if (types.size() == 0) {
-                logger.info("opName->{}",operationName);
                 method = target.getDeclaredMethod(operationName);
             } else {
                 method = target.getDeclaredMethod(operationName, types.toArray(new Class<?>[0]));

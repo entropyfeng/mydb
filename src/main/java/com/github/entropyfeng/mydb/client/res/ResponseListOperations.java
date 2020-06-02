@@ -2,14 +2,16 @@ package com.github.entropyfeng.mydb.client.res;
 
 import com.github.entropyfeng.mydb.client.ClientCommandBuilder;
 import com.github.entropyfeng.mydb.client.conn.ClientExecute;
-import com.github.entropyfeng.mydb.common.TurtleModel;
-import com.github.entropyfeng.mydb.common.ops.IListOperations;
-import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
-import com.github.entropyfeng.mydb.common.TurtleValue;
 import com.github.entropyfeng.mydb.common.Pair;
+import com.github.entropyfeng.mydb.common.TurtleModel;
+import com.github.entropyfeng.mydb.common.TurtleValue;
+import com.github.entropyfeng.mydb.common.ops.IListOperations;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+
+import static com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.DataBody;
+import static com.github.entropyfeng.mydb.common.protobuf.ProtoBuf.ResHead;
 
 /**
  * @author entropyfeng
@@ -22,20 +24,20 @@ public class ResponseListOperations implements IListOperations {
 
     private ClientExecute clientExecute;
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> size() {
+    public @NotNull Pair<ResHead, Collection<DataBody>> size() {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.LIST, "size");
         return clientExecute.execute(builder);
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> sizeOf(String key) {
+    public @NotNull Pair<ResHead, Collection<DataBody>> sizeOf(String key) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.LIST, "sizeOf");
         builder.addStringPara(key);
         return clientExecute.execute(builder);
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> leftPush(String key, TurtleValue value) {
+    public @NotNull Pair<ResHead, Collection<DataBody>> leftPush(String key, TurtleValue value) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.LIST, "leftPush");
 
         builder.addStringPara(key);
@@ -45,7 +47,7 @@ public class ResponseListOperations implements IListOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> leftPushAll(String key, Collection<TurtleValue> values) {
+    public @NotNull Pair<ResHead, Collection<DataBody>> leftPushAll(String key, Collection<TurtleValue> values) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.LIST, "leftPushAll");
 
         builder.addStringPara(key);
@@ -55,7 +57,7 @@ public class ResponseListOperations implements IListOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> leftPushIfPresent(String key, TurtleValue value) {
+    public @NotNull Pair<ResHead, Collection<DataBody>> leftPushIfPresent(String key, TurtleValue value) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.LIST, "leftPushIfPresent");
 
         builder.addStringPara(key);
@@ -65,7 +67,7 @@ public class ResponseListOperations implements IListOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> leftPushIfAbsent(String key, TurtleValue value) {
+    public @NotNull Pair<ResHead, Collection<DataBody>> leftPushIfAbsent(String key, TurtleValue value) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.LIST, "leftPushIfAbsent");
 
         builder.addStringPara(key);
@@ -75,7 +77,7 @@ public class ResponseListOperations implements IListOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> rightPush(String key, TurtleValue value) {
+    public @NotNull Pair<ResHead, Collection<DataBody>> rightPush(String key, TurtleValue value) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.LIST, "rightPush");
 
         builder.addStringPara(key);
@@ -85,7 +87,7 @@ public class ResponseListOperations implements IListOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> rightPushAll(String key, Collection<TurtleValue> values) {
+    public @NotNull Pair<ResHead, Collection<DataBody>> rightPushAll(String key, Collection<TurtleValue> values) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.LIST, "rightPushAll");
 
         builder.addStringPara(key);
@@ -95,7 +97,7 @@ public class ResponseListOperations implements IListOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> rightPushIfPresent(String key, TurtleValue value) {
+    public @NotNull Pair<ResHead, Collection<DataBody>> rightPushIfPresent(String key, TurtleValue value) {
 
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.LIST, "rightPushIfPresent");
         builder.addStringPara(key);
@@ -105,7 +107,7 @@ public class ResponseListOperations implements IListOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> rightPushIfAbsent(String key, TurtleValue value) {
+    public @NotNull Pair<ResHead, Collection<DataBody>> rightPushIfAbsent(String key, TurtleValue value) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.LIST, "rightPushIfAbsent");
 
         builder.addStringPara(key);
@@ -115,7 +117,7 @@ public class ResponseListOperations implements IListOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> leftPop(String key) {
+    public @NotNull Pair<ResHead, Collection<DataBody>> leftPop(String key) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.LIST, "leftPop");
         builder.addStringPara(key);
 
@@ -124,14 +126,14 @@ public class ResponseListOperations implements IListOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> left(String key) {
+    public @NotNull Pair<ResHead, Collection<DataBody>> left(String key) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.LIST, "left");
         builder.addStringPara(key);
         return clientExecute.execute(builder);
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> rightPop(String key) {
+    public @NotNull Pair<ResHead, Collection<DataBody>> rightPop(String key) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.LIST, "rightPop");
         builder.addStringPara(key);
         builder.setModifyAble(true);
@@ -139,14 +141,14 @@ public class ResponseListOperations implements IListOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> right(String key) {
+    public @NotNull Pair<ResHead, Collection<DataBody>> right(String key) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.LIST, "right");
         builder.addStringPara(key);
         return clientExecute.execute(builder);
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> clear(String key) {
+    public @NotNull Pair<ResHead, Collection<DataBody>> clear(String key) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.LIST, "clear");
         builder.addStringPara(key);
         builder.setModifyAble(true);
@@ -154,21 +156,21 @@ public class ResponseListOperations implements IListOperations {
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> clear() {
+    public @NotNull Pair<ResHead, Collection<DataBody>> clear() {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.LIST, "clear");
         builder.setModifyAble(true);
         return clientExecute.execute(builder);
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> exist(String key) {
+    public @NotNull Pair<ResHead, Collection<DataBody>> exist(String key) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.LIST, "exist");
         builder.addStringPara(key);
         return clientExecute.execute(builder);
     }
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> exist(String key, TurtleValue value) {
+    public @NotNull Pair<ResHead, Collection<DataBody>> exist(String key, TurtleValue value) {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.LIST, "exist");
 
         builder.addStringPara(key);
@@ -178,7 +180,7 @@ public class ResponseListOperations implements IListOperations {
 
 
     @Override
-    public @NotNull Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> dump() {
+    public @NotNull Pair<ResHead, Collection<DataBody>> dump() {
         ClientCommandBuilder builder = new ClientCommandBuilder(TurtleModel.LIST, "dump");
         return clientExecute.execute(builder);
     }
