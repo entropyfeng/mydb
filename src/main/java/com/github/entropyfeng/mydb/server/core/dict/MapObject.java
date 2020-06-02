@@ -13,7 +13,7 @@ import static com.github.entropyfeng.mydb.server.core.dict.ElasticMap.*;
  * @author entropyfeng
  * @date 2020/2/27 15:27
  */
-class MapObject<K, V> {
+public  class MapObject<K, V> {
 
 
     /**
@@ -35,7 +35,7 @@ class MapObject<K, V> {
         this(DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR);
     }
 
-    MapObject(int initialCapacity) {
+    public MapObject(int initialCapacity) {
         this(initialCapacity, DEFAULT_LOAD_FACTOR);
     }
 
@@ -95,7 +95,7 @@ class MapObject<K, V> {
      * @param key   键
      * @param value 值
      */
-    V put(@NotNull K key, @NotNull V value) {
+  public  V put(@NotNull K key, @NotNull V value) {
 
         final int pos = key.hashCode() & sizeMask;
         assert pos >= 0 && pos < size;
@@ -113,13 +113,18 @@ class MapObject<K, V> {
               在相同hash值链表中找到相应key所对应结点
               如果为null 则不存在该key
              */
-            while (tempNode.next != null && !Objects.equals(key, tempNode.next.value)) {
+            while (tempNode.next != null && !Objects.equals(key, tempNode.key)) {
                 tempNode = tempNode.next;
             }
             //即尾结点
             if (tempNode.next == null) {
-                tempNode.next = new Node<>(key, value, null);
-                used++;
+                if (Objects.equals(key,tempNode.key)){
+                    resValue = tempNode.value;
+                    tempNode.value = value;
+                }else {
+                    tempNode.next = new Node<>(key, value, null);
+                    used++;
+                }
             } else {
                 resValue = tempNode.value;
                 tempNode.value = value;
@@ -260,4 +265,11 @@ class MapObject<K, V> {
         }
     }
 
+    public int getSize() {
+        return size;
+    }
+
+    public int getUsed() {
+        return used;
+    }
 }

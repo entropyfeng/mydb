@@ -1,6 +1,8 @@
 package persistence;
 
+import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.common.TurtleValue;
+import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.server.PersistenceHelper;
 import com.github.entropyfeng.mydb.server.ServerDomain;
 import com.github.entropyfeng.mydb.server.domain.*;
@@ -8,9 +10,9 @@ import com.github.entropyfeng.mydb.server.persistence.PersistenceObjectDomain;
 import org.junit.Assert;
 import org.junit.Test;
 
-/**
- * @// TODO: 2020/6/1  hash 出现异常
- */
+import java.util.Collection;
+
+
 public class TestTrans {
 
     @Test
@@ -36,7 +38,7 @@ public class TestTrans {
         HashDomain hashDomain = new HashDomain();
         for (int i = 0; i < limit; i++) {
             for (int j = 0; j < limit; j++) {
-                hashDomain.put(i + "", new TurtleValue(i), new TurtleValue(j));
+                hashDomain.put(i + "", new TurtleValue(0), new TurtleValue(j));
             }
         }
 
@@ -49,25 +51,20 @@ public class TestTrans {
         ServerDomain serverDomain = new ServerDomain(source);
 
         PersistenceHelper.dumpAll(serverDomain);
-        //Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> pair= PersistenceHelper.transDumpFile();
+        Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> pair= PersistenceHelper.transDumpFile();
 
         PersistenceObjectDomain res = PersistenceHelper.loadDomain();
 
-        Assert.assertEquals(source.getValuesDomain(),res.getValuesDomain());
-        Assert.assertEquals(source.getListDomain(),res.getListDomain());
-        Assert.assertEquals(source.getSetDomain(),res.getSetDomain());
-        Assert.assertEquals(source.getOrderSetDomain(),res.getOrderSetDomain());
+        Assert.assertEquals(source.getValuesDomain(), res.getValuesDomain());
+        Assert.assertEquals(source.getListDomain(), res.getListDomain());
+        Assert.assertEquals(source.getSetDomain(), res.getSetDomain());
+        Assert.assertEquals(source.getOrderSetDomain(), res.getOrderSetDomain());
         //hash出现异常
-        Assert.assertEquals(source.getHashDomain(),res.getHashDomain());
-        //PersistenceObjectDomain res= PersistenceHelper.dumpAndReLoadFromPair(pair);
+        Assert.assertEquals(source.getHashDomain(), res.getHashDomain());
 
+        PersistenceObjectDomain fin= PersistenceHelper.dumpAndReLoadFromPair(pair);
+
+        Assert.assertEquals(source,fin);
     }
 
-    @Test
-    public void testLoad() {
-
-
-        PersistenceHelper.load();
-
-    }
 }

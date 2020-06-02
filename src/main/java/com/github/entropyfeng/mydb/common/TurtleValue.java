@@ -54,7 +54,7 @@ public class TurtleValue implements Comparable<TurtleValue> {
         this.value = string.getBytes();
     }
 
-    public TurtleValue(byte[] bytes) {
+    public TurtleValue(@NotNull byte[] bytes) {
         this.type = TurtleValueType.BYTES;
         this.value = bytes;
     }

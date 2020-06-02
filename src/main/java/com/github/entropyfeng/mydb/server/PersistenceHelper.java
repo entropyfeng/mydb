@@ -2,11 +2,12 @@ package com.github.entropyfeng.mydb.server;
 
 import com.github.entropyfeng.mydb.common.Pair;
 import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
-import com.github.entropyfeng.mydb.server.config.ServerConstant;
 import com.github.entropyfeng.mydb.server.config.RegexConstant;
 import com.github.entropyfeng.mydb.server.config.ServerConfig;
+import com.github.entropyfeng.mydb.server.config.ServerConstant;
 import com.github.entropyfeng.mydb.server.domain.*;
-import com.github.entropyfeng.mydb.server.persistence.*;
+import com.github.entropyfeng.mydb.server.persistence.PersistenceFileDomain;
+import com.github.entropyfeng.mydb.server.persistence.PersistenceObjectDomain;
 import com.github.entropyfeng.mydb.server.persistence.dump.*;
 import com.github.entropyfeng.mydb.server.persistence.factory.AcceptTransThreadFactory;
 import com.github.entropyfeng.mydb.server.persistence.factory.DumpThreadFactory;
@@ -37,6 +38,7 @@ public class PersistenceHelper {
 
     /**
      * 转储所有数据
+     *
      * @param serverDomain {@link ServerDomain}
      */
     public static void dumpAll(ServerDomain serverDomain) {
@@ -108,6 +110,7 @@ public class PersistenceHelper {
     /**
      * 注意：该函数只能在消费线程全部阻塞时才可调用
      * 清除所有数据
+     *
      * @param serverDomain {@link ServerDomain}
      */
     public static void clearAll(@NotNull ServerDomain serverDomain) {
@@ -119,7 +122,7 @@ public class PersistenceHelper {
         serverDomain.orderSetDomain.clear();
     }
 
-    public static PersistenceObjectDomain loadDomain(){
+    public static PersistenceObjectDomain loadDomain() {
         PersistenceFileDomain domain = getFiles();
 
         CountDownLatch countDownLatch = new CountDownLatch(5);
@@ -138,7 +141,7 @@ public class PersistenceHelper {
         }
 
 
-        PersistenceObjectDomain persistenceObjectDomain=  constructPersistenceDomain(valuesDomainFuture,listDomainFuture,setDomainFuture,hashDomainFuture,orderSetDomainFuture);
+        PersistenceObjectDomain persistenceObjectDomain = constructPersistenceDomain(valuesDomainFuture, listDomainFuture, setDomainFuture, hashDomainFuture, orderSetDomainFuture);
         service.shutdown();
         return persistenceObjectDomain;
     }
@@ -265,8 +268,8 @@ public class PersistenceHelper {
     public static PersistenceObjectDomain dumpAndReLoadFromPair(@NotNull Pair<ResHead, Collection<DataBody>> pair) {
 
 
-        String prefix=ServerConfig.dumpPath+System.currentTimeMillis();
-        ExecutorService service=new ThreadPoolExecutor(1,5,10,TimeUnit.SECONDS,new ArrayBlockingQueue<>(5),new AcceptTransThreadFactory());
+        String prefix = ServerConfig.dumpPath + System.currentTimeMillis();
+        ExecutorService service = new ThreadPoolExecutor(1, 5, 10, TimeUnit.SECONDS, new ArrayBlockingQueue<>(5), new AcceptTransThreadFactory());
 
         CountDownLatch countDownLatch = new CountDownLatch(5);
         ArrayList<DataBody> bodies = new ArrayList<>(pair.getValue());
@@ -280,7 +283,7 @@ public class PersistenceHelper {
         currentPos += valuesSize;
         currentPos++;
 
-       Future<ValuesDomain> valuesDomainFuture= service.submit(new ValuesTransTask(countDownLatch,valuesBody,new File(prefix+ ServerConstant.VALUES_SUFFIX)));
+        Future<ValuesDomain> valuesDomainFuture = service.submit(new ValuesTransTask(countDownLatch, valuesBody, new File(prefix + ServerConstant.VALUES_SUFFIX)));
 
         //----------list-----------------------
         int listSize = bodies.get(currentPos).getIntValue();
@@ -288,7 +291,7 @@ public class PersistenceHelper {
         currentPos += listSize;
         currentPos++;
 
-        Future<ListDomain> listDomainFuture=service.submit(new ListTransTask(countDownLatch,listBody,new File(prefix+ ServerConstant.LIST_SUFFIX)));
+        Future<ListDomain> listDomainFuture = service.submit(new ListTransTask(countDownLatch, listBody, new File(prefix + ServerConstant.LIST_SUFFIX)));
 
         //-----------set-------------------
         int setSize = bodies.get(currentPos).getIntValue();
@@ -297,7 +300,7 @@ public class PersistenceHelper {
         currentPos += setSize;
         currentPos++;
 
-        Future<SetDomain> setDomainFuture=service.submit(new SetTransTask(countDownLatch,setBody,new File(prefix+ ServerConstant.SET_SUFFIX)));
+        Future<SetDomain> setDomainFuture = service.submit(new SetTransTask(countDownLatch, setBody, new File(prefix + ServerConstant.SET_SUFFIX)));
 
         //---------hash------------------------
         int hashSize = bodies.get(currentPos).getIntValue();
@@ -305,12 +308,12 @@ public class PersistenceHelper {
         currentPos += hashSize;
         currentPos++;
 
-        Future<HashDomain> hashDomainFuture=service.submit(new HashTransTask(countDownLatch,hashBody,new File(prefix+ ServerConstant.HASH_SUFFIX)));
+        Future<HashDomain> hashDomainFuture = service.submit(new HashTransTask(countDownLatch, hashBody, new File(prefix + ServerConstant.HASH_SUFFIX)));
         //---------orderSet--------------------
         int orderSetSize = bodies.get(currentPos).getIntValue();
-        List<DataBody> orderSetBody = bodies.subList(currentPos + 1, currentPos + orderSetSize);
+        List<DataBody> orderSetBody = bodies.subList(currentPos + 1, 1 + currentPos + orderSetSize);
 
-        Future<OrderSetDomain> orderSetDomainFuture=service.submit(new OrderSetTransTask(countDownLatch,orderSetBody,new File(prefix+ ServerConstant.ORDER_SET_SUFFIX)));
+        Future<OrderSetDomain> orderSetDomainFuture = service.submit(new OrderSetTransTask(countDownLatch, orderSetBody, new File(prefix + ServerConstant.ORDER_SET_SUFFIX)));
 
         try {
             countDownLatch.await();
@@ -319,7 +322,7 @@ public class PersistenceHelper {
         }
 
 
-        return constructPersistenceDomain(valuesDomainFuture,listDomainFuture,setDomainFuture,hashDomainFuture,orderSetDomainFuture);
+        return constructPersistenceDomain(valuesDomainFuture, listDomainFuture, setDomainFuture, hashDomainFuture, orderSetDomainFuture);
     }
 
     private static void constructPartBody(@NotNull Future<Collection<ProtoBuf.DataBody>> future, ArrayList<DataBody> resBodies) {
@@ -368,14 +371,15 @@ public class PersistenceHelper {
 
     /**
      * 从硬盘中所有数据结构的转储文件构造对象
-     * @param valuesDomainFuture {@link ValuesDomain}
-     * @param listDomainFuture {@link ListDomain}
-     * @param setDomainFuture {@link SetDomain}
-     * @param hashDomainFuture {@link HashDomain}
+     *
+     * @param valuesDomainFuture   {@link ValuesDomain}
+     * @param listDomainFuture     {@link ListDomain}
+     * @param setDomainFuture      {@link SetDomain}
+     * @param hashDomainFuture     {@link HashDomain}
      * @param orderSetDomainFuture {@link OrderSetDomain}
      * @return {@link PersistenceObjectDomain}
      */
-    private static PersistenceObjectDomain constructPersistenceDomain(Future<ValuesDomain> valuesDomainFuture, Future<ListDomain> listDomainFuture, Future<SetDomain> setDomainFuture, Future<HashDomain> hashDomainFuture, Future<OrderSetDomain> orderSetDomainFuture){
+    private static PersistenceObjectDomain constructPersistenceDomain(Future<ValuesDomain> valuesDomainFuture, Future<ListDomain> listDomainFuture, Future<SetDomain> setDomainFuture, Future<HashDomain> hashDomainFuture, Future<OrderSetDomain> orderSetDomainFuture) {
 
         //---------------Values------------------
         ValuesDomain valuesDomain = null;
@@ -385,8 +389,8 @@ public class PersistenceHelper {
             logger.info(e.getMessage());
             e.printStackTrace();
         }
-        if (valuesDomain==null){
-            valuesDomain=new ValuesDomain();
+        if (valuesDomain == null) {
+            valuesDomain = new ValuesDomain();
         }
 
         //-----------list------------------------
@@ -399,8 +403,8 @@ public class PersistenceHelper {
             e.printStackTrace();
         }
 
-        if (listDomain==null){
-            listDomain=new ListDomain();
+        if (listDomain == null) {
+            listDomain = new ListDomain();
         }
         //-----------set------------------------
         SetDomain setDomain = null;
@@ -410,8 +414,8 @@ public class PersistenceHelper {
             logger.info(e.getMessage());
             e.printStackTrace();
         }
-        if (setDomain==null){
-            setDomain=new SetDomain();
+        if (setDomain == null) {
+            setDomain = new SetDomain();
         }
 
         //--------hash------------------------
@@ -423,8 +427,8 @@ public class PersistenceHelper {
             e.printStackTrace();
         }
 
-        if (hashDomain==null){
-            hashDomain=new HashDomain();
+        if (hashDomain == null) {
+            hashDomain = new HashDomain();
         }
         //--------orderSet----------------------
         OrderSetDomain orderSetDomain = null;
@@ -438,6 +442,6 @@ public class PersistenceHelper {
             orderSetDomain = new OrderSetDomain();
         }
 
-        return new PersistenceObjectDomain(valuesDomain,listDomain,setDomain,hashDomain,orderSetDomain);
+        return new PersistenceObjectDomain(valuesDomain, listDomain, setDomain, hashDomain, orderSetDomain);
     }
 }

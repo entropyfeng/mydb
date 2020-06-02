@@ -1,6 +1,9 @@
 package base;
 import com.github.entropyfeng.mydb.server.core.dict.ElasticMap;
 import com.github.entropyfeng.mydb.common.TurtleValue;
+import com.github.entropyfeng.mydb.server.core.dict.MapObject;
+import com.github.entropyfeng.mydb.server.domain.HashDomain;
+import com.google.common.hash.Hashing;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -24,15 +27,10 @@ public class TestElasticMap {
     @Test
     public void testHashCode(){
         ElasticMap<TurtleValue, TurtleValue> res=new ElasticMap<>();
-        int negCount=0;
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 10000; i++) {
            TurtleValue temp= new TurtleValue(i);
-           if (temp.hashCode()<0){
-               negCount++;
-           }
             res.put(temp,new TurtleValue(""));
         }
-        System.out.println(negCount);
         System.out.println(res.size());
     }
 
@@ -53,16 +51,21 @@ public class TestElasticMap {
     @Test
     public void testCommon(){
         ElasticMap<String,String> elasticMap=new ElasticMap<>();
-        for (int i = 0; i < 100000; i++) {
-            elasticMap.put(i+"","10086");
+        for (int i = 0; i < 10; i++) {
+            elasticMap.put("","10086");
         }
         System.out.println(elasticMap.size());
     }
-
     @Test
-    public void testTurtleValue(){
-
+    public void testMapObject(){
+        MapObject<String,String> mapObject=new MapObject<>(10000);
+        for (int i = 0; i < 100; i++) {
+            mapObject.put("","");
+        }
+        System.out.println(mapObject.getUsed());
     }
+
+
 
     @Test
     public void testHashMap(){
@@ -117,4 +120,77 @@ public class TestElasticMap {
         Assert.assertEquals(0,res.size());
     }
 
+    @Test
+    public void testEqual(){
+
+        int limit=10;
+        HashDomain source = new HashDomain();
+        for (int i = 0; i < limit; i++) {
+            for (int j = 0; j < limit; j++) {
+                source.put(i + "", new TurtleValue(i), new TurtleValue(0));
+            }
+        }
+
+        HashDomain des=new HashDomain();
+        for (int i = 0; i < limit; i++) {
+            for (int j = 0; j < limit; j++) {
+                des.put(i + "", new TurtleValue(i), new TurtleValue(0));
+            }
+        }
+        Assert.assertEquals(source,des);
+    }
+
+    @Test
+    public void testTurtleMap(){
+        int limit=10;
+        HashMap<String, ElasticMap<TurtleValue, TurtleValue>> hashMap=new HashMap<>();
+        for (int i = 0; i < limit; i++) {
+            if (!hashMap.containsKey(i+"")){
+                hashMap.put(i+"",new ElasticMap<>());
+                for (int j = 0; j < limit; j++) {
+                    hashMap.get(i+"").put(new TurtleValue(i),new TurtleValue("44"));
+                }
+            }
+        }
+
+        hashMap.forEach((s, map) -> System.out.println(s+" "+map.size()) );
+        System.out.println(hashMap.size());
+    }
+
+    @Test
+    public void testStringMap(){
+        int limit=10;
+        HashMap<String, ElasticMap<String, String>> hashMap=new HashMap<>();
+        for (int i = 0; i < limit; i++) {
+            if (!hashMap.containsKey(i+"")){
+                hashMap.put(i+"",new ElasticMap<>());
+                for (int j = 0; j < limit; j++) {
+                    hashMap.get(i+"").put(j+"","");
+                }
+            }
+
+        }
+
+        hashMap.forEach((s, map) -> System.out.println(s+" "+map.size()) );
+        System.out.println(hashMap.size());
+    }
+
+    @Test
+    public void testSingleTurtleMap(){
+        int limit=10;
+        HashMap<String, ElasticMap<String, String>> hashMap=new HashMap<>();
+        for (int i = 0; i < limit; i++) {
+            if (!hashMap.containsKey(i+"")){
+               ElasticMap<String,String> elasticMap= new ElasticMap<>();
+                hashMap.put(i+"",elasticMap);
+                for (int j = 0; j < limit; j++) {
+                    elasticMap.put(i+"","");
+                }
+            }
+
+        }
+
+        hashMap.forEach((s, map) -> System.out.println(s+" "+map.size()) );
+        System.out.println(hashMap.size());
+    }
 }
