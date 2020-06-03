@@ -31,6 +31,12 @@ public class AdminConsumer implements Runnable {
             ClientRequest adminCommand = queue.poll();
             if (adminCommand != null) {
                 execute(adminCommand, adminObject);
+            }else {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

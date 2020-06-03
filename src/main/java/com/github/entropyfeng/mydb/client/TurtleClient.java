@@ -44,7 +44,7 @@ public class TurtleClient {
 
         countDownLatch=new CountDownLatch(1);
         new ClientThreadFactory().newThread(() -> {
-            logger.info("client start at host-> {}, port->{}",host,port);
+            logger.info("client connect to remote host-> {}, port->{}",host,port);
             NioEventLoopGroup eventLoopGroup = new NioEventLoopGroup();
             client = new Bootstrap();
             client.group(eventLoopGroup)
@@ -72,6 +72,9 @@ public class TurtleClient {
 
     public Channel getChannel() {
 
+        if (channel!=null){
+            return channel;
+        }
         start();
         try {
             countDownLatch.await();

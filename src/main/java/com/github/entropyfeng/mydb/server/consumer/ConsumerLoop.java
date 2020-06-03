@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import static com.github.entropyfeng.mydb.server.command.ServerExecute.execute;
 
@@ -29,8 +30,16 @@ public class ConsumerLoop {
             if (command != null) {
                 if (command.getModify() && ServerConfig.masterSlaveFlag.get()) {
                     TurtleServerHandler.masterQueue.add(command);
+                    logger.info("add ms command {}",command.getMethod().getName());
                 }
+                logger.info("commandName ->{}",command.getMethod().getName());
                 execute(command, target);
+            }else {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

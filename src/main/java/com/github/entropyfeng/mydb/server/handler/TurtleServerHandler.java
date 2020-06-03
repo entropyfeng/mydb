@@ -6,6 +6,7 @@ import com.github.entropyfeng.mydb.common.protobuf.ProtoBuf;
 import com.github.entropyfeng.mydb.server.ResServerHelper;
 import com.github.entropyfeng.mydb.server.ServerDomain;
 import com.github.entropyfeng.mydb.server.command.ClientRequest;
+import com.github.entropyfeng.mydb.server.config.ServerConfig;
 import com.github.entropyfeng.mydb.server.ms.CommandTransFactory;
 import com.github.entropyfeng.mydb.server.ms.CommandTransTask;
 import io.netty.channel.Channel;
@@ -140,8 +141,10 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Tu
         if (commandTransThread == null) {
             CommandTransTask task = new CommandTransTask(exeMap, masterQueue);
             commandTransThread = new CommandTransFactory().newThread(task);
+            ServerConfig.masterSlaveFlag.set(true);
         }
         ClientExecute clientExecute = new ClientExecute(host, port);
+        logger.info("create new slave connect to host->{} port->{}",host,port);
         exeMap.put(new InetSocketAddress(host, port), clientExecute);
     }
 }

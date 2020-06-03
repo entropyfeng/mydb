@@ -69,21 +69,25 @@ public class AdminObject implements IAdminOperations {
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> slaveOf(String host, Integer port) {
 
 
+        logger.info("salveServer requestDump file from masterServer");
         //从服务器向主服务器请求转储文件
         ClientCommandBuilder commandBuilderOne = new ClientCommandBuilder(TurtleModel.ADMIN, "slaveRequestDump");
 
         ClientExecute clientExecute = new ClientExecute(host, port);
-
         Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> pair = clientExecute.execute(commandBuilderOne);
         PersistenceObjectDomain domain = PersistenceHelper.dumpAndReLoadFromPair(pair);
+        logger.info("dumpFile already return");
         serverDomain.replace(domain);
         //-------向主服务器发送从服务器IP与端口
+        logger.info("slaveServer send it's host {} and port {} to masterSlave",host,port);
         ClientCommandBuilder commandBuilderTwo = new ClientCommandBuilder(TurtleModel.ADMIN, "exceptAcceptData");
         commandBuilderTwo.addStringPara(ServerConfig.serverHost);
         commandBuilderTwo.addIntegerPara(ServerConfig.port);
-
+        logger.info("slaveServer except to accept data");
         clientExecute.execute(commandBuilderTwo);
+        logger.info("slaveServer will  close temp connect");
         clientExecute.closeClient();
+        logger.info("slaveServer already close temp connect and return data to client");
         return ResServerHelper.emptyRes();
     }
 
