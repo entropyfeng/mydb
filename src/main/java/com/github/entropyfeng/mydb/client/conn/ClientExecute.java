@@ -39,6 +39,7 @@ public class ClientExecute implements IClientExecute {
     public void commandTrans(ClientRequest request){
 
         Long requestId=idPool.getAndIncrement();
+        logger.info("XX write {} to slave",request.getMethod());
         ChannelHelper.writeChannel(requestId,channel,request.getReqHead(),request.getDataBodies());
     }
 

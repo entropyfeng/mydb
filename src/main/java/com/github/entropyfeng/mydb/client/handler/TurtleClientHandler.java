@@ -31,13 +31,13 @@ public class TurtleClientHandler extends SimpleChannelInboundHandler<TurtleData>
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
         super.channelRegistered(ctx);
-        logger.info("channel registered !");
+        logger.info("client channel registered at {},to {}!",ctx.channel().localAddress(),ctx.channel().remoteAddress());
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
-        logger.info("channel active !");
+        logger.info("client channel active at {},to {}!",ctx.channel().localAddress(),ctx.channel().remoteAddress());
     }
 
     @Override

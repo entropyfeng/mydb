@@ -56,7 +56,7 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Tu
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
         super.channelRegistered(ctx);
-        logger.info("channel in {} is register", ctx.channel().remoteAddress());
+        logger.info("server channel  in remote {} is register", ctx.channel().remoteAddress());
         clientMap.put((InetSocketAddress) (ctx.channel().remoteAddress()), ctx.channel());
 
     }
@@ -65,7 +65,7 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Tu
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
-        logger.info("channel in {} is active", ctx.channel().remoteAddress());
+        logger.info("server channel in remote {} is active", ctx.channel().remoteAddress());
     }
 
 
@@ -117,7 +117,7 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Tu
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         super.channelInactive(ctx);
-        logger.info("channel at {} InActive", ctx.channel().remoteAddress());
+        logger.info("server channel at remote {} InActive", ctx.channel().remoteAddress());
     }
 
     @Override
@@ -126,14 +126,14 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Tu
         InetSocketAddress inetSocketAddress = (InetSocketAddress) (ctx.channel().remoteAddress());
         clientMap.remove(inetSocketAddress);
         slaveSet.remove(inetSocketAddress);
-        logger.info("channel at {} unRegister", ctx.channel().remoteAddress());
+        logger.info("server channel at  remote {} unRegister", ctx.channel().remoteAddress());
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         super.exceptionCaught(ctx, cause);
         requestMap.clear();
-        logger.info("channel at  {} exceptionCaught ->{}", ctx.channel().remoteAddress(), cause);
+        logger.info("server channel at remote {} exceptionCaught ->{}", ctx.channel().remoteAddress(), cause);
     }
 
     public static void registerSlaveServer(String host, Integer port) {
@@ -141,6 +141,7 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Tu
         if (commandTransThread == null) {
             CommandTransTask task = new CommandTransTask(exeMap, masterQueue);
             commandTransThread = new CommandTransFactory().newThread(task);
+            commandTransThread.start();
             ServerConfig.masterSlaveFlag.set(true);
         }
         ClientExecute clientExecute = new ClientExecute(host, port);
