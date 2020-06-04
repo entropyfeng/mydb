@@ -104,7 +104,9 @@ public class ServerDomain {
 
         switch (clientRequest.getModel()) {
             case VALUE:
+                logger.info("add valueQueue {}",clientRequest.getMethod().getName());
                 valuesQueue.add(clientRequest);
+                logger.info("value queue size ->{}",valuesQueue.size());
                 break;
             case ZSET:
                 orderSetQueue.add(clientRequest);
@@ -171,7 +173,6 @@ public class ServerDomain {
         this.hashDomain = domain.getHashDomain();
         this.orderSetDomain = domain.getOrderSetDomain();
 
-        constructQueue();
     }
 
 }

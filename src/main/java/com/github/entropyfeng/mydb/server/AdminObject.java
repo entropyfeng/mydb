@@ -105,6 +105,7 @@ public class AdminObject implements IAdminOperations {
     public Pair<ProtoBuf.ResHead, Collection<ProtoBuf.DataBody>> exceptAcceptData(String host, Integer port) {
 
         TurtleServerHandler.registerSlaveServer(host, port);
+
         return ResServerHelper.emptyRes();
     }
 

@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -32,8 +31,6 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Tu
      * 所有客户端的集合
      */
     public static ConcurrentHashMap<InetSocketAddress, Channel> clientMap = new ConcurrentHashMap<>();
-
-    public static Set<InetSocketAddress> slaveSet = ConcurrentHashMap.newKeySet();
 
     private static Thread commandTransThread;
 
@@ -125,7 +122,7 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Tu
         super.channelUnregistered(ctx);
         InetSocketAddress inetSocketAddress = (InetSocketAddress) (ctx.channel().remoteAddress());
         clientMap.remove(inetSocketAddress);
-        slaveSet.remove(inetSocketAddress);
+        exeMap.remove(inetSocketAddress);
         logger.info("server channel at  remote {} unRegister", ctx.channel().remoteAddress());
     }
 
@@ -136,8 +133,12 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Tu
         logger.info("server channel at remote {} exceptionCaught ->{}", ctx.channel().remoteAddress(), cause);
     }
 
+    /**
+     * 主服务器将从服务器的信息注册到主服务器中
+     * @param host 从服务器的ip
+     * @param port 主服务器的端口
+     */
     public static void registerSlaveServer(String host, Integer port) {
-        slaveSet.add(new InetSocketAddress(host, port));
         if (commandTransThread == null) {
             CommandTransTask task = new CommandTransTask(exeMap, masterQueue);
             commandTransThread = new CommandTransFactory().newThread(task);
@@ -147,5 +148,10 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Tu
         ClientExecute clientExecute = new ClientExecute(host, port);
         logger.info("create new slave connect to host->{} port->{}",host,port);
         exeMap.put(new InetSocketAddress(host, port), clientExecute);
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -23,23 +23,13 @@ public class ConsumerLoop {
     public void loop(Object target, ConcurrentLinkedQueue<ClientRequest> queue) {
 
         while (true) {
-
             handleServerBlocking(target);
             ClientRequest command = queue.poll();
-
             if (command != null) {
                 if (command.getModify() && ServerConfig.masterSlaveFlag.get()) {
                     TurtleServerHandler.masterQueue.add(command);
-                    logger.info("add ms command {}",command.getMethod().getName());
                 }
-                logger.info("commandName ->{}",command.getMethod().getName());
                 execute(command, target);
-            }else {
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
             }
         }
     }
