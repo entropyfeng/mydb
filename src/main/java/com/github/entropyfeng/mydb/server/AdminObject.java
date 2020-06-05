@@ -88,6 +88,7 @@ public class AdminObject implements IAdminOperations {
         logger.info("slaveServer will  close temp connect");
         clientExecute.closeClient();
         logger.info("slaveServer already close temp connect and return data to client");
+
         return ResServerHelper.emptyRes();
     }
 

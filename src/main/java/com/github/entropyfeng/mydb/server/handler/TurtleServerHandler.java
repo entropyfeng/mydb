@@ -148,10 +148,5 @@ public class TurtleServerHandler extends SimpleChannelInboundHandler<ProtoBuf.Tu
         ClientExecute clientExecute = new ClientExecute(host, port);
         logger.info("create new slave connect to host->{} port->{}",host,port);
         exeMap.put(new InetSocketAddress(host, port), clientExecute);
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 }
